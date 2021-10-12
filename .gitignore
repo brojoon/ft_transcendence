@@ -26,13 +26,12 @@
 *.a
 *.lib
 
-node_modules
-
 # Executables
 *.exe
 *.out
 *.app
 
 #.vscode
-
 *.vscode
+
+node_modules
