@@ -5,18 +5,16 @@ import { Container, LoginButton } from './style';
 const LogIn = () => {
   const [isLogin, setIsLogin] = useState(false);
   const onClickGoogleLogin = useCallback(() => {
-    console.log('hi');
     setIsLogin(true);
   }, []);
 
   const onClick42Login = useCallback(() => {
-    console.log('hi2');
     setIsLogin(true);
   }, []);
 
   if (isLogin) {
     console.log('로그인됨');
-    return <Redirect to="/ft_transcendence" />;
+    return <Redirect to="/ft_transcendence/home" />;
   }
   return (
     <Container>

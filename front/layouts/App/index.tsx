@@ -10,7 +10,6 @@ const App = () => {
     <Switch>
       <Redirect exact path="/" to="/login" />
       <Route path="/login" component={LogIn} />
-      <Route path="/ft_transcendence" component={ft_transcendence} />
       <Route path="/ft_transcendence/:content" component={ft_transcendence} />
     </Switch>
   );
