@@ -1,10 +1,39 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { UsersService } from './users/users.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Users } from './entities/Users';
+import ormconfig from 'ormconfig';
+import { AuthModule } from './auth/auth.module';
+import { JwtStrategy } from './auth/strategies/jwt.strategy';
+
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [
+		ConfigModule.forRoot({
+			isGlobal: true
+		  }),
+		AuthModule,
+		UsersModule,
+		TypeOrmModule.forRoot(ormconfig),
+		TypeOrmModule.forFeature([Users])
+	],
+	controllers: [AppController],
+	providers: [
+		AppService,
+		JwtStrategy,
+		UsersService,
+	],
 })
-export class AppModule {}
+
+export class AppModule implements NestModule{
+	configure(consumer: MiddlewareConsumer): any {
+		consumer
+			.apply(LoggerMiddleware)
+			.forRoutes('*')
+	}
+}
