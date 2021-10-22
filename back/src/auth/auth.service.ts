@@ -20,7 +20,7 @@ export class AuthService {
       select: ['userId', 'email', 'password'],
     });
 
-    const result = await bcrypt.compare(jwtConstants.password, user.password);
+    const result = await bcrypt.compare(jwtConstants.PASSWORD, user.password);
     if (result) {
       const { password, ...result } = user;
       return result;

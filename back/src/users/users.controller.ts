@@ -29,7 +29,7 @@ export class UsersController {
   @ApiResponse ({
       status: 500,
       description: '서버에러',
-  })     
+  })
   @Get()
   getUser(@User() user) {
     return user || false;
