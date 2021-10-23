@@ -60,11 +60,14 @@ export class Users {
   @Column("varchar", { name: "profile", nullable: true, length: 100 })
   profile: string | null;
 
-  @Column('varchar', { name: 'password', length: 100, select: false })
+  @Column("varchar", { name: 'password', length: 100, select: false })
   password: string;
 
-  @Column('tinyint', { name: 'twofactor',  default: () => "'0'" })
-  twofactor: boolean;
+  @Column("varchar", { name: 'twoFactorAuth', nullable: true, length: 100 })
+  twoFactorAuth: string | null;
+
+  @Column('tinyint', { name: 'twofactorEnable',  default: () => "'0'" })
+  twofactorEnable: boolean;
 
   @Column("datetime", { name: "createdAt", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;

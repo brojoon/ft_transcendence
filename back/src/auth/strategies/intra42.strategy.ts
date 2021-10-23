@@ -12,8 +12,6 @@ import { UserDto } from 'common/dto/user.dto';
 export class Intra42Strategy extends PassportStrategy(Strategy, '42') {
   constructor(private readonly authService: AuthService) {
     super({
-        //authorizationURL: 'https://api.intra.42.fr/oauth/authorize?client_id=cfb705cdb7caf36fabcdda09c49daa121cdd955f15ee3f3aded9db22541aedd9&redirect_uri=http%3A%2F%2Flocalhost%3A3095%2Fauth%2F42%2Fcallback&response_type=code',
-        //tokenURL: 'https://api.intra.42.fr/oauth/token',
         clientID: jwtConstants.CLIENT_ID,
         clientSecret: jwtConstants.CLIENT_SECRET,
         callbackURL: 'http://localhost:3095/auth/42/callback',
