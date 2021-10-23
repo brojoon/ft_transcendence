@@ -63,6 +63,9 @@ export class Users {
   @Column('varchar', { name: 'password', length: 100, select: false })
   password: string;
 
+  @Column('tinyint', { name: 'twofactor',  default: () => "'0'" })
+  twofactor: boolean;
+
   @Column("datetime", { name: "createdAt", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
 
