@@ -15,7 +15,7 @@ export class UsersController {
       private readonly usersService: UsersService,
       private readonly authService: AuthService
     ) {}
-///////////////////////////////////////////////////////////////////
+
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '내정보 조회'})
   @ApiResponse ({
@@ -31,19 +31,4 @@ export class UsersController {
   getUser(@User() user) {
     return user || false;
   }
-///////////////////////////////////////////////////////////////////
-  @UseGuards(JwtAuthGuard)
-  @ApiOperation({ summary: '로그아웃'})
-  @ApiResponse ({
-    status: 201,
-    description: '성공',
-  })
-  @Post('logout')
-  logout(@Req() req, @Res() res) {
-    req.logout();
-    res.clearCookie('connect.sid', { httpOnly: true});
-    res.send('ok');
-  }
-
-///////////////////////////////////////////////////////////////////
 }
