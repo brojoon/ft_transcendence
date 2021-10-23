@@ -8,7 +8,6 @@ import { Dmcontent } from "./Dmcontent";
 import { Friend } from "./Friend";
 import { History } from "./History";
 import { IsEmail, IsNotEmpty, IsString, IsInt } from 'class-validator';
-import { isInt16Array } from 'util/types';
 
 @Entity("users", { schema: "ts" })
 export class Users {
@@ -54,16 +53,15 @@ export class Users {
 
   @IsString()
   @ApiProperty({
-    example: '/upload/profile/ex.png',
+    example: '"인터넷url" or "/upload/profile/ex.png',
     description: '프로필 경로',
     required: true
   })
+  @Column("varchar", { name: "profile", nullable: true, length: 100 })
+  profile: string | null;
 
   @Column('varchar', { name: 'password', length: 100, select: false })
   password: string;
-
-  @Column("varchar", { name: "profile", nullable: true, length: 100 })
-  profile: string | null;
 
   @Column("datetime", { name: "createdAt", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;

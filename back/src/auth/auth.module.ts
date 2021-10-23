@@ -9,7 +9,6 @@ import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { Intra42Strategy } from './strategies/intra42.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
   imports: [
@@ -21,7 +20,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     TypeOrmModule.forFeature([Users]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, Intra42Strategy],
+  providers: [AuthService, JwtStrategy, Intra42Strategy],
   exports: [AuthService],
 })
 export class AuthModule {}

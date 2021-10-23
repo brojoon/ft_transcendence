@@ -3,12 +3,9 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
-import { JoinRequestDto } from './dto/join.request.dto';
 import { UsersService } from './users.service';
 import { AuthService } from '../auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { LocalAuthGuard } from 'src/auth/guards/local-auth.guard';
-import { Users } from 'src/entities/Users';
 
 @ApiTags('USERS') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
@@ -35,24 +32,6 @@ export class UsersController {
     return user || false;
   }
 ///////////////////////////////////////////////////////////////////
-  @ApiOperation({ summary: '회원가입'})
-  @ApiResponse ({
-    status: 201,
-    description: '성공',
-    type: UserDto,
-  })
-  @Post()
-  async Join(@Body() body: JoinRequestDto) {
-      await this.usersService.Join( body.oauthId, body.username, body.userId, body.email);
-  }
-///////////////////////////////////////////////////////////////////
-  @ApiOperation({ summary: '로그인' })
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  async login(@User() user) {
-    return this.authService.login(user);
-  }
-///////////////////////////////////////////////////////////////////
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '로그아웃'})
   @ApiResponse ({
@@ -66,10 +45,5 @@ export class UsersController {
     res.send('ok');
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile() {
-    return "user";
-  }
 ///////////////////////////////////////////////////////////////////
 }

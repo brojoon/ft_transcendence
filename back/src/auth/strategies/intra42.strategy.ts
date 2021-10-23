@@ -1,30 +1,45 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import axios from 'axios';
+//import { Strategy } from 'passport-oauth2';
 import { Strategy } from 'passport-42';
-//import { lastValueFrom } from 'rxjs';
+import { AuthService } from '../auth.service';
+import { lastValueFrom } from 'rxjs';
+import axios from 'axios';
 import { jwtConstants } from '../constants';
+import { UserDto } from 'common/dto/user.dto';
 
 @Injectable()
-export class Intra42Strategy extends PassportStrategy(Strategy) {
-  constructor() {
+export class Intra42Strategy extends PassportStrategy(Strategy, '42') {
+  constructor(private readonly authService: AuthService) {
     super({
-        authorizationURL: 'https://api.intra.42.fr/oauth/authorize?client_id=cfb705cdb7caf36fabcdda09c49daa121cdd955f15ee3f3aded9db22541aedd9&redirect_uri=http%3A%2F%2Flocalhost%3A3095%2Fauth%2F42%2Fcallback&response_type=code',
-        tokenURL: 'https://api.intra.42.fr/oauth/token',
+        //authorizationURL: 'https://api.intra.42.fr/oauth/authorize?client_id=cfb705cdb7caf36fabcdda09c49daa121cdd955f15ee3f3aded9db22541aedd9&redirect_uri=http%3A%2F%2Flocalhost%3A3095%2Fauth%2F42%2Fcallback&response_type=code',
+        //tokenURL: 'https://api.intra.42.fr/oauth/token',
         clientID: jwtConstants.CLIENT_ID,
         clientSecret: jwtConstants.CLIENT_SECRET,
         callbackURL: 'http://localhost:3095/auth/42/callback',
         scope: 'public',
     });
   }
-
-  async validate(accessToken: string, refreshToken: string, profile: any, cb:any) {
-		const { data } = await axios.get('https://api.intra.42.fr/v2/me', {
-			headers: { Authorization: `Bearer ${accessToken}` },
-		});
-    if (!data) 
-        throw new UnauthorizedException();
-    console.log(data);
-    return data;   
+  
+  async validate(accessToken: string, refreshToken: string, profile: any){
+    const { id, displayName, username,  photos, emails} = profile;
+    const info: UserDto = { 
+      oauthId:+id, 
+      username:displayName,
+      userId:username,
+      email:emails[0].value,
+      profile:photos[0].value};
+    if (!info) 
+      throw new UnauthorizedException();
+    const user: UserDto = await this.authService.validateUser(String(info.oauthId), jwtConstants.PASSWORD);
+    // 사용자가 있으면 사용자 정보 리턴
+    if (user){
+      return user;
+    }
+    const result = await this.authService.Join(info.oauthId, info.username, info.userId, info.email, info.profile);
+    if (result){
+      return info;
+    }
   }
 }
+

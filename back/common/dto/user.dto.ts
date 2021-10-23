@@ -1,11 +1,11 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { JoinRequestDto } from "src/users/dto/join.request.dto";
+import { PickType } from "@nestjs/swagger";
+import { Users } from "src/entities/Users";
 
-export class UserDto extends JoinRequestDto{
-	@ApiProperty({
-		required: true,
-		example: 'load/profile/{id}.png',
-		description: 'profile'
-	})
-	profile: string;
-}
+export class UserDto extends PickType(Users, [
+    'oauthId',
+    'username',
+    'userId',
+    'email',
+	'profile'
+] as const) {}
+
