@@ -35,7 +35,7 @@ const config: TypeOrmModuleOptions = {
   cli: { migrationsDir: 'src/migrations' },
   autoLoadEntities: true,
   charset: 'utf8mb4',
-  synchronize: false,// 한번 만들면 false로 바꾼다.
+  synchronize: true,// 한번 만들면 false로 바꾼다.
   logging: true,
   keepConnectionAlive: true,
 };
