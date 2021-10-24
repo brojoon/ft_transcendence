@@ -7,6 +7,8 @@ import { Users } from 'src/entities/Users';
 import * as bcrypt from 'bcrypt'
 import { jwtConstants } from './constants';
 import { UserDto } from 'common/dto/user.dto';
+import { authenticator } from 'otplib';
+import { toFileStream } from 'qrcode';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +17,57 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private connection: Connection,
   ) {}
+
+  async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, userId:string) {
+    const result = await this.usersRepository.findOne({
+      where: { userId },
+      select: ['twoFactorAuth'],
+    });
+    return authenticator.verify({token: twoFactorAuthenticationCode,secret: result.twoFactorAuth})
+  }
+
+  async generateTwoFactorAuthenticationSecret(userId:string, email:string) {
+    // secret / otpauthUrl 생성
+    const secret = authenticator.generateSecret();
+    const otpauthUrl = authenticator.keyuri(email, jwtConstants.APP_NAME, secret);
+  
+    const queryRunner = this.connection.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager
+        .getRepository(Users)
+        .update(
+          {userId},
+          {twoFactorAuth:secret}
+        );
+      await queryRunner.commitTransaction();
+      return { secret, otpauthUrl };
+    } catch (error){
+      console.error(error);
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async pipeQrCodeStream(stream: Response, otpauthUrl: string) {
+    return toFileStream(stream, otpauthUrl);
+  }
+
+  public getCookieWithJwtAccessToken(userId: string, isSecondFactorAuthenticated: boolean) {
+    const payload = { userId, isSecondFactorAuthenticated };
+
+    const token = this.jwtService.sign(payload, {
+      secret: jwtConstants.TOKEN_SECRET,
+      expiresIn: jwtConstants.TOKEN_TIME
+    });
+    var tomorrow = new Date();
+    const exp = tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
+    //`Authentication=${token}; HttpOnly; Path=/; Max-Age=${exp}`
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${exp}`;
+  }
 
   async validateUser(oauthId: string, password: string): Promise<any> {
     const user = await this.usersRepository.findOne({

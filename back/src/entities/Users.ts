@@ -53,7 +53,7 @@ export class Users {
 
   @IsString()
   @ApiProperty({
-    example: '"인터넷url" or "/upload/profile/ex.png',
+    example: '인터넷url or /upload/profile/ex.png',
     description: '프로필 경로',
     required: true
   })
