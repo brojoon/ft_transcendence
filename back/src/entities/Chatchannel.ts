@@ -1,8 +1,8 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Chatcontent } from "./Chatcontent";
 import { Chatmember } from "./Chatmember";
 
-@Entity("chatchannel", { schema: "ts" })
+@Entity()
 export class Chatchannel {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;
@@ -16,11 +16,14 @@ export class Chatchannel {
   @Column("varchar", { name: "password", nullable: true, length: 100 })
   password: string | null;
 
-  @Column("datetime", { name: "createdAt", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column("datetime", { name: "updatedAt", default: () => "CURRENT_TIMESTAMP" })
+  @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deleteAt: Date | null;
 
   @OneToMany(() => Chatcontent, (chatcontent) => chatcontent.Channel)
   Chatcontents: Chatcontent[];

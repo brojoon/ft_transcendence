@@ -1,9 +1,9 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
+import { Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, UpdateDateColumn } from "typeorm";
 import { Chatchannel } from "./Chatchannel";
 import { Users } from "./Users";
 
 @Index("FK_chatChannel_TO_chatMember_1", ["channelId"], {})
-@Entity("chatmember", { schema: "ts" })
+@Entity()
 export class Chatmember {
   @Column("varchar", { primary: true, name: "userId", length: 30 })
   userId: string;
@@ -11,16 +11,16 @@ export class Chatmember {
   @Column("int", { primary: true, name: "channelId" })
   channelId: number;
 
-  @Column("tinyint", { name: "mute", width: 1, default: () => "'0'" })
+  @Column( { name: "mute", width: 1, default: () => "'0'" })
   mute: boolean;
 
   @Column("int", { name: "auth", default: () => "'0'" })
   auth: number;
 
-  @Column("datetime", { name: "createdAt", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column("datetime", { name: "updatedAt", default: () => "CURRENT_TIMESTAMP" })
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @ManyToOne(() => Chatchannel, (chatchannel) => chatchannel.Chatmembers, {

@@ -31,14 +31,17 @@ export class AuthController {
   @Get('42')
   async 42() {
   }
-
+  
   @UseGuards(Intra42AuthGuard)
   @HttpCode(200)
   @Get('42/callback')
   async login(@Req() req, @Res() res) {
     const token = await this.authService.login(req.user);
     res.cookie('42token', token.access_token, { httpOnly: false });
-
+    /*
+    cookie: 42token sdasdasdasd
+    cookie: 42token1 asdadafdsf
+    */
     const result = await this.usersRepository.findOne({
       where: { userId: req.user.userId},
       select: ['twofactorEnable'],

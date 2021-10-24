@@ -1,17 +1,19 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Chatchannel } from "./Chatchannel";
 import { Users } from "./Users";
 
 @Index("FK_users_TO_chatContent_1", ["userId"], {})
 @Index("FK_chatChannel_TO_chatContent_1", ["channelId"], {})
-@Entity("chatcontent", { schema: "ts" })
+@Entity()
 export class Chatcontent {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;
@@ -25,10 +27,10 @@ export class Chatcontent {
   @Column("text", { name: "message" })
   message: string;
 
-  @Column("datetime", { name: "createdAt", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column("datetime", { name: "updatedAt", default: () => "CURRENT_TIMESTAMP" })
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @ManyToOne(() => Chatchannel, (chatchannel) => chatchannel.Chatcontents, {

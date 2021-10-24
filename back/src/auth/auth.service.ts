@@ -66,7 +66,7 @@ export class AuthService {
     var tomorrow = new Date();
     const exp = tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
     //`Authentication=${token}; HttpOnly; Path=/; Max-Age=${exp}`
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${exp}`;
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${jwtConstants.TOKEN_TIME}`;
   }
 
   async validateUser(oauthId: string, password: string): Promise<any> {

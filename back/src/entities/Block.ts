@@ -2,7 +2,7 @@ import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Users } from "./Users";
 
 @Index("FK_users_TO_block_2", ["userId2"], {})
-@Entity("block", { schema: "ts" })
+@Entity()
 export class Block {
   @Column("varchar", { primary: true, name: "userId1", length: 30 })
   userId1: string;

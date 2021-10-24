@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Column, Entity, OneToMany, OneToOne } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, OneToOne, UpdateDateColumn } from "typeorm";
 import { Block } from "./Block";
 import { Chatcontent } from "./Chatcontent";
 import { Chatmember } from "./Chatmember";
@@ -9,7 +9,7 @@ import { Friend } from "./Friend";
 import { History } from "./History";
 import { IsEmail, IsNotEmpty, IsString, IsInt } from 'class-validator';
 
-@Entity("users", { schema: "ts" })
+@Entity()
 export class Users {
   @IsString()
   @IsNotEmpty()
@@ -66,17 +66,17 @@ export class Users {
   @Column("varchar", { name: 'twoFactorAuth', nullable: true, length: 200 })
   twoFactorAuth: string | null;
 
-  @Column('tinyint', { name: 'twofactorEnable',  default: () => "'0'" })
+  @Column( { name: 'twofactorEnable',  default: () => "'0'" })
   twofactorEnable: boolean;
 
-  @Column("datetime", { name: "createdAt", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column("datetime", { name: "updatedAt", default: () => "CURRENT_TIMESTAMP" })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column("datetime", { name: "deletedAt", default: () => "CURRENT_TIMESTAMP" })
-  deletedAt: Date | null;
+  @DeleteDateColumn()
+  deleteAt: Date | null;
 
   @OneToMany(() => Block, (block) => block.userId1)
   Block1: Block[];

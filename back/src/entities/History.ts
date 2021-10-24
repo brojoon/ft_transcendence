@@ -1,18 +1,20 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Dmcontent } from "./Dmcontent";
 import { Users } from "./Users";
 
 @Index("FK_users_TO_history_1", ["userId1"], {})
 @Index("FK_users_TO_history_2", ["userId2"], {})
-@Entity("history", { schema: "ts" })
+@Entity()
 export class History {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;
@@ -38,11 +40,11 @@ export class History {
   @Column("int", { name: "state", default: () => "'0'" })
   state: number;
 
-  @Column("datetime", { name: "startTime", default: () => "CURRENT_TIMESTAMP" })
-  startTime: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-  @Column("datetime", { name: "endTime", nullable: true })
-  endTime: Date | null;
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @OneToMany(() => Dmcontent, (dmcontent) => dmcontent.Historys)
   Dmcontents: Dmcontent[];

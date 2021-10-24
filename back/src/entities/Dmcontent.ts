@@ -1,10 +1,12 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { Dm } from "./Dm";
 import { History } from "./History";
@@ -14,7 +16,7 @@ import { Users } from "./Users";
 @Index("FK_users_TO_dmContent_1", ["userId1"], {})
 @Index("FK_users_TO_dmContent_2", ["userId2"], {})
 @Index("FK_history_TO_dmContent_1", ["historyId"], {})
-@Entity("dmcontent", { schema: "ts" })
+@Entity()
 export class Dmcontent {
   @PrimaryGeneratedColumn({ type: "int", name: "id" })
   id: number;
@@ -34,10 +36,10 @@ export class Dmcontent {
   @Column("int", { name: "match", default: () => "'0'" })
   match: number;
 
-  @Column("datetime", { name: "createdAt", default: () => "CURRENT_TIMESTAMP" })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column("datetime", { name: "updatedAt", default: () => "CURRENT_TIMESTAMP" })
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @Column("int", { name: "historyId", nullable: true })
