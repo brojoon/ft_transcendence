@@ -9,18 +9,19 @@ import { AuthService } from './auth.service';
 import { jwtConstants } from './constants';
 import { Intra42Strategy } from './strategies/intra42.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { JwtTwoFactorStrategy } from './strategies/two-factor.strategy';
 
 @Module({
   imports: [
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '600s' },
+      signOptions: { expiresIn: '3600s' },
     }),
     TypeOrmModule.forFeature([Users]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, Intra42Strategy],
+  providers: [AuthService, JwtStrategy, Intra42Strategy, JwtTwoFactorStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

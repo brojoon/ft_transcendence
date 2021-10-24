@@ -6,4 +6,7 @@ export const jwtConstants = {
   CLIENT_ID: 'cfb705cdb7caf36fabcdda09c49daa121cdd955f15ee3f3aded9db22541aedd9',
   CLIENT_SECRET: 'e12096164673839b45ad3efefe2958e6c2fe836111e5ede5572f750594c3f6aa',
   CALLBACK_URL: 'http://localhost:3095/auth/42/callback',
+  APP_NAME: '42seoul',
+  TOKEN_SECRET: '42seoul',
+  TOKEN_TIME: '3600s',
 };
