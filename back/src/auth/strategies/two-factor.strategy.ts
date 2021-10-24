@@ -1,12 +1,13 @@
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ExecutionContext, Injectable, Req, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
 import { AuthService } from '../auth.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from 'src/entities/Users';
 import { jwtConstants } from '../constants';
+import { logger } from 'ormconfig';
 
 @Injectable()
 export class JwtTwoFactorStrategy extends PassportStrategy(Strategy, 'jwt-two-factor') {
@@ -15,11 +16,13 @@ export class JwtTwoFactorStrategy extends PassportStrategy(Strategy, 'jwt-two-fa
       jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
         return request?.cookies?.Authentication;
       }]),
-      secretOrKey: jwtConstants.TOKEN_SECRET
+      secretOrKey: jwtConstants.TOKEN_SECRET,
+
     });
   }
  
   async validate(payload) {
+    console.log("reach");
     const result = await this.usersRepository.findOne({
         where: { userId: payload.userId},
         select: ['twofactorEnable'],

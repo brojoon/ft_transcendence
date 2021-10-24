@@ -56,7 +56,7 @@ export class AuthService {
     return toFileStream(stream, otpauthUrl);
   }
 
-  public getCookieWithJwtAccessToken(userId: string, isSecondFactorAuthenticated: boolean) {
+  public getCookieWithJwtAccessToken(userId: string, isSecondFactorAuthenticated = false) {
     const payload = { userId, isSecondFactorAuthenticated };
 
     const token = this.jwtService.sign(payload, {

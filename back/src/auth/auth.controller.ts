@@ -69,6 +69,7 @@ export class AuthController {
     res.send('QR코드 인증완료');
   }
 
+
   @ApiOperation({ summary: '42oauth 로그아웃' })
   @HttpCode(200)
   @Get('logout')
