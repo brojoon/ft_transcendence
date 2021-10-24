@@ -5,8 +5,8 @@ import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import JwtTwoFactorGuard from 'src/auth/guards/two-factor.guard';
 
+@UseGuards(JwtAuthGuard)
 @ApiTags('USERS') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
 @Controller('api/users') // uri시작부분
@@ -15,8 +15,6 @@ export class UsersController {
       private readonly usersService: UsersService
     ) {}
 
-  @UseGuards(JwtAuthGuard)
-  //@UseGuards(JwtTwoFactorGuard)
   @ApiOperation({ summary: '내정보 조회'})
   @ApiResponse ({
     status: 200,
@@ -32,11 +30,10 @@ export class UsersController {
     return user || false;
   }
 
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'two-factor on'})
   @ApiResponse ({
     status: 200,
-    description: '이차 인증 켜짐 / return value : true',
+    description: '"이차 인증 켜짐": [return value : true]',
   })
   @HttpCode(200)
   @Get('turn-on')
@@ -44,11 +41,10 @@ export class UsersController {
     return this.usersService.TwoFactorSwitch(user.userId, true);
   }
 
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'two-factor off'})
   @ApiResponse ({
     status: 200,
-    description: '이차 인증 꺼짐 / return value : true',
+    description: '"이차 인증 꺼짐": [return value : true]',
   })
   @HttpCode(200)
   @Get('turn-off')

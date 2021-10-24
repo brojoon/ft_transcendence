@@ -14,11 +14,17 @@ import { Users } from 'src/entities/Users';
 dotenv.config();
 const config: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: 'localhost',
-  port: 5432,
+  host: process.env.DB_HOST,
+  port: +process.env.DB_PORT,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
+  // type: 'mysql',
+  // host: process.env.DB_HOST1,
+  // port: +process.env.DB_PORT1,
+  // username: process.env.DB_USERNAME1,
+  // password: process.env.DB_PASSWORD1,
+  // database: process.env.DB_DATABASE1,
   entities: [
     Block,
     Chatchannel,
@@ -34,8 +40,7 @@ const config: TypeOrmModuleOptions = {
   migrations: [__dirname + '/src/migrations/*.ts'],
   cli: { migrationsDir: 'src/migrations' },
   autoLoadEntities: true,
-  //charset: 'utf8mb4',
-  synchronize: true,// 한번 만들면 false로 바꾼다.
+  synchronize: false,// 처음 true로 표  만들고 한번 만들면 false로 바꾼다.
   logging: true,
   keepConnectionAlive: true,
 };

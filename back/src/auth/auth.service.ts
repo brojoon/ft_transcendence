@@ -1,5 +1,4 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Connection, Repository } from 'typeorm';
@@ -56,17 +55,12 @@ export class AuthService {
     return toFileStream(stream, otpauthUrl);
   }
 
-  public getCookieWithJwtAccessToken(userId: string, isSecondFactorAuthenticated = false) {
-    const payload = { userId, isSecondFactorAuthenticated };
-
-    const token = this.jwtService.sign(payload, {
-      secret: jwtConstants.TOKEN_SECRET,
-      expiresIn: jwtConstants.TOKEN_TIME
+  async checktwofactorEnable(userId: string) {
+    const result = await this.usersRepository.findOne({
+      where: { userId},
+      select: ['twofactorEnable'],
     });
-    var tomorrow = new Date();
-    const exp = tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
-    //`Authentication=${token}; HttpOnly; Path=/; Max-Age=${exp}`
-    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${jwtConstants.TOKEN_TIME}`;
+    return result.twofactorEnable;
   }
 
   async validateUser(oauthId: string, password: string): Promise<any> {
@@ -126,8 +120,6 @@ export class AuthService {
       email: user.email,
       profile: user.profile 
     };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return {access_token: this.jwtService.sign(payload)};
   }
 }

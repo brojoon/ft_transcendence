@@ -3,8 +3,6 @@ import { PassportStrategy } from '@nestjs/passport';
 //import { Strategy } from 'passport-oauth2';
 import { Strategy } from 'passport-42';
 import { AuthService } from '../auth.service';
-import { lastValueFrom } from 'rxjs';
-import axios from 'axios';
 import { jwtConstants } from '../constants';
 import { UserDto } from 'common/dto/user.dto';
 
