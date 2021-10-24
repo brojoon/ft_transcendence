@@ -62,7 +62,7 @@ export class AuthController {
       throw new UnauthorizedException('Wrong authentication code');
     }
     const accessTokenCookie = this.authService.getCookieWithJwtAccessToken(user.userId, true);
-    res.cookie('two-factor-Cookie', [accessTokenCookie]);
+    res.cookie('two-factor-Cookie', accessTokenCookie);
     res.send('QR코드 인증완료');
   }
 
