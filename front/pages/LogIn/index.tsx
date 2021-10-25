@@ -6,13 +6,13 @@ import axios from 'axios';
 const LogIn = () => {
   const [isLogin, setIsLogin] = useState(false);
   const onClickGoogleLogin = useCallback(() => {
-    axios.get('http://localhost:3095/api', {
+    axios.get('/api/', {
       withCredentials: true,
     });
   }, []);
 
   const onClick42Login = useCallback(() => {
-    axios.get('http://localhost:3095/api/auth/42', {
+    axios.get('/api/auth/42', {
       withCredentials: true,
     });
   }, []);
