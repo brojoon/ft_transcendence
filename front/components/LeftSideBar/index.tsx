@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 
 const LeftSideBar = () => {
   return (
-    <div style={{ width: '10vh' }}>
+    <div style={{ width: '60px' }}>
       <Toolbar>
         <NavIcons>
           <StyledBadge
