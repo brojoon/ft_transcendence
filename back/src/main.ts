@@ -9,10 +9,18 @@ declare const module: any;
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
-	//class-validator
-	app.useGlobalPipes(new ValidationPipe());
 	//예외필터
 	app.useGlobalFilters(new HttpExceptionFilter());
+	//class-validator
+	app.useGlobalPipes(
+		new ValidationPipe({
+		  transform: true,
+		}),
+	);
+	app.enableCors({
+		origin: true,
+		credentials: true,
+	});
 	//API
 	const config = new DocumentBuilder()
 		.setTitle('ft_transcendence API')

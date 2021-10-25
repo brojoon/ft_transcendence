@@ -3,7 +3,6 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'common/decorators/user.decorator';
 import { TwoFactorDto } from 'common/dto/two-factor.dto';
-import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
@@ -53,7 +52,7 @@ export class AuthController {
   })
   @ApiResponse ({
     status: 401,
-    description: 'Wrong authentication code / checktwofactorEnable valus is fales',
+    description: '잘못된 OTP code일 경우 / two-factor기능 off 이용자일 경우',
   })
   @HttpCode(201)
   async authenticate(@Body() body: TwoFactorDto,  @Res() res) {
@@ -80,8 +79,8 @@ export class AuthController {
   @HttpCode(200)
   @Get('logout')
   logout(@Req() req, @Res() res) {
-    res.clearCookie('token');
-    res.send('null');
+    res.clearCookie('ts_token');
+    res.send(null);
   }
 
   @UseGuards(JwtAuthGuard)
