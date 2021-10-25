@@ -12,7 +12,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @ApiTags('AUTH') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
-@Controller('auth')
+@Controller('api/auth')
 export class AuthController {
   constructor(
     @InjectRepository(Users) private usersRepository: Repository<Users>,
