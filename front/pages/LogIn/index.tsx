@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Container, LoginButton } from './style';
+import axios from 'axios';
 
 const LogIn = () => {
   const [isLogin, setIsLogin] = useState(false);
@@ -9,7 +10,9 @@ const LogIn = () => {
   }, []);
 
   const onClick42Login = useCallback(() => {
-    setIsLogin(true);
+    axios.get('http://localhost:3095/auth/42', {
+      withCredentials: true,
+    });
   }, []);
 
   if (isLogin) {
