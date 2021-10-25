@@ -12,7 +12,7 @@ export class Intra42Strategy extends PassportStrategy(Strategy, '42') {
     super({
         clientID: jwtConstants.CLIENT_ID,
         clientSecret: jwtConstants.CLIENT_SECRET,
-        callbackURL: 'http://localhost:3095/auth/42/callback',
+        callbackURL: 'http://localhost:3095/api/auth/42/callback',
         scope: 'public',
     });
   }
