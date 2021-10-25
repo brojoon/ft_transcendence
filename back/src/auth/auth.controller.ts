@@ -91,7 +91,7 @@ export class AuthController {
   })
   @HttpCode(200)
   @Get('make-qrcode')
-  async pipeQrCodeStream(@User() user, @Res() response: Response) {
+  async pipeQrCodeStream(@User() user, @Res() response) {
     const { otpauthUrl } = await this.authService.generateTwoFactorAuthenticationSecret(user.userId, user.email);
     return this.authService.pipeQrCodeStream(response, otpauthUrl);
   }

@@ -17,10 +17,10 @@ async function bootstrap() {
 		  transform: true,
 		}),
 	);
-	app.enableCors({
-		origin: true,
-		credentials: true,
-	});
+	// app.enableCors({
+	// 	origin: true,
+	// 	credentials: true,
+	// });
 	//API
 	const config = new DocumentBuilder()
 		.setTitle('ft_transcendence API')
