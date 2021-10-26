@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { Connect } from './entities/Connect';
 import { FriendsModule } from './friends/friends.module';
+import { FriendsService } from './friends/friends.service';
 
 
 @Module({
@@ -21,15 +22,16 @@ import { FriendsModule } from './friends/friends.module';
 		  }),
 		AuthModule,
 		UsersModule,
+		FriendsModule,
 		TypeOrmModule.forRoot(ormconfig),
 		TypeOrmModule.forFeature([Users, Connect]),
-		FriendsModule
 	],
 	controllers: [AppController],
 	providers: [
 		AppService,
 		JwtStrategy,
 		UsersService,
+		FriendsService,
 	],
 })
 

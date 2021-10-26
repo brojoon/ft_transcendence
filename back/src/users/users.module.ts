@@ -5,7 +5,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/entities/Users';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from 'src/auth/constants';
-import { AuthService } from 'src/auth/auth.service';
 import { Connect } from 'src/entities/Connect';
 
 @Module({
@@ -13,11 +12,11 @@ import { Connect } from 'src/entities/Connect';
     TypeOrmModule.forFeature([Users, Connect]),
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60s' },
-    })
+      signOptions: { expiresIn: '86400s' },
+    }),
   ],
   controllers: [UsersController],
-  providers: [UsersService, AuthService],
+  providers: [UsersService],
   exports: [UsersService]
 })
 export class UsersModule {}

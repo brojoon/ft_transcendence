@@ -1,9 +1,7 @@
 import { BadRequestException, ForbiddenException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/Users';
-import { Repository, Connection } from 'typeorm';
-import * as bcrypt from 'bcrypt'
-import { connect } from 'http2';
+import { Repository } from 'typeorm';
 import { Connect } from 'src/entities/Connect';
 
 @Injectable()
