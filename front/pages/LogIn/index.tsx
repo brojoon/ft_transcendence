@@ -12,9 +12,8 @@ const LogIn = () => {
   }, []);
 
   const onClick42Login = useCallback(() => {
-    axios.get('/api/auth/42', {
-      withCredentials: true,
-    });
+    //window.location.href = '/api/auth/42';
+    setIsLogin(true);
   }, []);
 
   if (isLogin) {

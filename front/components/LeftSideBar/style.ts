@@ -33,8 +33,9 @@ export const NavIcons = styled.div`
 	}
 
 	.sideBarIconLast {
-		font-size: 28px;
-		margin-top: 165px;
+		position: fixed;
+		bottom: 5px;
+		left: 5px;
 		width: 45px;
 		height: 45px;
 		box-shadow: none;

@@ -17,7 +17,7 @@ const Achievements = () => {
   return (
     <Box sx={{ flexGrow: 1 }} style={{ backgroundColor: '#121212', padding: '20px 50px' }}>
       <Grid container spacing={3}>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>
             <div>
               <p style={{ fontSize: '17px' }}>Registered!</p>
@@ -25,55 +25,55 @@ const Achievements = () => {
             </div>
           </Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=2</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=4</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
-        <Grid item xs={4} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Item>xs=6 md=8</Item>
         </Grid>
       </Grid>
