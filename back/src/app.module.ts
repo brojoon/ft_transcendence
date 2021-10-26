@@ -10,6 +10,7 @@ import { Users } from './entities/Users';
 import ormconfig from 'ormconfig';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
+import { Connect } from './entities/Connect';
 
 
 @Module({
@@ -20,7 +21,7 @@ import { JwtStrategy } from './auth/strategies/jwt.strategy';
 		AuthModule,
 		UsersModule,
 		TypeOrmModule.forRoot(ormconfig),
-		TypeOrmModule.forFeature([Users])
+		TypeOrmModule.forFeature([Users, Connect])
 	],
 	controllers: [AppController],
 	providers: [
