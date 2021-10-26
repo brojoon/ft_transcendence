@@ -11,6 +11,7 @@ import ormconfig from 'ormconfig';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { Connect } from './entities/Connect';
+import { FriendsModule } from './friends/friends.module';
 
 
 @Module({
@@ -21,7 +22,8 @@ import { Connect } from './entities/Connect';
 		AuthModule,
 		UsersModule,
 		TypeOrmModule.forRoot(ormconfig),
-		TypeOrmModule.forFeature([Users, Connect])
+		TypeOrmModule.forFeature([Users, Connect]),
+		FriendsModule
 	],
 	controllers: [AppController],
 	providers: [
