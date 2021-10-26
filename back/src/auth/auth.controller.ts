@@ -5,6 +5,7 @@ import { User } from 'common/decorators/user.decorator';
 import { TwoFactorDto } from 'common/dto/two-factor.dto';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
+import { userInfo } from 'os';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
@@ -71,10 +72,10 @@ export class AuthController {
     if (isCodeValid === false) {
       throw new UnauthorizedException('Wrong authentication code');
     }
-    delete body.TwoFactorAuthcode;
-    const token = await this.authService.login(body);
+    const user:UserDto = body;
+    const token = await this.authService.login(user);
     res.cookie('ts_token', token.access_token, { httpOnly: false });
-    res.send(null);
+    res.send(body);
   }
 
   @UseGuards(JwtAuthGuard)

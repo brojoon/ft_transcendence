@@ -35,6 +35,7 @@ export class UsersController {
   @ApiOperation({ summary: '유저 정보 조회'})
   @ApiResponse ({
     status: 200,
+    description: '',
     type: UserInfoDto
   })
   @Get('info/:id')
@@ -42,9 +43,10 @@ export class UsersController {
     return this.usersService.userInfo(param);
   }
 
-  @ApiOperation({ summary: '유저 접송 정보 조회'})
+  @ApiOperation({ summary: '유저 접속 정보 조회'})
   @ApiResponse ({
     status: 200,
+    description: '',
     type: UserConnetInfo
   })
   @Get('connect/:id')
@@ -52,7 +54,7 @@ export class UsersController {
     return this.usersService.userConnect(param);
   }
 
-  @ApiOperation({ summary: '유저 접송 정보 조회'})
+  @ApiOperation({ summary: '모든 접속중인 정보 조회'})
   @ApiResponse ({
     status: 200,
     type: UserConnetInfo
