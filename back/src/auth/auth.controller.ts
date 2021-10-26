@@ -72,10 +72,10 @@ export class AuthController {
     if (isCodeValid === false) {
       throw new UnauthorizedException('Wrong authentication code');
     }
-    const user:UserDto = body;
-    const token = await this.authService.login(user);
+    delete body.TwoFactorAuthcode;
+    const token = await this.authService.login(body);
     res.cookie('ts_token', token.access_token, { httpOnly: false });
-    res.send(body);
+    res.send(null);
   }
 
   @UseGuards(JwtAuthGuard)
