@@ -5,6 +5,7 @@ import { User } from 'common/decorators/user.decorator';
 import { TwoFactorDto } from 'common/dto/two-factor.dto';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
+import { userInfo } from 'os';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
