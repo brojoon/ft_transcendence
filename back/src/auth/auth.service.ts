@@ -8,13 +8,15 @@ import { jwtConstants } from './constants';
 import { UserDto } from 'common/dto/user.dto';
 import { authenticator } from 'otplib';
 import { toFileStream } from 'qrcode';
+import { Connect } from 'src/entities/Connect';
+
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(Users) private usersRepository: Repository<Users>,
+    @InjectRepository(Connect) private connectRepository: Repository<Connect>,
     private readonly jwtService: JwtService,
-    private connection: Connection,
   ) {}
 
   async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, userId:string) {
@@ -28,27 +30,19 @@ export class AuthService {
   async generateTwoFactorAuthenticationSecret(userId:string, email:string) {
     // secret / otpauthUrl 생성
     const secret = authenticator.generateSecret();
-    const otpauthUrl = authenticator.keyuri(email, jwtConstants.APP_NAME, secret);
-  
-    const queryRunner = this.connection.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      await queryRunner.manager
-        .getRepository(Users)
-        .update(
-          {userId},
-          {twoFactorAuth:secret}
-        );
-      await queryRunner.commitTransaction();
-      return { secret, otpauthUrl };
-    } catch (error){
-      console.error(error);
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
+    const otpauthUrl = await authenticator.keyuri(email, jwtConstants.APP_NAME, secret);
+    try{
+      await this.usersRepository.createQueryBuilder()
+      .update()
+      .set({
+        twoFactorAuth: `${secret}`,
+      })
+      .where('userId = :userId', { userId })
+      .execute();
+    }catch{
+      throw new ForbiddenException('유저 정보 업데이트 실패');
     }
+    return { secret, otpauthUrl };
   }
 
   async pipeQrCodeStream(stream: Response, otpauthUrl: string) {
@@ -57,7 +51,7 @@ export class AuthService {
 
   async checktwofactorEnable(userId: string) {
     const result = await this.usersRepository.findOne({
-      where: { userId},
+      where: { userId },
       select: ['twofactorEnable'],
     });
     return result.twofactorEnable;
@@ -80,36 +74,23 @@ export class AuthService {
   }
 
   async Join(oauthId: number, username:string, userId: string, email:string, profile:string) {
-    const queryRunner = this.connection.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    const user = await queryRunner.manager
-      .getRepository(Users)
-      .findOne({ where: { oauthId } });
-    if (user) {
+    const user =  await this.usersRepository.findOne({ where: { oauthId } });
+    if (user)
       throw new ForbiddenException('이미 존재하는 사용자입니다');
-    }
     const hashedPassword = await bcrypt.hash(process.env.SECRET, 12);
-    try {
-      await queryRunner.manager
-        .getRepository(Users)
-        .save({
-          oauthId,
-          userId,
-          username, 
-          email,
-          profile,
-          password: hashedPassword
-      });
-      await queryRunner.commitTransaction();
-      return true;
-    } catch (error){
-      console.error(error);
-      await queryRunner.rollbackTransaction();
-      throw error;
-    } finally {
-      await queryRunner.release();
-    }
+    const newUser = new Users();
+    newUser.oauthId = oauthId;
+    newUser.userId = userId;
+    newUser.username = username;
+    newUser.email = email;
+    newUser.profile = profile;
+    newUser.password = hashedPassword;
+    await this.usersRepository.save(newUser);
+    const connect = new Connect();
+    connect.userId = userId;
+    connect.state = true;
+    await this.connectRepository.save(connect);
+    return true;
   }
 
   async login(user: UserDto) {

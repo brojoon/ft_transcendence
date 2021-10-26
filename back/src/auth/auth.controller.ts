@@ -3,6 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'common/decorators/user.decorator';
 import { TwoFactorDto } from 'common/dto/two-factor.dto';
+import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
@@ -15,7 +16,6 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @Controller('api/auth')
 export class AuthController {
   constructor(
-    @InjectRepository(Users) private usersRepository: Repository<Users>,
     private readonly authService: AuthService,
   ) {}
 
@@ -23,7 +23,7 @@ export class AuthController {
   @ApiOperation({ summary: '42oauth 로그인'})
   @ApiResponse ({
     status: 302,
-    description: '"1차 인증 성공시": [return value: null] /// "2차 진입시": [return value: user(유저 정보)]',
+    description: '로그인',
   })
   @HttpCode(302)
   @Get('42')
@@ -31,16 +31,23 @@ export class AuthController {
   }
 
   @UseGuards(Intra42AuthGuard)
+  @ApiOperation({ summary: '로그인 정보 콜백'})
+  @ApiResponse ({
+    status: 200,
+    description: '"1차 인증 성공시": [return value: null] /// "2차 진입시": [return value: user(유저 정보)]',
+    type: UserDto
+  })
   @HttpCode(200)
   @Get('42/callback')
   async login(@Req() req, @Res() res) {
     const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
     if (result){
-      res.send(req.user);
+      res.cookie('userCookie', req.user);
+      res.location('http://localhost:3090/ft_transcendence/two-factor')
     }else{
       const token = await this.authService.login(req.user);
       res.cookie('ts_token', token.access_token, { httpOnly: false });
-      res.send(null);
+      res.loction('http://localhost:3090/ft_transcendence/home')
     }
   }
 
@@ -78,7 +85,7 @@ export class AuthController {
   })
   @HttpCode(200)
   @Get('logout')
-  logout(@Req() req, @Res() res) {
+  logout(@Res() res) {
     res.clearCookie('ts_token');
     res.send(null);
   }

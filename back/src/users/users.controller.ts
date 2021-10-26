@@ -5,6 +5,8 @@ import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { UserInfoDto } from './dto/userInfo.dto';
+import { UserConnetInfo } from './dto/userConnetInfo.dto';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('USERS') // API문서 카테고리
@@ -30,25 +32,68 @@ export class UsersController {
     return user || false;
   }
 
-  @ApiOperation({ summary: 'two-factor on'})
+  @ApiOperation({ summary: '유저 정보 조회'})
   @ApiResponse ({
     status: 200,
-    description: '"이차 인증 켜짐": [return value : true]',
+    type: UserInfoDto
+  })
+  @Get('info/:id')
+  userInfo(@Param('id') param: string) {
+    return this.usersService.userInfo(param);
+  }
+
+  @ApiOperation({ summary: '유저 접송 정보 조회'})
+  @ApiResponse ({
+    status: 200,
+    type: UserConnetInfo
+  })
+  @Get('connect/:id')
+  userConnect(@Param('id') param: string) {
+    return this.usersService.userConnect(param);
+  }
+
+  @ApiOperation({ summary: '유저 접송 정보 조회'})
+  @ApiResponse ({
+    status: 200,
+    type: UserConnetInfo
+  })
+  @Get('connect-all')
+  allUserConnectInfo() {
+    return this.usersService.allUserConnectInfo();
+  }
+  
+  @ApiOperation({ summary: '이차 인증 켜짐'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공시 true',
+    type: Boolean
   })
   @HttpCode(200)
   @Get('turn-on')
-  async TwoFactorSwitchOn(@User() user) {
-    return this.usersService.TwoFactorSwitch(user.userId, true);
+  async twoFactorSwitchOn(@User() user) {
+    return this.usersService.twoFactorSwitch(user.userId, true);
   }
 
-  @ApiOperation({ summary: 'two-factor off'})
+  @ApiOperation({ summary: '이차 인증 꺼짐'})
   @ApiResponse ({
     status: 200,
-    description: '"이차 인증 꺼짐": [return value : true]',
+    description: '성공시 true',
+    type: Boolean
   })
   @HttpCode(200)
   @Get('turn-off')
-  async TwoFactorSwitchOff(@User() user) {
-    return this.usersService.TwoFactorSwitch(user.userId, false);
+  async twoFactorSwitchOff(@User() user) {
+    return this.usersService.twoFactorSwitch(user.userId, false);
+  }
+
+  @ApiOperation({ summary: '이차 인증 상태'})
+  @ApiResponse ({
+    status: 200,
+    description: 'true / false',
+    type: Boolean
+  })
+  @Get('two-factor-status')
+  async twoFactorStatus(@User() user){
+    return  this.usersService.twoFactorStatus(user.userId);
   }
 }

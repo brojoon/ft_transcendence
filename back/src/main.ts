@@ -33,7 +33,7 @@ async function bootstrap() {
 
 	app.use(passport.initialize());
 	//app.use(passport.session()); //토큰 기반 로그인 경우 필요 없다
-
+	
 	const port = process.env.PORT || 3095;
 	await app.listen(port);
 

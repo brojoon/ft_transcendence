@@ -13,6 +13,7 @@ import { Users } from 'src/entities/Users';
 
 dotenv.config();
 const config: TypeOrmModuleOptions = {
+  
   // type: 'postgres',
   // host: process.env.DB_HOST,
   // port: +process.env.DB_PORT,
@@ -40,7 +41,8 @@ const config: TypeOrmModuleOptions = {
   migrations: [__dirname + '/src/migrations/*.ts'],
   cli: { migrationsDir: 'src/migrations' },
   autoLoadEntities: true,
-  synchronize: false,// 처음 true로 표  만들고 한번 만들면 false로 바꾼다.
+  // start:dev일땐 false / start:setdb일댄 true
+  synchronize: process.env.NODE_ENV !== 'production',// 처음 true로 표  만들고 한번 만들면 false로 바꾼다.
   logging: true,
   keepConnectionAlive: true,
 };
