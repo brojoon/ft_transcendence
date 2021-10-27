@@ -26,7 +26,7 @@ export class UsersController {
   })
   @Get()
   getUser(@User() user) {
-    return user || false;
+    return this.usersService.userInfo(user.userId);
   }
 
   @ApiOperation({ summary: '가입한 모든 유저 정보 조회'})

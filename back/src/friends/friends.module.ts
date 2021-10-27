@@ -11,10 +11,6 @@ import { Block } from 'src/entities/Block';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Users, Friend, Block]),
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '86400s' },
-    }), 
   ],
   controllers: [FriendsController],
   providers: [FriendsService],

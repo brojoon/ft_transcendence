@@ -10,10 +10,7 @@ import { Connect } from 'src/entities/Connect';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Users, Connect]),
-    JwtModule.register({
-      secret: jwtConstants.secret,
-      signOptions: { expiresIn: '86400s' },
-    }),
+
   ],
   controllers: [UsersController],
   providers: [UsersService],
