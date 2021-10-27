@@ -28,7 +28,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get('intput/:oauthId/:username/:userId/:email')
-  inputUser(
+  async inputUser(
     @Param('oauthId') oauthId: string,
     @Param('username') username: string,
     @Param('userId') userId: string,
@@ -36,14 +36,8 @@ export class UsersController {
   ) {
     return this.usersService.inputUser(oauthId, username, userId, email);
   }
-  @ApiOperation({ summary: 'test용 user 정보 넣어보기'})
-  @ApiResponse ({
-    status: 200,
-    description: '성공',
-    type: UserDto,
-  })
 
-  @ApiOperation({ summary: 'test용 user 정보 넣어보기'})
+  @ApiOperation({ summary: 'test용 user 삭제'})
   @ApiResponse ({
     status: 200,
     description: '성공',
@@ -51,7 +45,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get('deleteuser/:userId/')
-  deleteUser(@Param('userId') userId:string) {
+  async deleteUser(@Param('userId') userId:string) {
     return this.usersService.deleteUser(userId);
   }
 
@@ -63,7 +57,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get()
-  getUser(@User() user) {
+  async getUser(@User() user) {
     return this.usersService.userInfo(user.userId);
   }
 
@@ -75,7 +69,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get('alluser')
-  allUser() {
+  async allUser() {
     return this.usersService.allUser();
   }
 
@@ -87,7 +81,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get('info/:id')
-  userInfo(@Param('id') param: string) {
+  async userInfo(@Param('id') param: string) {
     return this.usersService.userInfo(param);
   }
 
@@ -99,7 +93,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get('connect/:id')
-  userConnect(@Param('id') param: string) {
+  async userConnect(@Param('id') param: string) {
     return this.usersService.userConnect(param);
   }
 
@@ -110,7 +104,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get('connect-all')
-  allUserConnectInfo() {
+  async allUserConnectInfo() {
     return this.usersService.allUserConnectInfo();
   }
   
@@ -121,7 +115,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get('connect-member')
-  allUserConnectMember() {
+  async allUserConnectMember() {
     return this.usersService.allUserConnectMember();
   }
 

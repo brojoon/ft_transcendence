@@ -15,18 +15,32 @@ import { FriendsModule } from './friends/friends.module';
 import { FriendsService } from './friends/friends.service';
 import { Friend } from './entities/Friend';
 import { Block } from './entities/Block';
-
+import { DmsModule } from './dms/dms.module';
+import { Dm } from './entities/Dm';
+import { Dmcontent } from './entities/Dmcontent';
+import { DmsService } from './dms/dms.service';
+import { EventsModule } from './events/events.module';
+import { EventsGateway } from './events/events.gateway';
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true
 		  }),
+		TypeOrmModule.forRoot(ormconfig),
+		TypeOrmModule.forFeature([
+			Users,
+			Connect,
+			Friend,
+			Block,
+			Dm,
+			Dmcontent
+		]),
 		AuthModule,
 		UsersModule,
 		FriendsModule,
-		TypeOrmModule.forRoot(ormconfig),
-		TypeOrmModule.forFeature([Users, Connect, Friend, Block]),
+		DmsModule,
+		EventsModule,
 	],
 	controllers: [AppController],
 	providers: [
@@ -34,6 +48,7 @@ import { Block } from './entities/Block';
 		JwtStrategy,
 		UsersService,
 		FriendsService,
+		DmsService,
 	],
 })
 

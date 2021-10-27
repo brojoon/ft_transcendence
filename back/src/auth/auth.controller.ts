@@ -61,13 +61,11 @@ export class AuthController {
   @HttpCode(201)
   async authenticate(@Body() body: TwoFactorDto,  @Res() res) {
     const result: boolean = await this.authService.checktwofactorEnable(body.userId);
-    if (!result){
+    if (!result)
       throw new UnauthorizedException('checktwofactorEnable valus is fales');
-    }
     const isCodeValid =  await this.authService.isTwoFactorAuthenticationCodeValid(body.TwoFactorAuthcode, body.userId); 
-    if (isCodeValid === false) {
+    if (isCodeValid === false)
       throw new UnauthorizedException('Wrong authentication code');
-    }
     delete body.TwoFactorAuthcode;
     const token = await this.authService.login(body);
     res.clearCookie('userCookie');

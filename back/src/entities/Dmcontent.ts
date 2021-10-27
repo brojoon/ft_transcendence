@@ -1,3 +1,5 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsString } from "class-validator";
 import {
   Column,
   CreateDateColumn,
@@ -29,9 +31,14 @@ export class Dmcontent {
 
   @Column("varchar", { primary: true, name: "userId2", length: 30 })
   userId2: string;
-
-  @Column("text", { name: "message" })
-  message: string;
+  
+  @IsString()
+  @ApiProperty({
+    description: '메세지',
+    example: '안녕하세요?',
+  })
+  @Column("text", { name: "message", nullable: true })
+  message: string | null;
 
   @Column("int", { name: "match", default: () => "'0'" })
   match: number;
