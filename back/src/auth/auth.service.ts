@@ -90,7 +90,7 @@ export class AuthService {
     connect.userId = userId;
     connect.state = true;
     await this.connectRepository.save(connect);
-    return true;
+    return (true);
   }
 
   async login(user: UserDto) {

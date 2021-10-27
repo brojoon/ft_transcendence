@@ -28,7 +28,7 @@ export class UsersService {
     connect.userId = userId;
     connect.state = true;
     await this.connectRepository.save(connect);
-    return true;
+    return (true);
   }
 
   //test용
