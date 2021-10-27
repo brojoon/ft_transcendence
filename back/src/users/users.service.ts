@@ -11,6 +11,37 @@ export class UsersService {
       @InjectRepository(Connect) private connectRepository: Repository<Connect>,
   ) { }
 
+  //test용
+  async inputUser(oauthId, username, userId, email) {
+    const user =  await this.usersRepository.findOne({ where: { oauthId } });
+    if (user)
+      throw new ForbiddenException('이미 존재하는 사용자입니다');
+    const newUser = new Users();
+    newUser.oauthId = oauthId;
+    newUser.userId = userId;
+    newUser.username = username;
+    newUser.email = `${email}@naver.com`;
+    newUser.profile = "aaaa";
+    newUser.password = "aaaa";
+    await this.usersRepository.save(newUser);
+    const connect = new Connect();
+    connect.userId = userId;
+    connect.state = true;
+    await this.connectRepository.save(connect);
+    return true;
+  }
+
+  //test용
+  async deleteUser(userId) {
+    const user =  await this.usersRepository.findOne({ where: { userId } });
+    if (user){
+      await this.usersRepository.createQueryBuilder()
+      .delete()
+      .where('userId = :userId', {userId} )
+      .execute();
+    }
+  }
+
   //내 정보 조회
   async userInfo(userId: string) {
     const result = await this.usersRepository.findOne({

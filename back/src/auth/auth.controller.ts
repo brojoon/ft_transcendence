@@ -1,13 +1,9 @@
 import { Body, Controller, Get, HttpCode, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { InjectRepository } from '@nestjs/typeorm';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { TwoFactorDto } from 'common/dto/two-factor.dto';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
-import { userInfo } from 'os';
-import { Users } from 'src/entities/Users';
-import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { Intra42AuthGuard } from './guards/intra42-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -74,11 +70,12 @@ export class AuthController {
     }
     delete body.TwoFactorAuthcode;
     const token = await this.authService.login(body);
+    res.clearCookie('userCookie');
     res.cookie('ts_token', token.access_token, { httpOnly: false });
     res.send(null);
   }
 
-  @ApiOperation({ summary: '42oauth 로그아웃' })
+  @ApiOperation({ summary: '로그아웃' })
   @ApiResponse ({
     status: 200,
     description: '"로그아웃 성공시": [return value: null]',
@@ -87,9 +84,11 @@ export class AuthController {
   @Get('logout')
   logout(@Res() res) {
     res.clearCookie('ts_token');
+    res.clearCookie('userCookie');
     res.send(null);
   }
 
+  @ApiBearerAuth('ts_token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'qr코드 불러오기' })
   @ApiResponse ({

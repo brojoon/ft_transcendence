@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseInterceptors, UseGuards, HttpCode } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
@@ -10,6 +10,7 @@ import { UserConnetInfo } from './dto/userConnetInfo.dto';
 import { ProfileUrl } from './dto/profileUrl.dto';
 
 @UseGuards(JwtAuthGuard)
+@ApiBearerAuth('ts_token')
 @ApiTags('USERS') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
 @Controller('api/users') // uri시작부분
@@ -18,12 +19,49 @@ export class UsersController {
       private readonly usersService: UsersService
     ) {}
 
+
+  @ApiOperation({ summary: 'test용 user 정보 넣어보기'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공',
+    type: UserDto,
+  })
+  @HttpCode(200)
+  @Get('intput/:oauthId/:username/:userId/:email')
+  inputUser(
+    @Param('oauthId') oauthId: string,
+    @Param('username') username: string,
+    @Param('userId') userId: string,
+    @Param('email') email: string,
+  ) {
+    return this.usersService.inputUser(oauthId, username, userId, email);
+  }
+  @ApiOperation({ summary: 'test용 user 정보 넣어보기'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공',
+    type: UserDto,
+  })
+
+  @ApiOperation({ summary: 'test용 user 정보 넣어보기'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공',
+    type: String,
+  })
+  @HttpCode(200)
+  @Get('deleteuser/:userId/')
+  deleteUser(@Param('userId') userId:string) {
+    return this.usersService.deleteUser(userId);
+  }
+
   @ApiOperation({ summary: '내정보 조회'})
   @ApiResponse ({
     status: 200,
     description: '성공',
     type: UserDto,
   })
+  @HttpCode(200)
   @Get()
   getUser(@User() user) {
     return this.usersService.userInfo(user.userId);
@@ -35,6 +73,7 @@ export class UsersController {
     description: '성공',
     type: UserDto,
   })
+  @HttpCode(200)
   @Get('alluser')
   allUser() {
     return this.usersService.allUser();
@@ -46,6 +85,7 @@ export class UsersController {
     description: '',
     type: UserInfoDto
   })
+  @HttpCode(200)
   @Get('info/:id')
   userInfo(@Param('id') param: string) {
     return this.usersService.userInfo(param);
@@ -57,6 +97,7 @@ export class UsersController {
     description: '',
     type: UserConnetInfo
   })
+  @HttpCode(200)
   @Get('connect/:id')
   userConnect(@Param('id') param: string) {
     return this.usersService.userConnect(param);
@@ -67,6 +108,7 @@ export class UsersController {
     status: 200,
     type: UserConnetInfo
   })
+  @HttpCode(200)
   @Get('connect-all')
   allUserConnectInfo() {
     return this.usersService.allUserConnectInfo();
@@ -77,6 +119,7 @@ export class UsersController {
     status: 200,
     type: Number
   })
+  @HttpCode(200)
   @Get('connect-member')
   allUserConnectMember() {
     return this.usersService.allUserConnectMember();
@@ -100,6 +143,7 @@ export class UsersController {
     description: 'url',
     type: String
   })
+  @HttpCode(200)
   @Get('profile/:id')
   async checkProfileUrl(@Param('id') id: string){
     return  this.usersService.checkProfileUrl(id);
@@ -135,6 +179,7 @@ export class UsersController {
     description: 'true / false',
     type: Boolean
   })
+  @HttpCode(200)
   @Get('two-factor-status')
   async twoFactorStatus(@User() user){
     return  this.usersService.twoFactorStatus(user.userId);

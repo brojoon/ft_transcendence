@@ -27,12 +27,22 @@ async function bootstrap() {
 		.setDescription('ft_transcendence 개발을 위한 API 입니다')
 		.setVersion('1.0')
 		.addTag('transcendence')
+        .addBearerAuth(
+			{
+			  type: 'http',
+			  scheme: 'bearer',
+			  bearerFormat: 'JWT',
+			  name: 'JWT',
+			  description: 'Enter JWT token',
+			  in: 'header',
+			},
+			'ts_token',
+		  )
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
 
 	app.use(passport.initialize());
-	//app.use(passport.session()); //토큰 기반 로그인 경우 필요 없다
 	
 	const port = process.env.PORT || 3095;
 	await app.listen(port);
