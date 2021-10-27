@@ -41,7 +41,7 @@ export class FriendsService {
     const newBlock = new Block();
     newBlock.userId1 = userId1;
     newBlock.userId2 = userId2;
-    await this.friendRepository.save(newBlock);
+    await this.blockRepository.save(newBlock);
     return (true);
   }
 
