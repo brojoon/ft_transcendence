@@ -78,7 +78,6 @@ export class AuthController {
     res.send(null);
   }
 
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '42oauth 로그아웃' })
   @ApiResponse ({
     status: 200,

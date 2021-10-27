@@ -7,6 +7,7 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserInfoDto } from './dto/userInfo.dto';
 import { UserConnetInfo } from './dto/userConnetInfo.dto';
+import { ProfileUrl } from './dto/profileUrl.dto';
 
 @UseGuards(JwtAuthGuard)
 @ApiTags('USERS') // API문서 카테고리
@@ -23,13 +24,20 @@ export class UsersController {
     description: '성공',
     type: UserDto,
   })
-  @ApiResponse ({
-      status: 500,
-      description: '서버에러',
-  })
   @Get()
   getUser(@User() user) {
-    return user || false;
+    return this.usersService.userInfo(user.userId);
+  }
+
+  @ApiOperation({ summary: '가입한 모든 유저 정보 조회'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공',
+    type: UserDto,
+  })
+  @Get('alluser')
+  allUser() {
+    return this.usersService.allUser();
   }
 
   @ApiOperation({ summary: '유저 정보 조회'})
@@ -64,6 +72,39 @@ export class UsersController {
     return this.usersService.allUserConnectInfo();
   }
   
+  @ApiOperation({ summary: '접속자 수'})
+  @ApiResponse ({
+    status: 200,
+    type: Number
+  })
+  @Get('connect-member')
+  allUserConnectMember() {
+    return this.usersService.allUserConnectMember();
+  }
+
+  @ApiOperation({ summary: '프로필 수정'})
+  @ApiResponse ({
+    status: 201,
+    description: '성공시 true',
+    type: Boolean
+  })
+  @HttpCode(201)
+  @Post('update-profile')
+  async updateProfile(@Body() body: ProfileUrl) {
+    return this.usersService.updateProfile(body.userId, body.profile);
+  }
+
+  @ApiOperation({ summary: '유저 프로필 URL 반환'})
+  @ApiResponse ({
+    status: 200,
+    description: 'url',
+    type: String
+  })
+  @Get('profile/:id')
+  async checkProfileUrl(@Param('id') id: string){
+    return  this.usersService.checkProfileUrl(id);
+  }
+
   @ApiOperation({ summary: '이차 인증 켜짐'})
   @ApiResponse ({
     status: 200,

@@ -1,9 +1,7 @@
 import { BadRequestException, ForbiddenException, HttpException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/Users';
-import { Repository, Connection } from 'typeorm';
-import * as bcrypt from 'bcrypt'
-import { connect } from 'http2';
+import { Repository } from 'typeorm';
 import { Connect } from 'src/entities/Connect';
 
 @Injectable()
@@ -13,11 +11,22 @@ export class UsersService {
       @InjectRepository(Connect) private connectRepository: Repository<Connect>,
   ) { }
 
-  //유저 기본 정보 조회
+  //내 정보 조회
   async userInfo(userId: string) {
     const result = await this.usersRepository.findOne({
-      where: { userId },
       select: ['userId', 'username', 'email', 'profile'],
+      where: { userId },  
+    });
+    if (!result)
+      throw new ForbiddenException('유저 정보 없음');
+    return(result);
+  }
+
+  //가입한 모든 유저 기본 정보 조회
+  async allUser() {
+    const result = await this.usersRepository.find({
+      select: ['userId', 'username', 'email', 'profile'],
+      where: {},  
     });
     if (!result)
       throw new ForbiddenException('유저 정보 없음');
@@ -27,33 +36,68 @@ export class UsersService {
   // 유저 접속 정보 조회
   async userConnect(userId: string) {
     const result = await this.connectRepository.findOne({
-      where: { userId },
       select: ['userId', 'state', 'updatedAt'],
+      where: { userId },   
     });
     if (!result)
       throw new ForbiddenException('유저 정보 없음');
     return(result);
   }
 
-  // 모든 유저 정보 조회
+  // 모든 유저 접속 정보 조회
   async allUserConnectInfo() {
     const result = await this.connectRepository.find({
-      where: { },
       select: ['userId', 'state', 'updatedAt'],
+      where: { },   
     });
     if (!result)
       throw new ForbiddenException('유저 정보 없음');
     return(result);
+  }
+
+  // 모든 유저 접속 정보 조회
+  async allUserConnectMember() {
+    const result = await this.connectRepository.count({
+      where: { state: true },
+    });
+    //if (!result)
+    //  throw new ForbiddenException('유저 정보 없음');
+    return(result);
+  }
+  
+  // profil 수정
+  async updateProfile(userId: string, profile: string) {
+    try{
+      await this.usersRepository.createQueryBuilder()
+          .update()
+          .set({ profile })
+          .where('userId = :userId', {userId})
+          .execute()
+    }catch{
+      throw new ForbiddenException('프로필 업데이트 실패');
+    }
+    return (true);
+  }
+
+  //profil url 반환
+  async checkProfileUrl(userId: string) {
+    const result = await this.usersRepository.findOne({
+      select: ['profile'],
+      where: { userId },  
+    });
+    if (!result)
+      throw new ForbiddenException('유저 정보 없음');
+    return(result.profile);
   }
 
   // two-factor 상태확인
   async twoFactorStatus(userId: string) {
     const result = await this.usersRepository.findOne({
-      where: { userId },
       select: ['twofactorEnable'],
+      where: { userId },  
     });
-    if (result)
-      throw new ForbiddenException('이미 존재하는 사용자입니다');
+    if (!result)
+      throw new ForbiddenException('유저 정보 없음');
     return(result.twofactorEnable);
   }
 
@@ -63,12 +107,13 @@ export class UsersService {
       await this.usersRepository.createQueryBuilder()
           .update()
           .set({
-            twofactorEnable: () => `${twofactorEnable}`,
+            twofactorEnable: twofactorEnable,
           })
           .where('userId = :userId', {userId})
           .execute()
     }catch{
       throw new ForbiddenException('유정 정보 업데이트 실패');
     }
+    return (true);
   }
 }

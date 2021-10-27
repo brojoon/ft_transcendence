@@ -11,6 +11,10 @@ import ormconfig from 'ormconfig';
 import { AuthModule } from './auth/auth.module';
 import { JwtStrategy } from './auth/strategies/jwt.strategy';
 import { Connect } from './entities/Connect';
+import { FriendsModule } from './friends/friends.module';
+import { FriendsService } from './friends/friends.service';
+import { Friend } from './entities/Friend';
+import { Block } from './entities/Block';
 
 
 @Module({
@@ -20,14 +24,16 @@ import { Connect } from './entities/Connect';
 		  }),
 		AuthModule,
 		UsersModule,
+		FriendsModule,
 		TypeOrmModule.forRoot(ormconfig),
-		TypeOrmModule.forFeature([Users, Connect])
+		TypeOrmModule.forFeature([Users, Connect, Friend, Block]),
 	],
 	controllers: [AppController],
 	providers: [
 		AppService,
 		JwtStrategy,
 		UsersService,
+		FriendsService,
 	],
 })
 
