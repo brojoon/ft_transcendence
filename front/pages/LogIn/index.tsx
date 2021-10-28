@@ -4,7 +4,6 @@ import { Container, LoginButton } from './style';
 import axios from 'axios';
 
 const LogIn = () => {
-  const [isLogin, setIsLogin] = useState(false);
   const onClickGoogleLogin = useCallback(() => {
     axios.get('/api/', {
       withCredentials: true,
@@ -12,14 +11,9 @@ const LogIn = () => {
   }, []);
 
   const onClick42Login = useCallback(() => {
-    //window.location.href = '/api/auth/42';
-    setIsLogin(true);
+    window.location.href = '/api/auth/42';
+    console.log('/api/auth/42');
   }, []);
-
-  if (isLogin) {
-    console.log('로그인됨');
-    return <Redirect to="/ft_transcendence/home" />;
-  }
   return (
     <Container>
       <h1>ft_transcendence</h1>

@@ -9,10 +9,47 @@ import HomeIcon from '@mui/icons-material/Home';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
 import gravatar from 'gravatar';
-import Fab from '@mui/material/Fab';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import useSWR from 'swr';
+import { IUser } from '@typings/db';
+import fetcher from '@utils/fetcher';
 
 const LeftSideBar = () => {
+  const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
+    dedupingInterval: 2000,
+  });
+  const onClickLogOut = useCallback(() => {
+    let token = document.cookie.slice(document.cookie.indexOf('ts_token') + 9);
+    token = token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' '));
+    axios
+      .get('/api/auth/logout', {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then(() => {
+        mutate();
+      })
+      .catch((error) => {
+        if (error.response.data.code === 401) {
+          window.location.href = '/ft_transcendence/login';
+        } else {
+          toast.error(error.message, {
+            autoClose: 3000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+          });
+        }
+        console.dir(error);
+        console.log(error.code);
+      });
+  }, [document.cookie]);
   return (
     <div style={{ width: '57px' }}>
       <Toolbar>
@@ -23,7 +60,7 @@ const LeftSideBar = () => {
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               variant="dot"
             >
-              <Avatar src={gravatar.url('hyungjki', { s: '48px', d: 'retro' })} alt="Avatar" />
+              <Avatar src={data?.profile} alt="Avatar" />
             </StyledBadge>
           </Link>
           <Link to={`/ft_transcendence/home`}>
@@ -56,8 +93,8 @@ const LeftSideBar = () => {
               <VideogameAssetIcon />
             </MyFab>
           </Link>
-          <Link to={`/login`}>
-            <MyFab aria-label="add" className="sideBarIconLast">
+          <Link to={`/ft_transcendence/login`}>
+            <MyFab aria-label="add" className="sideBarIconLast" onClick={onClickLogOut}>
               <LogoutIcon />
             </MyFab>
           </Link>

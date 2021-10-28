@@ -6,15 +6,6 @@ import Grid from '@mui/material/Grid';
 import UserCard from '@components/UserCard';
 import UserMatches from '@components/UserMatches';
 
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  color: 'white',
-  height: '100px',
-  backgroundColor: '#1e1e1e',
-  fontSize: '14px',
-}));
-
 const Profile = () => {
   return (
     <Box sx={{ flexGrow: 1 }} style={{ backgroundColor: '#121212', padding: '20px 50px' }}>

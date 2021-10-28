@@ -6,12 +6,19 @@ import Game from '@pages/Game';
 import Home from '@pages/Home';
 import Profile from '@pages/Profile';
 import Users from '@pages/Users';
+import { IUser } from '@typings/db';
+import fetcher from '@utils/fetcher';
 import React from 'react';
-import { Scrollbars } from 'react-custom-scrollbars';
 import { Route, Switch } from 'react-router-dom';
+import useSWR from 'swr';
 import { Container } from './style';
 
 const ft_transcendence = () => {
+  const { data: userData } = useSWR<IUser | null>('/api/users', fetcher, {
+    dedupingInterval: 2000,
+  });
+  console.log(userData);
+  if (!userData) return null;
   return (
     <Container>
       <LeftSideBar />
