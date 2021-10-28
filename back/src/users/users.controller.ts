@@ -8,6 +8,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserInfoDto } from './dto/userInfo.dto';
 import { UserConnetInfo } from './dto/userConnetInfo.dto';
 import { ProfileUrl } from './dto/profileUrl.dto';
+import { UsernameDto } from './dto/username.dto';
 
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('ts_token')
@@ -129,6 +130,18 @@ export class UsersController {
   @Post('update-profile')
   async updateProfile(@Body() body: ProfileUrl) {
     return this.usersService.updateProfile(body.userId, body.profile);
+  }
+
+  @ApiOperation({ summary: 'username 수정'})
+  @ApiResponse ({
+    status: 201,
+    description: '성공시 true',
+    type: Boolean
+  })
+  @HttpCode(201)
+  @Post('update-username')
+  async updat(@Body() body: UsernameDto) {
+    return this.usersService.updateUsername(body.userId, body.username);
   }
 
   @ApiOperation({ summary: '유저 프로필 URL 반환'})

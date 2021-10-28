@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { TwoFactorDto } from 'common/dto/two-factor.dto';
@@ -46,6 +46,23 @@ export class AuthController {
       res.cookie('ts_token', token.access_token, { httpOnly: false });
       res.status(302).redirect('http://localhost:3090/ft_transcendence/home')
     }
+  }
+
+  @ApiOperation({ summary: '1차 인증 없이 아이디 생성(test용)'})
+  @HttpCode(200)
+  @Get('tem/:oauthid/:id')
+  async temMakeloginUser(@Param('oauthid') oauthid: number, @Param('id') id :string, @Res() res) {
+    const user = {
+      oauthId: +oauthid,
+      username: id,
+      userId: id,
+      email: `${id}@naver.com`,
+      profile: 'pricture'
+    }
+    this.authService.Join(user.oauthId, user.username, user.userId, user.email, user.profile);
+    const token = await this.authService.login(user);
+    res.cookie('ts_token', token.access_token, { httpOnly: false });
+    res.status(302).redirect('http://localhost:3090/ft_transcendence/home')
   }
 
   @Post('qrlogin')

@@ -110,6 +110,23 @@ export class UsersService {
     return (true);
   }
 
+  // profil 수정
+  async updateUsername(userId: string, username: string) {
+    const result = await this.connectRepository.findOne({ where: { username } });
+    if (result)
+      return (false);
+    try{
+      await this.usersRepository.createQueryBuilder()
+          .update()
+          .set({ username })
+          .where('userId = :userId', {userId})
+          .execute()
+    }catch{
+      throw new ForbiddenException('프로필 업데이트 실패');
+    }
+    return (true);
+  }
+
   //profil url 반환
   async checkProfileUrl(userId: string) {
     const result = await this.usersRepository.findOne({

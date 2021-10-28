@@ -20,7 +20,12 @@ import { Dm } from './entities/Dm';
 import { Dmcontent } from './entities/Dmcontent';
 import { DmsService } from './dms/dms.service';
 import { EventsModule } from './events/events.module';
-import { EventsGateway } from './events/events.gateway';
+import { ChannelsModule } from './channels/channels.module';
+import { ChannelsService } from './channels/channels.service';
+import { Chatchannel } from './entities/Chatchannel';
+import { Chatcontent } from './entities/Chatcontent';
+import { Chatmember } from './entities/Chatmember';
+
 
 @Module({
 	imports: [
@@ -34,13 +39,17 @@ import { EventsGateway } from './events/events.gateway';
 			Friend,
 			Block,
 			Dm,
-			Dmcontent
+			Dmcontent,
+			Chatchannel,
+			Chatcontent,
+			Chatmember
 		]),
 		AuthModule,
 		UsersModule,
 		FriendsModule,
 		DmsModule,
 		EventsModule,
+		ChannelsModule,
 	],
 	controllers: [AppController],
 	providers: [
@@ -49,6 +58,7 @@ import { EventsGateway } from './events/events.gateway';
 		UsersService,
 		FriendsService,
 		DmsService,
+		ChannelsService
 	],
 })
 

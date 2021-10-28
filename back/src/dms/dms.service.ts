@@ -75,7 +75,7 @@ export class DmsService {
     send.historyId = historyId;
     const dm = await this.DmcontentRepository.save(send);
     const data = { dmId, userId1, userId2, message: dm.message, match, historyId };
-    this.eventsGateway.server.to(`dm-${dm}`).emit('dm', data);
+    this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
   }
 
   async getAllMessage(userId1:string, userId2:string) {

@@ -24,7 +24,8 @@ export class Intra42Strategy extends PassportStrategy(Strategy, '42') {
       username:displayName,
       userId:username,
       email:emails[0].value,
-      profile:photos[0].value};
+      profile:photos[0].value
+    };
     if (!info) 
       throw new UnauthorizedException();
     const user: UserDto = await this.authService.validateUser(String(info.oauthId), jwtConstants.PASSWORD);
