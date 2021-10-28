@@ -28,7 +28,7 @@ export class Users {
     example: '쌍문동 성기훈',
     required: true 
   })
-  @Column("varchar", { name: "username", length: 30 })
+  @Column("varchar", { name: "username", length: 30,  unique: true })
   username: string;
 
   @IsInt()

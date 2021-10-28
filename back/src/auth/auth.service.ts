@@ -81,7 +81,7 @@ export class AuthService {
     const newUser = new Users();
     newUser.oauthId = oauthId;
     newUser.userId = userId;
-    newUser.username = username;
+    newUser.username = userId;
     newUser.email = email;
     newUser.profile = profile;
     newUser.password = hashedPassword;
