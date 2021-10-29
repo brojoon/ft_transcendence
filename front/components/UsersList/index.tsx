@@ -14,33 +14,17 @@ const style = {
 };
 
 export default function ListDividers() {
-  const users = useSWR<AllUser[]>('/api/users/alluser', fetcher);
+  const { data: users } = useSWR<AllUser[], any[]>('/api/users/alluser', fetcher);
   return (
     <List sx={style} component="nav" aria-label="mailbox folders">
-      {/* {users?.map((user) => {
+      {users?.map((user) => {
         return (
           <ListItem button>
             <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
-            <ListItemText primary="v.username" style={{ marginLeft: '12px' }} />
+            <ListItemText primary={user.userId} style={{ marginLeft: '12px' }} />
           </ListItem>
         );
-      })} */}
-      <ListItem button>
-        <Avatar
-          src={gravatar.url('hyungjki', { s: '48px', d: 'retro' })}
-          alt="Avatar"
-          style={{ border: '2px solid green' }}
-        />
-        <ListItemText primary="hyungjki" style={{ marginLeft: '12px' }} />
-      </ListItem>
-      <ListItem button>
-        <Avatar
-          src={gravatar.url('huchoi', { s: '48px', d: 'retro' })}
-          alt="Avatar"
-          style={{ border: '2px solid red' }}
-        />
-        <ListItemText primary="huchoi" style={{ marginLeft: '12px' }} />
-      </ListItem>
+      })}
       <ListItem button>
         <ListItemText primary="Spam" />
       </ListItem>

@@ -24,7 +24,7 @@ export default function BasicTextFields() {
       if (e.key === 'Enter') {
         e.preventDefault();
         onSubmitForm(e);
-        e.target.value('');
+        e.target.value = '';
       }
     },
     [onSubmitForm],

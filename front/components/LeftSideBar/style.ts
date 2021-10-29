@@ -6,15 +6,15 @@ import Fab from '@mui/material/Fab';
 export const Toolbar = styled.div`
 	position: fixed;
 	left : 0;
-	height : 100vh;
-	width: 10vh;
+	height : 100%;
+	width: 55px;
 	background-color: #363636;
 	font-size: 50px;
 	display: flex;
 `;
 
 export const NavIcons = styled.div`
-	width: 10vh;
+	width: 50px;
 	display: flex;
 	align-items: center;
 	flex-direction: column;

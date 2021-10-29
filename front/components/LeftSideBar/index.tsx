@@ -51,7 +51,7 @@ const LeftSideBar = () => {
       });
   }, [document.cookie]);
   return (
-    <div style={{ width: '57px' }}>
+    <div style={{ width: '55px' }}>
       <Toolbar>
         <NavIcons>
           <Link to={`/ft_transcendence/profile`}>
@@ -68,7 +68,7 @@ const LeftSideBar = () => {
               <HomeIcon />
             </MyFab>
           </Link>
-          <Link to={`/ft_transcendence/friend`}>
+          <Link to={`/ft_transcendence/social`}>
             <MyFab aria-label="add" className="sideBarIcon">
               <ConnectWithoutContactIcon />
             </MyFab>
