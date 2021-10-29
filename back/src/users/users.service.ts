@@ -19,7 +19,7 @@ export class UsersService {
     const newUser = new Users();
     newUser.oauthId = oauthId;
     newUser.userId = userId;
-    newUser.username = username;
+    newUser.username = userId;
     newUser.email = `${email}@naver.com`;
     newUser.profile = "aaaa";
     newUser.password = "aaaa";
