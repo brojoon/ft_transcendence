@@ -1,14 +1,3 @@
-// import React from "react";
-// import ReactDOM from "react-dom";
-// import App from "./App";
-
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <App />
-//   </React.StrictMode>,
-//   document.getElementById("root")
-// );
-
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
@@ -22,7 +11,6 @@ const Rectangle = PixiComponent("Rectangle", {
   create: () => new PIXI.Graphics(),
   applyProps: (g, _, props) => {
     const { fill, x, y, width, height } = props;
-
     g.clear();
     g.beginFill(fill);
     g.drawRect(x, y, width, height);
@@ -34,7 +22,6 @@ const Circle = PixiComponent("Circle", {
   create: () => new PIXI.Graphics(),
   applyProps: (g, _, props) => {
     const { fill, x, y, radius } = props;
-
     g.clear();
     g.beginFill(fill);
     g.drawCircle(x, y, radius);
@@ -53,7 +40,6 @@ const App = () => (
       options={{ antialias: true, backgroundColor: 0xf38bc4 }}
     >
       <Rectangle x={5} y={5} width={990} height={490} fill={0xeec5da} />
-
       <Rectangle x={5} y={200} width={20} height={100} fill={0xac1a6a} />
       <Rectangle x={975} y={200} width={20} height={100} fill={0xac1a6a} />
       <Circle x={500} y={250} radius={20} fill={0x940665} />
@@ -69,7 +55,6 @@ const App = () => (
           console.log("click");
           scale.x *= 1.25;
           scale.y *= 1.25;
-
           render();
         }}
       />
@@ -80,5 +65,4 @@ const App = () => (
 function render() {
   ReactDOM.render(<App />, document.body);
 }
-
 render();
