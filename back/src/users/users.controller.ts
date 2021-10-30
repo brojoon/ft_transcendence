@@ -6,8 +6,8 @@ import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserInfoDto } from './dto/userInfo.dto';
-import { UserConnetInfo } from './dto/userConnetInfo.dto';
-import { ProfileUrl } from './dto/profileUrl.dto';
+import { UserConnetInfoDto } from './dto/userConnetInfo.dto';
+import { ProfileUrlDto } from './dto/profileUrl.dto';
 import { UsernameDto } from './dto/username.dto';
 
 @UseGuards(JwtAuthGuard)
@@ -90,7 +90,7 @@ export class UsersController {
   @ApiResponse ({
     status: 200,
     description: '',
-    type: UserConnetInfo
+    type: UserConnetInfoDto
   })
   @HttpCode(200)
   @Get('connect/:id')
@@ -101,7 +101,7 @@ export class UsersController {
   @ApiOperation({ summary: '모든 접속중인 정보 조회'})
   @ApiResponse ({
     status: 200,
-    type: UserConnetInfo
+    type: UserConnetInfoDto
   })
   @HttpCode(200)
   @Get('connect-all')
@@ -128,7 +128,7 @@ export class UsersController {
   })
   @HttpCode(201)
   @Post('update-profile')
-  async updateProfile(@Body() body: ProfileUrl) {
+  async updateProfile(@Body() body: ProfileUrlDto) {
     return this.usersService.updateProfile(body.userId, body.profile);
   }
 

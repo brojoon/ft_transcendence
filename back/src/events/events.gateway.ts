@@ -15,7 +15,7 @@ import { Connect } from 'src/entities/Connect';
 import { Repository } from 'typeorm';
 import { onlineMap } from './onlineMap';
 
-@WebSocketGateway(8080, {namespace: '42seoul'})
+@WebSocketGateway({ cors: true })
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     @InjectRepository(Connect) private connectRepository: Repository<Connect>,
@@ -27,10 +27,9 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleLogin(
     @MessageBody() data: { userId: string; Dms: number[], channels: number[] },
     @ConnectedSocket() socket: Socket ){
-    const newNamespace = socket.nsp;
-    console.log('login', newNamespace);
+    console.log('login', socket.id);
     onlineMap[socket.id] = data.userId;
-    newNamespace.emit('onlineList', Object.values(onlineMap));
+    socket.emit('onlineList', Object.values(onlineMap));
     data.Dms.forEach((dm) => {
       socket.join(`dm-${dm}`);
     });
@@ -45,29 +44,29 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   async handleConnection(@ConnectedSocket() socket: Socket) {
     console.log(`connected : ${socket.id}`);
-    try{
-      await this.connectRepository.createQueryBuilder()
-          .update()
-          .set({ state: true })
-          .where('userId = :userId', {userId: onlineMap[socket.id]})
-          .execute()
-    }catch{
-      throw new ForbiddenException('접속상태 업뎃 실패');
-    }
+    // try{
+    //   await this.connectRepository.createQueryBuilder()
+    //       .update()
+    //       .set({ state: true })
+    //       .where('userId = :userId', {userId: onlineMap[socket.id]})
+    //       .execute()
+    // }catch{
+    //   throw new ForbiddenException('접속상태 업뎃 실패');
+    // }
   }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
     console.log(`disconnected : ${socket.id}`);
     delete onlineMap[socket.id];
     socket.emit('onlineList', Object.values(onlineMap));
-    try{
-      await this.connectRepository.createQueryBuilder()
-          .update()
-          .set({ state: false })
-          .where('userId = :userId', {userId: onlineMap[socket.id]})
-          .execute()
-    }catch{
-      throw new ForbiddenException('접속상태 업뎃 실패');
-    }
+    // try{
+    //   await this.connectRepository.createQueryBuilder()
+    //       .update()
+    //       .set({ state: false })
+    //       .where('userId = :userId', {userId: onlineMap[socket.id]})
+    //       .execute()
+    // }catch{
+    //   throw new ForbiddenException('접속상태 업뎃 실패');
+    // }
   }
 }
