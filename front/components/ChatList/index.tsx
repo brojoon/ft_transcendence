@@ -33,6 +33,7 @@ const ChatList = () => {
             }}
           >
             CHALLENGE
+            <span className="mdif786 mdi-sword-cross"></span>
           </Button>
         </Toolbar>
       </AppBar>
