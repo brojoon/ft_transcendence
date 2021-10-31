@@ -6,14 +6,16 @@ import { Repository } from 'typeorm';
 
 const data ={
   x: 500,
-  y: 250
+  y: 250,
+  d_x: 2,
+  d_y: 2,
 }
 var interval;
 
 @Injectable()
 export class GameService {
   constructor(
-    @InjectRepository(History) private connectRepository: Repository<History>,
+    //@InjectRepository(History) private historyRepository: Repository<History>,
     public eventsGateway:EventsGateway
   ) {}
 
@@ -24,15 +26,21 @@ export class GameService {
   }
 
   moveCircle() {
-    data.x += 2;
-    data.y += 2;
+    data.x += data.d_x;
+    data.y += data.d_y;
     console.log("가는중");
     this.eventsGateway.server.emit("welcome", data);  
-    if (data.x > 1000){
+    if (data.y > 485){
+      data.d_y *= -1;
+    }
+    if (data.x >= 1010)
+    {
       clearInterval(interval);
-      console.log("중지");
       data.x = 500;
       data.y = 250;
+      data.d_x = 2;
+      data.d_y = 2;
+      console.log("중지");
     }
   }
 }
