@@ -12,7 +12,6 @@ const Rectangle = PixiComponent("Rectangle", {
     create: () => new PIXI.Graphics(),
     applyProps: (g, _, props) => {
       const { fill, x, y, width, height } = props;
-  
       g.clear();
       g.beginFill(fill);
       g.drawRect(x, y, width, height);
@@ -24,7 +23,6 @@ const Circle = PixiComponent("Circle", {
   create: () => new PIXI.Graphics(),
   applyProps: (g, _, props) => {
     const { fill, x, y, radius } = props;
-
     g.clear();
     g.beginFill(fill);
     g.drawCircle(x, y, radius);

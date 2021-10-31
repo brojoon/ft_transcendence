@@ -18,7 +18,7 @@ import { UsernameDto } from './dto/username.dto';
 export class UsersController {
   constructor(
       private readonly usersService: UsersService
-    ) {}
+  ) {}
 
 
   @ApiOperation({ summary: 'test용 user 정보 넣어보기'})

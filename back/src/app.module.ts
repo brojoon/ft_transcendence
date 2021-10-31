@@ -25,6 +25,7 @@ import { ChannelsService } from './channels/channels.service';
 import { Chatchannel } from './entities/Chatchannel';
 import { Chatcontent } from './entities/Chatcontent';
 import { Chatmember } from './entities/Chatmember';
+import { GameModule } from './game/game.module';
 
 
 @Module({
@@ -50,6 +51,7 @@ import { Chatmember } from './entities/Chatmember';
 		DmsModule,
 		EventsModule,
 		ChannelsModule,
+		GameModule,
 	],
 	controllers: [AppController],
 	providers: [
