@@ -26,6 +26,8 @@ import { Chatchannel } from './entities/Chatchannel';
 import { Chatcontent } from './entities/Chatcontent';
 import { Chatmember } from './entities/Chatmember';
 import { GameModule } from './game/game.module';
+import { History } from './entities/History';
+import { GameService } from './game/game.service';
 
 
 @Module({
@@ -43,7 +45,8 @@ import { GameModule } from './game/game.module';
 			Dmcontent,
 			Chatchannel,
 			Chatcontent,
-			Chatmember
+			Chatmember,
+			History
 		]),
 		AuthModule,
 		UsersModule,
@@ -60,7 +63,8 @@ import { GameModule } from './game/game.module';
 		UsersService,
 		FriendsService,
 		DmsService,
-		ChannelsService
+		ChannelsService,
+		GameService
 	],
 })
 
