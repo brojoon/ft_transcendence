@@ -43,10 +43,9 @@ function App() {
 
     return (
       <div>
-      <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0xf38bc4 }}>
-        <Rectangle x={5} y={5} width={990} height={490} fill={0xeec5da} />
-        <Rectangle x={5} y={200} width={20} height={100} fill={0xac1a6a} />
-        <Rectangle x={975} y={200} width={20} height={100} fill={0xac1a6a} />
+      <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0xeec5da }}>
+        <Rectangle x={0} y={200} width={20} height={100} fill={0xac1a6a} />
+        <Rectangle x={980} y={200} width={20} height={100} fill={0xac1a6a} />
         <Circle x={x_site} y={y_site} radius={10} fill={0x940665} />
       </Stage>
       </div>

@@ -10,3 +10,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+canvas {
+  border: 5px solid #f38bc4;
+}
