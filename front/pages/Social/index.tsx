@@ -8,23 +8,27 @@ import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ListDividers from '@components/UsersList';
+import LeftDrawer from '@components/LeftDrawer';
+import { Container } from './style';
 
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
+    <div>
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`full-width-tabpanel-${index}`}
+        aria-labelledby={`full-width-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box style={{ height: '90vh' }}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
     </div>
   );
 }
@@ -55,38 +59,41 @@ export default function Social() {
   };
 
   return (
-    <Box sx={{ bgcolor: '#1e1e1e', width: '100%' }}>
-      <AppBar position="static" sx={{ bgcolor: '#1e1e1e' }}>
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="secondary"
-          textColor="inherit"
-          variant="fullWidth"
-          aria-label="full width tabs example"
+    <Container>
+      <LeftDrawer />
+      <Box sx={{ bgcolor: '#1e1e1e', width: '100%', height: '100%' }}>
+        <AppBar position="static" sx={{ bgcolor: '#1e1e1e', height: '10vh' }}>
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="secondary"
+            textColor="inherit"
+            variant="fullWidth"
+            aria-label="full width tabs example"
+          >
+            <Tab label="🌐 ONLINE" {...a11yProps(0)} />
+            <Tab label="👥 FRIENDS" {...a11yProps(1)} />
+            <Tab label="🚨 BLOCKED" {...a11yProps(2)} />
+          </Tabs>
+        </AppBar>
+        <SwipeableViews
+          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+          index={value}
+          onChangeIndex={handleChangeIndex}
+          style={{ color: 'white' }}
         >
-          <Tab label="🌐 ONLINE" {...a11yProps(0)} />
-          <Tab label="👥 FRIENDS" {...a11yProps(1)} />
-          <Tab label="🚨 BLOCKED" {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <SwipeableViews
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-        style={{ color: 'white' }}
-      >
-        <TabPanel value={value} index={0}>
-          {/* <b style={{ fontSize: '10px', padding: '18px' }}>ONLINE — 0</b> */}
-          <ListDividers />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <ListDividers />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <ListDividers />
-        </TabPanel>
-      </SwipeableViews>
-    </Box>
+          <TabPanel value={value} index={0}>
+            {/* <b style={{ fontSize: '10px', padding: '18px' }}>ONLINE — 0</b> */}
+            <ListDividers />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <ListDividers />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <ListDividers />
+          </TabPanel>
+        </SwipeableViews>
+      </Box>
+    </Container>
   );
 }

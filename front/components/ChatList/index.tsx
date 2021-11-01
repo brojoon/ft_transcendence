@@ -1,43 +1,34 @@
-import React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import React, { RefObject, VFC } from 'react';
+import Chat from '@components/Chat';
+import Scrollbars from 'react-custom-scrollbars';
 
-const ChatList = () => {
+interface Props {
+  chatData: string[];
+  scrollbarRef: RefObject<Scrollbars>;
+}
+
+const ChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: '#272727' }}>
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          ></IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Avatar
-          </Typography>
-          <Button
-            sx={{
-              backgroundColor: '#355DFF',
-              color: 'white',
-              width: '113',
-              height: '36px',
-              padding: '0 16px',
-              fontWeight: 600,
-            }}
-          >
-            CHALLENGE
-            <span className="mdif786 mdi-sword-cross"></span>
-          </Button>
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <div
+      style={{
+        background: '#1e1e1e',
+        width: '100%',
+        height: '100%',
+        padding: '8px 0 8px 15px',
+      }}
+    >
+      <Scrollbars autoHide ref={scrollbarRef}>
+        {chatData?.map((chat) => (
+          <div style={{ color: 'white', display: ' flex' }}>
+            <div style={{ marginRight: '10px' }}>profile</div>
+            <div>
+              <div>id</div>
+              <p style={{ marginTop: '0' }}>{chat}</p>
+            </div>
+          </div>
+        ))}
+      </Scrollbars>
+    </div>
   );
 };
 
