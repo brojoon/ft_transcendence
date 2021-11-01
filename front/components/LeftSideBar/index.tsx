@@ -51,7 +51,7 @@ const LeftSideBar = () => {
       });
   }, [document.cookie]);
   return (
-    <div style={{ width: '55px' }}>
+    <div style={{ width: '55px', flexShrink: 0 }}>
       <Toolbar>
         <NavIcons>
           <Link to={`/ft_transcendence/profile`}>

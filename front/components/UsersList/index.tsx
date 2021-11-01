@@ -6,7 +6,7 @@ import Avatar from '@mui/material/Avatar';
 import gravatar from 'gravatar';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
-import { AllUser } from '@typings/db';
+import { IAllUser } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 
 const style = {
@@ -15,7 +15,7 @@ const style = {
 };
 
 export default function ListDividers() {
-  const { data: users } = useSWR<AllUser[], any[]>('/api/users/alluser', fetcher);
+  const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
   return (
     <Scrollbars>
       <List sx={style} component="nav" aria-label="mailbox folders" style={{ height: '100%' }}>

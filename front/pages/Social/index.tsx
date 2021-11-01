@@ -59,9 +59,9 @@ export default function Social() {
   };
 
   return (
-    <Container>
+    <Container style={{ borderLeft: '1px solid #4f4f4f', margin: '0', padding: '0'}}>
       <LeftDrawer />
-      <Box sx={{ bgcolor: '#1e1e1e', width: '100%', height: '100%' }}>
+      <Box sx={{ bgcolor: '#1e1e1e', width: '100%', height: '100%'}}>
         <AppBar position="static" sx={{ bgcolor: '#1e1e1e', height: '10vh' }}>
           <Tabs
             value={value}
@@ -80,7 +80,7 @@ export default function Social() {
           axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
           index={value}
           onChangeIndex={handleChangeIndex}
-          style={{ color: 'white' }}
+          style={{ color: 'white'}}
         >
           <TabPanel value={value} index={0}>
             {/* <b style={{ fontSize: '10px', padding: '18px' }}>ONLINE — 0</b> */}
