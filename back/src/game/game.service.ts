@@ -30,11 +30,10 @@ export class GameService {
     data.y += data.d_y;
     console.log("가는중");
     this.eventsGateway.server.emit("welcome", data);  
-    if (data.y > 485){
+    if (data.y + 5 > 500) {
       data.d_y *= -1;
     }
-    if (data.x >= 1010)
-    {
+    if (data.x - 10 >= 1000) {
       clearInterval(interval);
       data.x = 500;
       data.y = 250;
