@@ -74,7 +74,7 @@ export class DmsService {
     send.match = match;
     send.historyId = historyId;
     const dm = await this.DmcontentRepository.save(send);
-    const data = { dmId, userId1, userId2, message: dm.message, match, historyId };
+    const data = { dmId, userId1, userId2, message: dm.message, match, historyId, createdAt: dm.createdAt };
     this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
   }
 
