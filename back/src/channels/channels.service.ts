@@ -75,7 +75,7 @@ export class ChannelsService {
     await this.chatmemberRepository.delete({channelId, userId});
   }
 
-  async inviteChnnel(channelId:number, administerId:string, visitorId:string) {
+  async inviteChannel(channelId:number, administerId:string, visitorId:string) {
       const administer = await this.chatmemberRepository.findOne({where : {channelId, userId : administerId}});
       if (administer.auth < 1)
         throw new UnauthorizedException("administer가 아닌데 초대를 시도함.");
@@ -136,10 +136,10 @@ export class ChannelsService {
     await this.chatmemberRepository.update({channelId, userId}, {auth:1})
   }
 
-  async banUser(channelId:number, userId:string) {
-    if (await this.checkAdmin(channelId, userId) == false)
+  async banUser(channelId:number, adminId:string, banId:string) {
+    if (await this.checkAdmin(channelId, adminId) == false)
       throw new UnauthorizedException(".");
-    await this.chatmemberRepository.delete({channelId, userId});
+    await this.chatmemberRepository.delete({channelId, userId:banId});
     /*setTimeout(() => {
       await this.chatmemberRepository.update({channelId, userId}, {mute:true})
     }, timeout);*/
@@ -165,17 +165,17 @@ export class ChannelsService {
     await this.chatchannelRepository.update({id:channelId}, {password : newPassword});
   }
 
-  async muteSwitch(channelId, userId, time:number) {
-    if (await this.checkAdmin(channelId, userId) == false)
+  async muteSwitch(channelId, adminId, muteId, time:number) {
+    if (await this.checkAdmin(channelId, adminId) == false)
       throw new UnauthorizedException(".");
-    await this.chatmemberRepository.update({channelId, userId}, {mute:!`{mute}`});
+    await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:!`{mute}`});
     /*setTimeout(() => {
       await this.chatmemberRepository.update({channelId, userId}, {mute:true})
     }, timeout);*/
   }
 
-  async deleteChannel(channelId:number, userId:string) {
-    if (await this.checkOwner(channelId, userId) == false)
+  async deleteChannel(channelId:number, ownerId:string) {
+    if (await this.checkOwner(channelId, ownerId) == false)
       throw new UnauthorizedException(".");
     await this.chatchannelRepository.delete({id:channelId});
   }
