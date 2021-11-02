@@ -14,7 +14,7 @@ export class Chatmember {
   @Column( { name: "mute", width: 1, default: () => "'0'" })
   mute: boolean;
 
-  @Column("int", { name: "auth", default: () => "'0'" })
+  @Column("int", { name: "auth", default: () => "'0'" })//일반:0, 관리자:1, 소유자:2
   auth: number;
 
   @CreateDateColumn()
