@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from 'common/decorators/user.decorator';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
 import { Channel, channel } from 'diagnostics_channel';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ChannelsService } from './channels.service';
+import { ChannelDto } from './dto/channel.dto';
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('ts_token')
 @ApiTags('CHANNEL') // API문서 카테고리
@@ -17,33 +19,38 @@ export class ChannelsController {
     return this.channelsService.allChannelList();
   }
 
-  @Get('/channelList/:userId')
-  myChannelList(@Param('userId') userId:string){
-    return this.channelsService.myChannelList(userId);
+  @Get('/channelList')
+  myChannelList(@User() user){
+    return this.channelsService.myChannelList(user.userId);
   }
 
-  @Post('/create/:userId/:channelName/:type')
-  makeChannel(@Param("channelName") channelName:string, @Param("userId") userId:string,@Param('type') type:number, @Body('password') password:string){
-      this.channelsService.makeChannel(userId, channelName, type, password);
+  @Post('/create/:channelName/:type')
+  @ApiResponse ({//스웨거 body칸 있게 하려면
+    status: 200,
+    description: '성공',
+    type: ChannelDto,
+  })
+  makeChannel(@Param("channelName") channelName:string,@User() user,@Param('type') type:number, @Body() dto:ChannelDto){
+      this.channelsService.makeChannel(user.userId, channelName, type, dto.password);
   }
-  @Post('/join/:channelId/:userId')
-  joinChannel(@Param("channelId") channelId:number, @Param("userId") userId:string, @Body('password') password:string){
-    this.channelsService.joinChannel(channelId, userId, password);
-  }
-
-  @Get('/getout/:channelId/:userId')
-  getOutChnnel(@Param("channelId") channelId:number, @Param("userId") userId:string){
-    this.channelsService.getOutChnnel(channelId, userId)
-  }
-
-  @Get('/invite/:channelId/:adminId/:visitor')
-  inviteChannel(@Param("channelId") channelId:number, @Param("adminId") adminId:string, @Param("visitor") visitor:string){
-    this.channelsService.inviteChannel(channelId, adminId, visitor);
+  @Post('/join/:channelId')
+  joinChannel(@Param("channelId") channelId:number, @User() user, @Body('password') password:string){
+    this.channelsService.joinChannel(channelId, user.userId, password);
   }
 
-  @Post('/send/:channelId/:userId')
-  sendMessage(@Param("channelId") channelId:number, @Param("userId") userId:string, @Body('msg') msg:string){
-    this.channelsService.sendMessage(channelId, userId, msg);
+  @Get('/getout/:channelId')
+  getOutChnnel(@Param("channelId") channelId:number, @User() user){
+    this.channelsService.getOutChnnel(channelId, user.userId)
+  }
+
+  @Get('/invite/:channelId/:visitor')
+  inviteChannel(@Param("channelId") channelId:number, @User() admin, @Param("visitor") visitor:string){
+    this.channelsService.inviteChannel(channelId, admin.userId, visitor);
+  }
+
+  @Post('/send/:channelId')
+  sendMessage(@Param("channelId") channelId:number, @User() user, @Body('msg') msg:string){
+    this.channelsService.sendMessage(channelId, user.userId, msg);
   }
 
   @Get('/messages/:channelId')
@@ -56,54 +63,54 @@ export class ChannelsController {
     return this.channelsService.userList(channelId);
   }
 
-  @Get("/checkMute/:channelId/:userId")
-  checkMuteState(@Param("channelId") channelId:number, @Param("userId") userId:string){
-    return this.channelsService.checkMuteState(channelId, userId);
+  @Get("/checkMute/:channelId")
+  checkMuteState(@Param("channelId") channelId:number, @User() user){
+    return this.channelsService.checkMuteState(channelId, user.userId);
   }
 
-  @Get("/checkBan/:channelId/:userId")
-  checkBanState(@Param("channelId") channelId:number, @Param("userId") userId:string){
-    return this.channelsService.checkBanState(channelId, userId);
+  @Get("/checkBan/:channelId")
+  checkBanState(@Param("channelId") channelId:number, @User() user){
+    return this.channelsService.checkBanState(channelId, user.userId);
   }
 
-  @Get("/checkOwner/:channelId/:userId")
-  checkOwnerState(@Param("channelId") channelId:number, @Param("userId") userId:string){
-    return this.channelsService.checkOwner(channelId, userId);
+  @Get("/checkOwner/:channelId")
+  checkOwnerState(@Param("channelId") channelId:number, @User() user){
+    return this.channelsService.checkOwner(channelId, user.userId);
   }
 
-  @Get("/checkAdmin/:channelId/:userId")
-  checkAdminState(@Param("channelId") channelId:number, @Param("userId") userId:string){
-    return this.channelsService.checkAdmin(channelId, userId);
+  @Get("/checkAdmin/:channelId")
+  checkAdminState(@Param("channelId") channelId:number, @User() user){
+    return this.channelsService.checkAdmin(channelId, user.userId);
   }
 
-  @Get("/giveAdmin/:channelId/:userId")
-  giveAdmin(@Param("channelId") channelId:number, @Param("userId") userId:string){
-    this.channelsService.giveAdmin(channelId, userId);
+  @Get("/giveAdmin/:channelId/")
+  giveAdmin(@Param("channelId") channelId:number, @User() user){
+    this.channelsService.giveAdmin(channelId, user.userId);
   }
 
-  @Get("/banUser/:channelId/:adminId/:banId/")
-  banUser(@Param("channelId") channelId:number, @Param("adminId") adminId:string, @Param("banId") banId:string){
-    this.channelsService.banUser(channelId, adminId, banId);
+  @Get("/banUser/:channelId/:banId/")
+  banUser(@Param("channelId") channelId:number, @User() admin, @Param("banId") banId:string){
+    this.channelsService.banUser(channelId, admin.userId, banId);
   }
 
-  @Get("/changeChannelType/:channelId/:userId/:type")
-  updateType(@Param("channelId") channelId:number, @Param("userId") userId:string, @Param('type') type:number){
-    this.channelsService.updateType(channelId, userId, type);
+  @Get("/changeChannelType/:channelId/:type")
+  updateType(@Param("channelId") channelId:number, @User() user, @Param('type') type:number){
+    this.channelsService.updateType(channelId, user.userId, type);
   }
 
-  @Get("/changeChannelType/:channelId/:userId/:channelName")
-  updateChannelName(@Param("channelId") channelId:number, @Param("userId") userId:string, @Param('channelName') channelName:string){
-    this.channelsService.updateChannelName(channelId, userId, channelName);
+  @Get("/changeChannelType/:channelId/:channelName")
+  updateChannelName(@Param("channelId") channelId:number, @User() user, @Param('channelName') channelName:string){
+    this.channelsService.updateChannelName(channelId, user.userId, channelName);
   }
 
-  @Get("/changeChannelType/:channelId/:userId/:pasword")
-  updateChannelPassword(@Param("channelId") channelId:number, @Param("userId") userId:string, @Param('password') password:string){
-    this.channelsService.updateChannelPassword(channelId, userId, password);
+  @Get("/changeChannelType/:channelId/:pasword")
+  updateChannelPassword(@Param("channelId") channelId:number, @User() user, @Param('password') password:string){
+    this.channelsService.updateChannelPassword(channelId, user.userId, password);
   }
 
-  @Get("/muteUser/:channelId/:adminId/:muteId/:time")
-  muteSwitch(@Param("channelId") channelId:number, @Param("userId") userId:string, @Param('muteId') muteId:string, @Param("time") time:number){
-    this.channelsService.muteSwitch(channelId, userId, muteId, time);
+  @Get("/muteUser/:channelId/:muteId/:time")
+  muteSwitch(@Param("channelId") channelId:number, @User() admin, @Param('muteId') muteId:string, @Param("time") time:number){
+    this.channelsService.muteSwitch(channelId, admin.userId, muteId, time);
   }
 
   @Get("/deleteChannel/:channelId/:ownerId")

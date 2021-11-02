@@ -36,7 +36,7 @@ export class ChannelsService {
     return ret;
   }
 
-  async makeChannel(userId:string, channelName:string, channelType:number, password:string = null) {
+  async makeChannel(userId:string, channelName:string, channelType:number, password:string) {
     //const obj:Chatchannel = {};
     const newChannel = new Chatchannel();
     newChannel.name = channelName;
