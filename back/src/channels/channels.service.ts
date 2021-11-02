@@ -6,7 +6,7 @@ import { Chatmember } from 'src/entities/Chatmember';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
-import { NotFoundError } from 'rxjs';
+import { NotFoundError, timeout } from 'rxjs';
 @Injectable()
 export class ChannelsService {
   constructor(
@@ -24,7 +24,8 @@ export class ChannelsService {
 
     return ret;
   }
-
+  
+  
   async myChannelList(userid:string) {
     const ret = await this.chatchannelRepository.createQueryBuilder('c')
     .leftJoin('c.Chatmembers', 'm')
@@ -101,7 +102,7 @@ export class ChannelsService {
     const userList = await this.chatchannelRepository.createQueryBuilder('c')
     .leftJoin('c.Chatmembers', 'm')
     .where('c.id = :channelId', {channelId : channelId})
-    .select(["userId"])
+    //.select(["userId"])
     .getMany();
 
     return userList;
@@ -112,39 +113,70 @@ export class ChannelsService {
     return chatmember.mute;
   }
 
+  async checkBanState(channelId:number, userId:string) :Promise<boolean>{
+    const chatmember = await this.chatmemberRepository.findOne({where:{channelId, userId}});
+    if (chatmember === null)
+      return true;
+    return false;
+  }
+
   async checkAdmin(channelId:number, userId:string) {
     const chatmember = await this.chatmemberRepository.findOne({where:{channelId, userId}});
-    return chatmember.auth;//number로 반환?
+    return (chatmember.auth > 0);//bool로 반환? 
+  }
+
+  async checkOwner(channelId:number, userId:string) {
+    const chatmember = await this.chatmemberRepository.findOne({where:{channelId, userId}});
     return (chatmember.auth > 1);//bool로 반환? 
   }
 
   async giveAdmin(channelId:number, userId:string) {
+    if (await this.checkAdmin(channelId, userId) == false)
+      throw new UnauthorizedException(".");
     await this.chatmemberRepository.update({channelId, userId}, {auth:1})
   }
 
-  async banUser(channelId:number, userId:string) {//??
-    await this.chatmemberRepository.update({channelId, userId}, {mute:true})
+  async banUser(channelId:number, userId:string) {
+    if (await this.checkAdmin(channelId, userId) == false)
+      throw new UnauthorizedException(".");
+    await this.chatmemberRepository.delete({channelId, userId});
+    /*setTimeout(() => {
+      await this.chatmemberRepository.update({channelId, userId}, {mute:true})
+    }, timeout);*/
   }
 
   // 0 = publice,  1 = protected, 2 = private
-  async updateType(channelId:number, type:number) {
+  async updateType(channelId:number, userId:string, type:number) {
+    if (await this.checkOwner(channelId, userId) == false)
+      throw new UnauthorizedException(".");
     await this.chatchannelRepository.update({id:channelId}, {type})
   }
 
-  async updateChannelName(channelId:number, name:string) {
+  async updateChannelName(channelId:number, userId:string, name:string) {
+    if (await this.checkOwner(channelId, userId) == false)
+      throw new UnauthorizedException(".");
     await this.chatchannelRepository.update({id:channelId}, {name})
   }
 
-  async updateChannelPassword(channelId:number, password:string) {
+  async updateChannelPassword(channelId:number, userId:string, password:string) {
+    if (await this.checkOwner(channelId, userId) == false)
+      throw new UnauthorizedException(".");
     const newPassword = bcrypt.hash(password, 12);
     await this.chatchannelRepository.update({id:channelId}, {password : newPassword});
   }
 
-  async muteSwitch(channelId, userId) {
-    await this.chatmemberRepository.update({channelId, userId}, {mute:!`{mute}`})
+  async muteSwitch(channelId, userId, time:number) {
+    if (await this.checkAdmin(channelId, userId) == false)
+      throw new UnauthorizedException(".");
+    await this.chatmemberRepository.update({channelId, userId}, {mute:!`{mute}`});
+    /*setTimeout(() => {
+      await this.chatmemberRepository.update({channelId, userId}, {mute:true})
+    }, timeout);*/
   }
 
-  async deleteChannel(channelId:number) {
+  async deleteChannel(channelId:number, userId:string) {
+    if (await this.checkOwner(channelId, userId) == false)
+      throw new UnauthorizedException(".");
     await this.chatchannelRepository.delete({id:channelId});
   }
 
