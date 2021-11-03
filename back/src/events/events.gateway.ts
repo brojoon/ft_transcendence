@@ -42,6 +42,13 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     console.log('init');
   }
 
+  @SubscribeMessage('game')
+  async gamejoin(
+    @MessageBody() data: {game: number},
+    @ConnectedSocket() socket: Socket ){
+    socket.join(`game-${data.game}`);
+  }
+
   async handleConnection(@ConnectedSocket() socket: Socket) {
     console.log(`connected : ${socket.id}`);
     // try{
@@ -58,6 +65,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
     console.log(`disconnected : ${socket.id}`);
     delete onlineMap[socket.id];
+    socket.leave(`game-1`);
     socket.emit('onlineList', Object.values(onlineMap));
     // try{
     //   await this.connectRepository.createQueryBuilder()

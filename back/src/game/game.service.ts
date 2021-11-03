@@ -1,16 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ConnectedSocket, MessageBody, SubscribeMessage } from '@nestjs/websockets';
+import { Socket } from 'socket.io';
 import { History } from 'src/entities/History';
 import { EventsGateway } from 'src/events/events.gateway';
 import { Repository } from 'typeorm';
 
-const data ={
-  x: 500,
-  y: 250,
-  d_x: 2,
-  d_y: 2,
+const onlineMap = {};
+
+const info = {
+  interval: null,
+  player_one_point: 0,
+  player_two_point: 0,
 }
-var interval;
+const data ={
+  ball_x: 500,
+  ball_y: 250,
+  ball_move_x: 2,
+  ball_move_y: 2,
+  play_one_y: 200,
+  play_two_y: 200
+}
+
+
 
 @Injectable()
 export class GameService {
@@ -20,26 +32,39 @@ export class GameService {
   ) {}
 
   getHello(){
+    onlineMap[1] = info;
+    onlineMap[1] = data;
+    return onlineMap;
     //this.eventsGateway.server.emit("welcome", data); 
-    interval = setInterval(this.moveCircle.bind(this), 10);
+    info.interval = setInterval(this.moveCircle.bind(this), 10);
     //console.log(interval);
   }
 
   moveCircle() {
-    data.x += data.d_x;
-    data.y += data.d_y;
+    data.ball_x += data.ball_move_x;
+    data.ball_y += data.ball_move_y;
     console.log("가는중");
-    this.eventsGateway.server.emit("welcome", data);  
-    if (data.y + 5 > 500) {
-      data.d_y *= -1;
+    this.eventsGateway.server.to("game-1").emit("welcome", data);  
+    if (data.ball_y + 5 > 500) {
+      data.ball_move_y *= -1;
     }
-    if (data.x - 10 >= 1000) {
-      clearInterval(interval);
-      data.x = 500;
-      data.y = 250;
-      data.d_x = 2;
-      data.d_y = 2;
+    if (data.ball_x - 10 >= 1000) {
+      clearInterval(info.interval);
+      data.ball_x = 500;
+      data.ball_y = 250;
+      data.ball_move_x = 2;
+      data.ball_move_y = 2;
       console.log("중지");
     }
+  }
+
+  @SubscribeMessage('player_one')
+  async playerOne(@MessageBody() getdata: { player_one: number }){
+    data.play_one_y += getdata.player_one;
+  }
+
+  @SubscribeMessage('player_two')
+  async playerTwo(@MessageBody() getdata: { player_two: number }){
+    data.play_one_y += getdata.player_two;
   }
 }
