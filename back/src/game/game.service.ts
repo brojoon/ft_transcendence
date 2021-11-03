@@ -1,23 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ConnectedSocket, MessageBody, SubscribeMessage } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
 import { History } from 'src/entities/History';
 import { EventsGateway } from 'src/events/events.gateway';
 import { Repository } from 'typeorm';
+import initData from './gameInit';
 import { gameMap } from './gameMap';
 
-const data ={
-  interval: null,
-  player_one_point: 0,
-  player_two_point: 0,
-  ball_x: 500,
-  ball_y: 250,
-  ball_move_x: 2,
-  ball_move_y: 2,
-  play_one_y: 200,
-  play_two_y: 200
-}
+
+
 
 @Injectable()
 export class GameService {
@@ -26,36 +16,44 @@ export class GameService {
     public eventsGateway:EventsGateway
   ) {}
 
-  getHello(gameId: number){
-    gameMap[gameId] = data;
+  async getHello(gameId: number){
+    this.reset(gameId);
     gameMap[gameId].interval = setInterval(this.moveCircle2.bind(this, gameId), 10);
   }
 
-  // moveCircle() {
-  //   data.ball_x += data.ball_move_x;
-  //   data.ball_y += data.ball_move_y;
-  //   console.log("가는중");
-  //   this.eventsGateway.server.to("game-1").emit("welcome", data);  
-  //   if (data.ball_y + 5 > 500) {
-  //     data.ball_move_y *= -1;
-  //   }
-  //   if (data.ball_x - 10 >= 1000) {
-  //     clearInterval(info.interval);
-  //     data.ball_x = 500;
-  //     data.ball_y = 250;
-  //     data.ball_move_x = 2;
-  //     data.ball_move_y = 2;
-  //     console.log("중지");
-  //   }
-  // }
+  moveCircle2(gameId){
+    gameMap[gameId].ball_x += gameMap[gameId].ball_move_x;
+    gameMap[gameId].ball_y += gameMap[gameId].ball_move_y;
 
-  @SubscribeMessage('player_one')
-  async playerOne(@MessageBody() getdata: { player_one: number }){
-    data.play_one_y += getdata.player_one;
+    this.emit(gameId);
+    if (gameMap[gameId].ball_y + 5 > 500) {
+      gameMap[gameId].ball_move_y *= -1;
+    }
+    if (gameMap[gameId].ball_x - 10 >= 3000) {
+      clearInterval(gameMap[gameId].interval);
+      this.reset(gameId);
+      this.emit(gameId);
+      console.log("중지");
+    }
   }
 
-  @SubscribeMessage('player_two')
-  async playerTwo(@MessageBody() getdata: { player_two: number }){
-    data.play_one_y += getdata.player_two;
+  reset(gameId: number){
+    gameMap[gameId].ball_x = 500;
+    gameMap[gameId].ball_y = 250;
+    gameMap[gameId].ball_move_x = 2;
+    gameMap[gameId].ball_move_y = 2;
+    gameMap[gameId].player_one_y = 200;
+    gameMap[gameId].player_two_y = 200;
   }
+
+  emit(gameId: number){
+    const gameInfo = {
+      ball_x: gameMap[gameId].ball_x, 
+      ball_y: gameMap[gameId].ball_y,
+      player_one_y: gameMap[gameId].player_one_y,
+      player_two_y: gameMap[gameId].player_two_y,
+    }
+    this.eventsGateway.server.to(`game-${gameId}`).emit("gameInfo", gameInfo);
+  }
+
 }
