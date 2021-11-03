@@ -46,6 +46,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async gamejoin(
     @MessageBody() data: {game: number},
     @ConnectedSocket() socket: Socket ){
+    console.log("gameroom join", data.game, socket.id);
     socket.join(`game-${data.game}`);
   }
 

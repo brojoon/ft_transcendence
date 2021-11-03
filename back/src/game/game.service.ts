@@ -5,15 +5,12 @@ import { Socket } from 'socket.io';
 import { History } from 'src/entities/History';
 import { EventsGateway } from 'src/events/events.gateway';
 import { Repository } from 'typeorm';
+import { gameMap } from './gameMap';
 
-const onlineMap = {};
-
-const info = {
+const data ={
   interval: null,
   player_one_point: 0,
   player_two_point: 0,
-}
-const data ={
   ball_x: 500,
   ball_y: 250,
   ball_move_x: 2,
@@ -22,8 +19,6 @@ const data ={
   play_two_y: 200
 }
 
-
-
 @Injectable()
 export class GameService {
   constructor(
@@ -31,32 +26,28 @@ export class GameService {
     public eventsGateway:EventsGateway
   ) {}
 
-  getHello(){
-    onlineMap[1] = info;
-    onlineMap[1] = data;
-    return onlineMap;
-    //this.eventsGateway.server.emit("welcome", data); 
-    info.interval = setInterval(this.moveCircle.bind(this), 10);
-    //console.log(interval);
+  getHello(gameId: number){
+    gameMap[gameId] = data;
+    gameMap[gameId].interval = setInterval(this.moveCircle2.bind(this, gameId), 10);
   }
 
-  moveCircle() {
-    data.ball_x += data.ball_move_x;
-    data.ball_y += data.ball_move_y;
-    console.log("가는중");
-    this.eventsGateway.server.to("game-1").emit("welcome", data);  
-    if (data.ball_y + 5 > 500) {
-      data.ball_move_y *= -1;
-    }
-    if (data.ball_x - 10 >= 1000) {
-      clearInterval(info.interval);
-      data.ball_x = 500;
-      data.ball_y = 250;
-      data.ball_move_x = 2;
-      data.ball_move_y = 2;
-      console.log("중지");
-    }
-  }
+  // moveCircle() {
+  //   data.ball_x += data.ball_move_x;
+  //   data.ball_y += data.ball_move_y;
+  //   console.log("가는중");
+  //   this.eventsGateway.server.to("game-1").emit("welcome", data);  
+  //   if (data.ball_y + 5 > 500) {
+  //     data.ball_move_y *= -1;
+  //   }
+  //   if (data.ball_x - 10 >= 1000) {
+  //     clearInterval(info.interval);
+  //     data.ball_x = 500;
+  //     data.ball_y = 250;
+  //     data.ball_move_x = 2;
+  //     data.ball_move_y = 2;
+  //     console.log("중지");
+  //   }
+  // }
 
   @SubscribeMessage('player_one')
   async playerOne(@MessageBody() getdata: { player_one: number }){

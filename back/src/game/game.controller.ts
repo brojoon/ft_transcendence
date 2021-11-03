@@ -9,7 +9,7 @@ export class GameController {
 
   @Get()
   getHello() {
-    return this.gameService.getHello();
+    return this.gameService.getHello(1);
   }
 
 }

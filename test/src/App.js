@@ -1,14 +1,12 @@
 import "./index.css";
 import * as PIXI from "pixi.js";
 import { Stage, PixiComponent } from "@inlet/react-pixi";
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import io from "socket.io-client"; //모듈 가져오기
 
 const socket = io.connect("http://localhost:3095"); //백엔드 서버 포트를3001와 socket연결
 
 socket.emit("game", {game: 1})
-// socket.to("game-1").emit("player_one", {player_one: 10})
-// socket.to("game-1").emit("player_two", {player_two: 10})
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 
@@ -39,12 +37,12 @@ function App() {
     const [ball_y , setBallY] = useState(250);
     //const [player_one_y, setPlayOneY] = useState(200);
     //const [player_two_y , setPlayTwoY] = useState(200);
-    // useEffect(() => {
-    socket.on("game-1", (data) => {
-      setBallX(data.ball_x);
-      setBallY(data.ball_y);
-    });
-    // }, []);
+    useEffect(() => {
+      socket.on("gameInfo", (gameInfo) => {
+        setBallX(gameInfo.ball_x);
+        setBallY(gameInfo.ball_y);
+      });
+    }, []);
 
     return (
       <div>
