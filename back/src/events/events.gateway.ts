@@ -12,6 +12,8 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Connect } from 'src/entities/Connect';
+import initData from 'src/game/gameInit';
+import { gameMap } from 'src/game/gameMap';
 import { Repository } from 'typeorm';
 import { onlineMap } from './onlineMap';
 
@@ -47,7 +49,32 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() data: {game: number},
     @ConnectedSocket() socket: Socket ){
     console.log("gameroom join", data.game, socket.id);
+    gameMap[data.game] = initData;
     socket.join(`game-${data.game}`);
+  }
+  
+  @SubscribeMessage('player_one_up')
+  async playerOneUP(@MessageBody() data: { game: number }){
+    if (gameMap[data.game].player_one_y > -50)
+      gameMap[data.game].player_one_y -= gameMap[data.game].bar_seed;
+  }
+
+  @SubscribeMessage('player_one_down')
+  async playerOneDown(@MessageBody() data: { game: number }){
+    if (gameMap[data.game].player_one_y < 450)
+      gameMap[data.game].player_one_y += gameMap[data.game].bar_seed;
+  }
+
+  @SubscribeMessage('player_two_up')
+  async playerTwoUP(@MessageBody() data: { game: number }){
+    if (gameMap[data.game].player_two_y > -50)
+      gameMap[data.game].player_two_y -= gameMap[data.game].bar_seed;
+  }
+
+  @SubscribeMessage('player_two_down')
+  async playerTwoDown(@MessageBody() data: { game: number }){
+    if (gameMap[data.game].player_two_y < 450)
+      gameMap[data.game].player_two_y += gameMap[data.game].bar_seed;
   }
 
   async handleConnection(@ConnectedSocket() socket: Socket) {
