@@ -10,7 +10,7 @@ import { ChannelDto } from './dto/channel.dto';
 @ApiBearerAuth('ts_token')
 @ApiTags('CHANNEL') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
-@Controller('channels')
+@Controller('api/channels')
 export class ChannelsController {
   constructor(private readonly channelsService: ChannelsService) {}
 
