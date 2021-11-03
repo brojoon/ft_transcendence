@@ -11,7 +11,7 @@ import { MessagetDto } from './dto/message.dto';
 @ApiBearerAuth('ts_token')
 @ApiTags('DM') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
-@Controller('dms')
+@Controller('api/dms')
 export class DmsController {
   constructor(private readonly dmsService: DmsService) {}
 
