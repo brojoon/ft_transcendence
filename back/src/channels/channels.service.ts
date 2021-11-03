@@ -99,12 +99,14 @@ export class ChannelsService {
   }
 
   async userList(channelId:number) {
+    /*
     const userList = await this.chatchannelRepository.createQueryBuilder('c')
     .leftJoin('c.Chatmembers', 'm')
     .where('c.id = :channelId', {channelId : channelId})
     //.select(["userId"])
     .getMany();
-
+    */
+    const userList = await this.chatmemberRepository.find({channelId})
     return userList;
   }
 
@@ -130,8 +132,8 @@ export class ChannelsService {
     return (chatmember.auth > 1);//bool로 반환? 
   }
 
-  async giveAdmin(channelId:number, userId:string) {
-    if (await this.checkAdmin(channelId, userId) == false)
+  async giveAdmin(channelId:number, ownerId:string, userId:string) {
+    if (await this.checkAdmin(channelId, ownerId) == false)
       throw new UnauthorizedException(".");
     await this.chatmemberRepository.update({channelId, userId}, {auth:1})
   }

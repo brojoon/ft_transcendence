@@ -34,8 +34,13 @@ export class ChannelsController {
       this.channelsService.makeChannel(user.userId, channelName, type, dto.password);
   }
   @Post('/join/:channelId')
-  joinChannel(@Param("channelId") channelId:number, @User() user, @Body('password') password:string){
-    this.channelsService.joinChannel(channelId, user.userId, password);
+  @ApiResponse ({//스웨거 body칸 있게 하려면
+    status: 200,
+    description: '성공',
+    type: ChannelDto,
+  })
+  joinChannel(@Param("channelId") channelId:number, @User() user, @Body() dto:ChannelDto){
+    this.channelsService.joinChannel(channelId, user.userId, dto.password);
   }
 
   @Get('/getout/:channelId')
@@ -83,9 +88,9 @@ export class ChannelsController {
     return this.channelsService.checkAdmin(channelId, user.userId);
   }
 
-  @Get("/giveAdmin/:channelId/")
-  giveAdmin(@Param("channelId") channelId:number, @User() user){
-    this.channelsService.giveAdmin(channelId, user.userId);
+  @Get("/giveAdmin/:channelId/:gievenUser")
+  giveAdmin(@Param("channelId") channelId:number, @User() owner, @Param('gievenUser') givenUser){
+    this.channelsService.giveAdmin(channelId, owner.userId, givenUser);
   }
 
   @Get("/banUser/:channelId/:banId/")
@@ -98,14 +103,19 @@ export class ChannelsController {
     this.channelsService.updateType(channelId, user.userId, type);
   }
 
-  @Get("/changeChannelType/:channelId/:channelName")
+  @Get("/changeChannelName/:channelId/:channelName")
   updateChannelName(@Param("channelId") channelId:number, @User() user, @Param('channelName') channelName:string){
     this.channelsService.updateChannelName(channelId, user.userId, channelName);
   }
 
-  @Get("/changeChannelType/:channelId/:pasword")
-  updateChannelPassword(@Param("channelId") channelId:number, @User() user, @Param('password') password:string){
-    this.channelsService.updateChannelPassword(channelId, user.userId, password);
+  @Get("/changeChannelPassword/:channelId/:pasword")
+  @ApiResponse ({//스웨거 body칸 있게 하려면
+    status: 200,
+    description: '성공',
+    type: ChannelDto,
+  })
+  updateChannelPassword(@Param("channelId") channelId:number, @User() user, @Body() dto:ChannelDto){
+    this.channelsService.updateChannelPassword(channelId, user.userId, dto.password);
   }
 
   @Get("/muteUser/:channelId/:muteId/:time")
@@ -113,8 +123,8 @@ export class ChannelsController {
     this.channelsService.muteSwitch(channelId, admin.userId, muteId, time);
   }
 
-  @Get("/deleteChannel/:channelId/:ownerId")
-  deleteChannel(@Param("channelId") channelId:number, @Param("ownerId") ownerId:string){
-    this.deleteChannel(channelId, ownerId);
+  @Get("/deleteChannel/:channelId")
+  deleteChannel(@Param("channelId") channelId:number, @User() owner){
+    this.deleteChannel(channelId, owner.userId);
   }
 }
