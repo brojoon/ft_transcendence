@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { UnauthorizedException, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chatchannel } from 'src/entities/Chatchannel';
 import { Chatcontent } from 'src/entities/Chatcontent';
@@ -38,13 +38,17 @@ export class ChannelsService {
 
   async makeChannel(userId:string, channelName:string, channelType:number, password:string) {
     //const obj:Chatchannel = {};
+    if (await this.chatchannelRepository.findOne({name:channelName}))
+      throw new BadRequestException("이미 존재하는 이름의 채팅방입니다");
     const newChannel = new Chatchannel();
     newChannel.name = channelName;
     newChannel.type = channelType;
-    if (!password)
+    console.log("password:", password);
+    if (password)
     {
-      const newPassword = bcrypt.hash(password, 12);
-      newPassword.
+      console.log("password true:", password);
+      const newPassword = await bcrypt.hash(password, 12);
+      console.log("new password : ", newPassword);
       newChannel.password = newPassword;
     }
     const channel = await this.chatchannelRepository.save(newChannel);
@@ -57,14 +61,26 @@ export class ChannelsService {
   }
 
   async joinChannel(channelId:number, userId:string, channelPassword:any = null) {
-    const channel = await this.chatchannelRepository.findOne({where : {id:channelId}});
+    const channel = await this.chatchannelRepository.findOne({id:channelId});
+    if (!channel)
+      throw new UnauthorizedException("없는 채팅방입니다");
     if (channel.type == 1)
     {
-      const test = bcrypt.compare(channelPassword, channel.password);//channelPassword = null일때?
+      const test = await bcrypt.compare(channelPassword, channel.password);//channelPassword = null일때?
       if (!test)
-        throw new UnauthorizedException("비밀번호가 틀립니다");
+        throw new UnauthorizedException("아이디 혹은 비밀번호가 틀림");//보안을 위해
     }
-    
+    else if (channel.type == 2)
+      throw new BadRequestException("private방에 초대 없이는 못들어 갑니다")
+    const temp = await this.chatmemberRepository.findOne({channelId, userId});
+    console.log(temp);
+    if (temp)
+      console.log("ture");
+    else
+      console.log("false");
+    if (await this.chatmemberRepository.findOne({channelId, userId}))
+      throw new UnauthorizedException("이미 채팅방에 참여중인 사용자임");
+    console.log("\n\n\n\n\n\n\n 도달 \n\n\n\n\n");
     const newMember = new Chatmember();
     newMember.userId = userId;
     newMember.channelId = channelId;
@@ -72,20 +88,26 @@ export class ChannelsService {
   }
 
   async getOutChnnel(channelId:number, userId:string) {
+    if (!(await this.chatmemberRepository.findOne({channelId, userId})))
+      throw new UnauthorizedException("채팅방에 참여중인 사용자가 아닌데, 채팅방 탈퇴를 하려고 함");
     await this.chatmemberRepository.delete({channelId, userId});
   }
 
   async inviteChannel(channelId:number, administerId:string, visitorId:string) {
       const administer = await this.chatmemberRepository.findOne({where : {channelId, userId : administerId}});
-      if (administer.auth < 1)
+      if (!administer || administer.auth < 1)
         throw new UnauthorizedException("administer가 아닌데 초대를 시도함.");
+      if (await this.chatmemberRepository.findOne({channelId, userId:visitorId}))
+        throw new UnauthorizedException("이미 채팅방에 참여중인 사용자임");
       const newMember = new Chatmember();
       newMember.userId = visitorId;
       newMember.channelId = channelId;
       await this.chatmemberRepository.save(newMember);
   }
 
-  async sendMessage(channelId:number, sender:string, msg:string) {
+  async sendMessage(channelId:number, sender:string, msg:string) {//미완성
+    if (!this.chatmemberRepository.find({channelId, userId:sender}))
+      throw new UnauthorizedException("채팅방에 참여중이지 않은 사용자인데 메시지를 보내려고 함");
     const chatContent = new Chatcontent();
     chatContent.userId = sender;
     chatContent.channelId = channelId;
@@ -93,12 +115,14 @@ export class ChannelsService {
     await this.chatcontentRepository.save(chatContent);
   }
 
-  async getAllMessage(channelId:number) {
+  async getAllMessage(channelId:number, userId:string) {
+    if (!this.chatmemberRepository.find({channelId, userId}))
+      throw new UnauthorizedException("채팅방에 참여중이지 않은 사용자인데 메시지를 조회하려고 함"); 
     const chatContent = await this.chatcontentRepository.find({where:{channelId}, select:["userId", "message", "updatedAt"]})
     return chatContent;
   }
 
-  async userList(channelId:number) {
+  async userList(channelId:number, userId:string) {
     /*
     const userList = await this.chatchannelRepository.createQueryBuilder('c')
     .leftJoin('c.Chatmembers', 'm')
@@ -106,11 +130,15 @@ export class ChannelsService {
     //.select(["userId"])
     .getMany();
     */
+    if (!this.chatmemberRepository.find({channelId, userId}))
+      throw new UnauthorizedException("채팅방에 참여중이지 않은 사용자인데 참여자 목록을 보려고 함");
     const userList = await this.chatmemberRepository.find({channelId})
     return userList;
   }
 
   async checkMuteState(channelId:number, userId:string) :Promise<boolean>{
+    if (!this.chatmemberRepository.find({channelId, userId}))
+      throw new UnauthorizedException("채팅방에 참여중이지 않은 사용자임");
     const chatmember = await this.chatmemberRepository.findOne({where:{channelId, userId}});
     return chatmember.mute;
   }
@@ -118,7 +146,7 @@ export class ChannelsService {
   async checkBanState(channelId:number, userId:string) :Promise<boolean>{
     const chatmember = await this.chatmemberRepository.findOne({where:{channelId, userId}});
     if (chatmember === null)
-      return true;
+      return true;//아직 채팅방 참여하지 않은 사용자나 밴이 된 사용자나 똑같은 취급을 받게되는 문제
     return false;
   }
 
@@ -139,6 +167,13 @@ export class ChannelsService {
   }
 
   async banUser(channelId:number, adminId:string, banId:string) {
+    if (!this.chatmemberRepository.find({channelId, userId:adminId}))
+      throw new UnauthorizedException("채팅방에 참여중이지 않은 사용자임");
+    const banUser = this.chatmemberRepository.findOne({channelId, userId:banId});
+    if (!banUser)
+      throw new UnauthorizedException("채팅방에 참여중이지 않은 사용자임");
+    else if ((await banUser).auth > 0)//여기도 await??
+      throw new UnauthorizedException("관리자나 소유자를 ban할 수는 없음")
     if (await this.checkAdmin(channelId, adminId) == false)
       throw new UnauthorizedException(".");
     await this.chatmemberRepository.delete({channelId, userId:banId});
