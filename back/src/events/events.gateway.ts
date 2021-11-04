@@ -52,7 +52,14 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     gameMap[data.game] = initData;
     socket.join(`game-${data.game}`);
   }
-  
+
+  @SubscribeMessage('changeGameSet')
+  async changeGameSet(@MessageBody() data: {game: number, speed: number, map: number, random: number }){
+    gameMap[data.game].length = data.speed;
+    gameMap[data.game].game_map = data.map;
+    gameMap[data.game].random_map = data.random;
+  }
+
   @SubscribeMessage('player_one_up')
   async playerOneUP(@MessageBody() data: { game: number }){
     if (gameMap[data.game].player_one_y > -50)
@@ -70,7 +77,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     if (gameMap[data.game].player_two_y > -50)
       gameMap[data.game].player_two_y -= gameMap[data.game].bar_seed;
   }
-
+  
   @SubscribeMessage('player_two_down')
   async playerTwoDown(@MessageBody() data: { game: number }){
     if (gameMap[data.game].player_two_y < 450)
