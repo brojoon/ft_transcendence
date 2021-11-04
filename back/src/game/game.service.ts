@@ -33,10 +33,12 @@ export class GameService {
       gameMap[gameId].dir_y = test.newDir_y;
       console.log("changeDir", gameMap[gameId].dir_x, gameMap[gameId].dir_y);
     }
-    if (gameMap[gameId].ball_x - 10 >= 1000 ) {
+    if (gameMap[gameId].ball_x >= 980 || gameMap[gameId].ball_x <= 20) {
       if (this.isPannel(gameId) === true){
         console.log("changeDir2", gameMap[gameId].dir_x, gameMap[gameId].dir_y);
-        this.chageDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
+        const test = this.chageDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
+        gameMap[gameId].dir_x = test.newDir_x;
+        gameMap[gameId].dir_y = test.newDir_y;
       }
       else{
         clearInterval(gameMap[gameId].interval);
@@ -48,7 +50,6 @@ export class GameService {
   }
 
   reset(gameId: number){
-    gameMap[gameId] = {};
     gameMap[gameId].ball_x = 500;
     gameMap[gameId].ball_y = 250;
     gameMap[gameId].dir_x = 1.0 / Math.sqrt(2);
@@ -71,9 +72,10 @@ export class GameService {
   }
 
   isPannel(gameId):boolean{
-    if (gameMap[gameId].player_one_y -25 < gameMap[gameId].ball_y && gameMap[gameId].ball_y < gameMap[gameId].player_one_y +25)
+    console.log(gameMap[gameId].player_one_y, gameMap[gameId].player_two_y, gameMap[gameId].ball_y)
+    if (gameMap[gameId].ball_x < 100 && gameMap[gameId].player_one_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_one_y +100)
       return true;
-    if (gameMap[gameId].player_two_y -25 < gameMap[gameId].ball_y && gameMap[gameId].ball_y < gameMap[gameId].player_two_y +25)
+    if (gameMap[gameId].ball_x > 900 && gameMap[gameId].player_two_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_two_y +100)
       return true;
     return false;
   }
