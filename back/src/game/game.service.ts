@@ -15,6 +15,7 @@ export class GameService {
   async gameStart(gameId: number){
     this.reset(gameId);
     gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), 10);
+    console.log("mapmod", gameMap[gameId]);
   }
 
   moveCircle(gameId){
@@ -40,6 +41,7 @@ export class GameService {
       //console.log("changeDir", gameMap[gameId].dir_x, gameMap[gameId].dir_y);
     }
     else if (this.isMiddleBlock(gameId) == true){
+      console.log("진입은 한다")
       if (351 >= gameMap[gameId].ball_x || gameMap[gameId].ball_x >= 649){
         const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
         gameMap[gameId].dir_x = test.newDir_x;
@@ -112,17 +114,29 @@ export class GameService {
   }
 
   isMiddleBlock(gameId:number):boolean{
-    if (gameMap[gameId].game_map === true){
-      if (gameMap[gameId].ball_x < 349 || gameMap[gameId].ball_x > 651)
+    //console.log("isMiddleBlock함수에 진입");
+    if (gameMap[gameId].game_map === 1){
+      //console.log("ball y: ", gameMap[gameId].ball_y);
+      if (gameMap[gameId].ball_x < 348 || gameMap[gameId].ball_x > 652)
+      {
         return false
-      else if (gameMap[gameId].ball_y > 100 && gameMap[gameId].ball_y < 150)
+      }
+      else if ((gameMap[gameId].ball_y >= 99 && gameMap[gameId].ball_y <= 151) || (gameMap[gameId].ball_y >= 349 && gameMap[gameId].ball_y <= 401))
+      {
         return true;
-      else if (gameMap[gameId].ball_y > 350 && gameMap[gameId].bally < 400)
+      }
+      else if (gameMap[gameId].ball_y >= 349 && gameMap[gameId].bally <= 401)
+      {
         return true;
+      }
       else
+      {
         return false;
+      }
     }
     else{
+      
+      //console.log("5:", gameMap[gameId].game_map);
       return false
     }
   }
