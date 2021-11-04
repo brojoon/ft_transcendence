@@ -8,8 +8,8 @@ export class GameController {
   ) {}
 
   @Get()
-  getHello() {
-    return this.gameService.getHello(1);
+  gameStart() {
+    return this.gameService.gameStart(1);
   }
 
 }

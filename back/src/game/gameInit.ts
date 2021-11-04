@@ -8,6 +8,7 @@ const initData ={
     game_map: 0,
     game_set: 3,
     complete_game_set: 0,
+    length: 4,
     bar_seed: 30,
     ball_x: 500,
     ball_y: 250,
