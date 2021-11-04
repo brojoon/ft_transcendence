@@ -97,7 +97,6 @@ export class GameService {
     rand %= 7;
     gameMap[gameId].dir_x = Math.cos(rand);
     gameMap[gameId].dir_y = Math.sin(rand);
-    gameMap[gameId].length = 4;
     gameMap[gameId].player_one_y = 200;
     gameMap[gameId].player_two_y = 200;
   }
