@@ -54,8 +54,8 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   @SubscribeMessage('changeGameSet')
-  async changeGameSet(@MessageBody() data: {game: number, speed: number, map: number, random: number }){
-    gameMap[data.game].length = data.speed;
+  async changeGameSet(@MessageBody() data: {game: number, set: number, map: number, random: number }){
+    gameMap[data.game].game_set = data.set;
     gameMap[data.game].game_map = data.map;
     gameMap[data.game].random_map = data.random;
   }

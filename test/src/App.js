@@ -7,8 +7,6 @@ import io from "socket.io-client"; //모듈 가져오기
 const socket = io.connect("http://localhost:3095"); //백엔드 서버 포트를3001와 socket연결
 
 socket.emit("game", {game: 1})
-socket.emit("player_one", {game: 1})
-socket.emit("player_two", {game: 1})
 
 PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 

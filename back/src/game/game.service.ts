@@ -14,7 +14,7 @@ export class GameService {
 
   async gameStart(gameId: number){
     this.reset(gameId);
-    gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), 10);
+    gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), 3);
     console.log("mapmod", gameMap[gameId]);
   }
 
