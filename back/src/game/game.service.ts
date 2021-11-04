@@ -24,7 +24,7 @@ export class GameService {
   moveCircle2(gameId){
     gameMap[gameId].ball_x += gameMap[gameId].dir_x * gameMap[gameId].length;
     gameMap[gameId].ball_y += gameMap[gameId].dir_y * gameMap[gameId].length;
-    console.log("ball position", gameMap[gameId].ball_x, gameMap[gameId].ball_y);
+    //console.log("ball position", gameMap[gameId].ball_x, gameMap[gameId].ball_y);
     this.emit(gameId);
     if (gameMap[gameId].ball_y + 5 > 500 || gameMap[gameId].ball_y - 5 < 0) {
       //gameMap[gameId].ball_move_y *= -1;
@@ -72,7 +72,6 @@ export class GameService {
   }
 
   isPannel(gameId):boolean{
-    console.log(gameMap[gameId].player_one_y, gameMap[gameId].player_two_y, gameMap[gameId].ball_y)
     if (gameMap[gameId].ball_x < 100 && gameMap[gameId].player_one_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_one_y +100)
       return true;
     if (gameMap[gameId].ball_x > 900 && gameMap[gameId].player_two_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_two_y +100)
