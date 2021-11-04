@@ -26,7 +26,41 @@ export class GameService {
       const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
       gameMap[gameId].dir_x = test.newDir_x;
       gameMap[gameId].dir_y = test.newDir_y;
+      if (gameMap[gameId].random_map == 1){
+        let rand = Math.random();
+        rand *= 10000;
+        rand += 1;
+        rand = Math.round(rand);
+        rand %= 7;
+        const x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(rand));
+        const y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(rand));
+      }
       //console.log("changeDir", gameMap[gameId].dir_x, gameMap[gameId].dir_y);
+    }
+    else if (this.isMiddleBlock(gameId) == true){
+      if (351 >= gameMap[gameId].ball_x || gameMap[gameId].ball_x >= 649){
+        const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
+        gameMap[gameId].dir_x = test.newDir_x;
+        gameMap[gameId].dir_y = test.newDir_y;
+      }
+      else{
+        const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
+        gameMap[gameId].dir_x = test.newDir_x;
+        gameMap[gameId].dir_y = test.newDir_y;
+      }
+      if (gameMap[gameId].random_map == 1){
+        let rand = Math.random();
+        rand *= 10000;
+        rand += 1;
+        rand = Math.round(rand);
+        rand %= 7;
+        const x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(rand));
+        const y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(rand));
+      }
     }
     else if (gameMap[gameId].ball_x >= 980 || gameMap[gameId].ball_x <= 20) {
       if (this.isPannel(gameId) === true){
@@ -34,17 +68,15 @@ export class GameService {
         const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
         gameMap[gameId].dir_x = test.newDir_x;
         gameMap[gameId].dir_y = test.newDir_y;
-        let wantRandomPannel = true;
-        if (wantRandomPannel){
-          let rand = Math.random();
-          rand *= 10000;
-          rand += 1;
-          rand = Math.round(rand);
-          rand %= 7;
-          const x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
-          gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(rand));
-          gameMap[gameId].dir_y = Math.sin(rand);
-        }
+        let rand = Math.random();
+        rand *= 10000;
+        rand += 1;
+        rand = Math.round(rand);
+        rand %= 7;
+        const x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(rand));
+        const y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(rand));
       }
       else{
         clearInterval(gameMap[gameId].interval);
@@ -58,10 +90,6 @@ export class GameService {
   reset(gameId: number){
     gameMap[gameId].ball_x = 500;
     gameMap[gameId].ball_y = 250;
-    gameMap[gameId].dir_x = 1.0 / Math.sqrt(2);
-    gameMap[gameId].dir_y = 1.0 / Math.sqrt(2);
-    gameMap[gameId].dir_x = Math.sqrt(3) / 2.0;
-    gameMap[gameId].dir_y = 1 / 2;
     let rand = Math.random();
     rand *= 10000;
     rand += 1;
@@ -82,6 +110,22 @@ export class GameService {
       player_two_y: gameMap[gameId].player_two_y,
     }
     this.eventsGateway.server.to(`game-${gameId}`).emit("gameInfo", gameInfo);
+  }
+
+  isMiddleBlock(gameId:number):boolean{
+    if (gameMap[gameId].game_map === true){
+      if (gameMap[gameId].ball_x < 349 || gameMap[gameId].ball_x > 651)
+        return false
+      else if (gameMap[gameId].ball_y > 100 && gameMap[gameId].ball_y < 150)
+        return true;
+      else if (gameMap[gameId].ball_y > 350 && gameMap[gameId].bally < 400)
+        return true;
+      else
+        return false;
+    }
+    else{
+      return false
+    }
   }
 
   isPannel(gameId):boolean{
