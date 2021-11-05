@@ -26,7 +26,7 @@ export class GameService {
     gameMap[gameId].ball_y += gameMap[gameId].dir_y * gameMap[gameId].length;
     //console.log("ball position", gameMap[gameId].ball_x, gameMap[gameId].ball_y);
     this.emit(gameId);
-    if (gameMap[gameId].ball_y + 5 >= 500 || gameMap[gameId].ball_y - 5 <= 0) {
+    if (gameMap[gameId].ball_y + 3 >= 500 || gameMap[gameId].ball_y - 3 <= 0) {
       const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
       gameMap[gameId].dir_x = test.newDir_x;
       gameMap[gameId].dir_y = test.newDir_y;
@@ -36,55 +36,58 @@ export class GameService {
         rand += 1;
         rand = Math.round(rand);
         rand %= 8;
-        rand += 5;
+        rand += 6;
         rand = rand > 10 ? 8:rand;
-        const x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
-        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(2 * Math.PI / rand));
-        const y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
-        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(2 * Math.PI / rand));
+        rand = rand > 4 ? 8 : rand;
+        const x_sign1 = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign1 * Math.abs(Math.cos(2 * Math.PI / rand));
+        const y_sign1 = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign1 * Math.abs(Math.sin(2 * Math.PI / rand));
       }
       //console.log("changeDir", gameMap[gameId].dir_x, gameMap[gameId].dir_y);
     }
     else if (this.isMiddleBlock(gameId) == true){
       if (350 >= gameMap[gameId].ball_x || gameMap[gameId].ball_x >= 650){
-        const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
-        gameMap[gameId].dir_x = test.newDir_x;
-        gameMap[gameId].dir_y = test.newDir_y;
+        const t1 = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
+        gameMap[gameId].dir_x = t1.newDir_x;
+        gameMap[gameId].dir_y = t1.newDir_y;
       }
       else{
-        const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
-        gameMap[gameId].dir_x = test.newDir_x;
-        gameMap[gameId].dir_y = test.newDir_y;
+        const t2 = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
+        gameMap[gameId].dir_x = t2.newDir_x;
+        gameMap[gameId].dir_y = t2.newDir_y;
       }
       if (gameMap[gameId].random_map == 1){
         let rand = Math.random();
         rand *= 10000;
         rand = Math.round(rand);
         rand %= 8;
-        rand += 5;
+        rand += 6;
         rand = rand > 10 ? 8:rand;
-        const x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
-        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(2 * Math.PI / rand));
-        const y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
-        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(2 * Math.PI / rand));
+        rand = rand > 4 ? 8 : rand;
+        const x_sign2 = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign2 * Math.abs(Math.cos(2 * Math.PI / rand));
+        const y_sign2 = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign2 * Math.abs(Math.sin(2 * Math.PI / rand));
       }
     }
     else if ((gameMap[gameId].ball_x >= 980)  || (gameMap[gameId].ball_x <= 20 )) {
       if (this.isPannel(gameId) === true){
         console.log("is pannel!");
-        const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
-        gameMap[gameId].dir_x = test.newDir_x;
-        gameMap[gameId].dir_y = test.newDir_y;
+        const t3 = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
+        gameMap[gameId].dir_x = t3.newDir_x;
+        gameMap[gameId].dir_y = t3.newDir_y;
         let rand = Math.random();
         rand *= 10000;
         rand = Math.round(rand);
         rand %= 8;
-        rand += 5;
+        rand += 6;
         rand = rand > 10 ? 8:rand;
-        const x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
-        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos((2 * Math.PI) / rand));
-        const y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
-        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin((2 * Math.PI) / rand));
+        rand = rand > 4 ? 8 : rand;
+        const x_sign3 = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign3 * Math.abs(Math.cos((2 * Math.PI) / rand));
+        const y_sign3 = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign3 * Math.abs(Math.sin((2 * Math.PI) / rand));
       }
       else{
         clearInterval(gameMap[gameId].interval);
@@ -103,7 +106,7 @@ export class GameService {
     rand *= 10000;
     rand = Math.round(rand);
     rand %= 8;
-    rand += 5;
+    rand += 6;
     console.log("rand: ", rand, "2 Pi / rand : ", 2 * Math.PI / rand);
     gameMap[gameId].dir_x = Math.cos(2 * Math.PI / rand);
     gameMap[gameId].dir_y = Math.sin(2 * Math.PI / rand);
@@ -148,7 +151,7 @@ export class GameService {
   changeDir(dir_x:number, dir_y:number, vertical_x, vertical_y){//dir_x, dir_y 방향벡터의 크기는 1, vertical_x y 둘중 하나는 0 나머지 하나는 1; 
     //내적해서 cos(@)를 구함
     let cosA = Math.abs((vertical_x * dir_x) + (vertical_y * dir_y));//abs해서 작은 @를 구함.
-    const theta = Math.acos(cosA);
+    const theta = Math.abs(Math.acos(cosA));
     //const sinA = Math.sqrt(1 - Math.pow(cosA, 2));
     let sinA = Math.sin(theta);
     cosA = Math.cos(theta);
