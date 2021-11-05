@@ -12,10 +12,13 @@ export class GameService {
     public eventsGateway:EventsGateway
   ) {}
 
-  async gameStart(gameId: number){
-    this.reset(gameId);
-    gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), 10);
-    console.log("mapmod", gameMap[gameId]);
+  async gameStart(gameId: number){  
+    if (gameMap[gameId].game_state === 0 && gameMap[gameId].player_one_ready === 1 && gameMap[gameId].player_two_ready === 1){
+      this.reset(gameId);
+      gameMap[gameId].game_state = 1;
+      gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), 3);
+    }     
+    //console.log("mapmod", gameMap[gameId]);
   }
 
   moveCircle(gameId){
@@ -85,6 +88,7 @@ export class GameService {
       }
       else{
         clearInterval(gameMap[gameId].interval);
+        gameMap[gameId].game_state = 0;
         this.reset(gameId);
         this.emit(gameId);
         console.log("중지");

@@ -24,6 +24,18 @@ export class DmsService {
       return (true);
   }
 
+  async findDmUser(dmId: number, userId: string) {
+    const result = await this.DmcontentRepository.findOne({ where: { dmId } });
+    if (!result)
+      throw new ForbiddenException('존재하지 않는 DM방입니다.');
+    if (result.userId1 === userId)
+      return result.userId2
+    else if (result.userId2 === userId)
+      return result.userId1
+    else
+      throw new ForbiddenException('내가 속한 DM방이 아닙니다');
+  }
+
   async createAndGetDm(userId1:string, userId2:string) {
     if (await this.checkHaveUser(userId1, userId2))
       throw new ForbiddenException('잘못된 유저 정보 입니다.');
@@ -78,6 +90,27 @@ export class DmsService {
     this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
   }
 
+  async sendMessageUserDmID(userId1:string, dmId:number, message:string, match:number = 0, historyId:number = null) {
+    console.log("bbbbbbbbbbbbbbbbbbb");
+    const result = await this.usersRepository.findOne({where: { userId: userId1}});
+    if (!result)
+      throw new ForbiddenException('유저 정보 없음');
+    const userId2 = await this.findDmUser(dmId, userId1);
+    const send = new Dmcontent();
+    send.dmId = dmId;
+    send.userId1 = userId1;
+    send.userId2 = userId2;
+    if (match)
+      send.message = "대국신청";
+    else
+      send.message = message;
+    send.match = match;
+    send.historyId = historyId;
+    const dm = await this.DmcontentRepository.save(send);
+    const data = { dmId, userId1, userId2, message: dm.message, match, historyId, createdAt: dm.createdAt };
+    this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
+  }
+
   async getAllMessage(userId1:string, userId2:string) {
     if (await this.checkHaveUser(userId1, userId2))
       throw new ForbiddenException('잘못된 유저 정보 입니다.');
@@ -88,5 +121,19 @@ export class DmsService {
       .orderBy('createdAt', 'DESC')
       .getMany();
     return (result);
+  }
+
+  async getAllMessageUseDmId(userId: string, dmId:number) {
+    const result = await this.DmcontentRepository.findOne({ where: { dmId } });
+    if (!result)
+      throw new ForbiddenException('존재하지 않는 DM방입니다.');
+    if (result.userId1 !== userId && result.userId2 !== userId)
+      throw new ForbiddenException('내가 속한 DM방이 아닙니다');
+    const res = await this.DmcontentRepository
+      .createQueryBuilder()
+      .where('dmId = :dmId', { dmId })
+      .orderBy('createdAt', 'DESC')
+      .getMany();
+    return (res);
   }
 }
