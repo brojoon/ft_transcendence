@@ -20,5 +20,21 @@ export interface IDmcontents {
 
 export interface IDmList {
   id: number,
-  Docontents: IDmcontents[];
+  Dmcontents: IDmcontents[];
 }
+
+export interface IChatList {
+  id: number,
+  dmId: number,
+  userId1: string,
+  userId2: string,
+  message: string,
+  match: number,
+  createdAt: Date,
+  updatedAt: Date,
+  historyId: number,
+}
+
+// export interface IChannelList {
+
+// }

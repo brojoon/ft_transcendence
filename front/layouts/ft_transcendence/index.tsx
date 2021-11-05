@@ -6,19 +6,35 @@ import Game from '@pages/Game';
 import Home from '@pages/Home';
 import Profile from '@pages/Profile';
 import Users from '@pages/Users';
-import { IUser } from '@typings/db';
+import { IDmList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import useSWR from 'swr';
 import { Container } from './style';
-import DirectMessage from '@pages/DirectMessage';
+import { disconnect } from 'process';
+import io from 'socket.io-client';
 
 const ft_transcendence = () => {
   const { data: userData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
+  const { data: dmList } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
   console.log(userData);
+  const myDmNumber: number[] = [];
+  for (let dm in dmList) {
+    myDmNumber.push(dmList[parseInt(dm)].id);
+  }
+
+  const socket = io.connect('http://localhost:3095');
+
+  useEffect(() => {
+    socket.emit('login', {
+      userId: userData?.userId,
+      Dms: myDmNumber,
+      channels: [],
+    });
+  }, [socket]);
   if (!userData) return null;
   return (
     <Container>
@@ -31,7 +47,6 @@ const ft_transcendence = () => {
         <Route path="/ft_transcendence/achievements" component={Achievements} />
         <Route path="/ft_transcendence/game" component={Game} />
         <Route path="/ft_transcendence/profile" component={Profile} />
-        <Route path="/ft_transcendence/dm" component={DirectMessage} />
       </Switch>
     </Container>
   );

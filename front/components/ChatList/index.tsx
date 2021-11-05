@@ -1,13 +1,21 @@
+import Avatar from '@mui/material/Avatar';
+import { IChatList, IAllUser } from '@typings/db';
+import fetcher from '@utils/fetcher';
 import React, { RefObject, VFC } from 'react';
-import Chat from '@components/Chat';
 import Scrollbars from 'react-custom-scrollbars';
+import useSWR from 'swr';
 
 interface Props {
-  chatData: string[];
+  chatData: IChatList[] | undefined;
   scrollbarRef: RefObject<Scrollbars>;
 }
 
 const ChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
+  const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
+  // const { data: chatlist } = useSWR<IChatList[]>('/api/dms/getMessage/hyungjki/dmtest', fetcher);
+
+  const chatSections = chatData ? chatData.flat().reverse() : [];
+
   return (
     <div
       style={{
@@ -18,12 +26,23 @@ const ChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
       }}
     >
       <Scrollbars autoHide ref={scrollbarRef}>
-        {chatData?.map((chat) => (
+        {chatSections?.map((chat) => (
           <div style={{ color: 'white', display: ' flex' }}>
-            <div style={{ marginRight: '10px' }}>profile</div>
+            <div style={{ marginRight: '10px' }}>
+              {alluser?.map((user) => {
+                if (user.userId === chat.userId1)
+                  return (
+                    <Avatar
+                      src={user.profile}
+                      alt="Avatar"
+                      style={{ width: '40px', height: '40px', marginBottom: '25px' }}
+                    />
+                  );
+              })}
+            </div>
             <div>
-              <div>id</div>
-              <p style={{ marginTop: '0' }}>{chat}</p>
+              <div>{chat.userId1}</div>
+              <p style={{ marginTop: '0' }}>{chat.message}</p>
             </div>
           </div>
         ))}
