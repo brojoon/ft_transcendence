@@ -127,11 +127,11 @@ function App() {
       <div>
         <div>
           <b>player1 ready: {player1} </b>
-          <button onClick={readyPlayer1}>준비</button>
+          <button onClick={readyPlayer1}>{ player1 === 0 ? '준비' : '완료'}</button>
         </div>
         <div>
           <b>player2 ready: {player2} </b>
-          <button onClick={readyPlayer2}>준비</button>
+          <button onClick={readyPlayer2}>{ player2 === 0 ? '준비' : '완료'}</button>
         </div>
         <div>
           <button onClick={changeGameSet}>게임시작 </button>
@@ -145,8 +145,8 @@ function App() {
         </div>
         <div>
         <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0xeec5da }}>
-          <Rectangle x={0} y={player_one_y} width={20} height={100} fill={0xac1a6a} />
-          <Rectangle x={980} y={player_two_y} width={20} height={100} fill={0xac1a6a} />
+          <Rectangle x={0} y={player_one_y} width={10} height={100} fill={0xac1a6a} />
+          <Rectangle x={990} y={player_two_y} width={10} height={100} fill={0xac1a6a} />
           {map === 1 ? <Rectangle x={350} y={100} width={300} height={50} fill={0xf38bc4} /> : null}
           {map === 1 ? <Rectangle x={350} y={350} width={300} height={50} fill={0xf38bc4} /> : null}
           <Circle x={ball_x} y={ball_y} radius={10} fill={0x940665} />
