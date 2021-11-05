@@ -12,10 +12,10 @@ export class DmsService {
     @InjectRepository(Users) private usersRepository: Repository<Users>,
     @InjectRepository(Dm) private dmRepository: Repository<Dm>,
     @InjectRepository(Dmcontent) private DmcontentRepository: Repository<Dmcontent>,
-    private eventsGateway: EventsGateway
+    private eventsGateway:EventsGateway
   ) { }
 
-  async checkHaveUser(userId1: string, userId2: string) {
+  async checkHaveUser(userId1:string, userId2:string) {
     const user1 = await this.usersRepository.findOne({ where: { userId: userId1 } });
     const user2 = await this.usersRepository.findOne({ where: { userId: userId2 } });
     if (user1 && user2)
@@ -36,15 +36,15 @@ export class DmsService {
       throw new ForbiddenException('내가 속한 DM방이 아닙니다');
   }
 
-  async createAndGetDm(userId1: string, userId2: string) {
+  async createAndGetDm(userId1:string, userId2:string) {
     if (await this.checkHaveUser(userId1, userId2))
       throw new ForbiddenException('잘못된 유저 정보 입니다.');
     const checkdm = await this.dmRepository
       .createQueryBuilder('dm')
-      .innerJoin('dm.Dmcontents', 'dc')
+      .innerJoin('dm.Dmcontents','dc')
       .where('dc.userId1 = :userId1 AND dc.userId2 = :userId2', { userId1, userId2 })
       .orWhere('dc.userId1 = :userId2 AND dc.userId2 = :userId1', { userId2, userId1 })
-      .getOne();
+      .getOne(); 
     if (checkdm)
       return checkdm.id; // userId1 과 userId2의 DM방 id
     const newDm = new Dm();
@@ -64,17 +64,17 @@ export class DmsService {
     const checkdm = await this.dmRepository
       .createQueryBuilder('dm')
       .select(['dm.id', 'dc.userId1', 'dc.userId2'],)
-      .leftJoin("dm.Dmcontents", "dc")
+      .leftJoin("dm.Dmcontents","dc")
       .where('dc.userId1 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
       .orWhere('dc.userId2 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
       .getMany();
     return (checkdm)
   }
 
-  async sendMessage(userId1: string, userId2: string, message: string, match: number = 0, historyId: number = null) {
+  async sendMessage(userId1:string, userId2:string, message:string, match:number = 0, historyId:number = null) {
     if (await this.checkHaveUser(userId1, userId2))
       throw new ForbiddenException('잘못된 유저 정보 입니다.');
-    const dmId = await this.createAndGetDm(userId1, userId2);
+    const dmId =  await this.createAndGetDm(userId1, userId2);
     const send = new Dmcontent();
     send.dmId = dmId;
     send.userId1 = userId1;
@@ -90,9 +90,9 @@ export class DmsService {
     this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
   }
 
-  async sendMessageUserDmID(userId1: string, dmId: number, message: string, match: number = 0, historyId: number = null) {
+  async sendMessageUserDmID(userId1:string, dmId:number, message:string, match:number = 0, historyId:number = null) {
     console.log("bbbbbbbbbbbbbbbbbbb");
-    const result = await this.usersRepository.findOne({ where: { userId: userId1 } });
+    const result = await this.usersRepository.findOne({where: { userId: userId1}});
     if (!result)
       throw new ForbiddenException('유저 정보 없음');
     const userId2 = await this.findDmUser(dmId, userId1);
@@ -111,7 +111,7 @@ export class DmsService {
     this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
   }
 
-  async getAllMessage(userId1: string, userId2: string) {
+  async getAllMessage(userId1:string, userId2:string) {
     if (await this.checkHaveUser(userId1, userId2))
       throw new ForbiddenException('잘못된 유저 정보 입니다.');
     const result = await this.DmcontentRepository
@@ -123,7 +123,7 @@ export class DmsService {
     return (result);
   }
 
-  async getAllMessageUseDmId(userId: string, dmId: number) {
+  async getAllMessageUseDmId(userId: string, dmId:number) {
     const result = await this.DmcontentRepository.findOne({ where: { dmId } });
     if (!result)
       throw new ForbiddenException('존재하지 않는 DM방입니다.');

@@ -13,10 +13,10 @@ import { MessagetDto } from './dto/message.dto';
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
 @Controller('api/dms')
 export class DmsController {
-  constructor(private readonly dmsService: DmsService) { }
+  constructor(private readonly dmsService: DmsService) {}
 
-  @ApiOperation({ summary: 'DM 신청 및 DMid 조회' })
-  @ApiResponse({
+  @ApiOperation({ summary: 'DM 신청 및 DMid 조회'})
+  @ApiResponse ({
     status: 200,
     description: '"return: dmId"',
     type: Number
@@ -27,8 +27,8 @@ export class DmsController {
     return this.dmsService.createAndGetDm(user.userId, otherUser);
   }
 
-  @ApiOperation({ summary: '내 DM 목록' })
-  @ApiResponse({
+  @ApiOperation({ summary: '내 DM 목록'})
+  @ApiResponse ({
     status: 200,
     description: '"return: DM 목록"',
   })
@@ -38,8 +38,8 @@ export class DmsController {
     return this.dmsService.getDmList(user.userId);
   }
 
-  @ApiOperation({ summary: '채널 id로 상대방 userId검색' })
-  @ApiResponse({
+  @ApiOperation({ summary: '채널 id로 상대방 userId검색'})
+  @ApiResponse ({
     status: 200,
     description: '"return: userId"',
   })
@@ -49,47 +49,42 @@ export class DmsController {
     return this.dmsService.findDmUser(dmid, user.userId);
   }
 
-  @ApiOperation({ summary: '메세지 보내기 / 게임신청 (상대방 아이디 통해서)' })
-  @ApiResponse({
+  @ApiOperation({ summary: '메세지 보내기 / 게임신청 (상대방 아이디 통해서)'})
+  @ApiResponse ({
     status: 201,
     description: 'match초기값 = 0 / histortId초기값 = 0 메세지는 바디에 넣어서 보내기',
   })
   @HttpCode(201)
   @Post('getMessage/:otherUser/:match/:historyId')
   async sendMessage(
-    @User() user,
+    @User() user, 
+    @Param('otherUser') otherUser: string,
     @Param('match') match: number,
-  ) {
-    return this.dmsService.sendMessage(user.userId, otherUser, body.message, match, historyId);
-  }
-
-  @ApiOperation({ summary: '메세지 보내기 / 게임신청 (DMID 통해서)' })
-  @ApiResponse({
-=======
+    @Param('historyId') historyId: number,
+    @Body() body: MessagetDto,
     ) {
     return this.dmsService.sendMessage(user.userId, otherUser, body.message, match, historyId);
   }
 
   @ApiOperation({ summary: '메세지 보내기 / 게임신청 (DMID 통해서)'})
   @ApiResponse ({
->>>>>>> 6c453d7d69c089450b77afe7f95e208b337b7270
     status: 201,
     description: 'match초기값 = 0 / histortId초기값 = 0 메세지는 바디에 넣어서 보내기',
   })
   @HttpCode(201)
   @Post('getMessageUseDmId/:dmID/:match/:historyId')
   async sendMessageUserDmID(
-    @User() user,
+    @User() user, 
     @Param('dmID') dmID: number,
     @Param('match') match: number,
     @Param('historyId') historyId: number,
     @Body() body: MessagetDto,
-  ) {
+    ) {
     return this.dmsService.sendMessageUserDmID(user.userId, dmID, body.message, match, historyId);
   }
 
-  @ApiOperation({ summary: '전체 메세지 받기 (상대방 아이디 통해서)' })
-  @ApiResponse({
+  @ApiOperation({ summary: '전체 메세지 받기 (상대방 아이디 통해서)'})
+  @ApiResponse ({
     status: 200,
     description: '최근 메세지가 가장 위로 정렬',
   })
@@ -99,8 +94,8 @@ export class DmsController {
     return this.dmsService.getAllMessage(user.userId, otherUser);
   }
 
-  @ApiOperation({ summary: '전체 메세지 받기 (DMID 통해서)' })
-  @ApiResponse({
+  @ApiOperation({ summary: '전체 메세지 받기 (DMID 통해서)'})
+  @ApiResponse ({
     status: 200,
     description: '최근 메세지가 가장 위로 정렬',
   })
