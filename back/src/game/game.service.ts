@@ -12,7 +12,7 @@ export class GameService {
     public eventsGateway:EventsGateway
   ) {}
 
-  async gameStart(gameId: number){  
+  async gameStart(gameId: number){ 
     if (gameMap[gameId].game_state === 0 && gameMap[gameId].player_one_ready === 1 && gameMap[gameId].player_two_ready === 1){
       this.reset(gameId);
       gameMap[gameId].game_state = 1;
