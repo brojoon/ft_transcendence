@@ -81,7 +81,7 @@ function App() {
       document.addEventListener('keydown', keyDownHandler, false);
     }, []);
 
-    const readyPlayer1 = () => {
+    const readyPlayer1 = (e) => {
       setPlay1(1)
     };
     const readyPlayer2 = () => {
@@ -119,8 +119,9 @@ function App() {
       });
     }, []);
 
-    const changeGameSet = () => {
-      socket.emit("changeGameSet", {game: 1, player1:player1, player2:player2, speed:speed, set: set, map: map, random: random})
+    const changeGameSet = async() => {
+      await socket.emit("changeGameSet", {game: 1, player1:player1, player2:player2, speed:speed, set: set, map: map, random: random})
+      await gameStart();  
     };
     return (
       <div>
@@ -133,9 +134,8 @@ function App() {
           <button onClick={readyPlayer2}>준비</button>
         </div>
         <div>
-          <button onClick={changeGameSet}>세팅 완료</button>
-          <button onClick={gameStart}>게임 시작</button>
-          <b> (세팅완료 눌러야 세팅적용/ player 1,2 모두 레디 해야 시작됨 ) </b>
+          <button onClick={changeGameSet}>게임시작 </button>
+          <b> (player 1,2 모두 레디 해야 시작됨 ) </b>
         </div>
         <div>
           <b>player1 score: {score1} </b>

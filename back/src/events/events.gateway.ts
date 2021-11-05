@@ -56,13 +56,13 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage('changeGameSet')
   async changeGameSet(@MessageBody() data: {game: number, player1:number, player2:number, speed: number, set: number, map: number, random: number }){
     
-    gameMap[data.game].player_one_ready = data.set;
-    gameMap[data.game].player_two_ready = data.map;
+    gameMap[data.game].player_one_ready = data.player1;
+    gameMap[data.game].player_two_ready = data.player2;
     gameMap[data.game].length = data.speed;
     gameMap[data.game].game_set = data.set;
     gameMap[data.game].game_map = data.map;
     gameMap[data.game].random_map = data.random;
-    console.log(gameMap[data.game].game_map);
+    console.log(gameMap[data.game].game_map, gameMap[data.game].player_one_ready, gameMap[data.game].player_two_ready);
   }
 
   @SubscribeMessage('player_one_up')
