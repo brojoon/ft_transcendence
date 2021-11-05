@@ -55,7 +55,7 @@ export class DmsController {
     description: 'match초기값 = 0 / histortId초기값 = 0 메세지는 바디에 넣어서 보내기',
   })
   @HttpCode(201)
-  @Post('getMessage/:otherUser/:match/:historyId')
+  @Post('sendMessage/:otherUser/:match/:historyId')
   async sendMessage(
     @User() user, 
     @Param('otherUser') otherUser: string,
@@ -72,7 +72,7 @@ export class DmsController {
     description: 'match초기값 = 0 / histortId초기값 = 0 메세지는 바디에 넣어서 보내기',
   })
   @HttpCode(201)
-  @Post('getMessageUseDmId/:dmID/:match/:historyId')
+  @Post('sendMessageUseDmId/:dmID/:match/:historyId')
   async sendMessageUserDmID(
     @User() user, 
     @Param('dmID') dmID: number,
