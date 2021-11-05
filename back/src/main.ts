@@ -26,11 +26,11 @@ async function bootstrap() {
 		credentials: true,
 	});
 
-	// app.useStaticAssets(
-	// 	path.join(__dirname, '..', 'public'),
-	// 	//{ prefix: '/public',},
-	// );
-	//API
+	app.useStaticAssets(
+		path.join(__dirname, '..', 'uploads'),
+		{ prefix: '/uploads',},
+	);
+
 	const config = new DocumentBuilder()
 		.setTitle('ft_transcendence API')
 		.setDescription('ft_transcendence 개발을 위한 API 입니다')

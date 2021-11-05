@@ -96,21 +96,7 @@ export class UsersService {
     return(result);
   }
   
-  // profil 수정
-  async updateProfile(userId: string, profile: string) {
-    try{
-      await this.usersRepository.createQueryBuilder()
-          .update()
-          .set({ profile })
-          .where('userId = :userId', {userId})
-          .execute()
-    }catch{
-      throw new ForbiddenException('프로필 업데이트 실패');
-    }
-    return (true);
-  }
-
-  // profil 수정
+  // profile 닉네임 수정
   async updateUsername(userId: string, username: string) {
     const result = await this.connectRepository.findOne({ where: { username } });
     if (result)
@@ -136,6 +122,21 @@ export class UsersService {
     if (!result)
       throw new ForbiddenException('유저 정보 없음');
     return(result.profile);
+  }
+
+  // 프로필 이미지 업로드 
+  async uploadPofileImage(userId:string ,file: Express.Multer.File) {
+    try{
+      const myProfile = `${process.env.URI}${file.path}`
+      await this.usersRepository.createQueryBuilder()
+          .update()
+          .set({ profile: myProfile})
+          .where('userId = :userId', {userId})
+          .execute()
+    }catch{
+      throw new ForbiddenException('프로필 업데이트 실패');
+    }
+    return (true);
   }
 
   // two-factor 상태확인
