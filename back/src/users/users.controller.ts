@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseInterceptors, UseGuards, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseInterceptors, UseGuards, HttpCode, UploadedFile } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { UserDto } from 'common/dto/user.dto';
@@ -9,6 +9,16 @@ import { UserInfoDto } from './dto/userInfo.dto';
 import { UserConnetInfoDto } from './dto/userConnetInfo.dto';
 import { ProfileUrlDto } from './dto/profileUrl.dto';
 import { UsernameDto } from './dto/username.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import multer from 'multer';
+import fs from 'fs';
+import path from 'path';
+
+try {
+  fs.readdirSync('uploads');
+} catch (error) {
+  fs.mkdirSync('uploads');
+}
 
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('ts_token')
@@ -45,7 +55,7 @@ export class UsersController {
     type: String,
   })
   @HttpCode(200)
-  @Get('deleteuser/:userId/')
+  @Get('deleteuser/:userId')
   async deleteUser(@Param('userId') userId:string) {
     return this.usersService.deleteUser(userId);
   }
@@ -120,16 +130,28 @@ export class UsersController {
     return this.usersService.allUserConnectMember();
   }
 
-  @ApiOperation({ summary: '프로필 수정'})
+  @ApiOperation({ summary: '프로필 사진업로드 및 수정 / 업로드시 파일이름 "userID.확장자"로 보내기'})
   @ApiResponse ({
     status: 201,
-    description: '성공시 true',
+    description: '파일크기제한 1MB / Fieldname = image / [ex)const formData = new FormData();  formData.append("image", data);]',
     type: Boolean
   })
   @HttpCode(201)
-  @Post('update-profile')
-  async updateProfile(@Body() body: ProfileUrlDto) {
-    return this.usersService.updateProfile(body.userId, body.profile);
+  @Post('upload')
+  @UseInterceptors(FileInterceptor('image', {
+    storage: multer.diskStorage({
+      destination(req, file, cb) {
+        cb(null, 'uploads/');
+      },
+      filename(req, file, cb) {
+        const ext = path.extname(file.originalname);
+        cb(null, path.basename(file.originalname, ext) + ext);
+      },
+    }),
+    limits: { fileSize: 1024 * 1024 }, // 1MB
+  }))
+  async uploadFile(@User() User, @UploadedFile() file: Express.Multer.File) {
+    return (this.usersService.uploadPofileImage(User.userId, file)) ;
   }
 
   @ApiOperation({ summary: 'username 수정'})

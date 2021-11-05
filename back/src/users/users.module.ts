@@ -7,7 +7,7 @@ import { Connect } from 'src/entities/Connect';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Users, Connect]),
+    TypeOrmModule.forFeature([Users, Connect])
   ],
   controllers: [UsersController],
   providers: [UsersService],

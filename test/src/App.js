@@ -119,6 +119,30 @@ function App() {
       });
     }, []);
 
+
+    //////////upload////////
+    const headers = { 
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvYXV0aElkIjo4MTczNywidXNlcm5hbWUiOiJZb3VuZ3JvayBDaG8iLCJ1c2VySWQiOiJ5b3VuZ3JjaCIsImVtYWlsIjoieW91bmdyY2hAc3R1ZGVudC40MnNlb3VsLmtyIiwicHJvZmlsZSI6Imh0dHBzOi8vY2RuLmludHJhLjQyLmZyL3VzZXJzL3lvdW5ncmNoLmpwZyIsImlhdCI6MTYzNjEwODMwNSwiZXhwIjoxNjM2MTk0NzA1fQ.nUtKDdWMKX9JWrh5JC50dM8JNG6EBriN8AwXPe-lHkg',
+    }
+    const [content, setContent] = useState("");
+    const onChange = e => {
+      setContent(e.target.files[0]);
+    };
+    const onSubmit = e => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append("image", content); 
+      axios.defaults.headers.post = null
+      axios.post("http://localhost:3095/api/users/upload", formData, {headers})
+        .then(res => {
+          alert("successfully");
+        })
+        .catch(err => {
+          alert("fail");
+        });
+    };
+    ////////////////////////////////
+
     const changeGameSet = async() => {
       await socket.emit("changeGameSet", {game: 1, player1:player1, player2:player2, speed:speed, set: set, map: map, random: random})
       await gameStart();  
@@ -172,6 +196,10 @@ function App() {
           <b>random: {random} </b>
           <button onClick={random0}>기본</button>
           <button onClick={random1}>랜덤팅김</button>
+          <form onSubmit={onSubmit}>
+              <input type="file" onChange={onChange} />
+              <button type="submit">Upload</button>
+          </form>
         </div>
       </div>
     );
