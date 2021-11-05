@@ -13,7 +13,6 @@ import { Users } from 'src/entities/Users';
 
 dotenv.config();
 const config: TypeOrmModuleOptions = {
-
   // type: 'postgres',
   // host: process.env.DB_HOST,
   // port: +process.env.DB_PORT,

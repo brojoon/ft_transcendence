@@ -58,16 +58,21 @@ export class DmsController {
   @Post('getMessage/:otherUser/:match/:historyId')
   async sendMessage(
     @User() user,
-    @Param('otherUser') otherUser: string,
     @Param('match') match: number,
-    @Param('historyId') historyId: number,
-    @Body() body: MessagetDto,
   ) {
     return this.dmsService.sendMessage(user.userId, otherUser, body.message, match, historyId);
   }
 
   @ApiOperation({ summary: '메세지 보내기 / 게임신청 (DMID 통해서)' })
   @ApiResponse({
+=======
+    ) {
+    return this.dmsService.sendMessage(user.userId, otherUser, body.message, match, historyId);
+  }
+
+  @ApiOperation({ summary: '메세지 보내기 / 게임신청 (DMID 통해서)'})
+  @ApiResponse ({
+>>>>>>> 6c453d7d69c089450b77afe7f95e208b337b7270
     status: 201,
     description: 'match초기값 = 0 / histortId초기값 = 0 메세지는 바디에 넣어서 보내기',
   })
