@@ -36,18 +36,6 @@ import { GameService } from './game/game.service';
 			isGlobal: true
 		  }),
 		TypeOrmModule.forRoot(ormconfig),
-		TypeOrmModule.forFeature([
-			Users,
-			Connect,
-			Friend,
-			Block,
-			Dm,
-			Dmcontent,
-			Chatchannel,
-			Chatcontent,
-			Chatmember,
-			History
-		]),
 		AuthModule,
 		UsersModule,
 		FriendsModule,
@@ -57,15 +45,7 @@ import { GameService } from './game/game.service';
 		GameModule,
 	],
 	controllers: [AppController],
-	providers: [
-		AppService,
-		JwtStrategy,
-		UsersService,
-		FriendsService,
-		DmsService,
-		ChannelsService,
-		GameService
-	],
+	providers: [AppService],
 })
 
 export class AppModule implements NestModule{
