@@ -62,7 +62,7 @@ export class AuthController {
     this.authService.Join(user.oauthId, user.username, user.userId, user.email, user.profile);
     const token = await this.authService.login(user);
     res.cookie('ts_token', token.access_token, { httpOnly: false });
-    res.status(302).redirect('http://localhost:3090/ft_transcendence/home')
+    res.send(null);
   }
 
   @Post('qrlogin')

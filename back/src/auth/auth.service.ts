@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Connection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Users } from 'src/entities/Users';
 import * as bcrypt from 'bcrypt'
 import { jwtConstants } from './constants';
@@ -9,7 +9,6 @@ import { UserDto } from 'common/dto/user.dto';
 import { authenticator } from 'otplib';
 import { toFileStream } from 'qrcode';
 import { Connect } from 'src/entities/Connect';
-
 
 @Injectable()
 export class AuthService {
@@ -20,29 +19,32 @@ export class AuthService {
   ) {}
 
   async isTwoFactorAuthenticationCodeValid(twoFactorAuthenticationCode: string, userId:string) {
-    const result = await this.usersRepository.findOne({
-      where: { userId },
-      select: ['twoFactorAuth'],
-    });
-    return authenticator.verify({token: twoFactorAuthenticationCode,secret: result.twoFactorAuth})
+    try {
+      const result = await this.usersRepository.findOne({
+        where: { userId },
+        select: ['twoFactorAuth'],
+      });
+      return authenticator.verify({token: twoFactorAuthenticationCode,secret: result.twoFactorAuth})      
+    } catch (error) {
+      throw new ForbiddenException('isTwoFactorAuthenticationCodeValid 실패');
+    }
   }
 
   async generateTwoFactorAuthenticationSecret(userId:string, email:string) {
-    // secret / otpauthUrl 생성
     const secret = authenticator.generateSecret();
     const otpauthUrl = await authenticator.keyuri(email, jwtConstants.APP_NAME, secret);
     try{
       await this.usersRepository.createQueryBuilder()
-      .update()
-      .set({
-        twoFactorAuth: `${secret}`,
-      })
-      .where('userId = :userId', { userId })
-      .execute();
+        .update()
+        .set({
+          twoFactorAuth: `${secret}`,
+        })
+        .where('userId = :userId', { userId })
+        .execute();
+      return { secret, otpauthUrl };
     }catch{
       throw new ForbiddenException('유저 정보 업데이트 실패');
     }
-    return { secret, otpauthUrl };
   }
 
   async pipeQrCodeStream(stream: Response, otpauthUrl: string) {
@@ -50,11 +52,15 @@ export class AuthService {
   }
 
   async checktwofactorEnable(userId: string) {
-    const result = await this.usersRepository.findOne({
-      where: { userId },
-      select: ['twofactorEnable'],
-    });
-    return result.twofactorEnable;
+    try {
+      const result = await this.usersRepository.findOne({
+        where: { userId },
+        select: ['twofactorEnable'],
+      });
+      return result.twofactorEnable;     
+    } catch (error) {
+      throw new ForbiddenException('checktwofactorEnable 실패');
+    }
   }
 
   async validateUser(oauthId: string, password: string): Promise<any> {
@@ -77,30 +83,38 @@ export class AuthService {
     const user =  await this.usersRepository.findOne({ where: { oauthId } });
     if (user)
       throw new ForbiddenException('이미 존재하는 사용자입니다');
-    const hashedPassword = await bcrypt.hash(process.env.SECRET, 12);
-    const newUser = new Users();
-    newUser.oauthId = oauthId;
-    newUser.userId = userId;
-    newUser.username = userId;
-    newUser.email = email;
-    newUser.profile = profile;
-    newUser.password = hashedPassword;
-    await this.usersRepository.save(newUser);
-    const connect = new Connect();
-    connect.userId = userId;
-    connect.state = true;
-    await this.connectRepository.save(connect);
-    return (true);
+    try {
+      const hashedPassword = await bcrypt.hash(process.env.SECRET, 12);
+      const newUser = new Users();
+      newUser.oauthId = oauthId;
+      newUser.userId = userId;
+      newUser.username = userId;
+      newUser.email = email;
+      newUser.profile = profile;
+      newUser.password = hashedPassword;
+      await this.usersRepository.save(newUser);
+      const connect = new Connect();
+      connect.userId = userId;
+      connect.state = true;
+      await this.connectRepository.save(connect);
+      return (true);      
+    } catch (error) {
+      throw new ForbiddenException('회원 가입 실패');
+    }
   }
 
   async login(user: UserDto) {
-    const payload = {
-      oauthId: user.oauthId,
-      username: user.username,
-      userId: user.userId,
-      email: user.email,
-      profile: user.profile 
-    };
-    return {access_token: this.jwtService.sign(payload)};
+    try {
+      const payload = {
+        oauthId: user.oauthId,
+        username: user.username,
+        userId: user.userId,
+        email: user.email,
+        profile: user.profile 
+      };
+      return {access_token: this.jwtService.sign(payload)};      
+    } catch (error) {
+      throw new ForbiddenException('토큰 로그인 실패');
+    }
   }
 }
