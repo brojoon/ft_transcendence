@@ -9,8 +9,6 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 declare const module: any;
 
-
-
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule);
 	//예외필터
@@ -21,16 +19,17 @@ async function bootstrap() {
 		  transform: true,
 		}),
 	);
+	// Cors에러 안나게 프런트와 소통
 	app.enableCors({
 		origin: true,
 		credentials: true,
 	});
-
+	// 경로파일 열어볼수 있게 설정
 	app.useStaticAssets(
 		path.join(__dirname, '..', 'uploads'),
 		{ prefix: '/uploads',},
 	);
-
+	// API문서 설정
 	const config = new DocumentBuilder()
 		.setTitle('ft_transcendence API')
 		.setDescription('ft_transcendence 개발을 위한 API 입니다')
@@ -50,15 +49,16 @@ async function bootstrap() {
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
-
+	// passport초기화
 	app.use(passport.initialize());
-	
+	// 서버 리슨 포트
 	const port = process.env.PORT || 3095;
 	await app.listen(port);
-
+	// HOT RELOADING
 	if (module.hot) {
 		module.hot.accept();
 		module.hot.dispose(() => app.close());
 	}
 }
+
 bootstrap();
