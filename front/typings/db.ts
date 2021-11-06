@@ -26,8 +26,8 @@ export interface IDmList {
 export interface IChatList {
   id: number,
   dmId: number,
-  userId1: string,
-  userId2: string,
+  userId1: string | undefined,
+  userId2: string | undefined,
   message: string,
   match: number,
   createdAt: Date,

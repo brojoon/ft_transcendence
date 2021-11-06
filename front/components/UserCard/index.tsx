@@ -19,7 +19,7 @@ const bull = (
 );
 
 const UserCard = () => {
-  const { data } = useSWR<IUser | null>('/api/users', fetcher, {
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
   return (
@@ -41,12 +41,12 @@ const UserCard = () => {
           }}
         >
           <Avatar
-            src={data?.profile}
+            src={myData?.profile}
             alt="Avatar"
             style={{ width: '120px', height: '120px', marginBottom: '25px' }}
           />
           <Typography variant="h5" component="div">
-            hyungjki
+            {myData?.userId}
           </Typography>
         </CardContent>
         <CardActions

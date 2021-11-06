@@ -8,11 +8,9 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
-import io from 'socket.io-client';
 import { useParams } from 'react-router-dom';
-
-let token = document.cookie.slice(document.cookie.indexOf('ts_token') + 9);
-token = token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' '));
+import getSocket from '@utils/useSocket';
+import getToken from '@utils/getToken';
 
 const DirectMessage = () => {
   const [chat, setChat] = useState('');
@@ -20,37 +18,41 @@ const DirectMessage = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-  const { data: dmList } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
-  // dmList?.forEach((dm) => {
-  //   if (dm.id === parseInt(id)) {
-  //     dm.Dmcontents[0].userId1 === myData?.userId
-  //       ? (receiver = dm.Dmcontents[0].userId2)
-  //       : (receiver = dm.Dmcontents[0].userId1);
-  //   }
-  // });
+  const { data: userId } = useSWR<string>(`/api/dms/findDmUser/${id}`, fetcher);
+
   const { data: chatData, mutate: mutateChat } = useSWR<IChatList[]>(
-    `/api/dms/getMessage/${myData?.userId}/dmtest1`,
+    `/api/dms/getAllMessageUseDmId/${id}`,
     fetcher,
   );
   const scrollbarRef = useRef<Scrollbars>(null);
-  const { data: userData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
-  const socket = io.connect('http://localhost:3095');
-
+  const socket = getSocket();
   const onSubmitChat = useCallback(
     (e) => {
       e.preventDefault();
       if (chat?.trim() && chatData) {
+        mutateChat((prevChatData) => {
+          prevChatData?.unshift({
+            id: prevChatData[0].id + 1,
+            dmId: parseInt(id),
+            userId1: myData?.userId,
+            userId2: userId,
+            message: chat,
+            match: 0,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            historyId: 0,
+          });
+          return prevChatData;
+        }, false);
         axios.post(
-          '/api/dms/getMessage/hyungjki/dmtest1/0/0',
+          `/api/dms/sendMessage/${userId}/0/0`,
           {
             message: chat,
           },
           {
             withCredentials: true,
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${getToken()}`,
             },
           },
         );
@@ -71,11 +73,22 @@ const DirectMessage = () => {
   );
   const onMessage = useCallback((data) => {
     console.log('dm왔다!');
-    if (data.userId1 != userData?.userId) {
+    if (data.userId1 != myData?.userId) {
       mutateChat((prevchatData) => {
         prevchatData?.unshift(data);
         return prevchatData;
-      }, true);
+      }, true).then(() => {
+        if (scrollbarRef.current) {
+          if (
+            scrollbarRef.current.getScrollHeight() <
+            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+          ) {
+            setTimeout(() => {
+              scrollbarRef.current?.scrollToBottom();
+            }, 50);
+          }
+        }
+      });
     }
   }, []);
 
@@ -86,12 +99,11 @@ const DirectMessage = () => {
     };
   }, [socket, onMessage]);
 
-  // useEffect(() => {
-  //   socket?.on('dm', onMessage);
-  //   return () => {
-  //     socket?.off('dm', onMessage);
-  //   };
-  // }, [socket, onMessage]);
+  useEffect(() => {
+    setTimeout(() => {
+      scrollbarRef.current?.scrollToBottom();
+    }, 50);
+  }, []);
 
   return (
     <div

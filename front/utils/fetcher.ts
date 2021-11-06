@@ -1,14 +1,12 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-let token = document.cookie.slice(document.cookie.indexOf('ts_token') + 9);
-token = token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' '));
+import getToken from './getToken';
 
 const fetcher = (url: string): any => axios.get(url, {
 	withCredentials: true,
 	headers: {
-		Authorization: `Bearer ${token}`,
+		Authorization: `Bearer ${getToken()}`,
 	}
 }).then((response) => response.data).catch((error) => {
 	if (error.response.data.code === 401) {

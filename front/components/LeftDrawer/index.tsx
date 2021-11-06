@@ -75,20 +75,28 @@ const LeftDrawer = () => {
                   dm.Dmcontents[0].userId1 != myData?.userId
                 )
                   return (
-                    <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
+                    <>
+                      <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
+                      <ListItemText
+                        primary={dm.Dmcontents[0].userId1}
+                        style={{ marginLeft: '12px', color: 'white' }}
+                      />
+                    </>
                   );
                 else if (
                   user.userId === dm.Dmcontents[0].userId2 &&
                   dm.Dmcontents[0]?.userId2 != myData?.userId
                 )
                   return (
-                    <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
+                    <>
+                      <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
+                      <ListItemText
+                        primary={dm.Dmcontents[0].userId2}
+                        style={{ marginLeft: '12px', color: 'white' }}
+                      />
+                    </>
                   );
               })}
-              <ListItemText
-                primary={dm.Dmcontents[0].userId1}
-                style={{ marginLeft: '12px', color: 'white' }}
-              />
             </ListItem>
           </Link>
         );
