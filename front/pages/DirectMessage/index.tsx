@@ -1,5 +1,5 @@
 import ChatBox from '@components/ChatBox';
-import ChatHeader from '@components/ChatHeader';
+import ChatHeader from '@components/DMChatHeader';
 import ChatList from '@components/ChatList';
 import { AutoFixOffSharp } from '@mui/icons-material';
 import { IChatList, IDmList, IUser } from '@typings/db';

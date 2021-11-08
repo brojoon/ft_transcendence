@@ -1,6 +1,6 @@
 import React from 'react';
 
-import LeftDrawer from '@components/LeftDrawer';
+import LeftDrawer from '@components/DMLeftDrawer';
 import { Container } from './style';
 import { Route, Switch } from 'react-router-dom';
 import DirectMessage from '@pages/DirectMessage';
