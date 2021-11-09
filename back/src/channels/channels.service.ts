@@ -20,8 +20,8 @@ export class ChannelsService {
 
   // private 제외
   async allChannelList() {
-    const ret = await this.chatchannelRepository.find({select : ["id", "name", "type", "createdAt", "deleteAt", "updatedAt"]});
-
+    //const ret = await this.chatchannelRepository.find({select : ["id", "name", "type", "createdAt", "deleteAt", "updatedAt"]});
+    const ret = await this.chatchannelRepository.find({select:["id", "name", "type", "authId", "createdAt", "updatedAt", "deleteAt"]});
     return ret;
   }
   
@@ -30,7 +30,7 @@ export class ChannelsService {
     const ret = await this.chatchannelRepository.createQueryBuilder('c')
     .leftJoin('c.Chatmembers', 'm')
     .where('m.userId = :userid', {userid})
-    .select (["c.id", "c.name", "c.type", "c.createdAt", "c.deleteAt", "c.updatedAt"])
+    .select (["c.id", "c.name", "c.authId", "c.type", "c.createdAt", "c.deleteAt", "c.updatedAt"])
     .getMany();
 
     return ret;
@@ -43,6 +43,7 @@ export class ChannelsService {
     const newChannel = new Chatchannel();
     newChannel.name = channelName;
     newChannel.type = channelType;
+    newChannel.authId = userId;
     console.log("password:", password);
     if (password)
     {
@@ -132,7 +133,11 @@ export class ChannelsService {
     */
     if (!this.chatmemberRepository.find({channelId, userId}))
       throw new UnauthorizedException("채팅방에 참여중이지 않은 사용자인데 참여자 목록을 보려고 함");
-    const userList = await this.chatmemberRepository.find({channelId})
+    //const userList = await this.chatmemberRepository.find({channelId})
+    const userList = await this.chatchannelRepository.createQueryBuilder('c')
+    .leftJoin('c.Chatmembers', 'm')
+    .select(["c.id", "c.name", "c.type", "c.createdAt", "c.updatedAt", "c.deleteAt", "m.userId", "m.auth", "m.mute"])
+    .getMany();
     return userList;
   }
 

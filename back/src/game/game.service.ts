@@ -142,10 +142,18 @@ export class GameService {
   isPannel(gameId):boolean{
     if (gameMap[gameId].ball_x < 100 && gameMap[gameId].player_one_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_one_y +100)
       return true;
-    else if (gameMap[gameId].ball_x > 900 && gameMap[gameId].player_two_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_two_y +100)
-      return true;
-    else
+    else if (gameMap[gameId].ball_x < 100)
+    {
+      gameMap[gameId].player_two_point++;
       return false;
+    }
+    if (gameMap[gameId].ball_x > 900 && gameMap[gameId].player_two_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_two_y +100)
+      return true;
+    else if (gameMap[gameId].ball_x > 900)
+    {
+      gameMap[gameId].player_two_point++;
+      return false;
+    }
   }
 
   changeDir(dir_x:number, dir_y:number, vertical_x, vertical_y){//dir_x, dir_y 방향벡터의 크기는 1, vertical_x y 둘중 하나는 0 나머지 하나는 1; 

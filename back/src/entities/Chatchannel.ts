@@ -13,6 +13,9 @@ export class Chatchannel {
   @Column("int", { name: "type", default: () => "'0'" })
   type: number;
 
+  @Column("varchar", { name: "authId", length:30})
+  authId: string;
+
   @Column("varchar", { name: "password", nullable: true, length: 100 })
   password: string | null;
 
