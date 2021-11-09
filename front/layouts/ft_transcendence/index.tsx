@@ -14,28 +14,23 @@ import useSWR from 'swr';
 import { Container } from './style';
 import { disconnect } from 'process';
 import io from 'socket.io-client';
+import getSocket from '@utils/useSocket';
 
 const ft_transcendence = () => {
-  const { data: userData } = useSWR<IUser | null>('/api/users', fetcher, {
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-  const { data: dmList } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
-  console.log(userData);
-  const myDmNumber: number[] = [];
-  for (let dm in dmList) {
-    myDmNumber.push(dmList[parseInt(dm)].id);
-  }
 
-  const socket = io.connect('http://localhost:3095');
+  const socket = getSocket();
 
   useEffect(() => {
     socket.emit('login', {
-      userId: userData?.userId,
-      Dms: myDmNumber,
+      userId: myData?.userId,
+      Dms: [7, 6],
       channels: [],
     });
   }, [socket]);
-  if (!userData) return null;
+  if (!myData) return null;
   return (
     <Container>
       <LeftSideBar />

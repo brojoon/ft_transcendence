@@ -5,7 +5,7 @@ import React, {useState, useEffect, useCallback} from "react";
 import io from "socket.io-client"; //모듈 가져오기
 import axios from 'axios';
 
-const socket = io.connect("http://localhost:3095"); //백엔드 서버 포트를3001와 socket연결
+const socket = io.connect("http://localhost:3095");
 
 socket.emit("game", {game: 1})
 

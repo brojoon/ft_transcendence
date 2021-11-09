@@ -73,14 +73,14 @@ export class DmsController {
   })
   @HttpCode(201)
   @Post('sendMessageUseDmId/:dmID/:match/:historyId')
-  async sendMessageUserDmID(
+  async sendMessageUserDmId(
     @User() user, 
     @Param('dmID') dmID: number,
     @Param('match') match: number,
     @Param('historyId') historyId: number,
     @Body() body: MessagetDto,
     ) {
-    return this.dmsService.sendMessageUserDmID(user.userId, dmID, body.message, match, historyId);
+    return this.dmsService.sendMessageUserDmId(user.userId, dmID, body.message, match, historyId);
   }
 
   @ApiOperation({ summary: '전체 메세지 받기 (상대방 아이디 통해서)'})
