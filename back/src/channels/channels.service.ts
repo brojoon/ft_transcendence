@@ -33,6 +33,16 @@ export class ChannelsService {
     .select (["c.id", "c.name", "c.authId", "c.type", "c.createdAt", "c.deleteAt", "c.updatedAt"])
     .getMany();
 
+    const test = await this.chatchannelRepository.createQueryBuilder('c')
+    .leftJoin('c.Chatmembers', 'm')
+    .where('m.userId = :userid', {userid})
+    .select (["c.id", "c.name", "c.type", "c.createdAt", "c.deleteAt", "c.updatedAt"])
+    .getMany();
+    
+    let size = Object.keys(test).length
+    while(size--){
+      
+    }
     return ret;
   }
 
