@@ -146,6 +146,7 @@ export class ChannelsService {
     //const userList = await this.chatmemberRepository.find({channelId})
     const userList = await this.chatchannelRepository.createQueryBuilder('c')
     .leftJoin('c.Chatmembers', 'm')
+    .where("c.id=:channelId", {channelId})
     .select(["c.id", "c.name", "c.type", "c.createdAt", "c.updatedAt", "c.deleteAt", "m.userId", "m.auth", "m.mute"])
     .getMany();
     return userList;
