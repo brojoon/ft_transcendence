@@ -31,6 +31,15 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @ConnectedSocket() socket: Socket ){
     console.log('login', socket.id);
     onlineMap[socket.id] = data.userId;
+    try{
+      await this.connectRepository.createQueryBuilder()
+          .update()
+          .set({ state: true })
+          .where('userId = :userId', {userId: onlineMap[socket.id]})
+          .execute()
+    }catch{
+      throw new ForbiddenException('접속상태 업뎃 실패');
+    }
     socket.emit('onlineList', Object.values(onlineMap));
     data.Dms.forEach((dm) => {
       socket.join(`dm-${dm}`);
@@ -91,15 +100,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   async handleConnection(@ConnectedSocket() socket: Socket) {
     console.log(`connected : ${socket.id}`);
-    // try{
-    //   await this.connectRepository.createQueryBuilder()
-    //       .update()
-    //       .set({ state: true })
-    //       .where('userId = :userId', {userId: onlineMap[socket.id]})
-    //       .execute()
-    // }catch{
-    //   throw new ForbiddenException('접속상태 업뎃 실패');
-    // }
   }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
@@ -107,14 +107,14 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     delete onlineMap[socket.id];
     socket.leave(`game-1`);
     socket.emit('onlineList', Object.values(onlineMap));
-    // try{
-    //   await this.connectRepository.createQueryBuilder()
-    //       .update()
-    //       .set({ state: false })
-    //       .where('userId = :userId', {userId: onlineMap[socket.id]})
-    //       .execute()
-    // }catch{
-    //   throw new ForbiddenException('접속상태 업뎃 실패');
-    // }
+    try{
+      await this.connectRepository.createQueryBuilder()
+          .update()
+          .set({ state: false })
+          .where('userId = :userId', {userId: onlineMap[socket.id]})
+          .execute()
+    }catch{
+      throw new ForbiddenException('접속상태 업뎃 실패');
+    }
   }
 }
