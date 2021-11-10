@@ -16,7 +16,7 @@ export class GameService {
     if (gameMap[gameId].game_state === 0 && gameMap[gameId].player_one_ready === 1 && gameMap[gameId].player_two_ready === 1){
       this.reset(gameId);
       gameMap[gameId].game_state = 1;
-      gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), 3);
+      gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), 4);
     }     
     //console.log("mapmod", gameMap[gameId]);
   }
