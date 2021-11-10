@@ -15,22 +15,22 @@ import { Container } from './style';
 import { disconnect } from 'process';
 import io from 'socket.io-client';
 import getSocket from '@utils/useSocket';
-import getDMList from '@utils/myDMList';
 
 const ft_transcendence = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
+  const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
+  const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
 
-  const socket = getSocket();
-  let DMList = getDMList();
   console.log('DMList', DMList);
-  console.log('socket', socket);
+  console.log('ChannelList', ChannelList);
+  let socket = getSocket();
   useEffect(() => {
     socket.emit('login', {
       userId: myData?.userId,
       Dms: DMList,
-      channels: [],
+      channels: ChannelList,
     });
   }, [socket]);
   if (!myData) return null;

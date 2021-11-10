@@ -14,15 +14,17 @@ const ChannelHeader: VFC<Props> = ({ content }) => {
   const { id } = useParams<{ id: string }>();
 
   return (
-    <Box>
-      <AppBar position="static" sx={{ bgcolor: '#272727' }}>
-        <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {content}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-    </Box>
+    <>
+      <Box style={{ width: '100%' }}>
+        <AppBar position="static" sx={{ bgcolor: '#272727' }}>
+          <Toolbar>
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              {content}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+      </Box>
+    </>
   );
 };
 

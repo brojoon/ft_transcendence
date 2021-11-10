@@ -71,26 +71,29 @@ const DirectMessage = () => {
     },
     [chat],
   );
-  const onMessage = useCallback((data) => {
-    console.log('dm왔다!');
-    if (data.userId1 != myData?.userId) {
-      mutateChat((prevchatData) => {
-        prevchatData?.unshift(data);
-        return prevchatData;
-      }, true).then(() => {
-        if (scrollbarRef.current) {
-          if (
-            scrollbarRef.current.getScrollHeight() <
-            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
-          ) {
-            setTimeout(() => {
-              scrollbarRef.current?.scrollToBottom();
-            }, 50);
+  const onMessage = useCallback(
+    (data) => {
+      console.log('dm왔다!');
+      if (data.userId1 != myData?.userId) {
+        mutateChat((prevchatData) => {
+          prevchatData?.unshift(data);
+          return prevchatData;
+        }, true).then(() => {
+          if (scrollbarRef.current) {
+            if (
+              scrollbarRef.current.getScrollHeight() <
+              scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+            ) {
+              setTimeout(() => {
+                scrollbarRef.current?.scrollToBottom();
+              }, 50);
+            }
           }
-        }
-      });
-    }
-  }, []);
+        });
+      }
+    },
+    [chatData],
+  );
 
   useEffect(() => {
     socket?.on('dm', onMessage);

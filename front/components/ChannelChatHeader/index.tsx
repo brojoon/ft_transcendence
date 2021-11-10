@@ -11,10 +11,10 @@ import fetcher from '@utils/fetcher';
 import Fab from '@mui/material/Fab';
 
 interface Props {
-  content: string;
+  onClickMembersToggle: (e: any) => void;
 }
 
-const ChannelChatHeader = () => {
+const ChannelChatHeader: VFC<Props> = ({ onClickMembersToggle }) => {
   const { id } = useParams<{ id: string }>();
   const { data: channelMemberList } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id}`,
@@ -27,7 +27,11 @@ const ChannelChatHeader = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {channelMemberList ? channelMemberList[0]?.name : ''}
           </Typography>
-          <Fab aria-label="add" style={{ width: '40px', height: '40px' }}>
+          <Fab
+            aria-label="add"
+            style={{ width: '40px', height: '40px' }}
+            onClick={onClickMembersToggle}
+          >
             <GroupsIcon />
           </Fab>
         </Toolbar>

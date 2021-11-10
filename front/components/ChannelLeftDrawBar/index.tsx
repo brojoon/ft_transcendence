@@ -36,6 +36,7 @@ const ChannelLeftDrawBar = () => {
         height: '100%',
         padding: '30px 15px',
         backgroundColor: '#363636',
+        borderRight: '1px solid #4f4f4f',
       }}
     >
       <input

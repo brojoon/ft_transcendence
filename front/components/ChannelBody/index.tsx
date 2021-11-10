@@ -46,8 +46,14 @@ const ChannelBody = () => {
                   <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
                     <CardActionArea>
                       <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                          {Channel.name}
+                        <Typography
+                          gutterBottom
+                          variant="h5"
+                          component="div"
+                          style={{ display: 'flex', justifyContent: 'space-between' }}
+                        >
+                          <span>{Channel.name}</span>
+                          <span style={{ right: 0 }}>hi</span>
                         </Typography>
                         <Typography variant="body2" color="hsla(0,0%,100%,.7)">
                           {Channel.authId}
