@@ -14,8 +14,7 @@ import { Users } from 'src/entities/Users';
 dotenv.config();
 const config: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: 'postgresql',
-  //host: process.env.DB_HOST,
+  host: process.env.NODE_ENV === 'development' ? process.env.DB_HOST : process.env.DB_HOST_PROD,
   port: +process.env.DB_PORT,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
@@ -44,7 +43,7 @@ const config: TypeOrmModuleOptions = {
   cli: { migrationsDir: 'src/migrations' },
   autoLoadEntities: true,
   // start:dev일땐 false / start:setdb일댄 true
-  synchronize: process.env.NODE_ENV !== 'development',// 처음 true로 표  만들고 한번 만들면 false로 바꾼다.
+  synchronize: process.env.NODE_ENV === 'production',
   logging: true,
   keepConnectionAlive: true,
   retryAttempts: 2,

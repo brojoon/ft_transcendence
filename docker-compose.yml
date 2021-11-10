@@ -28,6 +28,20 @@ services:
       - postgresql
     networks:
       - database
+      - frontApp
+
+  front:
+    build:
+      context: ./test
+      dockerfile: Dockerfile
+    container_name: front
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - back
+    networks:
+      - frontApp
 
 volumes:
   postgresql:
@@ -35,49 +49,5 @@ volumes:
 networks:
   database:
     driver: bridge
-
-
-# version: "3"
-# services:
-#   postgres:
-#     image: postgres:latest
-#     container_name: postgres
-#     restart: always
-#     ports:
-#         - "5432:5432"
-#     networks:
-#       net:
-#         ipv4_address: 172.16.238.10
-#     env_file: .env
-#     environment:
-#         POSTGRES_USER: "${POSTGRES_USER}"
-#         POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-#         POSTGRES_DB: "${POSTGRES_DB}"
-#         TZ: "Asia/Seoul"
-#     volumes:
-#       - ./postgresql:/var/lib/postgresql/data
-#   back:
-#     build:
-#       context: ./back
-#       dockerfile: Dockerfile
-#     container_name: back
-#     restart: always
-#     ports:
-#       - 3095:3095
-#     links:
-#       - postgres
-#     depends_on:
-#       - postgres
-#     networks:
-#       net:
-#         ipv4_address: 172.16.238.11
-
-# volumes:
-#   postgresql:
-
-# networks:
-#   net:
-#     ipam:
-#       driver: default
-#       config:
-#         - subnet: "172.16.238.0/24"
+  frontApp:
+    driver: bridge
