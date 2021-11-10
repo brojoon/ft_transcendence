@@ -13,21 +13,20 @@ import { Users } from 'src/entities/Users';
 
 dotenv.config();
 const config: TypeOrmModuleOptions = {
-  // type: 'postgres',
-  // host: process.env.DB_HOST,
-  // port: +process.env.DB_PORT,
-  // username: process.env.DB_USERNAME,
-  // password: process.env.DB_PASSWORD,
-  // database: process.env.DB_DATABASE,
+  type: 'postgres',
+  host: 'postgresql',
+  //host: process.env.DB_HOST,
+  port: +process.env.DB_PORT,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
 
-  //host: '172.16.238.10',
-
-  type: 'mysql',
-  host: process.env.DB_HOST1,
-  port: +process.env.DB_PORT1,
-  username: process.env.DB_USERNAME1,
-  password: process.env.DB_PASSWORD1,
-  database: process.env.DB_DATABASE1,
+  // type: 'mysql',
+  // host: process.env.DB_HOST1,
+  // port: +process.env.DB_PORT1,
+  // username: process.env.DB_USERNAME1,
+  // password: process.env.DB_PASSWORD1,
+  // database: process.env.DB_DATABASE1,
 
   entities: [
     Block,

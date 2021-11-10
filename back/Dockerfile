@@ -11,12 +11,7 @@ RUN npm install
 
 COPY . .
 
-#RUN dockerize -wait tcp://172.16.238.10:5432 -timeout 30s
-
 EXPOSE 3095
 
-# RUN echo "back start"
-# CMD [ "npm", "run", "start" ]
-
-RUN chmod +x docker-entrypoint.sh  
+RUN chmod 777 docker-entrypoint.sh  
 ENTRYPOINT ./docker-entrypoint.sh

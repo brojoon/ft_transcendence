@@ -16,8 +16,8 @@ import { GameModule } from './game/game.module';
 @Module({
 	imports: [
 		ConfigModule.forRoot({
-			isGlobal: true
-		  }),
+			isGlobal: true,
+		}),
 		TypeOrmModule.forRoot(ormconfig),
 		AuthModule,
 		UsersModule,
