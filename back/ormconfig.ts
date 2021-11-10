@@ -39,6 +39,7 @@ const config: TypeOrmModuleOptions = {
     History,
     Users
   ],
+  
   migrations: [__dirname + '/src/migrations/*.ts'],
   cli: { migrationsDir: 'src/migrations' },
   autoLoadEntities: true,
