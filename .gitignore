@@ -34,7 +34,7 @@
 #.vscode
 *.vscode
 
-node_modules
-./back/ormconfig.ts
-ormconfig.ts
-postgresql
+/node_modules
+# ./back/ormconfig.ts
+# ormconfig.ts
+/postgresql

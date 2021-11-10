@@ -11,9 +11,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
-
-EXPOSE 3095
+EXPOSE 3000
 
 RUN chmod 777 docker-entrypoint.sh  
 ENTRYPOINT ./docker-entrypoint.sh
