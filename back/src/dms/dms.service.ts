@@ -65,6 +65,30 @@ export class DmsService {
       throw new ForbiddenException('DM방 생성 및 번호 조회 실패');
     }
   }
+  
+  async getDmListOnlyID(userId: string, type: boolean) {
+    if (await this.checkHaveUser(userId, userId))
+      throw new ForbiddenException('잘못된 유저 정보 입니다.');
+    try {
+      const checkdm = await this.dmRepository
+        .createQueryBuilder('dm')
+        .select(['dm.id'])
+        .leftJoin("dm.Dmcontents","dc")
+        .where('dc.userId1 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
+        .orWhere('dc.userId2 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
+        .getMany();
+      if (type){
+        const arr = [];
+        for(var i in checkdm) {
+          arr.push(checkdm[i].id);
+        }    
+        return (arr)
+      }
+      return checkdm;
+    } catch (error) {
+      throw new ForbiddenException('DM 리스트 조회 실패');
+    }
+  }
 
   async getDmList(userId: string) {
     if (await this.checkHaveUser(userId, userId))

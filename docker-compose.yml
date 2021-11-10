@@ -1,0 +1,45 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    ports:
+        - "5432:5432"
+    networks:
+      net:
+        ipv4_address: 172.16.238.10
+    env_file: .env
+    environment:
+        POSTGRES_USER: "${POSTGRES_USER}"
+        POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+        POSTGRES_DB: "${POSTGRES_DB}"
+        TZ: "Asia/Seoul"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: back
+    restart: always
+    ports:
+      - 3095:3095
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    networks:
+      net:
+        ipv4_address: 172.16.238.11
+
+volumes:
+  postgres:
+
+networks:
+  net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
+        

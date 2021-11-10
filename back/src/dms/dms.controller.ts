@@ -27,6 +27,28 @@ export class DmsController {
     return this.dmsService.createAndGetDm(user.userId, otherUser);
   }
 
+  @ApiOperation({ summary: '내 DM 목록(ID만 보내기)(배열안id오브젝트)'})
+  @ApiResponse ({
+    status: 200,
+    description: '"return: DM 목록"',
+  })
+  @HttpCode(200)
+  @Get('dmlistOnlyId')
+  async getDmListOnlyID(@User() user: UserDto) {
+    return this.dmsService.getDmListOnlyID(user.userId, false);
+  }
+
+  @ApiOperation({ summary: '내 DM 목록(ID만 보내기)(순수 Array형태)'})
+  @ApiResponse ({
+    status: 200,
+    description: '"return: DM 목록"',
+  })
+  @HttpCode(200)
+  @Get('dmlistOnlyIdJustArray')
+  async dmlistOnlyIdJustArray(@User() user: UserDto) {
+    return this.dmsService.getDmListOnlyID(user.userId, true);
+  }
+
   @ApiOperation({ summary: '내 DM 목록'})
   @ApiResponse ({
     status: 200,
