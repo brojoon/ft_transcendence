@@ -4,12 +4,13 @@ import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
 import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
-import { IUser, IAllUser, IDmList } from '@typings/db';
+import { IUser, IAllUser, IDmList, IChannelList } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import { Link, Redirect } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import axios from 'axios';
+import ListItemButton from '@mui/material/ListItemButton';
 
 const style = {
   width: '100%',
@@ -17,19 +18,21 @@ const style = {
 };
 
 const ChannelLeftDrawBar = () => {
-  const { data: dmlist } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
   const { data: users } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
+  const { data: channelList } = useSWR<IChannelList[]>('/api/channels/myChannelList', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-  const onClickDMuser = useCallback(() => {
-    console.log('hi');
-  }, []);
+  const handleListItemClick = (event: any, index: number) => {
+    setSelectedIndex(index);
+  };
+
   return (
     <div
       style={{
-        width: '300px',
+        width: '280px',
         height: '100%',
         padding: '30px 15px',
         backgroundColor: '#363636',
@@ -47,7 +50,7 @@ const ChannelLeftDrawBar = () => {
           fontFamily: 'monospace',
           color: 'black',
           border: 'none',
-          padding: '0 12px',
+          padding: '0 15px',
           height: '7%',
         }}
       ></input>
@@ -56,59 +59,68 @@ const ChannelLeftDrawBar = () => {
           borderTop: '1px solid #4f4f4f',
           borderBottom: '1px solid #4f4f4f',
           margin: '10px 0',
-          padding: '10px 0',
+          paddingTop: '3px',
           height: '14%',
         }}
       >
         <Link to={`/ft_transcendence/channels`} style={{ textDecoration: 'none' }}>
-          <ListItem button style={{ backgroundColor: '#666666' }}>
-            <ListItemText primary="Discover" style={{ color: 'white' }} />
-          </ListItem>
+          <List
+            component="nav"
+            aria-label="main mailbox folders"
+            sx={{
+              '& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected': {
+                bgcolor: '#666666',
+              },
+            }}
+          >
+            <ListItemButton
+              selected={selectedIndex === 0}
+              onClick={(event) => handleListItemClick(event, 0)}
+            >
+              <ListItemText primary="Discover" style={{ color: 'white' }} />
+            </ListItemButton>
+          </List>
         </Link>
       </div>
       <div style={{ height: '70%' }}>
         <Scrollbars>
-          {dmlist?.map((dm: any) => {
+          {channelList?.map((channel: any, index) => {
+            let channelMode = '';
+            if (channel.type === 0) {
+              channelMode = 'Public';
+            } else if (channel.type === 1) {
+              channelMode = 'Protected';
+            } else if (channel.type === 2) {
+              channelMode = 'Private';
+            }
             return (
-              <Link to={`/ft_transcendence/social/dm/${dm.id}`} style={{ textDecoration: 'none' }}>
-                <ListItem button style={{ paddingLeft: '0' }} onClick={onClickDMuser}>
-                  {users?.map((user: any) => {
-                    if (
-                      user.userId === dm.Dmcontents[0].userId1 &&
-                      dm.Dmcontents[0].userId1 != myData?.userId
-                    )
-                      return (
-                        <>
-                          <Avatar
-                            src={user.profile}
-                            alt="Avatar"
-                            style={{ border: '2px solid red' }}
-                          />
-                          <ListItemText
-                            primary={dm.Dmcontents[0].userId1}
-                            style={{ marginLeft: '12px', color: 'white' }}
-                          />
-                        </>
-                      );
-                    else if (
-                      user.userId === dm.Dmcontents[0].userId2 &&
-                      dm.Dmcontents[0]?.userId2 != myData?.userId
-                    )
-                      return (
-                        <>
-                          <Avatar
-                            src={user.profile}
-                            alt="Avatar"
-                            style={{ border: '2px solid red' }}
-                          />
-                          <ListItemText
-                            primary={dm.Dmcontents[0].userId2}
-                            style={{ marginLeft: '12px', color: 'white' }}
-                          />
-                        </>
-                      );
-                  })}
-                </ListItem>
+              <Link
+                to={`/ft_transcendence/channels/${channel.id}`}
+                style={{ textDecoration: 'none' }}
+              >
+                <List
+                  component="nav"
+                  aria-label="main mailbox folders"
+                  sx={{
+                    '& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected': {
+                      bgcolor: '#666666',
+                    },
+                    margin: 0,
+                    padding: 0,
+                  }}
+                >
+                  <ListItemButton
+                    style={{ padding: 0, margin: 0 }}
+                    selected={selectedIndex === index + 1}
+                    onClick={(event) => handleListItemClick(event, index + 1)}
+                  >
+                    <ListItemText
+                      style={{ color: 'white', margin: '4px 0 4px 18px' }}
+                      primary={channel.name}
+                      secondary={channelMode}
+                    />
+                  </ListItemButton>
+                </List>
               </Link>
             );
           })}
@@ -117,18 +129,20 @@ const ChannelLeftDrawBar = () => {
       <div
         style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '11%' }}
       >
-        <Button
-          variant="contained"
-          style={{
-            width: '250px',
-            height: '35px',
-            backgroundColor: '#597aff',
-            borderColor: '#597aff',
-            fontWeight: 'bold',
-          }}
-        >
-          CREATE&nbsp;&nbsp;+
-        </Button>
+        <Link to={`/ft_transcendence/channels/create`} style={{ textDecoration: 'none' }}>
+          <Button
+            variant="contained"
+            style={{
+              width: '200px',
+              height: '35px',
+              backgroundColor: '#597aff',
+              borderColor: '#597aff',
+              fontWeight: 'bold',
+            }}
+          >
+            CREATE&nbsp;&nbsp;+
+          </Button>
+        </Link>
       </div>
     </div>
   );

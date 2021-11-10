@@ -15,6 +15,7 @@ import { Container } from './style';
 import { disconnect } from 'process';
 import io from 'socket.io-client';
 import getSocket from '@utils/useSocket';
+import getDMList from '@utils/myDMList';
 
 const ft_transcendence = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -22,11 +23,13 @@ const ft_transcendence = () => {
   });
 
   const socket = getSocket();
-
+  let DMList = getDMList();
+  console.log('DMList', DMList);
+  console.log('socket', socket);
   useEffect(() => {
     socket.emit('login', {
       userId: myData?.userId,
-      Dms: [7, 6],
+      Dms: DMList,
       channels: [],
     });
   }, [socket]);

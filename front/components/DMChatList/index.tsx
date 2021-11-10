@@ -10,7 +10,7 @@ interface Props {
   scrollbarRef: RefObject<Scrollbars>;
 }
 
-const ChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
+const DMChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
   const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
@@ -55,4 +55,4 @@ const ChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
   );
 };
 
-export default ChatList;
+export default DMChatList;

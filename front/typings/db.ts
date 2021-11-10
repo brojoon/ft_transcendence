@@ -35,6 +35,29 @@ export interface IChatList {
   historyId: number,
 }
 
-// export interface IChannelList {
+export interface IChannelList {
+  id: number,
+  name: string,
+  type: number,
+  authId: string | undefined,
+  createdAt: Date,
+  updatedAt: Date,
+  deleteAt: null
+}
 
-// }
+export interface IMember {
+  userid: string,
+  mute: boolean,
+  auth: number
+}
+
+export interface IMemberList {
+  id: number,
+  name: string,
+  type: number,
+  createAt: Date,
+  updatedAt: Date,
+  deleteAt: null,
+  Chatmembers: IMember[],
+
+}

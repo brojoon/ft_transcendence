@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -7,6 +7,15 @@ import ChannelLeftDrawBar from '@components/ChannelLeftDrawBar';
 import { Container } from '@pages/Social/style';
 import ChatHeader from '@components/ChannelHeader';
 import ChannelBody from '@components/ChannelBody';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import ChannelCreate from '@pages/ChannelCreate';
+import ChannelDiscover from '@pages/ChannelDiscover';
+import ChannelRoom from '@pages/ChannelRoom';
+import useSWR, { useSWRConfig } from 'swr';
+import { IChannelList, IUser } from '@typings/db';
+import fetcher from '@utils/fetcher';
+import axios from 'axios';
+import getToken from '@utils/getToken';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -16,30 +25,104 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const Channel = () => {
+  const history = useHistory();
+  const [name, setName] = useState('');
+  const [visibility, setVisibility] = useState('');
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
+    dedupingInterval: 2000,
+  });
+  const { data: allchannelList, mutate: mutateChannelList } = useSWR<IChannelList[]>(
+    '/api/channels/myChannelList',
+    fetcher,
+  );
+  const onChangeName = useCallback(
+    (e: any) => {
+      e.preventDefault();
+      setName(e.target.value);
+    },
+    [name, setName],
+  );
+
+  const onChangeVisibility = useCallback(
+    (e: any) => {
+      e.preventDefault();
+
+      setVisibility(e.target.value);
+    },
+    [visibility, setVisibility],
+  );
+
+  const onSubmitChannelCreate = useCallback(
+    (e) => {
+      e.preventDefault();
+      mutateChannelList((prev) => {
+        prev?.push({
+          id: 31,
+          name: name,
+          type: parseInt(visibility),
+          authId: myData?.userId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deleteAt: null,
+        });
+        return prev;
+      }, false);
+      axios
+        .post(
+          `/api/channels/create/${name}/${visibility}`,
+          {
+            password: '1234',
+          },
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          },
+        )
+        .then(() => {
+          setName('');
+          setVisibility('');
+          if (allchannelList) {
+            history.push(
+              `/ft_transcendence/channels/${allchannelList[allchannelList.length - 1].id + 1}`,
+            );
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    [name, visibility, allchannelList],
+  );
   return (
-    <Container style={{ borderLeft: '1px solid #4f4f4f', margin: '0', padding: '0' }}>
+    <Container
+      style={{
+        borderLeft: '1px solid #4f4f4f',
+        margin: '0',
+        padding: '0',
+        backgroundColor: '#1e1e1e',
+      }}
+    >
       <ChannelLeftDrawBar />
-      <div style={{ width: '100%' }}>
-        <ChatHeader />
-        <ChannelBody />
-      </div>
+      <Switch>
+        <Route exact path="/ft_transcendence/channels" render={() => <ChannelDiscover />} />
+        <Route
+          exact
+          path="/ft_transcendence/channels/create"
+          render={() => (
+            <ChannelCreate
+              onSubmitChannelCreate={onSubmitChannelCreate}
+              onChangeVisibility={onChangeVisibility}
+              onChangeName={onChangeName}
+              name={name}
+              visibility={visibility}
+            />
+          )}
+        />
+        <Route path="/ft_transcendence/channels/:id" component={ChannelRoom} />
+      </Switch>
     </Container>
-    // <Box sx={{ flexGrow: 1 }}>
-    //   <Grid container spacing={2}>
-    //     <Grid item xs={8} md={8}>
-    //       <Item>xs=6 md=8</Item>
-    //     </Grid>
-    //     <Grid item xs={4} md={4}>
-    //       <Item>xs=6 md=2</Item>
-    //     </Grid>
-    //     <Grid item xs={6} md={4}>
-    //       <Item>xs=6 md=4</Item>
-    //     </Grid>
-    //     <Grid item xs={6} md={8}>
-    //       <Item>xs=6 md=8</Item>
-    //     </Grid>
-    //   </Grid>
-    // </Box>
   );
 };
 

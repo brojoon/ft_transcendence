@@ -1,6 +1,6 @@
 import ChatBox from '@components/ChatBox';
 import ChatHeader from '@components/DMChatHeader';
-import ChatList from '@components/ChatList';
+import DMChatList from '@components/DMChatList';
 import { AutoFixOffSharp } from '@mui/icons-material';
 import { IChatList, IDmList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
@@ -115,7 +115,7 @@ const DirectMessage = () => {
       }}
     >
       <ChatHeader />
-      <ChatList chatData={chatData} scrollbarRef={scrollbarRef} />
+      <DMChatList chatData={chatData} scrollbarRef={scrollbarRef} />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />
     </div>
   );

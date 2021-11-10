@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { VFC } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -8,6 +8,10 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { CardActionArea } from '@mui/material';
 import Scrollbars from 'react-custom-scrollbars';
+import useSWR from 'swr';
+import { IChannelList } from '@typings/db';
+import fetcher from '@utils/fetcher';
+import { Link } from 'react-router-dom';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -19,6 +23,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const ChannelBody = () => {
+  const { data: allChannelList } = useSWR<IChannelList[]>(`/api/channels/allChannelList`, fetcher);
   return (
     <Box
       sx={{ flexGrow: 1 }}
@@ -31,202 +36,29 @@ const ChannelBody = () => {
     >
       <Scrollbars>
         <Grid container spacing={3} style={{ width: '100%' }}>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-          <Grid item xs={12} sm={12} md={6}>
-            <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
-              <CardActionArea>
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard
-                  </Typography>
-                  <Typography variant="body2" color="hsla(0,0%,100%,.7)">
-                    hyungjki
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
+          {allChannelList?.map((Channel: any) => {
+            return (
+              <Grid item xs={12} sm={12} md={6}>
+                <Link
+                  to={`/ft_transcendence/channels/${Channel.id}`}
+                  style={{ textDecoration: 'none' }}
+                >
+                  <Card style={{ backgroundColor: '#1e1e1e', color: 'white' }}>
+                    <CardActionArea>
+                      <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                          {Channel.name}
+                        </Typography>
+                        <Typography variant="body2" color="hsla(0,0%,100%,.7)">
+                          {Channel.authId}
+                        </Typography>
+                      </CardContent>
+                    </CardActionArea>
+                  </Card>
+                </Link>
+              </Grid>
+            );
+          })}
         </Grid>
       </Scrollbars>
     </Box>

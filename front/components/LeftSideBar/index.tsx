@@ -6,6 +6,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import HomeIcon from '@mui/icons-material/Home';
+import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
 import gravatar from 'gravatar';
@@ -80,7 +81,7 @@ const LeftSideBar = () => {
           </Link>
           <Link to={`/ft_transcendence/users`}>
             <MyFab aria-label="add" className="sideBarIcon">
-              <GroupsIcon />
+              <GroupIcon />
             </MyFab>
           </Link>
           <Link to={`/ft_transcendence/achievements`}>
