@@ -14,7 +14,7 @@ import { Users } from 'src/entities/Users';
 dotenv.config();
 const config: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: process.env.NODE_ENV === 'development' ? process.env.DB_HOST : process.env.DB_HOST_PROD,
+  host: process.env.NODE_ENV === 'production' ?  process.env.DB_HOST_PROD : process.env.DB_HOST,
   port: +process.env.DB_PORT,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
@@ -43,7 +43,7 @@ const config: TypeOrmModuleOptions = {
   cli: { migrationsDir: 'src/migrations' },
   autoLoadEntities: true,
   // start:dev일땐 false / start:setdb일댄 true
-  synchronize: process.env.NODE_ENV === 'production',
+  synchronize: process.env.NODE_ENV !== 'development',
   logging: true,
   keepConnectionAlive: true,
   retryAttempts: 2,

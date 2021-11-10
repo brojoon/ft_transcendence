@@ -6,6 +6,7 @@ import { Users } from 'src/entities/Users';
 import { Chatchannel } from 'src/entities/Chatchannel';
 import { Chatmember } from 'src/entities/Chatmember';
 import { Chatcontent } from 'src/entities/Chatcontent';
+import { EventsModule } from 'src/events/events.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { Chatcontent } from 'src/entities/Chatcontent';
       Chatmember,
       Chatcontent
     ]),
+    EventsModule,
   ],
   controllers: [ChannelsController],
   providers: [ChannelsService]

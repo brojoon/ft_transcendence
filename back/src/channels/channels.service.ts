@@ -7,6 +7,7 @@ import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
 import * as bcrypt from "bcrypt";
 import { NotFoundError, timeout } from 'rxjs';
+import { EventsGateway } from 'src/events/events.gateway';
 @Injectable()
 export class ChannelsService {
   constructor(
@@ -14,6 +15,7 @@ export class ChannelsService {
     @InjectRepository(Chatchannel) private chatchannelRepository: Repository<Chatchannel>,
     @InjectRepository(Chatmember) private chatmemberRepository: Repository<Chatmember>,
     @InjectRepository(Chatcontent) private chatcontentRepository: Repository<Chatcontent>,
+    private eventsGateway:EventsGateway,
   ) { }
 
   private salt:number;
@@ -21,7 +23,9 @@ export class ChannelsService {
   // private 제외
   async allChannelList() {
     //const ret = await this.chatchannelRepository.find({select : ["id", "name", "type", "createdAt", "deleteAt", "updatedAt"]});
-    const ret = await this.chatchannelRepository.find({select:["id", "name", "type", "authId", "createdAt", "updatedAt", "deleteAt"]});
+    const ret = await this.chatchannelRepository.find({select:["id", "name", "type", "authId", "createdAt", "updatedAt", "deleteAt"], order:{
+      createdAt:"DESC",
+    }});
     return ret;
   }
   
@@ -31,17 +35,22 @@ export class ChannelsService {
     .leftJoin('c.Chatmembers', 'm')
     .where('m.userId = :userid', {userid})
     .select (["c.id", "c.name", "c.authId", "c.type", "c.createdAt", "c.deleteAt", "c.updatedAt"])
+    .orderBy("c.updatedAt", "DESC")
     .getMany();
+    return ret;
+  }
 
-    const test = await this.chatchannelRepository.createQueryBuilder('c')
+  async myChannelListOnlyId(userid:string) {
+    const arr = await this.chatchannelRepository.createQueryBuilder('c')
     .leftJoin('c.Chatmembers', 'm')
     .where('m.userId = :userid', {userid})
-    .select (["c.id", "c.name", "c.type", "c.createdAt", "c.deleteAt", "c.updatedAt"])
+    .select (["c.id"])
+    .orderBy("c.updatedAt", "DESC")
     .getMany();
-    
-    let size = Object.keys(test).length
-    while(size--){
-      
+    let ret = new Array();
+    let size = arr.length;
+    while (size--){
+      ret[size] = arr[size].id; 
     }
     return ret;
   }
@@ -69,6 +78,7 @@ export class ChannelsService {
     newMember.channelId = channel.id;
     newMember.auth = 2;
     const member = await this.chatmemberRepository.save(newMember);
+    return channel.id;
   }
 
   async joinChannel(channelId:number, userId:string, channelPassword:any = null) {
@@ -96,6 +106,7 @@ export class ChannelsService {
     newMember.userId = userId;
     newMember.channelId = channelId;
     await this.chatmemberRepository.save(newMember);
+    return channelId;
   }
 
   async getOutChnnel(channelId:number, userId:string) {
@@ -123,13 +134,23 @@ export class ChannelsService {
     chatContent.userId = sender;
     chatContent.channelId = channelId;
     chatContent.message = msg;
-    await this.chatcontentRepository.save(chatContent);
+    const ret = await this.chatcontentRepository.save(chatContent);
+    const id = ret.id;
+    const userId = ret.userId;
+    //const channelId = ret.channelId;
+    //const message = ret.message;
+    const createdAt = ret.createdAt;
+    const updatedAt = ret.updatedAt;
+    const data = { id, userId, channelId, msg, createdAt, updatedAt };
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ch', data)
   }
 
   async getAllMessage(channelId:number, userId:string) {
     if (!this.chatmemberRepository.find({channelId, userId}))
       throw new UnauthorizedException("채팅방에 참여중이지 않은 사용자인데 메시지를 조회하려고 함"); 
-    const chatContent = await this.chatcontentRepository.find({where:{channelId}, select:["userId", "message", "updatedAt"]})
+    const chatContent = await this.chatcontentRepository.find({where:{channelId}, select:["userId", "message", "updatedAt"],order: {
+      createdAt: "DESC",
+  }})
     return chatContent;
   }
 

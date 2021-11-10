@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { HttpExceptionFilter } from 'src/http-exception.filter';
 import { ChannelsService } from './channels.service';
 import { ChannelDto } from './dto/channel.dto';
+import { ChannelStringDto } from './dto/chnnelString.dto';
 @UseGuards(JwtAuthGuard)
 @ApiBearerAuth('ts_token')
 @ApiTags('CHANNEL') // API문서 카테고리
@@ -26,6 +27,10 @@ export class ChannelsController {
     return this.channelsService.myChannelList(user.userId);
   }
 
+  @Get('/myChannelListOnlyId')
+  async myChannelListOnlyId(@User() user){
+    return this.channelsService.myChannelListOnlyId(user.userId);
+  }
   @Post('/create/:channelName/:type')
   @ApiResponse ({//스웨거 body칸 있게 하려면
     status: 200,
@@ -33,7 +38,7 @@ export class ChannelsController {
     type: ChannelDto,
   })
   async makeChannel(@Param("channelName") channelName:string,@User() user,@Param('type') type:number, @Body() dto:ChannelDto){
-      this.channelsService.makeChannel(user.userId, channelName, type, dto.password);//비번 입력해도 비번방 설정이 안됨
+      return this.channelsService.makeChannel(user.userId, channelName, type, dto.password);//비번 입력해도 비번방 설정이 안됨
   }
   @Post('/join/:channelId')
   @ApiResponse ({//스웨거 body칸 있게 하려면
@@ -56,8 +61,8 @@ export class ChannelsController {
   }
 
   @Post('/send/:channelId')//ban된 상태인데 메시지 보내려고 할때 처리해줄것 
-  async sendMessage(@Param("channelId") channelId:number, @User() user, @Body('msg') msg:string){
-    this.channelsService.sendMessage(channelId, user.userId, msg);
+  async sendMessage(@Param("channelId") channelId:number, @User() user, @Body() dto:ChannelStringDto){
+    this.channelsService.sendMessage(channelId, user.userId, dto.msg);
   }
 
   @Get('/messageList/:channelId')
