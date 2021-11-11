@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
@@ -13,10 +13,10 @@ export class UsersService {
 
   //test용
   async inputUser(oauthId, username, userId, email) {
-    const user =  await this.usersRepository.findOne({ where: { oauthId } });
-    if (user)
-      throw new ForbiddenException('이미 존재하는 사용자입니다');
     try {
+      const user =  await this.usersRepository.findOne({ where: { oauthId } });
+      if (user)
+        throw new ForbiddenException('이미 존재하는 사용자입니다');   
       const newUser = new Users();
       newUser.oauthId = oauthId;
       newUser.userId = userId;
@@ -31,7 +31,10 @@ export class UsersService {
       await this.connectRepository.save(connect);
       return (true);      
     } catch (error) {
-      throw new ForbiddenException('임시 아이디 생성 실패');
+      if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else
+        throw new BadRequestException("임시 아이디 생성 실패");
     }
   }
 
@@ -46,92 +49,123 @@ export class UsersService {
         .execute();
       }      
     } catch (error) {
-      throw new ForbiddenException('삭제 실패');
+      throw new BadRequestException('삭제 실패');
     }
   }
 
   //내 정보 조회
   async userInfo(userId: string) {
-    const result = await this.usersRepository.findOne({
-      select: ['userId', 'username', 'email', 'profile'],
-      where: { userId },  
-    });
-    if (!result)
-      throw new ForbiddenException('유저 정보 없음');
-    return(result);
+    try {
+      const result = await this.usersRepository.findOne({
+        select: ['userId', 'username', 'email', 'profile'],
+        where: { userId },  
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      return(result);      
+    } catch (error) {
+      if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+      else
+        throw new BadRequestException("내 정보 조회 실패");      
+    }
   }
 
   //가입한 모든 유저 기본 정보 조회
   async allUser() {
-    const result = await this.usersRepository.find({
-      select: ['userId', 'username', 'email', 'profile'],
-      where: {},  
-    });
-    if (!result)
-      throw new ForbiddenException('유저 정보 없음');
-    return(result);
+    try {
+      const result = await this.usersRepository.find({
+        select: ['userId', 'username', 'email', 'profile']
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      return(result);      
+    } catch (error) {
+      if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+      else
+        throw new BadRequestException("가입한 모든 유저 정보 조회 실패");           
+    }
   }
   
   // 유저 접속 정보 조회
   async userConnect(userId: string) {
-    const result = await this.connectRepository.findOne({
-      select: ['userId', 'state', 'updatedAt'],
-      where: { userId },   
-    });
-    if (!result)
-      throw new ForbiddenException('유저 정보 없음');
-    return(result);
+    try {
+      const result = await this.connectRepository.findOne({
+        select: ['userId', 'state', 'updatedAt'],
+        where: { userId },   
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      return(result);      
+    } catch (error) {
+      if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+      else
+        throw new BadRequestException("유저 접속 정보 조회 실패");        
+    }
   }
 
   // 모든 유저 접속 정보 조회
   async allUserConnectInfo() {
-    const result = await this.connectRepository.find({
-      select: ['userId', 'state', 'updatedAt'],
-      where: { },   
-    });
-    if (!result)
-      throw new ForbiddenException('유저 정보 없음');
-    return(result);
+    try {
+      const result = await this.connectRepository.find({
+        select: ['userId', 'state', 'updatedAt'],
+        where: { },   
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      return(result);      
+    } catch (error) {
+      if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+      else
+        throw new BadRequestException("모든 유저 접속 정보 조회 실패");      
+    }
   }
 
   // 모든 유저 접속 숫자 조회
   async allUserConnectMember() {
     try {
-      const result = await this.connectRepository.count({
-        where: { state: true },
-      });
-      return(result);      
+      return ( await this.connectRepository.count({where: { state: true }}) );      
     } catch (error) {
-      throw new ForbiddenException('접속자 수 조회 실패');
+      throw new BadRequestException('접속자 수 조회 실패');
     }
   }
   
   // profile 닉네임 수정
   async updateUsername(userId: string, username: string) {
-    const result = await this.connectRepository.findOne({ where: { username } });
-    if (result)
-      return (false);
     try{
+      const res = await this.usersRepository.findOne({where: {username}});
+      if ( res )
+        return (false);
       await this.usersRepository.createQueryBuilder()
           .update()
           .set({ username })
           .where('userId = :userId', {userId})
           .execute()
+      return (true);
     } catch (error) {
-      throw new ForbiddenException('프로필 업데이트 실패');
+      throw new BadRequestException('프로필 업데이트 실패');
     }
-    return (true);
   }
 
   //profil url 반환
   async checkProfileUrl(userId: string) {
-    const result = await this.usersRepository.findOne({
-      select: ['profile'],
-      where: { userId },  
-    });
-    if (!result)
-      throw new ForbiddenException('유저 정보 없음');
-    return(result.profile);
+    try {
+      const result = await this.usersRepository.findOne({
+        select: ['profile'],
+        where: { userId },  
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      return(result.profile);      
+    } catch (error) {
+      if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+      else
+        throw new BadRequestException("프로필 URL 조회 실패");          
+    }
   }
 
   // 프로필 이미지 업로드 
@@ -143,21 +177,28 @@ export class UsersService {
           .set({ profile: myProfile})
           .where('userId = :userId', {userId})
           .execute()
+      return (true);
     } catch (error) {
-      throw new ForbiddenException('프로필 업데이트 실패');
-    }
-    return (true);
+      throw new BadRequestException('프로필 업데이트 실패');
+    }   
   }
 
   // two-factor 상태확인
   async twoFactorStatus(userId: string) {
-    const result = await this.usersRepository.findOne({
-      select: ['twofactorEnable'],
-      where: { userId },  
-    });
-    if (!result)
-      throw new ForbiddenException('유저 정보 없음');
-    return(result.twofactorEnable);
+    try {
+      const result = await this.usersRepository.findOne({
+        select: ['twofactorEnable'],
+        where: { userId },  
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      return(result.twofactorEnable);      
+    } catch (error) {
+      if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+      else
+        throw new BadRequestException("two-factor 상태확인 실패");           
+    }
   }
 
   // two-factor 스위치
@@ -170,9 +211,9 @@ export class UsersService {
           })
           .where('userId = :userId', {userId})
           .execute()
+          return (true);
     } catch (error) {
-      throw new ForbiddenException('유정 정보 업데이트 실패');
-    }
-    return (true);
+      throw new BadRequestException('two-factor 스위치 실패');
+    } 
   }
 }

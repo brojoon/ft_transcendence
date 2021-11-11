@@ -1,4 +1,4 @@
-import { ForbiddenException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   ConnectedSocket,
@@ -38,7 +38,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .where('userId = :userId', {userId: onlineMap[socket.id]})
           .execute()
     }catch{
-      throw new ForbiddenException('접속상태 업뎃 실패');
+      throw new BadRequestException('접속상태 업뎃 실패');
     }
     socket.emit('onlineList', Object.values(onlineMap));
     data.Dms.forEach((dm) => {
@@ -125,7 +125,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .where('userId = :userId', {userId: onlineMap[socket.id]})
           .execute()
     }catch{
-      throw new ForbiddenException('접속상태 업뎃 실패');
+      throw new BadRequestException('접속상태 업뎃 실패');
     }
   }
 }

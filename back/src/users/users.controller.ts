@@ -11,7 +11,7 @@ import { ProfileUrlDto } from './dto/profileUrl.dto';
 import { UsernameDto } from './dto/username.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import multer from 'multer';
-import fs from 'fs';
+import fs, { copyFileSync } from 'fs';
 import path from 'path';
 
 try {
@@ -161,9 +161,9 @@ export class UsersController {
     type: Boolean
   })
   @HttpCode(201)
-  @Post('update-username')
-  async updat(@Body() body: UsernameDto) {
-    return this.usersService.updateUsername(body.userId, body.username);
+  @Post('update-username/:newname')
+  async updat(@User() user, @Param('newname') newname: string) {
+    return this.usersService.updateUsername(user.userId, newname);
   }
 
   @ApiOperation({ summary: '유저 프로필 URL 반환'})
