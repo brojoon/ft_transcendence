@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Block } from 'src/entities/Block';
 import { Friend } from 'src/entities/Friend';
@@ -15,13 +15,13 @@ export class FriendsService {
 
   // 상태방이나 나나 Block해놓은 사람이면 친구 추가가 안되게
   async addFriend(userId1: string, userId2: string) {
-    if (await this.checkFriend(userId1, userId2)){
-      throw new ForbiddenException('친구 상태');
-    }
-    if (await this.checkBlock(userId1, userId2) || await this.checkBlock(userId2, userId1)) {
-     throw new ForbiddenException('Block 상태');    
-    }
     try {
+      if (await this.checkFriend(userId1, userId2)){
+        throw new ForbiddenException('친구 상태');
+      }
+      if (await this.checkBlock(userId1, userId2) || await this.checkBlock(userId2, userId1)) {
+       throw new ForbiddenException('Block 상태');    
+      }
       const newFriend1 = new Friend();
       newFriend1.userId1 = userId1;
       newFriend1.userId2 = userId2;
@@ -32,30 +32,40 @@ export class FriendsService {
       await this.friendRepository.save(newFriend2);
       return (true);      
     } catch (error) {
-      throw new ForbiddenException('친구 추가 실패'); 
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("친구 추가 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
     }
   }
 
   // 친구 상태이면 친구 상태 지우고 Block
   async addBlock(userId1: string, userId2: string) {
-    if (await this.checkBlock(userId1, userId2))
-      throw new ForbiddenException('이미 Block 상태');
-    if (await this.checkFriend(userId1, userId2))
-      this.removeFriend(userId1, userId2);
     try {
+      if (await this.checkBlock(userId1, userId2))
+        throw new ForbiddenException('이미 Block 상태');
+      if (await this.checkFriend(userId1, userId2))
+        this.removeFriend(userId1, userId2);
       const newBlock = new Block();
       newBlock.userId1 = userId1;
       newBlock.userId2 = userId2;
       await this.blockRepository.save(newBlock);
       return (true);    
     } catch (error) {
-      throw new ForbiddenException('BLOCK 추가 실패');
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 400))
+        throw new BadRequestException("BLOCK 추가 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else if (error.response.statusCode === 400)
+        throw new NotFoundException(error.response.message);
     }
   }
 
   async removeFriend(userId1: string, userId2: string) {
-    if (await this.checkFriend(userId1, userId2) && await this.checkFriend(userId2, userId1)) {
-      try {
+    try {
+      if (await this.checkFriend(userId1, userId2) && await this.checkFriend(userId2, userId1)) {
         await this.friendRepository.createQueryBuilder()
           .delete()
           .where('userId1 = :userId1', {userId1} )
@@ -67,27 +77,27 @@ export class FriendsService {
           .andWhere('userId2 = :userId1', {userId1} )
           .execute();        
         return (true);        
-      } catch (error) {
-        throw new ForbiddenException('친구 삭제 실패');
       }
+      return (false);      
+    } catch (error) {
+      throw new BadRequestException("친구 삭제 실패");
     }
-    return (false);
   }
 
   async removeBlock(userId1: string, userId2: string) {
-    if (await this.checkBlock(userId1, userId2)) {
-      try {
+    try {
+      if (await this.checkBlock(userId1, userId2)) {
         await this.blockRepository.createQueryBuilder()
           .delete()
           .where('userId1 = :userId1', {userId1} )
           .andWhere('userId2 = :userId2', {userId2} )
           .execute();     
         return (true);        
-      } catch (error) {
-        throw new ForbiddenException('BLOCK 삭제 실패');
       }
+      return (false);      
+    } catch (error) {
+      throw new BadRequestException("Block 삭제 실패");
     }
-    return (false);
   }
 
   async friendList(userId1: string) {
@@ -98,7 +108,7 @@ export class FriendsService {
       });
       return (result);      
     } catch (error) {
-      throw new ForbiddenException('친구 리스트 조회 실패');
+      throw new BadRequestException('친구 리스트 조회 실패');
     }
   }
 
@@ -110,7 +120,7 @@ export class FriendsService {
       });
       return (result);      
     } catch (error) {
-      throw new ForbiddenException('BLOCK 리스트 조회 실패');
+      throw new BadRequestException('BLOCK 리스트 조회 실패');
     }
   }
 
@@ -122,7 +132,7 @@ export class FriendsService {
       else
         return (false);      
     } catch (error) {
-      throw new ForbiddenException('친구 확인 실패');
+      throw new BadRequestException('친구 확인 실패');
     }
   }
 
@@ -134,7 +144,7 @@ export class FriendsService {
       else
         return (false);      
     } catch (error) {
-      throw new ForbiddenException('BLOCK 확인 실패');
+      throw new BadRequestException('BLOCK 확인 실패');
     }
   }
 }
