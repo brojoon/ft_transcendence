@@ -2,6 +2,7 @@ import { BadRequestException, ForbiddenException, Injectable, NotFoundException 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Dm } from 'src/entities/Dm';
 import { Dmcontent } from 'src/entities/Dmcontent';
+import { History } from 'src/entities/History';
 import { Users } from 'src/entities/Users';
 import { EventsGateway } from 'src/events/events.gateway';
 import { Repository } from 'typeorm';
@@ -11,7 +12,8 @@ export class DmsService {
   constructor(
     @InjectRepository(Users) private usersRepository: Repository<Users>,
     @InjectRepository(Dm) private dmRepository: Repository<Dm>,
-    @InjectRepository(Dmcontent) private DmcontentRepository: Repository<Dmcontent>,
+    @InjectRepository(Dmcontent) private dmcontentRepository: Repository<Dmcontent>,
+    @InjectRepository(History) private historyRepository: Repository<History>,
     private eventsGateway:EventsGateway
   ) { }
 
@@ -32,7 +34,7 @@ export class DmsService {
 
   async findDmUser(dmId: number, userId: string) {
     try {
-        const result = await this.DmcontentRepository.findOne({ where: { dmId } });
+        const result = await this.dmcontentRepository.findOne({ where: { dmId } });
       if (!result)
         throw new NotFoundException('존재하지 않는 DM방입니다.');
       if (result.userId1 === userId)
@@ -69,7 +71,7 @@ export class DmsService {
       newDmcontent.userId1 = userId1;
       newDmcontent.userId2 = userId2;
       newDmcontent.message = process.env.DB;
-      await this.DmcontentRepository.save(newDmcontent);
+      await this.dmcontentRepository.save(newDmcontent);
       return (newDm.id);   
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
@@ -127,7 +129,7 @@ export class DmsService {
     }
   }
 
-  async sendMessage(userId1:string, userId2:string, message:string, match:number = 0, historyId:number = null) {
+  async sendMessage(userId1:string, userId2:string, message:string, match:number, historyId:number) {
     try {
       await this.checkHaveUser(userId1, userId2);
       const dmId =  await this.createAndGetDm(userId1, userId2);
@@ -135,15 +137,18 @@ export class DmsService {
       send.dmId = dmId;
       send.userId1 = userId1;
       send.userId2 = userId2;
-      if (match)
+      if (match === 1){
         send.message = "대국신청";
-      else
+        send.historyId = await this.getHistoryId(userId1, userId2);
+      } else {
         send.message = message;
+        send.historyId = historyId;
+      }
       send.match = match;
-      send.historyId = historyId;
-      const dm = await this.DmcontentRepository.save(send);
+      const dm = await this.dmcontentRepository.save(send);
       const data = { dmId, userId1, userId2, message: dm.message, match, historyId, createdAt: dm.createdAt };
       this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data); 
+      return (dm.historyId);
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
         throw new BadRequestException("메세지 전송 실패");
@@ -152,7 +157,7 @@ export class DmsService {
     }
   }
 
-  async sendMessageUserDmId(userId1:string, dmId:number, message:string, match:number = 0, historyId:number = null) {
+  async sendMessageUserDmId(userId1:string, dmId:number, message:string, match:number, historyId:number) {
     try {
       const result = await this.usersRepository.findOne({where: { userId: userId1}});
       if (!result)
@@ -162,15 +167,19 @@ export class DmsService {
       send.dmId = dmId;
       send.userId1 = userId1;
       send.userId2 = userId2;
-      if (match)
+      if (match === 1){
         send.message = "대국신청";
-      else
+        send.historyId = await this.getHistoryId(userId1, userId2);
+      } else {
         send.message = message;
+        send.historyId = historyId;
+      }
       send.match = match;
       send.historyId = historyId;
-      const dm = await this.DmcontentRepository.save(send);
+      const dm = await this.dmcontentRepository.save(send);
       const data = { dmId, userId1, userId2, message: dm.message, match, historyId, createdAt: dm.createdAt };
       this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
+      return (dm.historyId);
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
         throw new BadRequestException("메세지 전송 실패");
@@ -182,7 +191,7 @@ export class DmsService {
   async getAllMessage(userId1:string, userId2:string) {
     try {
       await this.checkHaveUser(userId1, userId2);
-      const result = await this.DmcontentRepository
+      const result = await this.dmcontentRepository
         .createQueryBuilder()
         .where('userId1 = :userId1 AND userId2 = :userId2', { userId1, userId2 })
         .orWhere('userId1 = :userId2 AND userId2 = :userId1', { userId2, userId1 })
@@ -199,12 +208,12 @@ export class DmsService {
 
   async getAllMessageUseDmId(userId: string, dmId:number) {
     try {
-      const result = await this.DmcontentRepository.findOne({ where: { dmId } });
+      const result = await this.dmcontentRepository.findOne({ where: { dmId } });
       if (!result)
         throw new NotFoundException('존재하지 않는 DM방입니다.');
       if (result.userId1 !== userId && result.userId2 !== userId)
         throw new ForbiddenException('내가 속한 DM방이 아닙니다');
-      const res = await this.DmcontentRepository
+      const res = await this.dmcontentRepository
         .createQueryBuilder()
         .where('dmId = :dmId', { dmId })
         .orderBy('createdAt', 'DESC')
@@ -218,5 +227,13 @@ export class DmsService {
       else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
     }
+  }
+  
+  async getHistoryId(userId1: string, userId2: string) {
+    const newHistory = new History();
+    newHistory.userId1 = userId1;
+    newHistory.userId2 = userId2;
+    const reseut = await this.historyRepository.save(newHistory);
+    return (reseut.id);
   }
 }

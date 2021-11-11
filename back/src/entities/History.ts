@@ -25,6 +25,12 @@ export class History {
   @Column("varchar", { name: "userId2", length: 30 })
   userId2: string;
 
+  @Column("int", { name: "playerOneJoin", default: () => "'0'" })
+  playerOneJoin: number;
+
+  @Column("int", { name: "playerTwoJoin", default: () => "'0'" })
+  playerTwoJoin: number;
+
   @Column("int", { name: "user1Point", default: () => "'0'" })
   user1Point: number;
 
@@ -34,8 +40,8 @@ export class History {
   @Column("varchar", { name: "winner", nullable: true, length: 30 })
   winner: string | null;
 
-  @Column("varchar", { name: "looser", nullable: true, length: 30 })
-  looser: string | null;
+  @Column("varchar", { name: "loser", nullable: true, length: 30 })
+  loser: string | null;
 
   @Column("int", { name: "state", default: () => "'0'" })
   state: number;

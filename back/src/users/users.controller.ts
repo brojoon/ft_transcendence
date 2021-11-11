@@ -156,12 +156,12 @@ export class UsersController {
 
   @ApiOperation({ summary: 'username 수정'})
   @ApiResponse ({
-    status: 201,
+    status: 200,
     description: '성공시 true',
     type: Boolean
   })
-  @HttpCode(201)
-  @Post('update-username/:newname')
+  @HttpCode(200)
+  @Get('update-username/:newname')
   async updat(@User() user, @Param('newname') newname: string) {
     return this.usersService.updateUsername(user.userId, newname);
   }
