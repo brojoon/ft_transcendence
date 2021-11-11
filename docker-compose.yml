@@ -16,7 +16,6 @@ services:
         TZ: "Asia/Seoul"
     volumes:
       - ./postgresql:/var/lib/postgresql/data
-
   back:
     build:
       context: ./back
@@ -30,19 +29,18 @@ services:
     networks:
       - database
       - frontApp
-
-  # front:
-  #   build:
-  #     context: ./test
-  #     dockerfile: Dockerfile
-  #   container_name: front
-  #   restart: always
-  #   ports:
-  #     - 3000:3000
-  #   depends_on:
-  #     - back
-  #   networks:
-  #     - frontApp
+  front:
+    build:
+      context: ./test
+      dockerfile: Dockerfile
+    container_name: front
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - back
+    networks:
+      - frontApp
 
 volumes:
   postgresql:

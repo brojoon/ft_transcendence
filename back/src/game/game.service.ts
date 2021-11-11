@@ -16,7 +16,7 @@ export class GameService {
     if (gameMap[gameId].game_state === 0 && gameMap[gameId].player_one_ready === 1 && gameMap[gameId].player_two_ready === 1){
       this.reset(gameId);
       gameMap[gameId].game_state = 1;
-      gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), 4);
+      gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), gameMap[gameId].interval_time);
     }     
     //console.log("mapmod", gameMap[gameId]);
   }
@@ -25,7 +25,7 @@ export class GameService {
     gameMap[gameId].ball_x += gameMap[gameId].dir_x * gameMap[gameId].length;
     gameMap[gameId].ball_y += gameMap[gameId].dir_y * gameMap[gameId].length;
     //console.log("ball position", gameMap[gameId].ball_x, gameMap[gameId].ball_y);
-    this.emit(gameId);
+    this.emit(gameId, 0);
     if (gameMap[gameId].ball_y + 3 >= 500 || gameMap[gameId].ball_y - 3 <= 0) {
       const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
       gameMap[gameId].dir_x = test.newDir_x;
@@ -93,7 +93,8 @@ export class GameService {
         clearInterval(gameMap[gameId].interval);
         gameMap[gameId].game_state = 0;
         this.reset(gameId);
-        this.emit(gameId);
+        this.emit(gameId, 0);
+        this.emit(gameId, 1);
         console.log("중지");
       }
     }
@@ -114,14 +115,22 @@ export class GameService {
     gameMap[gameId].player_two_y = 200;
   }
 
-  emit(gameId: number){
-    const gameInfo = {
-      ball_x: gameMap[gameId].ball_x, 
-      ball_y: gameMap[gameId].ball_y,
-      player_one_y: gameMap[gameId].player_one_y,
-      player_two_y: gameMap[gameId].player_two_y,
+  emit(gameId: number, num: number){
+    if (num === 0 ){
+      const gameInfo = {
+        ball_x: gameMap[gameId].ball_x, 
+        ball_y: gameMap[gameId].ball_y,
+      }
+      this.eventsGateway.server.to(`game-${gameId}`).emit("gameInfo", gameInfo);
     }
-    this.eventsGateway.server.to(`game-${gameId}`).emit("gameInfo", gameInfo);
+    else {
+      const playerInfo = {
+        player_one_y: gameMap[gameId].player_one_y, 
+        player_two_y: gameMap[gameId].player_two_y,
+      }      
+      this.eventsGateway.server.to(`game-${gameId}`).emit('player_one', playerInfo);
+      this.eventsGateway.server.to(`game-${gameId}`).emit('player_two', playerInfo);
+    }
   }
 
   isMiddleBlock(gameId:number):boolean{

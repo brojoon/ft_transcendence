@@ -64,7 +64,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('changeGameSet')
   async changeGameSet(@MessageBody() data: {game: number, player1:number, player2:number, speed: number, set: number, map: number, random: number }){
-    
     gameMap[data.game].player_one_ready = data.player1;
     gameMap[data.game].player_two_ready = data.player2;
     gameMap[data.game].length = data.speed;
@@ -75,27 +74,39 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   }
 
   @SubscribeMessage('player_one_up')
-  async playerOneUP(@MessageBody() data: { game: number }){
-    if (gameMap[data.game].player_one_y > -50)
+  async playerOneUP(@MessageBody() data: { game: number }) {
+    if (gameMap[data.game].player_one_y > -50){
       gameMap[data.game].player_one_y -= gameMap[data.game].bar_seed;
+      const playerInfo = { player_one_y: gameMap[data.game].player_one_y };
+      this.server.to(`game-${data.game}`).emit('player_one', playerInfo);
+    }  
   }
 
   @SubscribeMessage('player_one_down')
-  async playerOneDown(@MessageBody() data: { game: number }){
-    if (gameMap[data.game].player_one_y < 450)
+  async playerOneDown(@MessageBody() data: { game: number }) {
+    if (gameMap[data.game].player_one_y < 450){
       gameMap[data.game].player_one_y += gameMap[data.game].bar_seed;
+      const playerInfo = { player_one_y: gameMap[data.game].player_one_y };
+      this.server.to(`game-${data.game}`).emit('player_one', playerInfo);
+    }
   }
 
   @SubscribeMessage('player_two_up')
-  async playerTwoUP(@MessageBody() data: { game: number }){
-    if (gameMap[data.game].player_two_y > -50)
+  async playerTwoUP(@MessageBody() data: { game: number }) {
+    if (gameMap[data.game].player_two_y > -50){
       gameMap[data.game].player_two_y -= gameMap[data.game].bar_seed;
+      const playerInfo = { player_two_y: gameMap[data.game].player_two_y };
+      this.server.to(`game-${data.game}`).emit('player_two', playerInfo);
+    }
   }
   
   @SubscribeMessage('player_two_down')
-  async playerTwoDown(@MessageBody() data: { game: number }){
-    if (gameMap[data.game].player_two_y < 450)
+  async playerTwoDown(@MessageBody() data: { game: number }) {
+    if (gameMap[data.game].player_two_y < 450){
       gameMap[data.game].player_two_y += gameMap[data.game].bar_seed;
+      const playerInfo = { player_two_y: gameMap[data.game].player_two_y };
+      this.server.to(`game-${data.game}`).emit('player_two', playerInfo);
+    }
   }
 
   async handleConnection(@ConnectedSocket() socket: Socket) {
@@ -105,7 +116,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
     console.log(`disconnected : ${socket.id}`);
     delete onlineMap[socket.id];
-    socket.leave(`game-1`);
+    //socket.leave(`game-1`);
     socket.emit('onlineList', Object.values(onlineMap));
     try{
       await this.connectRepository.createQueryBuilder()

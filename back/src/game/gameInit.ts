@@ -9,12 +9,13 @@ const initData ={
     random_map:0,
     game_state: 0,
     complete_game_set: 0,
-    length: 2,
+    length: 15,
     bar_seed: 30,
     ball_x: 500,
     ball_y: 250,
     player_one_y: 200,
     player_two_y: 200,
+    interval_time: 10
 }
 export = initData;
 
