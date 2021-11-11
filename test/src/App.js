@@ -44,22 +44,31 @@ function App() {
     const [score2, setScore2] = useState(0);
     const [set, setSet] = useState(3);
     const [map, setMap] = useState(0);
-    const [speed, setSpeed] = useState(2);
+    const [speed, setSpeed] = useState(3);
     const [random, setRandom] = useState(0);
 
     useEffect(() => {
       socket.on("gameInfo", (gameInfo) => {
         setBallX(gameInfo.ball_x);
         setBallY(gameInfo.ball_y);
-        setPlayOneY(gameInfo.player_one_y);
-        setPlayTwoY(gameInfo.player_two_y);
+      });
+
+      socket.on("score", (score) => {
+        setScore1(score.player1);
+        setScore2(score.player2);
       });
     }, []);
 
     useEffect(() => {
-      socket.on("score", (score) => {
-        setScore1(score.player1);
-        setScore2(score.player2);
+
+      socket.on("player_one", (playerInfo) => {
+        setPlayOneY(playerInfo.player_one_y);
+      });
+    }, []);
+
+    useEffect(() => {
+      socket.on("player_two", (playerInfo) => {
+        setPlayTwoY(playerInfo.player_two_y);
       });
     }, []);
 
@@ -71,10 +80,10 @@ function App() {
         if (e.keyCode === 83){
           socket.emit('player_one_down', {game: 1});
         }
-        if (e.keyCode === 38) {
+        if (e.keyCode === 79) {
           socket.emit('player_two_up', {game: 1});
         }
-        if (e.keyCode === 40) {
+        if (e.keyCode === 76) {
           socket.emit('player_two_down', {game: 1});
         }
       };
@@ -88,13 +97,13 @@ function App() {
       setPlay2(1);
     };
     const speed1 = () => {
-      setSpeed(1);
-    };
-    const speed2 = () => {
       setSpeed(2);
     };
-    const speed3 = () => {
+    const speed2 = () => {
       setSpeed(3);
+    };
+    const speed3 = () => {
+      setSpeed(4);
     };
     const set3 = () => {
       setSet(3);
@@ -163,9 +172,11 @@ function App() {
         </div>
         <div>
           <b>player1 score: {score1} </b>
+          <b> [up: w / down: s] </b>
         </div>
         <div>
           <b>player2 score: {score2} </b>
+          <b> [up: o / down: l] </b>
         </div>
         <div>
         <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0xeec5da }}>
