@@ -79,12 +79,10 @@ export class AuthService {
       }
       throw new ForbiddenException('잘못된 접근입니다.');    
     } catch (error) {
-      if (error.response.statusCode === 403)
-        throw new ForbiddenException(error.response.message);
+      if (error.errno !== undefined || error.response.statusCode !== 403)
+        throw new BadRequestException("validateUser 실패");
       else if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException("validateUser 실패");    
+        throw new NotFoundException(error.response.message); 
     }
   }
 
@@ -108,12 +106,10 @@ export class AuthService {
       await this.connectRepository.save(connect);
       return (true);      
     } catch (error) {
-      if (error.response.statusCode === 403)
-        throw new ForbiddenException(error.response.message);
-      else if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
+      if (error.errno !== undefined || error.response.statusCode !== 403)
         throw new BadRequestException("DM방 맴버 확인 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
     }
   }
 

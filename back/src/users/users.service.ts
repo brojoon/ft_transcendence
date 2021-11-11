@@ -31,10 +31,10 @@ export class UsersService {
       await this.connectRepository.save(connect);
       return (true);      
     } catch (error) {
-      if (error.response.statusCode === 403)
-        throw new ForbiddenException(error.response.message);
-      else
+      if (error.errno !== undefined || error.response.statusCode !== 403)
         throw new BadRequestException("임시 아이디 생성 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
     }
   }
 
@@ -64,10 +64,10 @@ export class UsersService {
         throw new NotFoundException('유저 정보 없음');
       return(result);      
     } catch (error) {
-      if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException("내 정보 조회 실패");      
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("내 정보 조회 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);    
     }
   }
 
@@ -81,10 +81,10 @@ export class UsersService {
         throw new NotFoundException('유저 정보 없음');
       return(result);      
     } catch (error) {
-      if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException("가입한 모든 유저 정보 조회 실패");           
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("가입한 모든 유저 정보 조회 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);        
     }
   }
   
@@ -99,10 +99,10 @@ export class UsersService {
         throw new NotFoundException('유저 정보 없음');
       return(result);      
     } catch (error) {
-      if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException("유저 접속 정보 조회 실패");        
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("유저 접속 정보 조회 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);     
     }
   }
 
@@ -117,10 +117,10 @@ export class UsersService {
         throw new NotFoundException('유저 정보 없음');
       return(result);      
     } catch (error) {
-      if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException("모든 유저 접속 정보 조회 실패");      
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("모든 유저 접속 정보 조회 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);     
     }
   }
 
@@ -161,10 +161,10 @@ export class UsersService {
         throw new NotFoundException('유저 정보 없음');
       return(result.profile);      
     } catch (error) {
-      if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException("프로필 URL 조회 실패");          
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("프로필 URL 조회 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);        
     }
   }
 
@@ -194,10 +194,10 @@ export class UsersService {
         throw new NotFoundException('유저 정보 없음');
       return(result.twofactorEnable);      
     } catch (error) {
-      if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException("two-factor 상태확인 실패");           
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("two-factor 상태확인 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);       
     }
   }
 

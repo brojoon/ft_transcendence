@@ -20,13 +20,13 @@ export class DmsService {
       const user1 = await this.usersRepository.findOne({ where: { userId: userId1 } });
       const user2 = await this.usersRepository.findOne({ where: { userId: userId2 } });
       if (!(user1 && user2))
-        throw new NotFoundException('유효한 유저 조회 실패');
+        throw new NotFoundException('유저 조회 실패');
       return true;
     } catch (error) {
-      if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
+      if (error.errno !== undefined || error.response.statusCode !== 404)
         throw new BadRequestException("DM방 맴버 확인 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
     }
   }
 
@@ -42,12 +42,12 @@ export class DmsService {
       else
         throw new ForbiddenException('내가 속한 DM방이 아닙니다');    
     } catch (error) {
-      if (error.response.statusCode === 403)
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("상대 유저 찾기 실패");
+      else if (error.response.statusCode === 403)
         throw new ForbiddenException(error.response.message);
       else if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException("상대 유저 찾기 실패");  
+        throw new NotFoundException(error.response.message); 
     }
   }
 
@@ -72,10 +72,10 @@ export class DmsService {
       await this.DmcontentRepository.save(newDmcontent);
       return (newDm.id);   
     } catch (error) {
-      if (error.response.statusCode === 404)
-        throw new NotFoundException(error.response.message);
-      else
+      if (error.errno !== undefined || error.response.statusCode !== 404)
         throw new BadRequestException("DM방 생성 및 조회 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
     }
   }
   
@@ -99,10 +99,10 @@ export class DmsService {
       }
       return checkdm;
     } catch (error) {
-      if (error.response.statusCode === 404)
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException('DM 리스트 조회 실패');
+      else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException('DM 리스트 조회 실패');   
     }
   }
 
@@ -120,10 +120,10 @@ export class DmsService {
       console.log("ccccc");
       return (checkdm)
     } catch (error) {
-      if (error.response.statusCode === 404)
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException('DM 리스트 조회 실패');
+      else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException('DM 리스트 조회 실패');  
     }
   }
 
@@ -145,10 +145,10 @@ export class DmsService {
       const data = { dmId, userId1, userId2, message: dm.message, match, historyId, createdAt: dm.createdAt };
       this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data); 
     } catch (error) {
-      if (error.response.statusCode === 404)
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("메세지 전송 실패");
+      else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException('메세지 전송 실패');  
     }
   }
 
@@ -172,10 +172,10 @@ export class DmsService {
       const data = { dmId, userId1, userId2, message: dm.message, match, historyId, createdAt: dm.createdAt };
       this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
     } catch (error) {
-      if (error.response.statusCode === 404)
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("메세지 전송 실패");
+      else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException('메세지 전송 실패');  
     }
   }
 
@@ -190,10 +190,10 @@ export class DmsService {
         .getMany();
       return (result);
     } catch (error) {
-      if (error.response.statusCode === 404)
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("메세지 조회 실패");
+      else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException('메세지 조회 실패');  
     }
   }
 
@@ -211,12 +211,12 @@ export class DmsService {
         .getMany();
       return (res);  
     } catch (error) {
-      if (error.response.statusCode === 403)
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("메세지 조회 실패");
+      else if (error.response.statusCode === 403)
         throw new ForbiddenException(error.response.message);
       else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
-      else
-        throw new BadRequestException('메세지 조회 실패');
     }
   }
 }
