@@ -22,7 +22,7 @@ export class AuthController {
 
   @ApiOperation({ summary: '1차 인증 없이 아이디 생성(test용)'})
   @HttpCode(200)
-  @Get('tem/:oauthid/:id')
+  @Get('1/:oauthid/:id')
   async temMakeloginUser(@Param('oauthid') oauthid: number, @Param('id') id :string, @Res() res) {
     const user = {
       oauthId: +oauthid,
@@ -39,7 +39,7 @@ export class AuthController {
 
   @ApiOperation({ summary: '생성한 아이디로 로그인 하면서 토큰 다시 발급'})
   @HttpCode(200)
-  @Get('temGetToken/:id')
+  @Get('2/:id')
   async temGetToken(@Param('id') id :string, @Res() res) {
     const result = await this.usersRepository.findOne({
       select: ['oauthId', 'userId', 'username', 'email', 'profile'],
