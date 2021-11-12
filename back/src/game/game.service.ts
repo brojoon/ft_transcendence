@@ -23,9 +23,10 @@ export class GameService {
       const history = new History();
       ////histoey초기화 시켜주기(다른데서 초기화가 이미 돼서 옴)
       this.reset(gameId);
+      await this.historyRepository.update({id:gameId}, {state:1});
       gameMap[gameId].game_state = 1;
       gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), gameMap[gameId].interval_time);
-    }     
+    }
     //console.log("mapmod", gameMap[gameId]);
   }
 
@@ -97,22 +98,32 @@ export class GameService {
       else{
         clearInterval(gameMap[gameId].interval);
         gameMap[gameId].game_state = 0;//?
-        let history = await this.historyRepository.findOne({id:gameId});;
+        let history = await this.historyRepository.findOne({id:gameId});
         if (gameMap[gameId].ball_x < 100){
           gameMap[gameId].player_two_point++;
-          await this.historyRepository.update({id:gameId}, {user2Point:(history.user2Point + 1)})
+          await this.historyRepository.update({id:gameId}, {user2Point:(gameMap[gameId].player_two_point)})
         }
         else{
           gameMap[gameId].player_one_point++;
-          await this.historyRepository.update({id:gameId}, {user1Point:(history.user1Point + 1)})
+          await this.historyRepository.update({id:gameId}, {user1Point:(gameMap[gameId].player_one_point)})
         }
+        /*
+        this.server.to(`game-${result2.id}`).emit('ready', {
+          player1: gameMap[result2.id].player_one_ready,
+          player2: gameMap[result2.id].player_two_ready
+        });
+        */
+        history = await this.historyRepository.findOne({id:gameId});
         const count = gameMap[gameId].player_one_point + gameMap[gameId].player_two_point;
         console.log("count:", count, "gameMap[gameId].game_set:", gameMap[gameId].game_set);
+        console.log("db:", history.user1Point, history.user2Point);
+        console.log("map:", gameMap[gameId].player_one_point, gameMap[gameId].player_two_point);
         this.reset(gameId);
         this.emit(gameId, 0);
         this.emit(gameId, 1);
         if (count >= gameMap[gameId].game_set){
           await this.dmcontentRepository.update({historyId:gameId}, {match:2});
+          await this.historyRepository.update({id:gameId}, {state:2});
           console.log("game over\n\n\n");
           const player_one = history.user1Point;
           const player_two = history.user2Point;

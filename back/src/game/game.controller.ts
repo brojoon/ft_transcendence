@@ -12,18 +12,21 @@ export class GameController {
 
   @Get("/gameStart/:gameId")
   gameStart(@Param("gameId") gameId) {
-    gameId = 1;
+    return this.gameService.gameStart(gameId);
+  }
+
+  @Get("/start/:gameId")
+  game_Start(@Param("gameId") gameId) {
     return this.gameService.gameStart(gameId);
   }
 
   @Get("")
   testStart(@Param("gameId") gameId) {
-    gameId = 1;
     return this.gameService.gameStart(gameId);
   }
 
   @Get("/history/:gameId")
-  async gameHistory(@Param(":gameId") gameId:number){
+  async gameHistory(@Param("gameId") gameId:number){
     return await this.gameService.gameHistory(gameId);
   }
 }
