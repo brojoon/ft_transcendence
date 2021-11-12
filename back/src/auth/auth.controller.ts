@@ -1,9 +1,12 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, NotFoundException, Param, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'common/decorators/user.decorator';
 import { TwoFactorDto } from 'common/dto/two-factor.dto';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
+import { Users } from 'src/entities/Users';
+import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
 import { Intra42AuthGuard } from './guards/intra42-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
@@ -13,8 +16,49 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @Controller('api/auth')
 export class AuthController {
   constructor(
+    @InjectRepository(Users) private usersRepository: Repository<Users>,
     private readonly authService: AuthService,
   ) {}
+
+  @ApiOperation({ summary: '1차 인증 없이 아이디 생성(test용)'})
+  @HttpCode(200)
+  @Get('1/:oauthid/:id')
+  async temMakeloginUser(@Param('oauthid') oauthid: number, @Param('id') id :string, @Res() res) {
+    const user = {
+      oauthId: +oauthid,
+      username: id,
+      userId: id,
+      email: `${id}@naver.com`,
+      profile: 'pricture'
+    }
+    this.authService.Join(user.oauthId, user.username, user.userId, user.email, user.profile);
+    const token = await this.authService.login(user);
+    res.cookie('ts_token', token.access_token, { httpOnly: false });
+    res.send(null);
+  }
+
+  @ApiOperation({ summary: '생성한 아이디로 로그인 하면서 토큰 다시 발급'})
+  @HttpCode(200)
+  @Get('2/:id')
+  async temGetToken(@Param('id') id :string, @Res() res) {
+    const result = await this.usersRepository.findOne({
+      select: ['oauthId', 'userId', 'username', 'email', 'profile'],
+      where: { userId: id },  
+    });
+    if (!result)
+      throw new NotFoundException('유저 정보 없음');
+    const user = {
+      oauthId: +result.oauthId,
+      username: result.username,
+      userId: result.userId,
+      email: result.email,
+      profile: result.profile
+    }
+    res.clearCookie('ts_token');
+    const token = await this.authService.login(user);
+    res.cookie('ts_token', token.access_token, { httpOnly: false });
+    res.send(null);
+  }
 
   @UseGuards(Intra42AuthGuard)
   @ApiOperation({ summary: '42oauth 로그인'})
@@ -46,23 +90,6 @@ export class AuthController {
       res.cookie('ts_token', token.access_token, { httpOnly: false });
       res.status(302).redirect('http://localhost:3090/ft_transcendence/home')
     }
-  }
-
-  @ApiOperation({ summary: '1차 인증 없이 아이디 생성(test용)'})
-  @HttpCode(200)
-  @Get('tem/:oauthid/:id')
-  async temMakeloginUser(@Param('oauthid') oauthid: number, @Param('id') id :string, @Res() res) {
-    const user = {
-      oauthId: +oauthid,
-      username: id,
-      userId: id,
-      email: `${id}@naver.com`,
-      profile: 'pricture'
-    }
-    this.authService.Join(user.oauthId, user.username, user.userId, user.email, user.profile);
-    const token = await this.authService.login(user);
-    res.cookie('ts_token', token.access_token, { httpOnly: false });
-    res.send(null);
   }
 
   @Post('qrlogin')

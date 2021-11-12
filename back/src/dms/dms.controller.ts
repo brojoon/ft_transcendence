@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { UserDto } from 'common/dto/user.dto';
@@ -74,7 +74,7 @@ export class DmsController {
   @ApiOperation({ summary: '메세지 보내기 / 게임신청 (상대방 아이디 통해서)'})
   @ApiResponse ({
     status: 201,
-    description: 'match초기값 = 0 / histortId초기값 = 0 메세지는 바디에 넣어서 보내기',
+    description: 'return값=> historyId / match초기값 = 0 / histortId초기값 = 0 / 대결 신청시 match => 1',
   })
   @HttpCode(201)
   @Post('sendMessage/:otherUser/:match/:historyId')
@@ -91,7 +91,7 @@ export class DmsController {
   @ApiOperation({ summary: '메세지 보내기 / 게임신청 (DMID 통해서)'})
   @ApiResponse ({
     status: 201,
-    description: 'match초기값 = 0 / histortId초기값 = 0 메세지는 바디에 넣어서 보내기',
+    description: 'return값=> historyId / match초기값 = 0 / histortId초기값 = 0 / 대결 신청시 match => 1',
   })
   @HttpCode(201)
   @Post('sendMessageUseDmId/:dmID/:match/:historyId')
