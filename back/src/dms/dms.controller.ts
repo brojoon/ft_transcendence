@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { UserDto } from 'common/dto/user.dto';
@@ -125,20 +125,5 @@ export class DmsController {
   @Get('getAllMessageUseDmId/:dmId')
   async getAllMessageUseDmId(@User() user, @Param('dmId') dmId: number) {
     return this.dmsService.getAllMessageUseDmId(user.userId, dmId);
-  }
-
-  @Get('history/:id')
-  async history(@Param('id') id: number) {
-    return this.dmsService.history(id);
-  }
-
-  @Get('ready1/:id')
-  async ready1(@User() user, @Param('id') id: number) {
-    return this.dmsService.ready1(user.userId, id);
-  }
-
-  @Get('ready2/:id')
-  async ready2(@User() user, @Param('id') id: number) {
-    return this.dmsService.ready2(user.userId, id);
   }
 }

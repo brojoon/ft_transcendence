@@ -3,27 +3,34 @@ import axios from 'axios';
 import getSocket from './socket.js';
 import getCookie from './cookie.js';
 
-
+const option = {
+  headers: {
+    Authorization: `Bearer ${getCookie('ts_token', 1)}`
+  },
+  withCredentials: true  
+}
 
 const Match = () => {
   const [userId , setUserId] = useState("");
   const [button , setButton] = useState("MATCH");
 
   const socket = getSocket();
-  axios.get(`http://localhost:3095/api/users`, {
-    headers: {
-        Authorization: `Bearer ${getCookie('ts_token', 1)}`
-    },
-    withCredentials: true
-  }).then(res => {
-    setUserId(res.data.userId);
-    socket.emit('login', {userId: res.data.userId, Dms: [], channels: []});
-  }).catch(err => {
-    if (err.response.status === 401) {
-      setUserId("등록 되지 않는 아이디 입니다.");
-      console.log(userId);
+
+  useEffect(() => {
+    async function getGameInfo() {
+      axios.get(`http://localhost:3095/api/users`, option)
+      .then(res => {
+        setUserId(res.data.userId);
+      }).catch(err => {
+        if (err.response.status === 401) {
+          setUserId("등록 되지 않는 아이디 입니다.");
+          console.log(userId);
+        }
+      })
     }
-  })
+    if (userId === "")
+      getGameInfo();
+  }, [userId]);
 
   const onClickMatch = useCallback(() => {
     setButton("기다리는 중");
