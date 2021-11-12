@@ -20,7 +20,7 @@ export class GameService {
 
   async gameStart(gameId: number){ 
     if (gameMap[gameId].game_state === 0 && gameMap[gameId].player_one_ready === 1 && gameMap[gameId].player_two_ready === 1){
-      const history = new History();
+      //const history = new History();
       ////histoey초기화 시켜주기(다른데서 초기화가 이미 돼서 옴)
       this.reset(gameId);
       await this.historyRepository.update({id:gameId}, {state:1});
@@ -107,12 +107,10 @@ export class GameService {
           gameMap[gameId].player_one_point++;
           await this.historyRepository.update({id:gameId}, {user1Point:(gameMap[gameId].player_one_point)})
         }
-        /*
-        this.server.to(`game-${result2.id}`).emit('ready', {
-          player1: gameMap[result2.id].player_one_ready,
-          player2: gameMap[result2.id].player_two_ready
+        this.eventsGateway.server.to(`game-${gameId}`).emit('point', {
+          player1: gameMap[gameId].player_one_point,
+          player2: gameMap[gameId].player_two_point, 
         });
-        */
         history = await this.historyRepository.findOne({id:gameId});
         const count = gameMap[gameId].player_one_point + gameMap[gameId].player_two_point;
         console.log("count:", count, "gameMap[gameId].game_set:", gameMap[gameId].game_set);
