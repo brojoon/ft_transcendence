@@ -12,6 +12,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Connect } from 'src/entities/Connect';
+import { History } from 'src/entities/History';
 import initData from 'src/game/gameInit';
 import { gameMap } from 'src/game/gameMap';
 import { Repository } from 'typeorm';
@@ -22,6 +23,7 @@ import { onlineMap } from './onlineMap';
 export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     @InjectRepository(Connect) private connectRepository: Repository<Connect>,
+    @InjectRepository(History) private historyRepository: Repository<History>,
   ) { }
 
   @WebSocketServer() public server: Server;
@@ -30,7 +32,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleLogin(
     @MessageBody() data: { userId: string; Dms: number[], channels: number[] },
     @ConnectedSocket() socket: Socket ){
-    console.log('login', socket.id);
+    console.log(`login : ${socket.id}, ${onlineMap[socket.id]}`);
     onlineMap[socket.id] = data.userId;
     try{
       await this.connectRepository.createQueryBuilder()
@@ -50,23 +52,22 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     });
   }
 
-  afterInit(server: Server): any {
-    console.log('init');
-  }
+  afterInit(server: Server): any { }
 
-  async handleConnection(@ConnectedSocket() socket: Socket) {
-    console.log(`connected : ${socket.id}`);
-  }
+  async handleConnection(@ConnectedSocket() socket: Socket) { }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
     // 게임 접속중이면 0으로 바꿔주고 소켓도 끈어줘야함
-    console.log(`disconnected : ${socket.id}`);  
+    console.log(`logout : ${socket.id}, ${onlineMap[socket.id]}`);
+    // matching 초기화
     if (users.playerOne === onlineMap[socket.id])
       users.playerOne = null;
     else if (users.playerTwo === onlineMap[socket.id]) {
       users.playerOne = null;
       users.playerTwo = null;
     }
+    // game중 join 0으로 돌로주기
+
     socket.emit('onlineList', Object.values(onlineMap));
     try{
       await this.connectRepository.createQueryBuilder()
@@ -80,11 +81,12 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     delete onlineMap[socket.id];
   }
 
+  //////////////////////////////////////////////////////////////////////////
+  //////////////////////////game 관련////////////////////////////////////////
   @SubscribeMessage('game')
   async gamejoin(
     @MessageBody() data: {gameId: number, player: string, user1Point: number, user2Point: number},
     @ConnectedSocket() socket: Socket ){
-    console.log("gameroom join", data.gameId, socket.id);
     if (data.player === "playerOne") {
       gameMap[data.gameId] = initData;
       gameMap[data.gameId].player_one_point = data.user1Point;
