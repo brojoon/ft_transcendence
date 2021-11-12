@@ -10,18 +10,8 @@ export class GameController {
     private readonly gameService: GameService
   ) {}
 
-  @Get("/gameStart/:gameId")
-  gameStart(@Param("gameId") gameId) {
-    return this.gameService.gameStart(gameId);
-  }
-
   @Get("/start/:gameId")
   game_Start(@Param("gameId") gameId) {
-    return this.gameService.gameStart(gameId);
-  }
-
-  @Get("")
-  testStart(@Param("gameId") gameId) {
     return this.gameService.gameStart(gameId);
   }
 

@@ -115,12 +115,16 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   //////////////////////////game 관련////////////////////////////////////////
   @SubscribeMessage('game')
   async gamejoin(
-    @MessageBody() data: {gameId: number, player: string },
+    @MessageBody() data: {gameId: number, player: string, player1Ready: number, player2Ready: number},
     @ConnectedSocket() socket: Socket ){
-    if (data.player === "playerOne") {
-      gameMap[data.gameId] = initData;
-    }
+    gameMap[data.gameId] = initData;
+    gameMap[data.gameId].player_one_ready = data.player1Ready;
+    gameMap[data.gameId].player_two_ready = data.player2Ready;
     socket.join(`game-${data.gameId}`);
+    this.server.to(`game-${data.gameId}`).emit('ready', {
+      player1: gameMap[data.gameId].player_one_ready,
+      player2: gameMap[data.gameId].player_two_ready, 
+    }); 
   }
 
   @SubscribeMessage('matching')

@@ -1,7 +1,7 @@
 import "./index.css";
 import * as PIXI from "pixi.js";
 import { Stage, PixiComponent } from "@inlet/react-pixi";
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect} from "react";
 import axios from 'axios';
 import getSocket from './socket.js';
 import getCookie from './cookie.js';
@@ -46,8 +46,8 @@ const PingPong = (data) =>{
   const [ball_y , setBallY] = useState(250);
   const [player_one_y, setPlayOneY] = useState(200);
   const [player_two_y , setPlayTwoY] = useState(200);
-  const [player1, setPlay1] = useState(0);
-  const [player2, setPlay2] = useState(0);
+  const [player1Ready, setPlay1Ready] = useState(0);
+  const [player2Ready, setPlay2Ready] = useState(0);
   const [user1Point, setUser1Point] = useState(0);
   const [user2Point, setUser2Point] = useState(0);
   const [set, setSet] = useState(3);
@@ -76,17 +76,22 @@ const PingPong = (data) =>{
         setUserId(temUserId);
         if (temUserId === res.data.userId1){
           setPlayer("playerOne");
+          setPlay2Ready(res.data.playerTwoJoin);
           socket.emit('game', {
             gameId: gameId, 
-            player: "playerOne"
+            player: "playerOne",
+            player1Ready: 0,
+            player2Ready: res.data.playerTwoJoin
           })
         }   
         else if (temUserId === res.data.userId2) {
           setPlayer("playerTwo");
+          setPlay1Ready(res.data.playerOneJoin);
           socket.emit('game', {
             gameId: gameId, 
             player: "playerTwo",
-   
+            player1Ready: res.data.playerOneJoin,
+            player2Ready: 0   
           })
         }
         socket.emit("gamePoint", {
@@ -120,13 +125,15 @@ const PingPong = (data) =>{
     socket.on("point", (point) => {
       setUser1Point(point.player1);
       setUser2Point(point.player2);
+      if (point.player1 + point.player2 >= set)
+        window.location.href = `http://localhost:3000/history/${gameId}`;
     });
-  }, []);
+  }, [set, gameId]);
 
   useEffect(() => {
     socket.on("ready", (ready) => {
-      setPlay1(ready.player1);
-      setPlay2(ready.player2);
+      setPlay1Ready(ready.player1);
+      setPlay2Ready(ready.player2);
     });
   }, []);
 
@@ -171,7 +178,7 @@ const PingPong = (data) =>{
   }, [player, gameId]);
 
   const readyPlayer1 = () => {
-    if (player === "playerOne" && player1 === 0) {
+    if (player === "playerOne" && player1Ready === 0) {
       socket.emit("gameReady", {
         gameId: gameId, 
         player: 1,
@@ -180,7 +187,7 @@ const PingPong = (data) =>{
     }
   };
   const readyPlayer2 = () => {
-    if (player === "playerTwo" && player2 === 0) {
+    if (player === "playerTwo" && player2Ready === 0) {
       socket.emit("gameReady", {
         gameId: gameId, 
         player: 2,
@@ -310,17 +317,17 @@ const PingPong = (data) =>{
 
   const changeGameSet = async() => {
     if (player !== "")
-      await axios.get(`http://localhost:3095/api/game/gameStart/${gameId}`, option); 
+      await axios.get(`http://localhost:3095/api/game/start/${gameId}`, option); 
   };
 
   return (
     <div>
       <div>
         <h3>[ {userId} 화면 ({player}) ]</h3>
-        <b> playerOne {player1 === 0 ? '준비중..' : '완료'} </b>
-        <button onClick={readyPlayer1}>{ player1 === 0 ? 'ready' : '완료' }</button>
-        <b> playerTwo {player2 === 0 ? '준비중..' : '완료'} </b>
-        <button onClick={readyPlayer2}>{ player2 === 0 ? 'ready' : '완료' }</button>
+        <b> playerOne {player1Ready === 0 ? '준비중..' : '완료'} </b>
+        <button onClick={readyPlayer1}>{ player1Ready === 0 ? 'ready' : '완료' }</button>
+        <b> playerTwo {player2Ready === 0 ? '준비중..' : '완료'} </b>
+        <button onClick={readyPlayer2}>{ player2Ready === 0 ? 'ready' : '완료' }</button>
       </div>
       <div>
         <button onClick={changeGameSet}>게임시작 </button>

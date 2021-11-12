@@ -10,7 +10,7 @@ const initData ={
     random_map:0,
     game_state: 0,
     complete_game_set: 0,
-    length: 15,
+    length: 3,
     bar_seed: 30,
     ball_x: 500,
     ball_y: 250,

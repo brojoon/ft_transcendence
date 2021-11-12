@@ -33,9 +33,11 @@ const Match = () => {
   }, [userId]);
 
   const onClickMatch = useCallback(() => {
-    setButton("기다리는 중");
-    socket.emit('matching', {userId: userId, gameId: 0});
-    console.log("매치 요청");
+    if (userId !== "등록 되지 않는 아이디 입니다.") {
+      setButton("기다리는 중");
+      socket.emit('matching', {userId: userId, gameId: 0});
+      console.log("매치 요청");
+    }
   }, [userId, socket]);
 
   useEffect(  () => {
