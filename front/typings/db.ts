@@ -52,7 +52,7 @@ export interface IChannelList {
 }
 
 export interface IMember {
-  userid: string,
+  userId: string,
   mute: boolean,
   auth: number
 }

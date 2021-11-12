@@ -11,7 +11,7 @@ import getToken from '@utils/getToken';
 import ChannelChatHeader from '@components/ChannelChatHeader';
 import ChannelChatList from '@components/ChannelChatList';
 import ChannelMemberDrawBar from '@components/ChannelMemberDrawBar';
-import { DriveFileMoveOutlined } from '@mui/icons-material';
+import ChannelRoomSettingModal from '@components/ChannelRoomSettingModal';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,9 +25,29 @@ const ChannelRoom = () => {
     fetcher,
   );
   const [chat, setChat] = useState('');
+  const [settingToggle, setSettingToggle] = useState(false);
   const [membersToggle, setMembersToggle] = useState(false);
   const scrollbarRef = useRef<Scrollbars>(null);
   const socket = getSocket();
+
+  const onClickMembersToggle = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log(membersToggle);
+      setMembersToggle((prev) => !prev);
+    },
+    [membersToggle, setMembersToggle],
+  );
+
+  const onClickSettingBtn = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log(settingToggle);
+      setSettingToggle((prev) => !prev);
+    },
+    [settingToggle, setSettingToggle],
+  );
+
   const onSubmitChat = useCallback(
     (e) => {
       e.preventDefault();
@@ -66,15 +86,6 @@ const ChannelRoom = () => {
       setChat(e.target.value);
     },
     [chat],
-  );
-
-  const onClickMembersToggle = useCallback(
-    (e) => {
-      e.preventDefault();
-      console.log(membersToggle);
-      setMembersToggle((prev) => !prev);
-    },
-    [membersToggle, setMembersToggle],
   );
   const onMessage = useCallback(
     (data) => {
@@ -127,7 +138,11 @@ const ChannelRoom = () => {
         <ChannelChatList chatData={chatData} scrollbarRef={scrollbarRef} />
         <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />
       </div>
-      <ChannelMemberDrawBar />
+      <ChannelMemberDrawBar onClickSettingBtn={onClickSettingBtn} />
+      <ChannelRoomSettingModal
+        settingToggle={settingToggle}
+        onClickSettingBtn={onClickSettingBtn}
+      />
     </>
   );
 };
