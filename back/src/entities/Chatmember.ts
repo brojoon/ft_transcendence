@@ -23,6 +23,9 @@ export class Chatmember {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @CreateDateColumn()
+  muteExpired:Date;
+  
   @ManyToOne(() => Chatchannel, (chatchannel) => chatchannel.Chatmembers, {
     onDelete: "CASCADE",
     onUpdate: "CASCADE",
