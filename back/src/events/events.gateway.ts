@@ -57,7 +57,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleConnection(@ConnectedSocket() socket: Socket) { }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
-    // 게임 접속중이면 0으로 바꿔주고 소켓도 끈어줘야함
     console.log(`logout : ${socket.id}, ${onlineMap[socket.id]}`);
     // matching 초기화
     if (users.playerOne === onlineMap[socket.id])
@@ -66,8 +65,39 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       users.playerOne = null;
       users.playerTwo = null;
     }
-    // game중 join 0으로 돌로주기
+    // game중 인거 있으면 join 0으로 돌로주기
+    try{
+      const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id], playerOneJoin: 1})
+      const result2 = await this.historyRepository.findOne({userId1: onlineMap[socket.id], playerOneJoin: 1})
 
+      if (result1) {
+        await this.historyRepository.createQueryBuilder()
+          .update()
+          .set({ playerOneJoin: 0 })
+          .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id], num: 1})
+          .execute();
+        gameMap[result1.id].player_one_ready = 0;
+        this.server.to(`game-${result1.id}`).emit('ready', {
+          player1: gameMap[result1.id].player_one_ready,
+          player2: gameMap[result1.id].player_two_ready
+        });
+      }
+      if (result2) {
+        await this.historyRepository.createQueryBuilder()
+          .update()
+          .set({ playerTwoJoin: 0 })
+          .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id], num: 1})
+          .execute();
+        gameMap[result2.id].player_two_ready = 0;
+        this.server.to(`game-${result2.id}`).emit('ready', {
+          player1: gameMap[result2.id].player_one_ready,
+          player2: gameMap[result2.id].player_two_ready 
+        });
+      }   
+    } catch (error) {
+      throw new BadRequestException('레디 0 실패');
+    }
+    // 접속상태 업데이트
     socket.emit('onlineList', Object.values(onlineMap));
     try{
       await this.connectRepository.createQueryBuilder()
@@ -75,7 +105,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .set({ state: false })
           .where('userId = :userId', {userId: onlineMap[socket.id]})
           .execute()
-    }catch{
+    }catch (error) {
       throw new BadRequestException('접속상태 업뎃 실패');
     }
     delete onlineMap[socket.id];
@@ -85,12 +115,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   //////////////////////////game 관련////////////////////////////////////////
   @SubscribeMessage('game')
   async gamejoin(
-    @MessageBody() data: {gameId: number, player: string, user1Point: number, user2Point: number},
+    @MessageBody() data: {gameId: number, player: string },
     @ConnectedSocket() socket: Socket ){
     if (data.player === "playerOne") {
       gameMap[data.gameId] = initData;
-      gameMap[data.gameId].player_one_point = data.user1Point;
-      gameMap[data.gameId].player_two_point = data.user2Point;
     }
     socket.join(`game-${data.gameId}`);
   }
@@ -131,13 +159,57 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
   }
 
+  @SubscribeMessage('gamePoint')
+  async gamePoint(@MessageBody() data: {gameId: number, user1Point: number, user2Point: number}){
+    gameMap[data.gameId].player_one_point = data.user1Point;
+    gameMap[data.gameId].player_two_point = data.user2Point;
+    this.server.to(`game-${data.gameId}`).emit('point', {
+      player1: data.user1Point,
+      player2: data.user2Point, 
+    });
+  }
+
+  @SubscribeMessage('gameReady')
+  async gameReady(@MessageBody() data: {gameId: number, player: number, userId: string}){
+    try {
+      if (data.player === 1) {
+        console.log(data.gameId, data.player, data.userId)
+        gameMap[data.gameId].player_one_ready = 1;
+        await this.historyRepository.createQueryBuilder()
+          .update()
+          .set({ playerOneJoin: 1 })
+          .where('id = :id AND userId1 = :userId', {id: data.gameId, userId: data.userId})
+          .execute()
+      } else if (data.player === 2) {
+        gameMap[data.gameId].player_two_ready = 1;
+        await this.historyRepository.createQueryBuilder()
+          .update()
+          .set({ playerTwoJoin: 1 })
+          .where('id = :id AND userId2 = :userId', {id: data.gameId, userId: data.userId})
+          .execute()
+      }
+      this.server.to(`game-${data.gameId}`).emit('ready', {
+        player1: gameMap[data.gameId].player_one_ready,
+        player2: gameMap[data.gameId].player_two_ready, 
+      });      
+    } catch (error) {
+      throw new BadRequestException("Ready 정보 업데이트 실패");
+    }
+  }
+
   @SubscribeMessage('changeGameSet')
-  async changeGameSet(@MessageBody() data: {game: number, speed: number, set: number, map: number, random: number }){
-    gameMap[data.game].length = data.speed;
-    gameMap[data.game].game_set = data.set;
-    gameMap[data.game].game_map = data.map;
-    gameMap[data.game].random_map = data.random;
-    this.server.to(`game-${data.game}`).emit('gameSet', {
+  async changeGameSet(@MessageBody() data: {
+      gameId: number,
+      speed: number,
+      set: number,
+      map: number,
+      random: number
+    }){
+    gameMap[data.gameId].length = data.speed;
+    gameMap[data.gameId].game_set = data.set;
+    gameMap[data.gameId].game_map = data.map;
+    gameMap[data.gameId].random_map = data.random;
+    this.server.to(`game-${data.gameId}`).emit('gameSet', {
       length: data.speed,
       game_set: data.set, 
       game_map: data.map, 

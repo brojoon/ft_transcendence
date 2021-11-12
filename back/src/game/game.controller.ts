@@ -23,7 +23,7 @@ export class GameController {
   }
 
   @Get("/history/:gameId")
-  async gameHistory(@Param(":gameId") gameId:number){
+  async gameHistory(@Param("gameId") gameId:number){
     return await this.gameService.gameHistory(gameId);
   }
 }
