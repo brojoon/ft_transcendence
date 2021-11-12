@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Dmcontent } from 'src/entities/Dmcontent';
 import { History } from 'src/entities/History';
 import { EventsGateway } from 'src/events/events.gateway';
 import { Repository } from 'typeorm';
@@ -8,12 +9,19 @@ import { gameMap } from './gameMap';
 @Injectable()
 export class GameService {
   constructor(
-    //@InjectRepository(History) private historyRepository: Repository<History>,
+    @InjectRepository(History) private historyRepository: Repository<History>,
+    @InjectRepository(Dmcontent) private dmcontentRepository:Repository<Dmcontent>,
     public eventsGateway:EventsGateway
   ) {}
 
+  async gameHistory(gameId : number){
+    return await this.historyRepository.findOne({id:gameId});
+  }
+
   async gameStart(gameId: number){ 
     if (gameMap[gameId].game_state === 0 && gameMap[gameId].player_one_ready === 1 && gameMap[gameId].player_two_ready === 1){
+      const history = new History();
+      ////histoey초기화 시켜주기(다른데서 초기화가 이미 돼서 옴)
       this.reset(gameId);
       gameMap[gameId].game_state = 1;
       gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), gameMap[gameId].interval_time);
@@ -21,80 +29,101 @@ export class GameService {
     //console.log("mapmod", gameMap[gameId]);
   }
 
-  moveCircle(gameId){
+  async moveCircle(gameId){
+    let rand;
+    let newDir;
+    let x_sign:number;
+    let y_sign:number;
+
     gameMap[gameId].ball_x += gameMap[gameId].dir_x * gameMap[gameId].length;
     gameMap[gameId].ball_y += gameMap[gameId].dir_y * gameMap[gameId].length;
-    //console.log("ball position", gameMap[gameId].ball_x, gameMap[gameId].ball_y);
     this.emit(gameId, 0);
     if (gameMap[gameId].ball_y + 3 >= 500 || gameMap[gameId].ball_y - 3 <= 0) {
-      const test = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
-      gameMap[gameId].dir_x = test.newDir_x;
-      gameMap[gameId].dir_y = test.newDir_y;
+      newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
+      gameMap[gameId].dir_x = newDir.newDir_x;
+      gameMap[gameId].dir_y = newDir.newDir_y;
       if (gameMap[gameId].random_map == 1){
-        let rand = Math.random();
+        rand = Math.random();
         rand *= 10000;
-        rand += 1;
         rand = Math.round(rand);
         rand %= 8;
         rand += 6;
-        rand = rand > 10 ? 8:rand;
-        rand = rand > 4 ? 8 : rand;
-        const x_sign1 = gameMap[gameId].dir_x > 0 ? +1 : -1;
-        gameMap[gameId].dir_x = x_sign1 * Math.abs(Math.cos(2 * Math.PI / rand));
-        const y_sign1 = gameMap[gameId].dir_y > 0 ? +1 : -1;
-        gameMap[gameId].dir_y = y_sign1 * Math.abs(Math.sin(2 * Math.PI / rand));
+        x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(2 * Math.PI / rand));
+        y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(2 * Math.PI / rand));
       }
       //console.log("changeDir", gameMap[gameId].dir_x, gameMap[gameId].dir_y);
     }
     else if (this.isMiddleBlock(gameId) == true){
       if (350 >= gameMap[gameId].ball_x || gameMap[gameId].ball_x >= 650){
-        const t1 = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
-        gameMap[gameId].dir_x = t1.newDir_x;
-        gameMap[gameId].dir_y = t1.newDir_y;
+        newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
+        gameMap[gameId].dir_x = newDir.newDir_x;
+        gameMap[gameId].dir_y = newDir.newDir_y;
       }
       else{
-        const t2 = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
-        gameMap[gameId].dir_x = t2.newDir_x;
-        gameMap[gameId].dir_y = t2.newDir_y;
+        newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
+        gameMap[gameId].dir_x = newDir.newDir_x;
+        gameMap[gameId].dir_y = newDir.newDir_y;
       }
       if (gameMap[gameId].random_map == 1){
-        let rand = Math.random();
+        rand = Math.random();
         rand *= 10000;
         rand = Math.round(rand);
         rand %= 8;
         rand += 6;
-        rand = rand > 10 ? 8:rand;
-        rand = rand > 4 ? 8 : rand;
-        const x_sign2 = gameMap[gameId].dir_x > 0 ? +1 : -1;
-        gameMap[gameId].dir_x = x_sign2 * Math.abs(Math.cos(2 * Math.PI / rand));
-        const y_sign2 = gameMap[gameId].dir_y > 0 ? +1 : -1;
-        gameMap[gameId].dir_y = y_sign2 * Math.abs(Math.sin(2 * Math.PI / rand));
+        console.log("rand:", rand);
+        x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(2 * Math.PI / rand));
+        y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(2 * Math.PI / rand));
       }
     }
     else if ((gameMap[gameId].ball_x >= 980)  || (gameMap[gameId].ball_x <= 20 )) {
       if (this.isPannel(gameId) === true){
-        console.log("is pannel!");
-        const t3 = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
-        gameMap[gameId].dir_x = t3.newDir_x;
-        gameMap[gameId].dir_y = t3.newDir_y;
-        let rand = Math.random();
+        newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
+        gameMap[gameId].dir_x = newDir.newDir_x;
+        gameMap[gameId].dir_y = newDir.newDir_y;
+        rand = Math.random();
         rand *= 10000;
         rand = Math.round(rand);
         rand %= 8;
         rand += 6;
-        rand = rand > 10 ? 8:rand;
-        rand = rand > 4 ? 8 : rand;
-        const x_sign3 = gameMap[gameId].dir_x > 0 ? +1 : -1;
-        gameMap[gameId].dir_x = x_sign3 * Math.abs(Math.cos((2 * Math.PI) / rand));
-        const y_sign3 = gameMap[gameId].dir_y > 0 ? +1 : -1;
-        gameMap[gameId].dir_y = y_sign3 * Math.abs(Math.sin((2 * Math.PI) / rand));
+        x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
+        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos((2 * Math.PI) / rand));
+        y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
+        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin((2 * Math.PI) / rand));
       }
       else{
         clearInterval(gameMap[gameId].interval);
-        gameMap[gameId].game_state = 0;
+        gameMap[gameId].game_state = 0;//?
+        let history = await this.historyRepository.findOne({id:gameId});;
+        if (gameMap[gameId].ball_x < 100){
+          gameMap[gameId].player_two_point++;
+          await this.historyRepository.update({id:gameId}, {user2Point:(history.user2Point + 1)})
+        }
+        else{
+          gameMap[gameId].player_one_point++;
+          await this.historyRepository.update({id:gameId}, {user1Point:(history.user1Point + 1)})
+        }
+        const count = gameMap[gameId].player_one_point + gameMap[gameId].player_two_point;
+        console.log("count:", count, "gameMap[gameId].game_set:", gameMap[gameId].game_set);
         this.reset(gameId);
         this.emit(gameId, 0);
         this.emit(gameId, 1);
+        if (count >= gameMap[gameId].game_set){
+          await this.dmcontentRepository.update({historyId:gameId}, {match:2});
+          console.log("game over\n\n\n");
+          const player_one = history.user1Point;
+          const player_two = history.user2Point;
+          if (player_one > player_two){
+            await this.historyRepository.update({id:gameId}, {winner:(history.userId1), loser:(history.userId2)})
+          }
+          else{
+            await this.historyRepository.update({id:gameId}, {loser:(history.userId1), winner:(history.userId2)})
+          }
+          delete gameMap[gameId];
+        }
         console.log("중지");
       }
     }
@@ -152,17 +181,11 @@ export class GameService {
     if (gameMap[gameId].ball_x < 100 && gameMap[gameId].player_one_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_one_y +100)
       return true;
     else if (gameMap[gameId].ball_x < 100)
-    {
-      gameMap[gameId].player_two_point++;
       return false;
-    }
     if (gameMap[gameId].ball_x > 900 && gameMap[gameId].player_two_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_two_y +100)
       return true;
     else if (gameMap[gameId].ball_x > 900)
-    {
-      gameMap[gameId].player_two_point++;
       return false;
-    }
   }
 
   changeDir(dir_x:number, dir_y:number, vertical_x, vertical_y){//dir_x, dir_y 방향벡터의 크기는 1, vertical_x y 둘중 하나는 0 나머지 하나는 1; 
