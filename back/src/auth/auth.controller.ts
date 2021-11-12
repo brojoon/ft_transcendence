@@ -54,7 +54,7 @@ export class AuthController {
       email: result.email,
       profile: result.profile
     }
-    this.authService.Join(user.oauthId, user.username, user.userId, user.email, user.profile);
+    res.clearCookie('ts_token');
     const token = await this.authService.login(user);
     res.cookie('ts_token', token.access_token, { httpOnly: false });
     res.send(null);

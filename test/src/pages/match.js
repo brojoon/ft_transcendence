@@ -1,0 +1,63 @@
+import React, {useCallback, useState, useEffect } from 'react';
+import axios from 'axios';
+import getSocket from './socket.js';
+import getCookie from './cookie.js';
+
+
+
+const Match = () => {
+  const [userId , setUserId] = useState("");
+  const [button , setButton] = useState("MATCH");
+
+  const socket = getSocket();
+  axios.get(`http://localhost:3095/api/users`, {
+    headers: {
+        Authorization: `Bearer ${getCookie('ts_token', 1)}`
+    },
+    withCredentials: true
+  }).then(res => {
+    setUserId(res.data.userId);
+    socket.emit('login', {userId: res.data.userId, Dms: [], channels: []});
+  }).catch(err => {
+    if (err.response.status === 401) {
+      setUserId("등록 되지 않는 아이디 입니다.");
+      console.log(userId);
+    }
+  })
+
+  const onClickMatch = useCallback(() => {
+    setButton("기다리는 중");
+    socket.emit('matching', {userId: userId, gameId: 0});
+    console.log("매치 요청");
+  }, [userId, socket]);
+
+  useEffect(  () => {
+    socket.on("matched", (matched) => {
+      if ( userId === matched.playerOne && matched.gameId === 0) {
+        axios.post(`http://localhost:3095/api/dms/sendMessage/${matched.playerTwo}/1/0`, {message: ""}, {
+          headers: {
+              Authorization: `Bearer ${getCookie('ts_token', 1)}`
+          }
+        }).then(res => {
+          socket.emit('matching', {userId: userId, gameId: res.data});
+          window.location.href = `http://localhost:3000/pingPong/${res.data}`;
+        })   
+      } else if (userId === matched.playerTwo && matched.gameId !== 0){
+        window.location.href = `http://localhost:3000/pingPong/${matched.gameId}`;
+      }
+    });
+  }, [socket, userId]);
+
+  return (
+    <div>
+      <div>
+          <b>ID : {userId} </b>
+      </div>
+      <div>
+        <button onClick={onClickMatch}>{button}</button>
+      </div>
+    </div>
+  );
+};
+
+export default Match;
