@@ -5,6 +5,7 @@ import { Dmcontent } from 'src/entities/Dmcontent';
 import { History } from 'src/entities/History';
 import { Users } from 'src/entities/Users';
 import { EventsGateway } from 'src/events/events.gateway';
+import { gameMap } from 'src/game/gameMap';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -235,5 +236,29 @@ export class DmsService {
     newHistory.userId2 = userId2;
     const reseut = await this.historyRepository.save(newHistory);
     return (reseut.id);
+  }
+
+  async history(id: number){
+    const result = await this.historyRepository.findOne({ where: { id } });
+    return result;
+  }
+
+  async ready1(userId1: string, id: number){
+    gameMap[id].player_one_ready = 1;
+    await this.historyRepository.createQueryBuilder()
+      .update()
+      .set({ playerOneJoin: 1 })
+      .where('id = :id AND userId1 = :userId1', {id, userId1})
+      .execute()
+  }
+
+  async ready2(userId2: string, id: number){
+    gameMap[id].player_two_ready = 1;
+    console.log("여기인가?", gameMap[id].player_two_ready);
+    await this.historyRepository.createQueryBuilder()
+      .update()
+      .set({ playerTwoJoin: 1 })
+      .where('id = :id AND userId2 = :userId2', {id, userId2})
+      .execute()
   }
 }

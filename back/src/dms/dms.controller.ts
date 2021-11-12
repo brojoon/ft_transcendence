@@ -126,4 +126,19 @@ export class DmsController {
   async getAllMessageUseDmId(@User() user, @Param('dmId') dmId: number) {
     return this.dmsService.getAllMessageUseDmId(user.userId, dmId);
   }
+
+  @Get('history/:id')
+  async history(@Param('id') id: number) {
+    return this.dmsService.history(id);
+  }
+
+  @Get('ready1/:id')
+  async ready1(@User() user, @Param('id') id: number) {
+    return this.dmsService.ready1(user.userId, id);
+  }
+
+  @Get('ready2/:id')
+  async ready2(@User() user, @Param('id') id: number) {
+    return this.dmsService.ready2(user.userId, id);
+  }
 }
