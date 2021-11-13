@@ -150,7 +150,6 @@ export class ChannelsController {
   async muteSwitch(@Param("channelId") channelId:number, @User() admin, @Param('muteId') muteId:string, @Param("time") time:number){
     await this.channelsService.muteSwitch(channelId, admin.userId, muteId, time);
   }
-
   @Get("/deleteChannel/:channelId")
   async deleteChannel(@Param("channelId") channelId:number, @User() owner){//채널이 안지워짐
     console.log("test\n",owner,"\ntest");
