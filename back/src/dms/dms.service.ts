@@ -228,7 +228,56 @@ export class DmsService {
         throw new NotFoundException(error.response.message);
     }
   }
-  
+
+  async get20Message(userId1:string, userId2:string, page:number) {
+    try {
+      if (page < 1)
+        throw {errno: "범위오류"};
+      await this.checkHaveUser(userId1, userId2);
+      const result = await this.dmcontentRepository
+        .createQueryBuilder()
+        .where('userId1 = :userId1 AND userId2 = :userId2', { userId1, userId2 })
+        .orWhere('userId1 = :userId2 AND userId2 = :userId1', { userId2, userId1 })
+        .orderBy('createdAt', 'DESC')
+        .take(20)
+        .skip(20 * (page - 1))
+        .getMany();
+      return (result);
+    } catch (error) {
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("메세지 조회 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+    }
+  }
+
+  async get20MessageUseDmId(userId: string, dmId:number, page:number) {
+    try {
+      if (page < 1)
+        throw {errno: "범위오류"};
+      const result = await this.dmcontentRepository.findOne({ where: { dmId } });
+      if (!result)
+        throw new NotFoundException('존재하지 않는 DM방입니다.');
+      if (result.userId1 !== userId && result.userId2 !== userId)
+        throw new ForbiddenException('내가 속한 DM방이 아닙니다');
+      const res = await this.dmcontentRepository
+        .createQueryBuilder()
+        .where('dmId = :dmId', { dmId })
+        .orderBy('createdAt', 'DESC')
+        .take(20)
+        .skip(20 * (page - 1))
+        .getMany();
+      return {res}; 
+    } catch (error) {
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("메세지 조회 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+    }
+  }
+
   async getHistoryId(userId1: string, userId2: string) {
     const newHistory = new History();
     newHistory.userId1 = userId1;

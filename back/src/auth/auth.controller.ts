@@ -20,7 +20,7 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  @ApiOperation({ summary: '1차 인증 없이 아이디 생성(test용)'})
+  @ApiOperation({ summary: '!!반환값에 토큰있음 복사버튼 누르면됨!! 1차 인증 없이 아이디 생성(test용)'})
   @HttpCode(200)
   @Get('1/:oauthid/:id')
   async temMakeloginUser(@Param('oauthid') oauthid: number, @Param('id') id :string, @Res() res) {
@@ -34,10 +34,10 @@ export class AuthController {
     this.authService.Join(user.oauthId, user.username, user.userId, user.email, user.profile);
     const token = await this.authService.login(user);
     res.cookie('ts_token', token.access_token, { httpOnly: false });
-    res.send(null);
+    res.send(token.access_token);
   }
 
-  @ApiOperation({ summary: '생성한 아이디로 로그인 하면서 토큰 다시 발급'})
+  @ApiOperation({ summary: '!!반환값에 토큰있음 복사버튼 누르면됨!!생성한 아이디로 로그인 하면서 토큰 다시 발급'})
   @HttpCode(200)
   @Get('2/:id')
   async temGetToken(@Param('id') id :string, @Res() res) {
@@ -57,7 +57,7 @@ export class AuthController {
     res.clearCookie('ts_token');
     const token = await this.authService.login(user);
     res.cookie('ts_token', token.access_token, { httpOnly: false });
-    res.send(null);
+    res.send(token.access_token);
   }
 
   @UseGuards(Intra42AuthGuard)
