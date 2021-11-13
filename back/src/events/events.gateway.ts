@@ -32,8 +32,8 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleLogin(
     @MessageBody() data: { userId: string; Dms: number[], channels: number[] },
     @ConnectedSocket() socket: Socket ){
-    console.log(`login : ${socket.id}, ${onlineMap[socket.id]}`);
     onlineMap[socket.id] = data.userId;
+    console.log(`login : ${socket.id}, ${onlineMap[socket.id]}`);
     try{
       await this.connectRepository.createQueryBuilder()
           .update()
@@ -68,8 +68,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     // game중 인거 있으면 join 0으로 돌로주기
     try{
       const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id], playerOneJoin: 1})
-      const result2 = await this.historyRepository.findOne({userId1: onlineMap[socket.id], playerOneJoin: 1})
-
+      const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id], playerTwoJoin: 1})
       if (result1) {
         await this.historyRepository.createQueryBuilder()
           .update()
@@ -77,7 +76,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id], num: 1})
           .execute();
         gameMap[result1.id].player_one_ready = 0;
-        this.server.to(`game-${result1.id}`).emit('ready', {
+        await this.server.to(`game-${result1.id}`).emit('ready', {
           player1: gameMap[result1.id].player_one_ready,
           player2: gameMap[result1.id].player_two_ready
         });
@@ -89,7 +88,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id], num: 1})
           .execute();
         gameMap[result2.id].player_two_ready = 0;
-        this.server.to(`game-${result2.id}`).emit('ready', {
+        await this.server.to(`game-${result2.id}`).emit('ready', {
           player1: gameMap[result2.id].player_one_ready,
           player2: gameMap[result2.id].player_two_ready 
         });
@@ -117,11 +116,13 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async gamejoin(
     @MessageBody() data: {gameId: number, player: string, player1Ready: number, player2Ready: number},
     @ConnectedSocket() socket: Socket ){
-    gameMap[data.gameId] = initData;
+    if (data.player !=="") {
+      gameMap[data.gameId] = initData;
+    }
     gameMap[data.gameId].player_one_ready = data.player1Ready;
     gameMap[data.gameId].player_two_ready = data.player2Ready;
-    socket.join(`game-${data.gameId}`);
-    this.server.to(`game-${data.gameId}`).emit('ready', {
+    await socket.join(`game-${data.gameId}`);
+    await this.server.to(`game-${data.gameId}`).emit('ready', {
       player1: gameMap[data.gameId].player_one_ready,
       player2: gameMap[data.gameId].player_two_ready, 
     }); 
@@ -177,7 +178,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async gameReady(@MessageBody() data: {gameId: number, player: number, userId: string}){
     try {
       if (data.player === 1) {
-        console.log(data.gameId, data.player, data.userId)
         gameMap[data.gameId].player_one_ready = 1;
         await this.historyRepository.createQueryBuilder()
           .update()

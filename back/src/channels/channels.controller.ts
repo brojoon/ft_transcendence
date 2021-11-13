@@ -151,8 +151,13 @@ export class ChannelsController {
     await this.channelsService.muteSwitch(channelId, admin.userId, muteId, time);
   }
   @Get("/deleteChannel/:channelId")
-  async deleteChannel(@Param("channelId") channelId:number, @User() owner){//채널이 안지워짐
+  async deleteChannel(@Param("channelId") channelId:number, @User() owner){
     console.log("test\n",owner,"\ntest");
     await this.channelsService.deleteChannel(channelId, owner.userId);
+  }
+
+  @Get("/achevement/numOfChannels")
+  async achievementChannelNumber(@User() user) :Promise<number>{
+    return await this.channelsService.achievementChannelNumber(user.userId);
   }
 }

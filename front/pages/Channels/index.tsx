@@ -55,18 +55,6 @@ const Channel = () => {
   const onSubmitChannelCreate = useCallback(
     (e) => {
       e.preventDefault();
-      mutateChannelList((prev) => {
-        prev?.push({
-          id: 31,
-          name: name,
-          type: parseInt(visibility),
-          authId: myData?.userId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          deleteAt: null,
-        });
-        return prev;
-      }, false);
       axios
         .post(
           `/api/channels/create/${name}/${visibility}`,
@@ -80,13 +68,23 @@ const Channel = () => {
             },
           },
         )
-        .then(() => {
+        .then((response) => {
           setName('');
           setVisibility('');
+          mutateChannelList((prev) => {
+            prev?.push({
+              id: 31,
+              name: name,
+              type: parseInt(visibility),
+              authId: myData?.userId,
+              createdAt: new Date(),
+              updatedAt: new Date(),
+              deleteAt: null,
+            });
+            return prev;
+          }, true);
           if (allchannelList) {
-            history.push(
-              `/ft_transcendence/channels/${allchannelList[allchannelList.length - 1].id + 1}`,
-            );
+            history.push(`/ft_transcendence/channels/${response.data}`);
           }
         })
         .catch((error) => {
@@ -105,6 +103,7 @@ const Channel = () => {
       }}
     >
       <ChannelLeftDrawBar />
+
       <Switch>
         <Route exact path="/ft_transcendence/channels" render={() => <ChannelDiscover />} />
         <Route

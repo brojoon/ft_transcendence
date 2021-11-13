@@ -27,12 +27,14 @@ const ft_transcendence = () => {
   console.log('ChannelList', ChannelList);
   let socket = getSocket();
   useEffect(() => {
-    socket.emit('login', {
-      userId: myData?.userId,
-      Dms: DMList,
-      channels: ChannelList,
-    });
-  }, [socket]);
+    if (DMList && ChannelList && myData) {
+      socket.emit('login', {
+        userId: myData?.userId,
+        Dms: DMList,
+        channels: ChannelList,
+      });
+    }
+  }, [socket, DMList, ChannelList, myData]);
   if (!myData) return null;
   return (
     <Container>

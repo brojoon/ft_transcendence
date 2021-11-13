@@ -126,4 +126,37 @@ export class DmsController {
   async getAllMessageUseDmId(@User() user, @Param('dmId') dmId: number) {
     return this.dmsService.getAllMessageUseDmId(user.userId, dmId);
   }
+
+  @ApiOperation({ summary: '전체 메세지 받기 (상대방 아이디 통해서)'})
+  @ApiResponse ({
+    status: 200,
+    description: "page 1 부터 시작 0은 안됨. ex) page:1=>1~20 / page:2=>21~40",
+  })
+  @HttpCode(200)
+  @Get('getMessage/:otherUser/:page')
+  async get20Message(@User() user, @Param('otherUser') otherUser: string, @Param('page') page: number) {
+    return this.dmsService.get20Message(user.userId, otherUser, page);
+  }
+
+  @ApiOperation({ summary: '20개씩 메세지 받기 (DMID 통해서)'})
+  @ApiResponse ({
+    status: 200,
+    description: "page 1 부터 시작 0은 안됨. ex) page:1=>1~20 / page:2=>21~40",
+  })
+  @HttpCode(200)
+  @Get('get20MessageUseDmId/:dmId/:page')
+  async get20MessageUseDmId(@User() user, @Param('dmId') dmId: number, @Param('page') page: number) {
+    return this.dmsService.get20MessageUseDmId(user.userId, dmId, page);
+  }
+
+  @ApiOperation({ summary: '[업적API]: 내 DM방 수'})
+  @ApiResponse ({
+    status: 200,
+    description: '"return: DM 수"',
+  })
+  @HttpCode(200)
+  @Get('getDmListNum')
+  async getDmListNum(@User() user: UserDto) {
+    return this.dmsService.getDmListNum(user.userId);
+  }
 }

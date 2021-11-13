@@ -271,6 +271,10 @@ export class ChannelsService {
     const newPassword = await bcrypt.hash(password, 12);
     await this.chatchannelRepository.update({id:channelId}, {password : newPassword});
   }
+  
+  async testFunc(channelId, muteId){
+    await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:false});
+  }
 
   async muteSwitch(channelId, adminId, muteId, time:number) {
     if (await this.checkAdmin(channelId, adminId) == false)
@@ -282,8 +286,10 @@ export class ChannelsService {
     console.log("now? ", new Date());
     console.log("expired Time: ", expiredTime, "mute?", !muteUser.mute);
     await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:!muteUser.mute, muteExpired:expiredTime});
-    setTimeout(() => { (async () => {await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:false}) })(); }, 30 * 1000);
+    //setTimeout(()=>{this.testFunc(channelId, muteId).then()}, 1000);
+    setTimeout(() => {(async () => {await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:false}).then(()=>{console.log("emit을 보내면됩니다")}) })(); }, 30 * 1000);
   }
+
 
   async deleteChannel(channelId:number, ownerId:string) {
     if (!await this.chatchannelRepository.find({id:channelId}))
@@ -293,4 +299,8 @@ export class ChannelsService {
     await this.chatchannelRepository.delete({id:channelId});
   }
 
+  async achievementChannelNumber(userId:string){
+    const numberOfChannel = await this.chatmemberRepository.count({userId});
+    return numberOfChannel;
+  }
 }

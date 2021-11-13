@@ -9,6 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import gravatar from 'gravatar';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { IUser } from '@typings/db';
 
@@ -58,10 +59,18 @@ const UserCard = () => {
           }}
         >
           <Button
-            variant="text"
-            style={{ backgroundColor: '365dff', color: 'white', width: '85%', height: '32px' }}
+            variant="contained"
+            style={{
+              width: '200px',
+              height: '35px',
+              backgroundColor: '#597aff',
+              borderColor: '#597aff',
+              fontWeight: 'bold',
+              margin: '10px 0',
+            }}
           >
-            <b>SETTINGS</b>
+            SETTING&nbsp;
+            <SettingsIcon />
           </Button>
         </CardActions>
       </Card>

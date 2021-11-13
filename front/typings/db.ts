@@ -51,19 +51,20 @@ export interface IChannelList {
   deleteAt: null
 }
 
-export interface IMember {
-  userid: string,
-  mute: boolean,
-  auth: number
-}
+// export interface IMember {
+//   userId: string,
+//   mute: boolean,
+//   auth: number
+// }
 
 export interface IMemberList {
-  id: number,
-  name: string,
-  type: number,
+  userId: string,
+  channelId: number,
+  mute: false,
+  auth: number,
   createAt: Date,
   updatedAt: Date,
-  deleteAt: null,
-  Chatmembers: IMember[],
+  muteExpired: Date,
+
 
 }

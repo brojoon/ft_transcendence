@@ -12,11 +12,11 @@ const LogIn = () => {
   const onClickLogin = async () => {
     await axios.get(`http://localhost:3095/api/auth/2/${userId}`, {
       withCredentials: true,
-    });
-    const location = () => {
+    }).then( () => {
       window.location.href = "http://localhost:3000/match";
-    }
-    await location();
+    }).catch(()=>{
+      setUserId("없는유저");
+    }); 
   };
 
   return (
