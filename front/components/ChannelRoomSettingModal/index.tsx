@@ -24,10 +24,8 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
     '/api/channels/myChannelList',
     fetcher,
   );
-  const { data: channelMemberList } = useSWR<IMemberList[]>(
-    `/api/channels/userList/${id}`,
-    fetcher,
-  );
+  const { data: allChannelList } = useSWR<IChannelList[]>('/api/channels/allChannelList', fetcher);
+
   const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
   const [name, setName] = useState('');
   const [visibility, setVisibility] = useState('');
@@ -111,7 +109,14 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
           }}
         >
           <div style={{ display: 'flex', color: 'white', justifyContent: 'space-between' }}>
-            <h1>Settings of {channelMemberList ? channelMemberList[0]?.name : ''}</h1>
+            <h1>
+              Settings of{' '}
+              {allChannelList?.map((channel: IChannelList) => {
+                if (channel.id === parseInt(id)) {
+                  return channel.name;
+                }
+              })}
+            </h1>
             <IconButton aria-label="close" onClick={onClickSettingBtn} style={{ color: 'white' }}>
               <CloseIcon />
             </IconButton>

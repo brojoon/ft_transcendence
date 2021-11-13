@@ -21,7 +21,7 @@ const ChannelRoom = () => {
   const { data: ChannelMembers } = useSWR<IMemberList[]>(`/api/channels/userList/${id}`, fetcher);
 
   const { data: chatData, mutate: mutateChat } = useSWR<IChannelChatList[]>(
-    `/api/channels/messageList/${id}`,
+    `/api/channels/allMessageList/${id}`,
     fetcher,
   );
   const [chat, setChat] = useState('');

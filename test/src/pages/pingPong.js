@@ -83,7 +83,7 @@ const PingPong = (data) =>{
             player1Ready: 0,
             player2Ready: res.data.playerTwoJoin
           })
-        }   
+        }
         else if (temUserId === res.data.userId2) {
           setPlayer("playerTwo");
           setPlay1Ready(res.data.playerOneJoin);
@@ -93,6 +93,13 @@ const PingPong = (data) =>{
             player1Ready: res.data.playerOneJoin,
             player2Ready: 0   
           })
+        } else {
+          socket.emit('game', {
+            gameId: gameId, 
+            player: "",
+            player1Ready: res.data.playerOneJoin,
+            player2Ready: res.data.playerTwoJoin   
+          })          
         }
         socket.emit("gamePoint", {
           gameId: gameId,
@@ -323,7 +330,7 @@ const PingPong = (data) =>{
   return (
     <div>
       <div>
-        <h3>[ {userId} 화면 ({player}) ]</h3>
+        <h3>[ {userId} 화면 ({player !== "" ? player : "구경꾼"}) ]</h3>
         <b> playerOne {player1Ready === 0 ? '준비중..' : '완료'} </b>
         <button onClick={readyPlayer1}>{ player1Ready === 0 ? 'ready' : '완료' }</button>
         <b> playerTwo {player2Ready === 0 ? '준비중..' : '완료'} </b>
