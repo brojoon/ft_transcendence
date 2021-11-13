@@ -1,7 +1,9 @@
 version: "3"
 services:
   postgresql:
-    image: postgres:latest
+    build:
+      context: ./psql
+      dockerfile: Dockerfile
     container_name: postgresql
     restart: always
     ports:
