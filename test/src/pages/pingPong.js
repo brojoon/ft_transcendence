@@ -83,7 +83,7 @@ const PingPong = (data) =>{
             player1Ready: 0,
             player2Ready: res.data.playerTwoJoin
           })
-        }   
+        }
         else if (temUserId === res.data.userId2) {
           setPlayer("playerTwo");
           setPlay1Ready(res.data.playerOneJoin);
