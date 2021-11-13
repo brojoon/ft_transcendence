@@ -105,4 +105,14 @@ export class FriendsController {
   checkBlock(@User() user, @Param('id') id: string) {
     return this.friendsService.checkBlock(user.userId, id);
   }
+
+  @ApiOperation({ summary: '[업적API]: 친구 수 조회'})
+  @ApiResponse ({
+    status: 200,
+    description: 'return: 친구 숫자',
+  })
+  @Get('countFriend')
+  countFriend(@User() user) {
+    return this.friendsService.countFriend(user.userId);
+  }
 }

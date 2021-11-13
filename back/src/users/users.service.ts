@@ -210,8 +210,8 @@ export class UsersService {
             twofactorEnable: twofactorEnable,
           })
           .where('userId = :userId', {userId})
-          .execute()
-          return (true);
+          .execute()    
+      return (true);    
     } catch (error) {
       throw new BadRequestException('two-factor 스위치 실패');
     } 

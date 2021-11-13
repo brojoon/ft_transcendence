@@ -149,4 +149,14 @@ export class DmsController {
     return this.dmsService.get20MessageUseDmId(user.userId, dmId, page);
   }
 
+  @ApiOperation({ summary: '[업적API]: 내 DM방 수'})
+  @ApiResponse ({
+    status: 200,
+    description: '"return: DM 수"',
+  })
+  @HttpCode(200)
+  @Get('getDmListNum')
+  async getDmListNum(@User() user: UserDto) {
+    return this.dmsService.getDmListNum(user.userId);
+  }
 }
