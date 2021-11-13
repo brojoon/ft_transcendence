@@ -119,7 +119,9 @@ export class GameService {
         this.reset(gameId);
         this.emit(gameId, 0);
         this.emit(gameId, 1);
-        if (count >= gameMap[gameId].game_set){
+        const deadline = ((gameMap[gameId].game_set - 3) / 2) + 2;
+        console.log(deadline,"\n\n\n\n");
+        if (deadline <= gameMap[gameId].player_one_point || deadline <= gameMap[gameId].player_two_point){
           await this.dmcontentRepository.update({historyId:gameId}, {match:2});
           await this.historyRepository.update({id:gameId}, {state:2});
           console.log("game over\n\n\n");
@@ -217,4 +219,13 @@ export class GameService {
     const newDir_y = (sign * sinR * -1 *dir_x) + (cosR * -1 * dir_y);
     return {newDir_x, newDir_y};//방향벡터의 크기가 1이 아닌경우가 존재할수 있는지..?
   }
+
+  async numOfWin(userId:string){
+    return await this.historyRepository.count({winner:userId});
+  }
+
+  async numOfLose(userId:string){
+    return await this.historyRepository.count({loser:userId});
+  }
+
 }
