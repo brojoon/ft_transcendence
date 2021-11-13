@@ -147,4 +147,12 @@ export class FriendsService {
       throw new BadRequestException('BLOCK 확인 실패');
     }
   }
+
+  async countFriend(userId1: string) {
+    try {
+      return ( await this.friendRepository.count({where:{userId1}}) );      
+    } catch (error) {
+      throw new BadRequestException('친구 수 조회 실패 실패');
+    }
+  }
 }

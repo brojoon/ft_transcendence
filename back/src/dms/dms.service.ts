@@ -119,7 +119,6 @@ export class DmsService {
         .orWhere('dc.userId2 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
         .orderBy('dm.createdAt', 'DESC')
         .getMany();
-      console.log("ccccc");
       return (checkdm)
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
@@ -284,5 +283,24 @@ export class DmsService {
     newHistory.userId2 = userId2;
     const reseut = await this.historyRepository.save(newHistory);
     return (reseut.id);
+  }
+
+  async getDmListNum(userId: string) {
+    try {
+      await this.checkHaveUser(userId, userId);
+      const checkdm = await this.dmRepository
+        .createQueryBuilder('dm')
+        .innerJoin("dm.Dmcontents","dc")
+        .where('dc.userId1 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
+        .orWhere('dc.userId2 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
+        .orderBy('dm.createdAt', 'DESC')
+        .getCount();
+      return (checkdm)
+    } catch (error) {
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException('DM 방 수 조회 실패');
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);
+    }
   }
 }
