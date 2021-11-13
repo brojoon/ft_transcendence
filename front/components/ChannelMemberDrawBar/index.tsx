@@ -40,80 +40,77 @@ const ChannelMemberDrawBar: VFC<Props> = ({ onClickSettingBtn }) => {
       <Scrollbars>
         <div>
           <ListItem style={{ fontSize: '12px', marginTop: '11px', color: 'gray' }}>Owner</ListItem>
-          {memberList
-            ? memberList[0].Chatmembers.map((member) => {
-                if (member.auth === 2) {
-                  return alluser?.map((user) => {
-                    if (user.userId == member.userId) {
-                      console.log('here');
-                      return (
-                        <ListItem button>
-                          <Avatar
-                            src={user.profile}
-                            alt="Avatar"
-                            style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                          />
-                          <ListItemText
-                            primary={user.userId}
-                            style={{ marginLeft: '12px', color: 'white' }}
-                          />
-                        </ListItem>
-                      );
-                    }
-                  });
-                }
-              })
-            : null}
+          {memberList &&
+            memberList?.map((member) => {
+              if (member.auth === 2) {
+                return alluser?.map((user) => {
+                  if (user.userId == member.userId) {
+                    console.log('here');
+                    return (
+                      <ListItem button>
+                        <Avatar
+                          src={user.profile}
+                          alt="Avatar"
+                          style={{ border: '2px solid red', width: '38px', height: '38px' }}
+                        />
+                        <ListItemText
+                          primary={user.userId}
+                          style={{ marginLeft: '12px', color: 'white' }}
+                        />
+                      </ListItem>
+                    );
+                  }
+                });
+              }
+            })}
           <ListItem style={{ fontSize: '12px', marginTop: '11px', color: 'gray' }}>Admin</ListItem>
-          {memberList
-            ? memberList[0].Chatmembers.map((member) => {
-                if (member.auth === 1) {
-                  return alluser?.map((user) => {
-                    if (user.userId == member.userId) {
-                      console.log('here');
-                      return (
-                        <ListItem button>
-                          <Avatar
-                            src={user.profile}
-                            alt="Avatar"
-                            style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                          />
-                          <ListItemText
-                            primary={user.userId}
-                            style={{ marginLeft: '12px', color: 'white' }}
-                          />
-                        </ListItem>
-                      );
-                    }
-                  });
-                }
-              })
-            : null}
+          {memberList &&
+            memberList?.map((member) => {
+              if (member.auth === 1) {
+                return alluser?.map((user) => {
+                  if (user.userId == member.userId) {
+                    console.log('here');
+                    return (
+                      <ListItem button>
+                        <Avatar
+                          src={user.profile}
+                          alt="Avatar"
+                          style={{ border: '2px solid red', width: '38px', height: '38px' }}
+                        />
+                        <ListItemText
+                          primary={user.userId}
+                          style={{ marginLeft: '12px', color: 'white' }}
+                        />
+                      </ListItem>
+                    );
+                  }
+                });
+              }
+            })}
           <ListItem style={{ fontSize: '12px', marginTop: '11px', color: 'gray' }}>Users</ListItem>
-          {memberList
-            ? memberList[0].Chatmembers.map((member) => {
-                if (member.auth === 0) {
-                  return alluser?.map((user) => {
-                    if (user.userId == member.userId) {
-                      console.log('here');
-                      return (
-                        <ListItem button>
-                          <Avatar
-                            src={user.profile}
-                            alt="Avatar"
-                            style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                          />
-                          <ListItemText
-                            primary={user.userId}
-                            style={{ marginLeft: '12px', color: 'white' }}
-                          />
-                        </ListItem>
-                      );
-                    }
-                  });
-                }
-              })
-            : null}
+          {memberList &&
+            memberList?.map((member) => {
+              if (member.auth === 0) {
+                return alluser?.map((user) => {
+                  if (user.userId == member.userId) {
+                    console.log('here');
+                    return (
+                      <ListItem button>
+                        <Avatar
+                          src={user.profile}
+                          alt="Avatar"
+                          style={{ border: '2px solid red', width: '38px', height: '38px' }}
+                        />
+                        <ListItemText
+                          primary={user.userId}
+                          style={{ marginLeft: '12px', color: 'white' }}
+                        />
+                      </ListItem>
+                    );
+                  }
+                });
+              }
+            })}
         </div>
       </Scrollbars>
       <Button

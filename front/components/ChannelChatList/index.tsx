@@ -14,10 +14,6 @@ interface Props {
 const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
   const { id } = useParams<{ id: string }>();
   const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
-  const { data: channelChatList } = useSWR<IChannelChatList[]>(
-    `/api/channels/messageList/61`,
-    fetcher,
-  );
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
