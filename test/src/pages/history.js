@@ -15,7 +15,7 @@ const History = (data) => {
   const [userId2, setUserId2] = useState("");
   const [player1Point, setPlayer1Point] = useState(0);
   const [player2Point, setPlayer2Point] = useState(0);
-  const [winner, setWinner] = useState("");
+  const [winner, setWinner] = useState(`${data.match.params.winner}`);
 
   useEffect(() => {
     async function getGameInfo() {
@@ -26,17 +26,26 @@ const History = (data) => {
           setPlayer1Point(res.data.user1Point);
           setPlayer2Point(res.data.user2Point);
           setWinner(res.data.winner);
+          // if (res.data.winner === null)
+          //   window.location.href = `http://localhost:3000/history/${gameId}`;
         }     
     )}
     if (userId1 === "")
       getGameInfo();
   }, [gameId, userId1]);
 
+  const match = () => {
+    window.location.href = `http://localhost:3000/match`;     
+  };
+
   return (
     <div>
       <h1> [{userId1}] : {player1Point} 승 </h1>
       <h1> [{userId2}] : {player2Point} 승 </h1>
       <h1> 승리자 : {winner} </h1>
+      <div>
+        <button onClick={match}> to match page </button>
+      </div>  
     </div>
   );
 };

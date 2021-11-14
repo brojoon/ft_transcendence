@@ -75,11 +75,13 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .set({ playerOneJoin: 0 })
           .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id], num: 1})
           .execute();
-        gameMap[result1.id].player_one_ready = 0;
-        await this.server.to(`game-${result1.id}`).emit('ready', {
-          player1: gameMap[result1.id].player_one_ready,
-          player2: gameMap[result1.id].player_two_ready
-        });
+        if (result1.state != 2) {
+          gameMap[result1.id].player_one_ready = 0;
+          this.server.to(`game-${result1.id}`).emit('ready', {
+            player1: gameMap[result1.id].player_one_ready,
+            player2: gameMap[result1.id].player_two_ready
+          });
+        }
       }
       if (result2) {
         await this.historyRepository.createQueryBuilder()
@@ -87,13 +89,16 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .set({ playerTwoJoin: 0 })
           .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id], num: 1})
           .execute();
-        gameMap[result2.id].player_two_ready = 0;
-        await this.server.to(`game-${result2.id}`).emit('ready', {
-          player1: gameMap[result2.id].player_one_ready,
-          player2: gameMap[result2.id].player_two_ready 
-        });
+        if (result2.state != 2) {
+          gameMap[result2.id].player_two_ready = 0;
+          this.server.to(`game-${result2.id}`).emit('ready', {
+            player1: gameMap[result2.id].player_one_ready,
+            player2: gameMap[result2.id].player_two_ready 
+          });
+        }
       }   
     } catch (error) {
+      throw error;
       throw new BadRequestException('레디 0 실패');
     }
     // 접속상태 업데이트
@@ -116,7 +121,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async gamejoin(
     @MessageBody() data: {gameId: number, player: string, player1Ready: number, player2Ready: number},
     @ConnectedSocket() socket: Socket ){
-    if (data.player !=="") {
+    if (data.player !=="" && gameMap[data.gameId] === undefined) {
       gameMap[data.gameId] = initData;
     }
     gameMap[data.gameId].player_one_ready = data.player1Ready;
@@ -132,14 +137,11 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async gameMatch(
     @MessageBody() data: {userId: string, gameId: number},
     @ConnectedSocket() socket: Socket ){
-    console.log("매치버튼", data.userId);
     socket.join('match');
     if (users.playerOne === null && data.gameId === 0) {
-      console.log("매치1");
       users.playerOne = data.userId;
       users.playerOne_socet = socket;
     } else if (users.playerTwo === null && users.playerOne !== data.userId && data.gameId === 0) {
-      console.log("매치2");
       users.playerTwo = data.userId;
       users.playerTwo_socet = socket;
       const matched = {
@@ -207,18 +209,25 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       speed: number,
       set: number,
       map: number,
-      random: number
+      random: number,
+      check: string
     }){
-    gameMap[data.gameId].length = data.speed;
-    gameMap[data.gameId].game_set = data.set;
-    gameMap[data.gameId].game_map = data.map;
-    gameMap[data.gameId].random_map = data.random;
-    this.server.to(`game-${data.gameId}`).emit('gameSet', {
-      length: data.speed,
-      game_set: data.set, 
-      game_map: data.map, 
-      random_map: data.random,
-    });
+    try {
+      if (data.check === undefined) {
+        gameMap[data.gameId].length = data.speed;
+        gameMap[data.gameId].game_set = data.set;
+        gameMap[data.gameId].game_map = data.map;
+        gameMap[data.gameId].random_map = data.random;   
+      }
+      this.server.to(`game-${data.gameId}`).emit('gameSet', {
+        length: gameMap[data.gameId].length,
+        game_set: gameMap[data.gameId].game_set, 
+        game_map: gameMap[data.gameId].game_map, 
+        random_map: gameMap[data.gameId].random_map,
+      });     
+    } catch (error) {
+      throw new BadRequestException("changeGameSet 실패")
+    }
   }
 
   @SubscribeMessage('player_one_up')
