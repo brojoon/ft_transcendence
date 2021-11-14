@@ -30,6 +30,11 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
     fetcher,
   );
 
+  const { data: memberList, mutate: muatememberList } = useSWR<IMemberList[]>(
+    `/api/channels/userList/${id}`,
+    fetcher,
+  );
+
   const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
   const [name, setName] = useState('');
   const [visibility, setVisibility] = useState('');
@@ -142,20 +147,25 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
     [name, visibility, PasswordValues],
   );
 
-  const DeleteClickChannelBtn = useCallback((e) => {
-    e.preventDefault();
-    axios
-      .get(`/api/channels/deleteChannel/${id}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
-      .then(() => {
-        channelListMutate();
-        history.push('/ft_transcendence/channels');
-      });
-  }, []);
+  const DeleteClickChannelBtn = useCallback(
+    (e) => {
+      e.preventDefault();
+      axios
+        .get(`/api/channels/deleteChannel/${id}`, {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        })
+        .then(() => {
+          channelListMutate();
+          MutateAllChannelList();
+          muatememberList();
+          history.push('/ft_transcendence/channels');
+        });
+    },
+    [id],
+  );
 
   return (
     <>

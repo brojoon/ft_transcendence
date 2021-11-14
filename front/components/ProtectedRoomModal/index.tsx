@@ -8,6 +8,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
+import getToken from '@utils/getToken';
+import axios from 'axios';
+import { useHistory } from 'react-router-dom';
+import useSWR from 'swr';
+import { IChannelList } from '@typings/db';
+import fetcher from '@utils/fetcher';
 
 interface Props {
   channelPasswordModal: boolean;
@@ -22,10 +28,21 @@ const ProtectedRoomModal: VFC<Props> = ({
   channelPasswordRoomNumber,
   setChannelPasswordRoomNumber,
 }) => {
+  const { data: myChannelList, mutate: mutateChannelList } = useSWR<IChannelList[]>(
+    '/api/channels/myChannelList',
+    fetcher,
+  );
+  const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
+    `/api/channels/allChannelList`,
+    fetcher,
+  );
   const [PasswordValues, setPasswordValues] = useState({
     password: '',
     showPassword: false,
   });
+  const [passwordError, setPasswordError] = useState(false);
+
+  const history = useHistory();
 
   const handleClickShowPassword = useCallback(() => {
     setPasswordValues({
@@ -36,8 +53,9 @@ const ProtectedRoomModal: VFC<Props> = ({
   const handleChange = useCallback(
     (prop: any) => (event: any) => {
       setPasswordValues({ ...PasswordValues, [prop]: event.target.value });
+      setPasswordError(false);
     },
-    [PasswordValues, setPasswordValues],
+    [PasswordValues, setPasswordValues, passwordError, setPasswordError],
   );
   const handleMouseDownPassword = useCallback((event: any) => {
     event.preventDefault();
@@ -47,8 +65,49 @@ const ProtectedRoomModal: VFC<Props> = ({
     (e) => {
       e.preventDefault();
       setChannelPasswordModal(false);
+      setPasswordValues({
+        password: '',
+        showPassword: false,
+      });
     },
     [channelPasswordModal, setChannelPasswordModal],
+  );
+
+  const onSubmitPassword = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log(PasswordValues);
+      axios
+        .post(
+          `/api/channels/join/${channelPasswordRoomNumber}/`,
+          {
+            password: PasswordValues.password,
+          },
+          {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          },
+        )
+        .then((response) => {
+          setPasswordValues({
+            password: '',
+            showPassword: false,
+          });
+          setChannelPasswordModal(false);
+          mutateChannelList();
+          mutateAllChannelList();
+
+          history.push(`/ft_transcendence/channels/${channelPasswordRoomNumber}`);
+          setChannelPasswordRoomNumber('');
+        })
+        .catch((error) => {
+          console.log(error);
+          setPasswordError(true);
+        });
+    },
+    [PasswordValues, channelPasswordModal, channelPasswordRoomNumber, passwordError],
   );
   return (
     <>
@@ -77,7 +136,7 @@ const ProtectedRoomModal: VFC<Props> = ({
           opacity: '1',
           border: '1px solid #1e1e1e',
           borderRadius: '3px',
-          padding: '15px 20px 5px 20px',
+          padding: '10px 20px 10px 20px',
           zIndex: 3000,
           transform: 'translate(-50%, -50%)',
           boxShadow:
@@ -90,29 +149,46 @@ const ProtectedRoomModal: VFC<Props> = ({
             <CloseIcon />
           </IconButton>
         </div>
-        <FormControl sx={{ width: '100%', color: 'white', marginTop: '15px' }} variant="standard">
-          <InputLabel htmlFor="standard-adornment-password" style={{ color: 'white' }}>
-            What is the password?
-          </InputLabel>
-          <Input
-            id="standard-adornment-password"
-            type={PasswordValues.showPassword ? 'text' : 'password'}
-            value={PasswordValues.password}
-            onChange={handleChange('password')}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  onClick={handleClickShowPassword}
-                  onMouseDown={handleMouseDownPassword}
-                  style={{ color: 'white' }}
-                >
-                  {PasswordValues.showPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              </InputAdornment>
-            }
-          />
-        </FormControl>
+        <div style={{ display: 'flex' }}>
+          <FormControl sx={{ width: '100%', color: 'white', marginTop: '15px' }} variant="standard">
+            <InputLabel htmlFor="standard-adornment-password" style={{ color: 'white' }}>
+              What is the password?
+            </InputLabel>
+            <Input
+              id="standard-adornment-password"
+              type={PasswordValues.showPassword ? 'text' : 'password'}
+              value={PasswordValues.password}
+              onChange={handleChange('password')}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    style={{ color: 'white' }}
+                  >
+                    {PasswordValues.showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+          <Button
+            onClick={onSubmitPassword}
+            variant="contained"
+            style={{
+              width: '120px',
+              height: '45px',
+              backgroundColor: '#597aff',
+              borderColor: '#597aff',
+              fontWeight: 'bold',
+              margin: '20px 0 0 10px',
+            }}
+          >
+            JOIN
+          </Button>
+        </div>
+        {passwordError && <span style={{ color: 'red', fontWeight: 600 }}>passwordError</span>}
       </div>
     </>
   );
