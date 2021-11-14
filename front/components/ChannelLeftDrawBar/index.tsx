@@ -39,6 +39,7 @@ const ChannelLeftDrawBar = () => {
         padding: '30px 15px',
         backgroundColor: '#363636',
         borderRight: '1px solid #4f4f4f',
+        overflowY: 'hidden',
       }}
     >
       <input

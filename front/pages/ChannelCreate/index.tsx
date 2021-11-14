@@ -17,17 +17,25 @@ import fetcher from '@utils/fetcher';
 import ChannelForm from '@components/ChannelForm';
 
 interface Props {
-  onSubmitChannelCreate: any;
-  onChangeVisibility: any;
-  onChangeName: any;
+  onSubmitChannelCreate: (e: any) => void;
+  onChangeVisibility: (e: any) => void;
+  onChangeName: (e: any) => void;
+  handleClickShowPassword: (e: any) => void;
+  handleChange: any;
   name: string;
   visibility: string;
+  PasswordValues: { password: string; showPassword: boolean };
+  setPasswordValues: any;
 }
 
 const ChannelCreate: VFC<Props> = ({
   onSubmitChannelCreate,
   onChangeVisibility,
   onChangeName,
+  handleClickShowPassword,
+  handleChange,
+  PasswordValues,
+  setPasswordValues,
   name,
   visibility,
 }) => {
@@ -46,7 +54,7 @@ const ChannelCreate: VFC<Props> = ({
             backgroundColor: '#1e1e1e',
             margin: '15px 15px 15px',
             width: 'calc(100% - 30px)',
-            borderRadius: '5px',
+            borderRadius: '4px',
           }}
         >
           <ChannelForm
@@ -56,6 +64,10 @@ const ChannelCreate: VFC<Props> = ({
             name={name}
             visibility={visibility}
             value="CREATE"
+            handleClickShowPassword={handleClickShowPassword}
+            handleChange={handleChange}
+            PasswordValues={PasswordValues}
+            setPasswordValues={setPasswordValues}
           />
         </div>
       </div>
