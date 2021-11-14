@@ -137,7 +137,7 @@ const ChannelLeftDrawBar = () => {
           <Button
             variant="contained"
             style={{
-              width: '200px',
+              width: '180px',
               height: '35px',
               backgroundColor: '#597aff',
               borderColor: '#597aff',

@@ -100,7 +100,7 @@ const Channel = () => {
           console.log(error);
         });
     },
-    [name, visibility, allchannelList],
+    [name, visibility, allchannelList, PasswordValues],
   );
   return (
     <Container
