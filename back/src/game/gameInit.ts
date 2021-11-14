@@ -6,7 +6,7 @@ const initData ={
     player_two_ready: 0,
     game_map: 0,
     game_count:0,
-    game_set: 3,
+    game_set: 5,
     random_map:0,
     game_state: 0,
     complete_game_set: 0,
