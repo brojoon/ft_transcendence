@@ -75,7 +75,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .set({ playerOneJoin: 0 })
           .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id], num: 1})
           .execute();
-        if (result1.state != 2) {
+        if (result1.state != 2 && gameMap[result1.id] != undefined) {
           gameMap[result1.id].player_one_ready = 0;
           this.server.to(`game-${result1.id}`).emit('ready', {
             player1: gameMap[result1.id].player_one_ready,
@@ -89,7 +89,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           .set({ playerTwoJoin: 0 })
           .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id], num: 1})
           .execute();
-        if (result2.state != 2) {
+        if (result2.state != 2 && gameMap[result2.id] != undefined) {
           gameMap[result2.id].player_two_ready = 0;
           this.server.to(`game-${result2.id}`).emit('ready', {
             player1: gameMap[result2.id].player_one_ready,
@@ -98,7 +98,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         }
       }   
     } catch (error) {
-      throw error;
       throw new BadRequestException('레디 0 실패');
     }
     // 접속상태 업데이트

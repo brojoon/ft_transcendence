@@ -6,6 +6,12 @@ import { EventsGateway } from 'src/events/events.gateway';
 import { Repository } from 'typeorm';
 import { gameMap } from './gameMap';
 
+const dirMap = [ 
+  {dir_x: 0.5, dir_y: 0.866}, 
+  {dir_x: 0.71, dir_y: 0.71},
+  {dir_x: 0.866, dir_y: 0.5},
+];
+
 @Injectable()
 export class GameService {
   constructor(
@@ -20,14 +26,12 @@ export class GameService {
 
   async gameStart(gameId: number){ 
     if (gameMap[gameId].game_state === 0 && gameMap[gameId].player_one_ready === 1 && gameMap[gameId].player_two_ready === 1){
-      //const history = new History();
       ////histoey초기화 시켜주기(다른데서 초기화가 이미 돼서 옴)
       this.reset(gameId);
       await this.historyRepository.update({id:gameId}, {state:1});
       gameMap[gameId].game_state = 1;
       gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), gameMap[gameId].interval_time);
     }
-    //console.log("mapmod", gameMap[gameId]);
   }
 
   async moveCircle(gameId){
@@ -39,7 +43,9 @@ export class GameService {
     gameMap[gameId].ball_x += gameMap[gameId].dir_x * gameMap[gameId].length;
     gameMap[gameId].ball_y += gameMap[gameId].dir_y * gameMap[gameId].length;
     this.emit(gameId, 0);
-    if (gameMap[gameId].ball_y + 3 >= 500 || gameMap[gameId].ball_y - 3 <= 0) {
+    const x = gameMap[gameId].ball_x + gameMap[gameId].dir_x * gameMap[gameId].length;
+    const y = gameMap[gameId].ball_y + gameMap[gameId].dir_y * gameMap[gameId].length;
+    if (y >= 495 || y <= 5) {
       newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
       gameMap[gameId].dir_x = newDir.newDir_x;
       gameMap[gameId].dir_y = newDir.newDir_y;
@@ -54,104 +60,67 @@ export class GameService {
         y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
         gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(2 * Math.PI / rand));
       }
-      //console.log("changeDir", gameMap[gameId].dir_x, gameMap[gameId].dir_y);
-    }
-    else if (this.isMiddleBlock(gameId) == true){
-      if (350 >= gameMap[gameId].ball_x || gameMap[gameId].ball_x >= 650){
-        newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
-        gameMap[gameId].dir_x = newDir.newDir_x;
-        gameMap[gameId].dir_y = newDir.newDir_y;
+    } else if (this.isMiddleBlock(gameId, x ,y)){  
+    } else if (this.isPannel(gameId , x ,y)){
+      newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
+      gameMap[gameId].dir_x = newDir.newDir_x;
+      gameMap[gameId].dir_y = newDir.newDir_y;
+      x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
+      y_sign = Math.floor(Math.random() * 2) === 0 ? -1 : 1;
+      const x = Math.floor(Math.random() * 3);
+      gameMap[gameId].dir_x = x_sign * dirMap[x].dir_x;
+      gameMap[gameId].dir_y = y_sign * dirMap[x].dir_y;
+    } else if (gameMap[gameId].ball_x <= 0 || gameMap[gameId].ball_x >= 1000) {
+      clearInterval(gameMap[gameId].interval);
+      gameMap[gameId].game_state = 0;//?
+      let history = await this.historyRepository.findOne({id:gameId});
+      if (gameMap[gameId].ball_x < 100){
+        gameMap[gameId].player_two_point++;
+        await this.historyRepository.update({id:gameId}, {user2Point:(gameMap[gameId].player_two_point)})
       }
       else{
-        newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 1, 0);
-        gameMap[gameId].dir_x = newDir.newDir_x;
-        gameMap[gameId].dir_y = newDir.newDir_y;
+        gameMap[gameId].player_one_point++;
+        await this.historyRepository.update({id:gameId}, {user1Point:(gameMap[gameId].player_one_point)})
       }
-      if (gameMap[gameId].random_map == 1){
-        rand = Math.random();
-        rand *= 10000;
-        rand = Math.round(rand);
-        rand %= 8;
-        rand += 6;
-        console.log("rand:", rand);
-        x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
-        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos(2 * Math.PI / rand));
-        y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
-        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(2 * Math.PI / rand));
-      }
-    }
-    else if ((gameMap[gameId].ball_x >= 980)  || (gameMap[gameId].ball_x <= 20 )) {
-      if (this.isPannel(gameId) === true){
-        newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
-        gameMap[gameId].dir_x = newDir.newDir_x;
-        gameMap[gameId].dir_y = newDir.newDir_y;
-        rand = Math.random();
-        rand *= 10000;
-        rand = Math.round(rand);
-        rand %= 8;
-        rand += 6;
-        x_sign = gameMap[gameId].dir_x > 0 ? +1 : -1;
-        gameMap[gameId].dir_x = x_sign * Math.abs(Math.cos((2 * Math.PI) / rand));
-        y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
-        gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin((2 * Math.PI) / rand));
-      }
-      else{
-        clearInterval(gameMap[gameId].interval);
-        gameMap[gameId].game_state = 0;//?
-        let history = await this.historyRepository.findOne({id:gameId});
-        if (gameMap[gameId].ball_x < 100){
-          gameMap[gameId].player_two_point++;
-          await this.historyRepository.update({id:gameId}, {user2Point:(gameMap[gameId].player_two_point)})
+      this.eventsGateway.server.to(`game-${gameId}`).emit('point', {
+        player1: gameMap[gameId].player_one_point,
+        player2: gameMap[gameId].player_two_point, 
+      });
+      history = await this.historyRepository.findOne({id:gameId});
+      // const count = gameMap[gameId].player_one_point + gameMap[gameId].player_two_point;
+      // console.log("count:", count, "gameMap[gameId].game_set:", gameMap[gameId].game_set);
+      // console.log("db:", history.user1Point, history.user2Point);
+      // console.log("map:", gameMap[gameId].player_one_point, gameMap[gameId].player_two_point);
+      this.reset(gameId);
+      this.emit(gameId, 0);
+      this.emit(gameId, 1);
+      const deadline = ((gameMap[gameId].game_set - 3) / 2) + 2;
+      if (deadline <= gameMap[gameId].player_one_point || deadline <= gameMap[gameId].player_two_point){
+        await this.dmcontentRepository.update({historyId:gameId}, {match:2});
+        await this.historyRepository.update({id:gameId}, {state:2});
+        console.log("game over");
+        const player_one = history.user1Point;
+        const player_two = history.user2Point;
+        if (player_one > player_two){
+          await this.historyRepository.update({id:gameId}, {winner:(history.userId1), loser:(history.userId2)})
         }
         else{
-          gameMap[gameId].player_one_point++;
-          await this.historyRepository.update({id:gameId}, {user1Point:(gameMap[gameId].player_one_point)})
+          await this.historyRepository.update({id:gameId}, {loser:(history.userId1), winner:(history.userId2)})
         }
-        this.eventsGateway.server.to(`game-${gameId}`).emit('point', {
-          player1: gameMap[gameId].player_one_point,
-          player2: gameMap[gameId].player_two_point, 
-        });
-        history = await this.historyRepository.findOne({id:gameId});
-        const count = gameMap[gameId].player_one_point + gameMap[gameId].player_two_point;
-        console.log("count:", count, "gameMap[gameId].game_set:", gameMap[gameId].game_set);
-        console.log("db:", history.user1Point, history.user2Point);
-        console.log("map:", gameMap[gameId].player_one_point, gameMap[gameId].player_two_point);
-        this.reset(gameId);
-        this.emit(gameId, 0);
-        this.emit(gameId, 1);
-        const deadline = ((gameMap[gameId].game_set - 3) / 2) + 2;
-        console.log(deadline,"\n\n\n\n");
-        if (deadline <= gameMap[gameId].player_one_point || deadline <= gameMap[gameId].player_two_point){
-          await this.dmcontentRepository.update({historyId:gameId}, {match:2});
-          await this.historyRepository.update({id:gameId}, {state:2});
-          console.log("game over\n\n\n");
-          const player_one = history.user1Point;
-          const player_two = history.user2Point;
-          if (player_one > player_two){
-            await this.historyRepository.update({id:gameId}, {winner:(history.userId1), loser:(history.userId2)})
-          }
-          else{
-            await this.historyRepository.update({id:gameId}, {loser:(history.userId1), winner:(history.userId2)})
-          }
-          this.eventsGateway.server.to(`game-${gameId}`).emit("end", null);
-          delete gameMap[gameId];
-        }
-        console.log("중지");
+        this.eventsGateway.server.to(`game-${gameId}`).emit("end", null);
+        delete gameMap[gameId];
       }
+      console.log("중지");
     }
   }
-
   reset(gameId: number){
+    const x = Math.floor(Math.random() * 3);
+    const signX = Math.floor(Math.random() * 2) === 0 ? -1 : 1;
+    const signY = Math.floor(Math.random() * 2) === 0 ? -1 : 1;
     gameMap[gameId].ball_x = 500;
     gameMap[gameId].ball_y = 250;
-    let rand = Math.random();
-    rand *= 10000;
-    rand = Math.round(rand);
-    rand %= 8;
-    rand += 6;
-    console.log("rand: ", rand, "2 Pi / rand : ", 2 * Math.PI / rand);
-    gameMap[gameId].dir_x = Math.cos(2 * Math.PI / rand);
-    gameMap[gameId].dir_y = Math.sin(2 * Math.PI / rand);
+    gameMap[gameId].dir_x = signX * dirMap[x].dir_x;
+    gameMap[gameId].dir_y = signY * dirMap[x].dir_y;
     gameMap[gameId].player_one_y = 200;
     gameMap[gameId].player_two_y = 200;
   }
@@ -174,29 +143,53 @@ export class GameService {
     }
   }
 
-  isMiddleBlock(gameId:number):boolean{
-    if (gameMap[gameId].game_map === 1){
-      if (gameMap[gameId].ball_x < 348 || gameMap[gameId].ball_x > 652)
-        return false
-      else if ((gameMap[gameId].ball_y >= 99 && gameMap[gameId].ball_y <= 151))
-        return true;
-      else if (gameMap[gameId].ball_y >= 349 && gameMap[gameId].ball_y <= 401)
-        return true;
+  isMiddleBlock(gameId:number, x:number, y:number):boolean{
+    if (x >= 345 && x <= 655 && y >= 95 && y <= 155){ 
+      if (this.checkSide(gameId , 1))
+        gameMap[gameId].dir_y *= -1;
       else
-        return false;
+        gameMap[gameId].dir_x *= -1;
+      return true
+    }   
+    else if (x >= 345 && x <= 655 && y >= 345 && y <= 405) {
+      if (this.checkSide(gameId, 2))
+        gameMap[gameId].dir_y *= -1;
+      else
+        gameMap[gameId].dir_x *= -1;
+      return true
     }
     else
-      return false
+      return false;
   }
 
-  isPannel(gameId):boolean{
-    if (gameMap[gameId].ball_x < 100 && gameMap[gameId].player_one_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_one_y +100)
-      return true;
-    else if (gameMap[gameId].ball_x < 100)
+  checkSide(gameId:number, box:number):boolean{
+    const x = gameMap[gameId].ball_x + gameMap[gameId].dir_x * gameMap[gameId].length;
+    const y = gameMap[gameId].ball_y + gameMap[gameId].dir_y * gameMap[gameId].length;
+    const d_x = x - 345 <= 655 - x ? x - 345 : 655 - x;
+    const d_y1 = y - 95 <= 155 - y ? y - 95 : 155 - y;
+    const d_y2 = y - 345 <= 405 - y ? y - 345 : 405 - y;
+    if ( box === 1 && d_x <= d_y1)
       return false;
-    if (gameMap[gameId].ball_x > 900 && gameMap[gameId].player_two_y <= gameMap[gameId].ball_y && gameMap[gameId].ball_y <= gameMap[gameId].player_two_y +100)
+    else if (box === 2 && d_x <= d_y2)
+      return false;
+    return true;
+  }
+
+  isPannel(gameId:number, x:number, y:number):boolean{
+    const x_now = gameMap[gameId].ball_x;
+    const y_now = gameMap[gameId].ball_y;
+    const p_one = gameMap[gameId].player_one_y;
+    const p_two = gameMap[gameId].player_two_y;
+    if ((x_now < 20 && p_one <= y_now && y_now <= p_one + 100) 
+      || (x_now > 980 && p_two <= y_now && y_now <= p_two + 100))
+      return false;
+    if (x < 20 && p_one <= y && y <= p_one + 100)
       return true;
-    else if (gameMap[gameId].ball_x > 900)
+    else if (x < 20)
+      return false;
+    if (x > 980 && p_two <= y && y <= p_two + 100)
+      return true;
+    else if (x > 980)
       return false;
   }
 
