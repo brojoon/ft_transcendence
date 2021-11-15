@@ -37,7 +37,7 @@ const option = {
   headers: {
     Authorization: `Bearer ${getCookie('ts_token', 1)}`
   },
-  withCredentials: true  
+  withCredentials: true
 }
 
 const PingPong = (data) =>{
@@ -67,7 +67,7 @@ const PingPong = (data) =>{
         .then(res => {
           temUserId =res.data.userId;
           socket.emit('login', {userId: temUserId, Dms: [], channels: []});
-        }) 
+        })
       // history와 비교 (진행상태 확인 =>  완료된 게임이면 결과 창으로 바로 이동)
       await axios.get(`http://localhost:3095/api/game/history/${gameId}`, option)
         .then(res => {
@@ -78,7 +78,7 @@ const PingPong = (data) =>{
           setPlayer("playerOne");
           setPlay2Ready(res.data.playerTwoJoin);
           socket.emit('game', {
-            gameId: gameId, 
+            gameId: gameId,
             player: "playerOne",
             player1Ready: 0,
             player2Ready: res.data.playerTwoJoin
@@ -88,25 +88,25 @@ const PingPong = (data) =>{
           setPlayer("playerTwo");
           setPlay1Ready(res.data.playerOneJoin);
           socket.emit('game', {
-            gameId: gameId, 
+            gameId: gameId,
             player: "playerTwo",
             player1Ready: res.data.playerOneJoin,
-            player2Ready: 0   
+            player2Ready: 0
           })
         } else {
           socket.emit('game', {
-            gameId: gameId, 
+            gameId: gameId,
             player: "",
             player1Ready: res.data.playerOneJoin,
-            player2Ready: res.data.playerTwoJoin   
-          })          
+            player2Ready: res.data.playerTwoJoin
+          })
         }
         socket.emit("changeGameSet", {gameId: gameId, check: "check"})
         socket.emit("gamePoint", {
           gameId: gameId,
           user1Point: res.data.user1Point,
           user2Point: res.data.user2Point
-        })    
+        })
       })
     }
     if (userId === "")
@@ -163,18 +163,29 @@ const PingPong = (data) =>{
 
   useEffect(() => {
     const keyDownHandler = (e) => {
-      if (e.keyCode === 87 && player === "playerOne"){
+      // 잠시 이걸 이용
+      if (e.keyCode === 87 && player !== ""){
         socket.emit('player_one_up', {game: gameId});
-      }
-      if (e.keyCode === 83 && player === "playerOne"){
+      } else if (e.keyCode === 83 && player !== ""){
         socket.emit('player_one_down', {game: gameId});
-      }
-      if (e.keyCode === 79 && player === "playerTwo") {
+      } else if (e.keyCode === 79 && player !== "") {
         socket.emit('player_two_up', {game: gameId});
-      }
-      if (e.keyCode === 76 && player === "playerTwo") {
+      } else if (e.keyCode === 76 && player !== "") {
         socket.emit('player_two_down', {game: gameId});
+      } else if (e.keyCode === 84 && player !== "") {
+        axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
       }
+      // if (e.keyCode === 87 && player === "playerOne"){
+      //   socket.emit('player_one_up', {game: gameId});
+      // } else if (e.keyCode === 83 && player === "playerOne"){
+      //   socket.emit('player_one_down', {game: gameId});
+      // } else if (e.keyCode === 79 && player === "playerTwo") {
+      //   socket.emit('player_two_up', {game: gameId});
+      // } else if (e.keyCode === 76 && player === "playerTwo") {
+      //   socket.emit('player_two_down', {game: gameId});
+      // } else if (e.keyCode === 87 && player !== "") {
+      //   axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
+      // }
     };
     document.addEventListener('keydown', keyDownHandler, false);
   }, [player, gameId]);
@@ -182,7 +193,7 @@ const PingPong = (data) =>{
   const readyPlayer1 = () => {
     if (player === "playerOne" && player1Ready === 0) {
       socket.emit("gameReady", {
-        gameId: gameId, 
+        gameId: gameId,
         player: 1,
         userId: userId
       })
@@ -191,30 +202,30 @@ const PingPong = (data) =>{
   const readyPlayer2 = () => {
     if (player === "playerTwo" && player2Ready === 0) {
       socket.emit("gameReady", {
-        gameId: gameId, 
+        gameId: gameId,
         player: 2,
         userId: userId
-      })        
-    } 
+      })
+    }
   };
   const speed1 = () => {
     if (player !== "") {
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed: 2,
-        set: set, 
-        map: map, 
+        set: set,
+        map: map,
         random: random
       })
-    }      
+    }
   };
   const speed2 = () => {
     if (player !== "") {
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed: 3,
-        set: set, 
-        map: map, 
+        set: set,
+        map: map,
         random: random
       })
     }
@@ -222,10 +233,10 @@ const PingPong = (data) =>{
   const speed3 = () => {
     if (player !== "") {
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed: 4,
-        set: set, 
-        map: map, 
+        set: set,
+        map: map,
         random: random
       })
     }
@@ -233,10 +244,10 @@ const PingPong = (data) =>{
   const set3 = () => {
     if (player !== "" && user1Point < 2 && user2Point < 2) {
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed:speed,
-        set: 3, 
-        map: map, 
+        set: 3,
+        map: map,
         random: random
       })
     }
@@ -244,10 +255,10 @@ const PingPong = (data) =>{
   const set5 = () => {
     if (player !== "") {
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed: speed,
-        set: 5, 
-        map: map, 
+        set: 5,
+        map: map,
         random: random
       })
     }
@@ -255,31 +266,31 @@ const PingPong = (data) =>{
   const map0 = () => {
     if (player !== "")
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed:speed,
-        set: set, 
-        map: 0, 
+        set: set,
+        map: 0,
         random: random
       })
   };
   const map1 = () => {
     if (player !== "") {
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed:speed,
-        set: set, 
-        map: 1, 
+        set: set,
+        map: 1,
         random: random
       })
-    }  
+    }
   };
   const random0 = () => {
     if (player !== "") {
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed:speed,
-        set: set, 
-        map: map, 
+        set: set,
+        map: map,
         random: 0
       })
     }
@@ -287,13 +298,13 @@ const PingPong = (data) =>{
   const random1 = () => {
     if (player !== "") {
       socket.emit("changeGameSet", {
-        gameId: gameId, 
+        gameId: gameId,
         speed:speed,
-        set: set, 
-        map: map, 
+        set: set,
+        map: map,
         random: 1
       })
-    }    
+    }
   };
 
   //////////upload////////
@@ -304,7 +315,7 @@ const PingPong = (data) =>{
   const onSubmit = e => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("image", content); 
+    formData.append("image", content);
     axios.defaults.headers.post = null
     axios.post("http://localhost:3095/api/users/upload", formData, option)
       .then(res => {
@@ -318,7 +329,7 @@ const PingPong = (data) =>{
 
   const changeGameSet = async() => {
     if (player !== "")
-      await axios.get(`http://localhost:3095/api/game/start/${gameId}`, option); 
+      await axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
   };
 
   return (
@@ -332,7 +343,7 @@ const PingPong = (data) =>{
       </div>
       <div>
         <button onClick={changeGameSet}>게임시작 </button>
-        <b> (모두 레디 시 시작됨) </b>
+        <b> (모두 레디 시 시작됨) [key : t] </b>
       </div>
       <div>
         <b> playerOne Point: [ {user1Point} ] </b>
@@ -342,8 +353,8 @@ const PingPong = (data) =>{
       </div>
       <div>
       <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0xeec5da }}>
-        <Rectangle x={0} y={player_one_y} width={10} height={100} fill={0xac1a6a} />
-        <Rectangle x={990} y={player_two_y} width={10} height={100} fill={0xac1a6a} />
+        <Rectangle x={0} y={player_one_y} width={15} height={100} fill={0xac1a6a} />
+        <Rectangle x={985} y={player_two_y} width={15} height={100} fill={0xac1a6a} />
         {map === 1 ? <Rectangle x={350} y={100} width={300} height={50} fill={0xf38bc4} /> : null}
         {map === 1 ? <Rectangle x={350} y={350} width={300} height={50} fill={0xf38bc4} /> : null}
         <Circle x={ball_x} y={ball_y} radius={10} fill={0x940665} />

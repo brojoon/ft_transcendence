@@ -16,7 +16,7 @@ const initData ={
     ball_y: 250,
     player_one_y: 200,
     player_two_y: 200,
-    interval_time: 10
+    interval_time: 20
 }
 export = initData;
 
