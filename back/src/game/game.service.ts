@@ -60,7 +60,7 @@ export class GameService {
         y_sign = gameMap[gameId].dir_y > 0 ? +1 : -1;
         gameMap[gameId].dir_y = y_sign * Math.abs(Math.sin(2 * Math.PI / rand));
       }
-    } else if (this.isMiddleBlock(gameId, x ,y)){  
+    } else if (gameMap[gameId].game_map === 1 && this.isMiddleBlock(gameId, x ,y)){  
     } else if (this.isPannel(gameId , x ,y)){
       newDir = this.changeDir(gameMap[gameId].dir_x, gameMap[gameId].dir_y, 0, 1);
       gameMap[gameId].dir_x = newDir.newDir_x;
