@@ -96,6 +96,12 @@ export class ChannelsController {
     return await this.channelsService.checkMuteState(channelId, user.userId);
   }
 
+  @Get('/mutedMembers/:channelId')
+  @ApiOperation({summary:"한 채널에 mute된 멤버들을 조회"})
+  async mutedMembers(@Param("channelId") channelId, @User() user){
+    return await this.channelsService.mutedMembers(channelId, user.userId);
+  }
+
   @Get("/checkOtherMute/:channelId/:userId")
   async checkOtherMute(@Param("channelId") channelId:number, @Param("userId") userId){
     return await this.channelsService.checkMuteState(channelId, userId);

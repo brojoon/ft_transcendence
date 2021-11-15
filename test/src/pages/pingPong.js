@@ -50,13 +50,13 @@ const PingPong = (data) =>{
   const [player2Ready, setPlay2Ready] = useState(0);
   const [user1Point, setUser1Point] = useState(0);
   const [user2Point, setUser2Point] = useState(0);
-  const [set, setSet] = useState(3);
+  const [set, setSet] = useState(5);
   const [map, setMap] = useState(0);
   const [speed, setSpeed] = useState(3);
   const [random, setRandom] = useState(0);
   const [userId, setUserId] = useState("");
   const [player, setPlayer] = useState("");
-  
+
   // 내정보 받아오고 => 게임 기록 가져오고 => 내정보와 userId 매칭후 player one인지 two인지 확인
   // playerOne인 경우 게임 리셋하고 게임포인트 집어 넣기
   useEffect(() => {
@@ -101,20 +101,12 @@ const PingPong = (data) =>{
             player2Ready: res.data.playerTwoJoin   
           })          
         }
+        socket.emit("changeGameSet", {gameId: gameId, check: "check"})
         socket.emit("gamePoint", {
           gameId: gameId,
           user1Point: res.data.user1Point,
           user2Point: res.data.user2Point
-        })
-        if (res.data.user1Point + res.data.user2Point >= 3) {
-          socket.emit("changeGameSet", {
-            gameId: gameId, 
-            speed: speed,
-            set: 5, 
-            map: map, 
-            random: random
-          })
-        }      
+        })    
       })
     }
     if (userId === "")
@@ -132,10 +124,14 @@ const PingPong = (data) =>{
     socket.on("point", (point) => {
       setUser1Point(point.player1);
       setUser2Point(point.player2);
-      if (point.player1 + point.player2 >= set)
-        window.location.href = `http://localhost:3000/history/${gameId}`;
     });
   }, [set, gameId]);
+
+  useEffect(() => {
+    socket.on("end", () => {
+      window.location.href = `http://localhost:3000/history/${gameId}`;
+    });
+  }, [gameId]);
 
   useEffect(() => {
     socket.on("ready", (ready) => {
@@ -167,7 +163,6 @@ const PingPong = (data) =>{
 
   useEffect(() => {
     const keyDownHandler = (e) => {
-      console.log(player);
       if (e.keyCode === 87 && player === "playerOne"){
         socket.emit('player_one_up', {game: gameId});
       }
@@ -236,8 +231,7 @@ const PingPong = (data) =>{
     }
   };
   const set3 = () => {
-    console.log(user1Point + user2Point);
-    if (player !== "" && (user1Point + user2Point < 3)) {
+    if (player !== "" && user1Point < 2 && user2Point < 2) {
       socket.emit("changeGameSet", {
         gameId: gameId, 
         speed:speed,

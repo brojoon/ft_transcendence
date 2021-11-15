@@ -13,6 +13,7 @@ import axios from 'axios';
 import getToken from '@utils/getToken';
 import { useHistory } from 'react-router-dom';
 import ChannelForm from '@components/ChannelForm';
+
 interface Props {
   settingToggle: boolean;
   onClickSettingBtn: (e: any) => void;
@@ -24,12 +25,37 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
     '/api/channels/myChannelList',
     fetcher,
   );
-  const { data: allChannelList } = useSWR<IChannelList[]>('/api/channels/allChannelList', fetcher);
+  const { data: allChannelList, mutate: MutateAllChannelList } = useSWR<IChannelList[]>(
+    '/api/channels/allChannelList',
+    fetcher,
+  );
+
+  const { data: memberList, mutate: muatememberList } = useSWR<IMemberList[]>(
+    `/api/channels/userList/${id}`,
+    fetcher,
+  );
 
   const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
   const [name, setName] = useState('');
   const [visibility, setVisibility] = useState('');
+  const [PasswordValues, setPasswordValues] = useState({
+    password: '',
+    showPassword: false,
+  });
   const history = useHistory();
+
+  const handleClickShowPassword = useCallback(() => {
+    setPasswordValues({
+      ...PasswordValues,
+      showPassword: !PasswordValues.showPassword,
+    });
+  }, [PasswordValues, setPasswordValues]);
+  const handleChange = useCallback(
+    (prop: any) => (event: any) => {
+      setPasswordValues({ ...PasswordValues, [prop]: event.target.value });
+    },
+    [PasswordValues, setPasswordValues],
+  );
 
   const onChangeName = useCallback(
     (e: any) => {
@@ -56,30 +82,90 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
     [isChannelDeleteModal, setIsChannelDeleteModal],
   );
 
-  const onSubmitChannelCreate = useCallback((e) => {}, []);
+  const onSubmitChannelCreate = useCallback(
+    (e) => {
+      e.preventDefault();
+      console.log('pass1', PasswordValues);
+      console.log('visibility', visibility);
+      if (name) {
+        axios
+          .get(`/api/channels/changeChannelName/${id}/${name}`, {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          })
+          .then(() => {
+            MutateAllChannelList();
+            channelListMutate();
+            setName('');
+          });
+      }
+      if (visibility) {
+        axios
+          .get(`/api/channels/changeChannelType/${id}/${visibility}`, {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          })
+          .then(() => {
+            console.log('pass1.5', PasswordValues);
+            if (parseInt(visibility) === 1) {
+              console.log('pass1.6', PasswordValues);
 
-  const DeleteClickChannelBtn = useCallback((e) => {
-    e.preventDefault();
-    axios
-      .get(`/api/channels/deleteChannel/${id}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
-      .then(() => {
-        channelListMutate((prev) => {
-          const arr: IChannelList[] = [];
-          prev?.map((ch) => {
-            if (ch.id !== parseInt(id)) {
-              arr.push(ch);
+              axios
+                .get(`/api/channels/changeChannelPassword/${id}/${PasswordValues}`, {
+                  withCredentials: true,
+                  headers: {
+                    Authorization: `Bearer ${getToken()}`,
+                  },
+                })
+                .then(() => {
+                  console.log('pass2', PasswordValues);
+                  MutateAllChannelList();
+                  channelListMutate();
+                  setVisibility('');
+                  setPasswordValues({
+                    password: '',
+                    showPassword: false,
+                  });
+                  console.log('pass3', PasswordValues);
+                });
+            } else {
+              MutateAllChannelList();
+              channelListMutate();
+              setVisibility('');
+              setPasswordValues({
+                password: '',
+                showPassword: false,
+              });
             }
           });
-          return arr;
-        }, true);
-        history.push('/ft_transcendence/channels');
-      });
-  }, []);
+      }
+    },
+    [name, visibility, PasswordValues],
+  );
+
+  const DeleteClickChannelBtn = useCallback(
+    (e) => {
+      e.preventDefault();
+      axios
+        .get(`/api/channels/deleteChannel/${id}`, {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        })
+        .then(() => {
+          channelListMutate();
+          MutateAllChannelList();
+          muatememberList();
+          history.push('/ft_transcendence/channels');
+        });
+    },
+    [id],
+  );
 
   return (
     <>
@@ -134,6 +220,10 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
               name={name}
               visibility={visibility}
               value="EDIT"
+              handleClickShowPassword={handleClickShowPassword}
+              handleChange={handleChange}
+              PasswordValues={PasswordValues}
+              setPasswordValues={setPasswordValues}
             />
           </div>
           <div

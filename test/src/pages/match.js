@@ -24,7 +24,6 @@ const Match = () => {
       }).catch(err => {
         if (err.response.status === 401) {
           setUserId("등록 되지 않는 아이디 입니다.");
-          console.log(userId);
         }
       })
     }
@@ -33,10 +32,11 @@ const Match = () => {
   }, [userId]);
 
   const onClickMatch = useCallback(() => {
-    if (userId !== "등록 되지 않는 아이디 입니다.") {
+    if (userId !== "등록 되지 않는 아이디 입니다." || userId === "") {
       setButton("기다리는 중");
       socket.emit('matching', {userId: userId, gameId: 0});
-      console.log("매치 요청");
+    } else {
+      window.location.href = "http://localhost:3000";
     }
   }, [userId, socket]);
 

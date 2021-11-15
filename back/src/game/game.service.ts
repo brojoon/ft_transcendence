@@ -133,6 +133,7 @@ export class GameService {
           else{
             await this.historyRepository.update({id:gameId}, {loser:(history.userId1), winner:(history.userId2)})
           }
+          this.eventsGateway.server.to(`game-${gameId}`).emit("end", null);
           delete gameMap[gameId];
         }
         console.log("중지");

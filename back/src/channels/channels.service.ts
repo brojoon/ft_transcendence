@@ -144,7 +144,7 @@ export class ChannelsService {
     const createdAt = chatContentInfo.createdAt;
     const updatedAt = chatContentInfo.updatedAt;
     const data = { id, userId, channelId, msg, createdAt, updatedAt };
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ch', data)
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ch', data);
   }
 
   async getAllMessage(channelId:number, userId:string) {
@@ -170,7 +170,7 @@ export class ChannelsService {
   async userList(channelId:number, userId:string) {
     const userList = await this.chatmemberRepository.find({channelId});
     return userList
-   /*
+    /*
     if (!await this.chatmemberRepository.find({channelId, userId}))
       throw new ForbiddenException("채팅방에 없는 사용자인데 참여자 목록을 보려고 함");
     //const userList = await this.chatmemberRepository.find({channelId})
@@ -182,6 +182,11 @@ export class ChannelsService {
     console.log(userList);
     return userList;
     */
+  }
+
+  async mutedMembers(channelId, userId){
+    const ret = this.chatmemberRepository.find({channelId, userId, mute:true});
+    return ret;
   }
 
   async checkMuteState(channelId:number, userId:string) :Promise<boolean>{
@@ -240,7 +245,7 @@ export class ChannelsService {
     if (!banUser)
       throw new ForbiddenException("채팅방에 없는 사용자임");
     else if ((await banUser).auth > 0)//여기도 await??
-      throw new ForbiddenException("관리자나 소유자를 ban할 수는 없음")
+      throw new ForbiddenException("관리자나 소유자를 ban할 수는 없음");
     if (await this.checkAdmin(channelId, adminId) == false)
       throw new ForbiddenException(".");
     await this.chatmemberRepository.delete({channelId, userId:banId});

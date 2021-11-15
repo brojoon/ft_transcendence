@@ -25,15 +25,31 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const Channel = () => {
-  const history = useHistory();
-  const [name, setName] = useState('');
-  const [visibility, setVisibility] = useState('');
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
   const { data: allchannelList, mutate: mutateChannelList } = useSWR<IChannelList[]>(
     '/api/channels/myChannelList',
     fetcher,
+  );
+  const history = useHistory();
+  const [name, setName] = useState('');
+  const [visibility, setVisibility] = useState('');
+  const [PasswordValues, setPasswordValues] = useState({
+    password: '',
+    showPassword: false,
+  });
+  const handleClickShowPassword = useCallback(() => {
+    setPasswordValues({
+      ...PasswordValues,
+      showPassword: !PasswordValues.showPassword,
+    });
+  }, [PasswordValues, setPasswordValues]);
+  const handleChange = useCallback(
+    (prop: any) => (event: any) => {
+      setPasswordValues({ ...PasswordValues, [prop]: event.target.value });
+    },
+    [PasswordValues, setPasswordValues],
   );
   const onChangeName = useCallback(
     (e: any) => {
@@ -59,7 +75,7 @@ const Channel = () => {
         .post(
           `/api/channels/create/${name}/${visibility}`,
           {
-            password: '1234',
+            password: PasswordValues.password,
           },
           {
             withCredentials: true,
@@ -71,18 +87,11 @@ const Channel = () => {
         .then((response) => {
           setName('');
           setVisibility('');
-          mutateChannelList((prev) => {
-            prev?.push({
-              id: 31,
-              name: name,
-              type: parseInt(visibility),
-              authId: myData?.userId,
-              createdAt: new Date(),
-              updatedAt: new Date(),
-              deleteAt: null,
-            });
-            return prev;
-          }, true);
+          setPasswordValues({
+            password: '',
+            showPassword: false,
+          });
+          mutateChannelList();
           if (allchannelList) {
             history.push(`/ft_transcendence/channels/${response.data}`);
           }
@@ -91,7 +100,7 @@ const Channel = () => {
           console.log(error);
         });
     },
-    [name, visibility, allchannelList],
+    [name, visibility, allchannelList, PasswordValues],
   );
   return (
     <Container
@@ -116,6 +125,10 @@ const Channel = () => {
               onChangeName={onChangeName}
               name={name}
               visibility={visibility}
+              handleClickShowPassword={handleClickShowPassword}
+              handleChange={handleChange}
+              PasswordValues={PasswordValues}
+              setPasswordValues={setPasswordValues}
             />
           )}
         />
