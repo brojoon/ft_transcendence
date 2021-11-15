@@ -86,6 +86,11 @@ export class ChannelsController {
     return await this.channelsService.get20Message(channelId, user.userId, skip);
   }
 
+  @Get('/userListOnlyId/:channelId')
+  async userListOnlyId(@Param("channelId") channelId:number, @User() user){
+    return await this.channelsService.userListOnlyId(channelId, user.userId);
+  }
+
   @Get('/userList/:channelId')
   async userList(@Param("channelId") channelId:number, @User() user){
     return await this.channelsService.userList(channelId, user.userId);
@@ -142,7 +147,7 @@ export class ChannelsController {
     return await this.channelsService.updateChannelName(channelId, user.userId, channelName);
   }
 
-  @Get("/changeChannelPassword/:channelId/:pasword")
+  @Post("/changeChannelPassword/:channelId/:pasword")
   @ApiResponse ({//스웨거 body칸 있게 하려면
     status: 200,
     description: '성공',

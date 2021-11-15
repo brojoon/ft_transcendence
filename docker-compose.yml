@@ -16,32 +16,31 @@ services:
         TZ: "Asia/Seoul"
     volumes:
       - ./postgresql:/var/lib/postgresql/data
-      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
-  back:
-    build:
-      context: ./back
-      dockerfile: Dockerfile
-    container_name: back
-    restart: always
-    ports:
-      - 3095:3095
-    depends_on:
-      - postgresql
-    networks:
-      - database
-      - frontApp
-  front:
-    build:
-      context: ./test
-      dockerfile: Dockerfile
-    container_name: front
-    restart: always
-    ports:
-      - 3000:3000
-    depends_on:
-      - back
-    networks:
-      - frontApp
+  # back:
+  #   build:
+  #     context: ./back
+  #     dockerfile: Dockerfile
+  #   container_name: back
+  #   restart: always
+  #   ports:
+  #     - 3095:3095
+  #   depends_on:
+  #     - postgresql
+  #   networks:
+  #     - database
+  #     - frontApp
+  # front:
+  #   build:
+  #     context: ./test
+  #     dockerfile: Dockerfile
+  #   container_name: front
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - back
+  #   networks:
+  #     - frontApp
 
 volumes:
   postgresql:
