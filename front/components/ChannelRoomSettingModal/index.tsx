@@ -188,7 +188,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
             bottom: 0,
             top: 0,
             backgroundColor: '#000000',
-            zIndex: 1000,
+            zIndex: 5000,
             flexDirection: 'column',
             padding: '0 25px',
             overflowY: 'auto',

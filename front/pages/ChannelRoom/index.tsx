@@ -1,17 +1,19 @@
 import ChatBox from '@components/ChatBox';
-import { IChannelChatList, IChatList, IMemberList, IUser } from '@typings/db';
+import { IChannelChatList, IChannelList, IChatList, IMemberList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
 import getToken from '@utils/getToken';
 import ChannelChatHeader from '@components/ChannelChatHeader';
 import ChannelChatList from '@components/ChannelChatList';
 import ChannelMemberDrawBar from '@components/ChannelMemberDrawBar';
 import ChannelRoomSettingModal from '@components/ChannelRoomSettingModal';
+import BasicModal from '@components/BasicModal';
+import ChannelInviteModal from '@components/ChannelInviteModal';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,11 +26,30 @@ const ChannelRoom = () => {
     `/api/channels/allMessageList/${id}`,
     fetcher,
   );
+  const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
+    `/api/channels/allChannelList`,
+    fetcher,
+  );
+  const { data: myChannelList, mutate: mutateMyChannelList } = useSWR<IChannelList[]>(
+    `/api/channels/myChannelList`,
+    fetcher,
+  );
   const [chat, setChat] = useState('');
   const [settingToggle, setSettingToggle] = useState(false);
   const [membersToggle, setMembersToggle] = useState(false);
+  const [channelLeaveModal, setChannelLeaveModal] = useState(false);
+  const [channelInviteModal, setChannelInviteModal] = useState(false);
   const scrollbarRef = useRef<Scrollbars>(null);
   const socket = getSocket();
+  const history = useHistory();
+
+  const onClickChannelInviteModal = useCallback(
+    (e) => {
+      e.preventDefault();
+      setChannelInviteModal((prev) => !prev);
+    },
+    [channelInviteModal],
+  );
 
   const onClickMembersToggle = useCallback(
     (e) => {
@@ -87,6 +108,34 @@ const ChannelRoom = () => {
     },
     [chat],
   );
+
+  const onClickChannelLeaveModal = useCallback(
+    (e) => {
+      e.preventDefault();
+      setChannelLeaveModal((prev) => !prev);
+    },
+    [channelLeaveModal, setChannelLeaveModal],
+  );
+  const onClickChannelLeaveMdoalYes = useCallback(
+    (e) => {
+      e.preventDefault();
+      axios
+        .get(`/api/channels/getout/${id}`, {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        })
+        .then(() => {
+          mutateAllChannelList();
+          mutateMyChannelList();
+          setChannelLeaveModal(false);
+          history.push('/ft_transcendence/channels');
+        });
+    },
+    [channelLeaveModal],
+  );
+
   const onMessage = useCallback(
     (data) => {
       console.log('ch왔다!');
@@ -132,13 +181,31 @@ const ChannelRoom = () => {
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
+          overflow: 'hidden',
         }}
       >
-        <ChannelChatHeader onClickMembersToggle={onClickMembersToggle} />
+        <ChannelChatHeader
+          membersToggle={membersToggle}
+          onClickMembersToggle={onClickMembersToggle}
+        />
         <ChannelChatList chatData={chatData} scrollbarRef={scrollbarRef} />
         <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />
       </div>
-      <ChannelMemberDrawBar onClickSettingBtn={onClickSettingBtn} />
+      <ChannelMemberDrawBar
+        onClickMembersToggle={onClickMembersToggle}
+        onClickSettingBtn={onClickSettingBtn}
+        onClickChannelLeaveModal={onClickChannelLeaveModal}
+        onClickChannelInviteModal={onClickChannelInviteModal}
+        membersToggle={membersToggle}
+      />
+      {channelInviteModal && <ChannelInviteModal onClickModalClose={onClickChannelInviteModal} />}
+      {channelLeaveModal && (
+        <BasicModal
+          content={`Are you really leaving this channel?`}
+          NoBtn={onClickChannelLeaveModal}
+          YesBtn={onClickChannelLeaveMdoalYes}
+        />
+      )}
       <ChannelRoomSettingModal
         settingToggle={settingToggle}
         onClickSettingBtn={onClickSettingBtn}

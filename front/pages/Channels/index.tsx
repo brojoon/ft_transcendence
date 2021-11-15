@@ -109,6 +109,7 @@ const Channel = () => {
         margin: '0',
         padding: '0',
         backgroundColor: '#1e1e1e',
+        overflow: 'hidden',
       }}
     >
       <ChannelLeftDrawBar />
