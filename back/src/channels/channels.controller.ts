@@ -137,24 +137,9 @@ export class ChannelsController {
     await this.channelsService.banUser(channelId, admin.userId, banId);
   }
 
-  @Get("/changeChannelType/:channelId/:type")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
-  async updateType(@Param("channelId") channelId:number, @User() user, @Param('type') type:number){
-    return await this.channelsService.updateType(channelId, user.userId, type);
-  }
-
-  @Get("/changeChannelName/:channelId/:channelName")
-  async updateChannelName(@Param("channelId") channelId:number, @User() user, @Param('channelName') channelName:string){
-    return await this.channelsService.updateChannelName(channelId, user.userId, channelName);
-  }
-
-  @Post("/changeChannelPassword/:channelId/:pasword")
-  @ApiResponse ({//스웨거 body칸 있게 하려면
-    status: 200,
-    description: '성공',
-    type: ChannelDto,
-  })
-  async updateChannelPassword(@Param("channelId") channelId:number, @User() user, @Body() dto:ChannelDto){
-    await this.channelsService.updateChannelPassword(channelId, user.userId, dto.password);
+  @Get("/updateChannel/:channelId/:channelName/:channelType")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
+  async updateChannel(@Param("channelId") channelId:number, @User() user, @Param('channelName') channelName:string, @Param('channelType') type:number, @Body() dto:ChannelDto){
+    return await this.channelsService.updateChannel(channelId, user.userId, channelName, type, dto.password);
   }
 
   @Get("/muteUser/:channelId/:muteId/:time")
