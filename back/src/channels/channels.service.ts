@@ -83,7 +83,7 @@ export class ChannelsService {
   async joinChannel(channelId:number, userId:string, channelPassword:string) {
     const channel = await this.chatchannelRepository.findOne({id:channelId});
     if (!channel)
-      throw new BadRequestException("없는 채팅방입니다");
+      throw new NotFoundException("없는 채팅방입니다");
     if (channel.type == 1){
       const auth = await bcrypt.compare(channelPassword, channel.password);//channelPassword = null일때?
       if (!auth)
@@ -103,7 +103,7 @@ export class ChannelsService {
 
   async getOutChnnel(channelId:number, userId:string) {
     if (!(await this.chatmemberRepository.findOne({channelId, userId})))
-      throw new ForbiddenException("없는 채팅방이거나, 유저가 채팅방에 없음");
+      throw new NotFoundException("없는 채팅방이거나, 유저가 채팅방에 없음");
     await this.chatmemberRepository.delete({channelId, userId});
     this.eventsGateway.server.to(`channel-${channelId}`).emit('leave', null);
     return channelId;
@@ -117,20 +117,20 @@ export class ChannelsService {
       if (await this.chatmemberRepository.findOne({channelId, userId:visitorId}))
         throw new BadRequestException("이미 채팅방에 있는 사용자임");
       if (!await this.chatchannelRepository.findOne({id:channelId}))
-        throw new BadRequestException("없는 채팅방입니다");
+        throw new NotFoundException("없는 채팅방입니다");
       if (!(await this.usersRepository.findOne({userId:visitorId})))
-        throw new BadRequestException("초대하려는 사람이 없는 사용자입니다.");
+        throw new NotFoundException("초대하려는 사람이 없는 사용자입니다.");
       const newMember = new Chatmember();
       newMember.userId = visitorId;
       newMember.channelId = channelId;
       await this.chatmemberRepository.save(newMember);
-      this.eventsGateway.server.to(`channel-${channelId}`).emit('invite', null);
+      this.eventsGateway.server.to(`channel-${channelId}`).emit('join', null);
       return channelId;
   }
 
   async sendMessage(channelId:number, sender:string, msg:string) { //미완성
     if (!(await this.chatchannelRepository.findOne({id:channelId})))
-      throw new BadRequestException("없는 채팅방 입니다");
+      throw new NotFoundException("없는 채팅방 입니다");
     if (!await this.chatmemberRepository.findOne({channelId, userId:sender}))
       throw new ForbiddenException("채팅방에 없는 사용자인데 메시지를 보내려고 함");
     if (await this.checkMuteState(channelId, sender) == true)
@@ -206,7 +206,6 @@ export class ChannelsService {
     if (!await this.chatmemberRepository.findOne({channelId, userId}))
       throw new ForbiddenException(".");
     const chatmember = await this.chatmemberRepository.findOne({where:{channelId, userId}});
-    return chatmember.mute;
     let expired:Date = chatmember.muteExpired;
     let now:Date = new Date();
     if (!chatmember.mute){
@@ -281,6 +280,8 @@ export class ChannelsService {
   async updateChannelName(channelId:number, userId:string, name:string) {
     if (await this.checkOwner(channelId, userId) == false)
       throw new ForbiddenException(".");
+    if (await this.chatchannelRepository.findOne({name:name}))
+      throw new BadRequestException("이미 있는 이름의 채팅방입니다");
     await this.chatchannelRepository.update({id:channelId}, {name})
     this.eventsGateway.server.to(`channel-${channelId}`).emit('channelType', null);
     return name;
@@ -289,13 +290,10 @@ export class ChannelsService {
   async updateChannelPassword(channelId:number, userId:string, password:string) {
     if (await this.checkOwner(channelId, userId) == false)
       throw new ForbiddenException(".");
+    
     const newPassword = await bcrypt.hash(password, 12);
     await this.chatchannelRepository.update({id:channelId}, {password : newPassword});
     this.eventsGateway.server.to(`channel-${channelId}`).emit('channelType', null);
-  }
-  
-  async testFunc(channelId, muteId){
-    await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:false});
   }
 
   async muteSwitch(channelId, adminId, muteId, time:number) {
