@@ -31,6 +31,8 @@ const UserCard = () => {
           backgroundColor: '#1e1e1e',
           color: 'white',
           border: '1px solid rgba(57, 57, 57, 0.5)',
+          width: '400px',
+          height: '400px',
         }}
       >
         <CardContent
@@ -58,10 +60,11 @@ const UserCard = () => {
             alignItems: 'center',
           }}
         >
+          <h4 style={{ marginTop: '0' }}>{myData?.username}</h4>
           <Button
             variant="contained"
             style={{
-              width: '200px',
+              width: '300px',
               height: '35px',
               backgroundColor: '#597aff',
               borderColor: '#597aff',

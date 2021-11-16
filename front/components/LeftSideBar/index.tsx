@@ -70,29 +70,39 @@ const LeftSideBar = () => {
             </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/social`}>
-            <MyFab aria-label="add" className="sideBarIcon">
-              <ConnectWithoutContactIcon />
-            </MyFab>
+            <Tooltip title="Social" placement="right" arrow>
+              <MyFab aria-label="add" className="sideBarIcon">
+                <ConnectWithoutContactIcon />
+              </MyFab>
+            </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/channels`}>
-            <MyFab aria-label="add" className="sideBarIcon">
-              <ForumIcon />
-            </MyFab>
+            <Tooltip title="Channels" placement="right" arrow>
+              <MyFab aria-label="add" className="sideBarIcon">
+                <ForumIcon />
+              </MyFab>
+            </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/users`}>
-            <MyFab aria-label="add" className="sideBarIcon">
-              <GroupIcon />
-            </MyFab>
+            <Tooltip title="Users" placement="right" arrow>
+              <MyFab aria-label="add" className="sideBarIcon">
+                <GroupIcon />
+              </MyFab>
+            </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/achievements`}>
-            <MyFab aria-label="add" className="sideBarIcon">
-              <EqualizerIcon />
-            </MyFab>
+            <Tooltip title="Achievements" placement="right" arrow>
+              <MyFab aria-label="add" className="sideBarIcon">
+                <EqualizerIcon />
+              </MyFab>
+            </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/game`}>
-            <MyFab aria-label="add" className="sideBarIcon">
-              <VideogameAssetIcon />
-            </MyFab>
+            <Tooltip title="Game" placement="right" arrow>
+              <MyFab aria-label="add" className="sideBarIcon">
+                <VideogameAssetIcon />
+              </MyFab>
+            </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/login`}>
             <MyFab aria-label="add" className="sideBarIconLast" onClick={onClickLogOut}>

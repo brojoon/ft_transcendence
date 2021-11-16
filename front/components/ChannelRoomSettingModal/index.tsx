@@ -101,6 +101,9 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
             MutateAllChannelList();
             channelListMutate();
             setName('');
+          })
+          .catch(() => {
+            setCreateError(true);
           });
       }
       if (visibility) {
