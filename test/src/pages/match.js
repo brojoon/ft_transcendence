@@ -32,11 +32,11 @@ const Match = () => {
   }, [userId]);
 
   const onClickMatch = useCallback(() => {
-    if (userId !== "등록 되지 않는 아이디 입니다." || userId !== "") {
+    if (userId === "등록 되지 않는 아이디 입니다." || userId === "") {
+      window.location.href = "http://localhost:3000";
+    } else {
       setButton("기다리는 중");
       socket.emit('matching', {userId: userId, gameId: 0});
-    } else {
-      window.location.href = "http://localhost:3000";
     }
   }, [userId, socket]);
 
