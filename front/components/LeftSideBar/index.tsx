@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import { MyFab, NavIcons, StyledBadge, Toolbar } from './style';
 import ForumIcon from '@mui/icons-material/Forum';
-import FlareIcon from '@mui/icons-material/Flare';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
 import HomeIcon from '@mui/icons-material/Home';
@@ -15,19 +14,20 @@ import 'react-toastify/dist/ReactToastify.css';
 import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
+import EqualizerIcon from '@mui/icons-material/Equalizer';
+import getToken from '@utils/getToken';
+import Tooltip from '@mui/material/Tooltip';
 
 const LeftSideBar = () => {
   const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
   const onClickLogOut = useCallback(() => {
-    let token = document.cookie.slice(document.cookie.indexOf('ts_token') + 9);
-    token = token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' '));
     axios
       .get('/api/auth/logout', {
         withCredentials: true,
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${getToken()}`,
         },
       })
       .then(() => {
@@ -63,9 +63,11 @@ const LeftSideBar = () => {
             </StyledBadge>
           </Link>
           <Link to={`/ft_transcendence/home`}>
-            <MyFab aria-label="add" className="sideBarIcon">
-              <HomeIcon />
-            </MyFab>
+            <Tooltip title="Home" placement="right" arrow>
+              <MyFab aria-label="add" className="sideBarIcon">
+                <HomeIcon />
+              </MyFab>
+            </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/social`}>
             <MyFab aria-label="add" className="sideBarIcon">
@@ -84,7 +86,7 @@ const LeftSideBar = () => {
           </Link>
           <Link to={`/ft_transcendence/achievements`}>
             <MyFab aria-label="add" className="sideBarIcon">
-              <FlareIcon />
+              <EqualizerIcon />
             </MyFab>
           </Link>
           <Link to={`/ft_transcendence/game`}>

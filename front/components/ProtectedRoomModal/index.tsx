@@ -79,7 +79,7 @@ const ProtectedRoomModal: VFC<Props> = ({
       console.log(PasswordValues);
       axios
         .post(
-          `/api/channels/join/${channelPasswordRoomNumber}/`,
+          `/api/channels/join/${channelPasswordRoomNumber}`,
           {
             password: PasswordValues.password,
           },

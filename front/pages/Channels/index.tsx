@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -16,6 +16,7 @@ import { IChannelList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import getToken from '@utils/getToken';
+import getSocket from '@utils/useSocket';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -32,9 +33,19 @@ const Channel = () => {
     '/api/channels/myChannelList',
     fetcher,
   );
+  const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
+    `/api/channels/allChannelList`,
+    fetcher,
+  );
+  const { data: myChannelList, mutate: mutateMyChannelList } = useSWR<IChannelList[]>(
+    `/api/channels/myChannelList`,
+    fetcher,
+  );
   const history = useHistory();
+  const socket2 = getSocket();
   const [name, setName] = useState('');
   const [visibility, setVisibility] = useState('');
+  const [createError, setCreateError] = useState(false);
   const [PasswordValues, setPasswordValues] = useState({
     password: '',
     showPassword: false,
@@ -54,6 +65,7 @@ const Channel = () => {
   const onChangeName = useCallback(
     (e: any) => {
       e.preventDefault();
+      setCreateError(false);
       setName(e.target.value);
     },
     [name, setName],
@@ -62,7 +74,7 @@ const Channel = () => {
   const onChangeVisibility = useCallback(
     (e: any) => {
       e.preventDefault();
-
+      setCreateError(false);
       setVisibility(e.target.value);
     },
     [visibility, setVisibility],
@@ -97,11 +109,28 @@ const Channel = () => {
           }
         })
         .catch((error) => {
+          setCreateError(true);
           console.log(error);
         });
     },
     [name, visibility, allchannelList, PasswordValues],
   );
+
+  // const channelRevalidate = useCallback(() => {
+  //   console.log('channel revalidated!!!');
+  //   mutateChannelList();
+  //   mutateMyChannelList();
+  //   mutateAllChannelList();
+  // }, []);
+
+  // useEffect(() => {
+  //   socket2?.on('channelDelete', channelRevalidate);
+
+  //   return () => {
+  //     socket2?.off('channelDelete', channelRevalidate);
+  //   };
+  // }, [socket2, channelRevalidate]);
+
   return (
     <Container
       style={{
@@ -130,10 +159,11 @@ const Channel = () => {
               handleChange={handleChange}
               PasswordValues={PasswordValues}
               setPasswordValues={setPasswordValues}
+              createError={createError}
             />
           )}
         />
-        <Route path="/ft_transcendence/channels/:id" component={ChannelRoom} />
+        <Route path="/ft_transcendence/channels/:id" render={() => <ChannelRoom />} />
       </Switch>
     </Container>
   );

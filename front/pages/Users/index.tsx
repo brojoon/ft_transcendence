@@ -53,13 +53,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 export default function Users() {
   return (
-    <div style={{ height: 'calc(100vh - 40px)', width: '100%' }}>
+    <div style={{ height: '100vh', width: '100%' }}>
       <Box
         sx={{ flexGrow: 1 }}
         style={{
           padding: '20px 10px',
           backgroundColor: '#121212',
-          height: '100%',
+          height: 'calc(100vh - 40px)',
           boxSizing: 'content-box',
         }}
       >

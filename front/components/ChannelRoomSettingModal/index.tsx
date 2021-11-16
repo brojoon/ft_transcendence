@@ -34,15 +34,16 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
     `/api/channels/userList/${id}`,
     fetcher,
   );
+  const history = useHistory();
 
   const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
   const [name, setName] = useState('');
   const [visibility, setVisibility] = useState('');
+  const [createError, setCreateError] = useState(false);
   const [PasswordValues, setPasswordValues] = useState({
     password: '',
     showPassword: false,
   });
-  const history = useHistory();
 
   const handleClickShowPassword = useCallback(() => {
     setPasswordValues({
@@ -60,6 +61,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
   const onChangeName = useCallback(
     (e: any) => {
       e.preventDefault();
+      setCreateError(false);
       setName(e.target.value);
     },
     [name, setName],
@@ -68,7 +70,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
   const onChangeVisibility = useCallback(
     (e: any) => {
       e.preventDefault();
-
+      setCreateError(false);
       setVisibility(e.target.value);
     },
     [visibility, setVisibility],
@@ -115,12 +117,18 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
               console.log('pass1.6', PasswordValues);
 
               axios
-                .get(`/api/channels/changeChannelPassword/${id}/${PasswordValues}`, {
-                  withCredentials: true,
-                  headers: {
-                    Authorization: `Bearer ${getToken()}`,
+                .post(
+                  `/api/channels/changeChannelPassword/${id}/${PasswordValues.password}`,
+                  {
+                    password: PasswordValues.password,
                   },
-                })
+                  {
+                    withCredentials: true,
+                    headers: {
+                      Authorization: `Bearer ${getToken()}`,
+                    },
+                  },
+                )
                 .then(() => {
                   console.log('pass2', PasswordValues);
                   MutateAllChannelList();
@@ -188,7 +196,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
             bottom: 0,
             top: 0,
             backgroundColor: '#000000',
-            zIndex: 5000,
+            zIndex: 501,
             flexDirection: 'column',
             padding: '0 25px',
             overflowY: 'auto',
@@ -224,6 +232,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
               handleChange={handleChange}
               PasswordValues={PasswordValues}
               setPasswordValues={setPasswordValues}
+              createError={createError}
             />
           </div>
           <div

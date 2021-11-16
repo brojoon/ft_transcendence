@@ -22,6 +22,7 @@ interface Props {
   value: string;
   PasswordValues: { password: string; showPassword: boolean };
   setPasswordValues: any;
+  createError: boolean;
 }
 
 const ChannelForm: VFC<Props> = ({
@@ -35,6 +36,7 @@ const ChannelForm: VFC<Props> = ({
   value,
   PasswordValues,
   setPasswordValues,
+  createError,
 }) => {
   const handleMouseDownPassword = useCallback((event: any) => {
     event.preventDefault();
@@ -77,10 +79,12 @@ const ChannelForm: VFC<Props> = ({
           label="Visibility"
           style={{ color: 'white' }}
         >
+          {' '}
           <MenuItem value={0}>Public</MenuItem>
           <MenuItem value={1}>Protected</MenuItem>
           <MenuItem value={2}>Private</MenuItem>
         </Select>
+
         {parseInt(visibility) === 1 ? (
           <FormControl sx={{ width: '100%', color: 'white', marginTop: '15px' }} variant="standard">
             <InputLabel htmlFor="standard-adornment-password" style={{ color: 'white' }}>
@@ -114,6 +118,7 @@ const ChannelForm: VFC<Props> = ({
       >
         {value}
       </Button>
+      {createError && <h3 style={{ color: 'red' }}>This channel already exists</h3>}
     </Box>
   );
 };

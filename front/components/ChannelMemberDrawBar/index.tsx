@@ -10,11 +10,10 @@ import fetcher from '@utils/fetcher';
 import Button from '@mui/material/Button';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import SettingsIcon from '@mui/icons-material/Settings';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 import BasicModal from '@components/BasicModal';
 import getToken from '@utils/getToken';
 import axios from 'axios';
-import ChannelInviteModal from '@components/ChannelInviteModal';
 import { Container } from './style';
 
 interface Props {
@@ -67,7 +66,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
             right: 0,
             bottom: 0,
             backgroundColor: 'rgba(30, 30, 030, 0.5)',
-            zIndex: 1500,
+            zIndex: 100,
           }}
         ></div>
       )}
@@ -201,7 +200,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
             }}
           >
             INVITE &nbsp;
-            <PersonAddIcon />
+            <PersonAddAlt1RoundedIcon />
           </Button>
         )}
         {isOwner === false && (
