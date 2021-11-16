@@ -26,6 +26,7 @@ interface Props {
   visibility: string;
   PasswordValues: { password: string; showPassword: boolean };
   setPasswordValues: any;
+  createError: boolean;
 }
 
 const ChannelCreate: VFC<Props> = ({
@@ -38,6 +39,7 @@ const ChannelCreate: VFC<Props> = ({
   setPasswordValues,
   name,
   visibility,
+  createError,
 }) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
@@ -68,6 +70,7 @@ const ChannelCreate: VFC<Props> = ({
             handleChange={handleChange}
             PasswordValues={PasswordValues}
             setPasswordValues={setPasswordValues}
+            createError={createError}
           />
         </div>
       </div>

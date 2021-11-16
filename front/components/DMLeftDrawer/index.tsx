@@ -10,6 +10,7 @@ import useSWR from 'swr';
 import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { dividerClasses } from '@mui/material';
+import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
 
 const style = {
   width: '100%',
@@ -61,8 +62,9 @@ const DMLeftDrawerBar = () => {
           height: '14%',
         }}
       >
-        <ListItem button style={{ backgroundColor: '#666666' }}>
-          <ListItemText primary="Freinds" style={{ color: 'white' }} />
+        <ListItem button style={{ backgroundColor: '#666666', color: 'white' }}>
+          <EmojiPeopleRoundedIcon style={{ marginRight: '20px' }} />
+          <ListItemText primary="Friends" />
         </ListItem>
       </div>
       <div style={{ height: '79%' }}>

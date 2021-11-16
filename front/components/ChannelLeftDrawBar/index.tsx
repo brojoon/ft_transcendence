@@ -14,6 +14,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import FlareIcon from '@mui/icons-material/Flare';
 const style = {
   width: '100%',
   bgcolor: '#1e1e1e',
@@ -80,8 +81,10 @@ const ChannelLeftDrawBar = () => {
             <ListItemButton
               selected={selectedIndex === 0}
               onClick={(event) => handleListItemClick(event, 0)}
+              style={{ color: 'white' }}
             >
-              <ListItemText primary="Discover" style={{ color: 'white' }} />
+              <FlareIcon style={{ marginRight: '15px' }} />
+              <ListItemText primary="Discover" />
             </ListItemButton>
           </List>
         </Link>

@@ -2,7 +2,7 @@ import ChatBox from '@components/ChatBox';
 import { IChannelChatList, IChannelList, IChatList, IMemberList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState, VFC } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
 import { useParams, useHistory } from 'react-router-dom';
@@ -20,7 +20,10 @@ const ChannelRoom = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-  const { data: ChannelMembers } = useSWR<IMemberList[]>(`/api/channels/userList/${id}`, fetcher);
+  const { data: ChannelMembers, mutate: mutateChannelMembers } = useSWR<IMemberList[]>(
+    `/api/channels/userList/${id}`,
+    fetcher,
+  );
 
   const { data: chatData, mutate: mutateChat } = useSWR<IChannelChatList[]>(
     `/api/channels/allMessageList/${id}`,
@@ -34,14 +37,14 @@ const ChannelRoom = () => {
     `/api/channels/myChannelList`,
     fetcher,
   );
+  const scrollbarRef = useRef<Scrollbars>(null);
+  const socket = getSocket();
+  const history = useHistory();
   const [chat, setChat] = useState('');
   const [settingToggle, setSettingToggle] = useState(false);
   const [membersToggle, setMembersToggle] = useState(false);
   const [channelLeaveModal, setChannelLeaveModal] = useState(false);
   const [channelInviteModal, setChannelInviteModal] = useState(false);
-  const scrollbarRef = useRef<Scrollbars>(null);
-  const socket = getSocket();
-  const history = useHistory();
 
   const onClickChannelInviteModal = useCallback(
     (e) => {
@@ -136,6 +139,13 @@ const ChannelRoom = () => {
     [channelLeaveModal],
   );
 
+  const channelRevalidate = useCallback(() => {
+    console.log('channel revalidated!!!');
+    mutateChannelMembers();
+    mutateMyChannelList();
+    mutateAllChannelList();
+  }, []);
+
   const onMessage = useCallback(
     (data) => {
       console.log('ch왔다!');
@@ -162,10 +172,24 @@ const ChannelRoom = () => {
 
   useEffect(() => {
     socket?.on('ch', onMessage);
+    socket?.on('join', channelRevalidate);
+    socket?.on('leave', channelRevalidate);
+    socket?.on('channelType', channelRevalidate);
+    socket?.on('channelDelete', channelRevalidate);
+    // socket?.on('invite');
+    // socket?.on('admin', channelRevalidate);
+    // socket?.on('ban', channelRevalidate);
     return () => {
       socket?.off('ch', onMessage);
+      socket?.off('join', channelRevalidate);
+      socket?.off('leave', channelRevalidate);
+      socket?.off('channelType', channelRevalidate);
+      socket?.off('channelDelete', channelRevalidate);
+      // socket?.off('invite', channelRevalidate);
+      // socket?.on('admin', channelRevalidate);
+      // socket?.on('ban', channelRevalidate);
     };
-  }, [socket, onMessage]);
+  }, [socket, onMessage, channelRevalidate]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -175,6 +199,10 @@ const ChannelRoom = () => {
 
   return (
     <>
+      <ChannelRoomSettingModal
+        settingToggle={settingToggle}
+        onClickSettingBtn={onClickSettingBtn}
+      />
       <div
         style={{
           width: '100%',
@@ -198,7 +226,12 @@ const ChannelRoom = () => {
         onClickChannelInviteModal={onClickChannelInviteModal}
         membersToggle={membersToggle}
       />
-      {channelInviteModal && <ChannelInviteModal onClickModalClose={onClickChannelInviteModal} />}
+      {channelInviteModal && (
+        <ChannelInviteModal
+          onClickModalClose={onClickChannelInviteModal}
+          setChannelInviteModal={setChannelInviteModal}
+        />
+      )}
       {channelLeaveModal && (
         <BasicModal
           content={`Are you really leaving this channel?`}
@@ -206,10 +239,6 @@ const ChannelRoom = () => {
           YesBtn={onClickChannelLeaveMdoalYes}
         />
       )}
-      <ChannelRoomSettingModal
-        settingToggle={settingToggle}
-        onClickSettingBtn={onClickSettingBtn}
-      />
     </>
   );
 };

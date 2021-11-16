@@ -11,7 +11,7 @@ export const Container = styled.div`
 		margin: 0;
 		flex-direction: column;
 		align-items: center;
-		z-index: 3000;
+		z-index: 500;
 		display: flex;
 		padding-bottom: 3px;
 	}
