@@ -13,8 +13,12 @@ const Profile = () => {
         <Grid item sm={12} md={3}>
           <UserCard />
         </Grid>
-        <Grid item sm={12} md={6}></Grid>
-        <Grid item sm={12} md={3}></Grid>
+        <Grid item sm={12} md={6}>
+          <UserCard />
+        </Grid>
+        <Grid item sm={12} md={3}>
+          <UserCard />
+        </Grid>
       </Grid>
     </Box>
   );

@@ -10,6 +10,7 @@ import gravatar from 'gravatar';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { Link } from 'react-router-dom';
 
 import { IUser } from '@typings/db';
 
@@ -24,15 +25,16 @@ const UserCard = () => {
     dedupingInterval: 2000,
   });
   return (
-    <Box sx={{ minWidth: 275 }}>
+    <Box sx={{ width: '100%' }}>
       <Card
         variant="outlined"
         style={{
           backgroundColor: '#1e1e1e',
           color: 'white',
           border: '1px solid rgba(57, 57, 57, 0.5)',
-          width: '400px',
-          height: '400px',
+          width: '100%',
+          height: '305px',
+          padding: '5px 10px 0 10px',
         }}
       >
         <CardContent
@@ -43,14 +45,11 @@ const UserCard = () => {
             alignItems: 'center',
           }}
         >
-          <Avatar
-            src={myData?.profile}
-            alt="Avatar"
-            style={{ width: '120px', height: '120px', marginBottom: '25px' }}
-          />
+          <Avatar src={myData?.profile} alt="Avatar" style={{ width: '150px', height: '150px' }} />
           <Typography variant="h5" component="div">
             {myData?.userId}
           </Typography>
+          <span style={{ color: '#52575d', fontWeight: 500 }}>{myData?.username}</span>
         </CardContent>
         <CardActions
           style={{
@@ -60,21 +59,24 @@ const UserCard = () => {
             alignItems: 'center',
           }}
         >
-          <h4 style={{ marginTop: '0' }}>{myData?.username}</h4>
-          <Button
-            variant="contained"
-            style={{
-              width: '300px',
-              height: '35px',
-              backgroundColor: '#597aff',
-              borderColor: '#597aff',
-              fontWeight: 'bold',
-              margin: '10px 0',
-            }}
+          <Link
+            to="/ft_transcendence/profile/setting"
+            style={{ textDecoration: 'none', width: '100%' }}
           >
-            SETTING&nbsp;
-            <SettingsIcon />
-          </Button>
+            <Button
+              variant="contained"
+              style={{
+                width: '100%',
+                height: '35px',
+                backgroundColor: '#597aff',
+                borderColor: '#597aff',
+                fontWeight: 'bold',
+              }}
+            >
+              SETTING&nbsp;
+              <SettingsIcon />
+            </Button>
+          </Link>
         </CardActions>
       </Card>
     </Box>

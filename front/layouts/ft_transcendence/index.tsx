@@ -15,6 +15,7 @@ import { Container } from './style';
 import { disconnect } from 'process';
 import io from 'socket.io-client';
 import getSocket from '@utils/useSocket';
+import ProfileSetting from '@pages/ProfileSetting';
 
 const ft_transcendence = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -46,6 +47,7 @@ const ft_transcendence = () => {
         <Route path="/ft_transcendence/users" component={Users} />
         <Route path="/ft_transcendence/achievements" component={Achievements} />
         <Route path="/ft_transcendence/game" component={Game} />
+        <Route path="/ft_transcendence/profile/setting" component={ProfileSetting} />
         <Route path="/ft_transcendence/profile" component={Profile} />
       </Switch>
     </Container>
