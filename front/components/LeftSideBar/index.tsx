@@ -50,17 +50,19 @@ const LeftSideBar = () => {
       });
   }, [document.cookie]);
   return (
-    <div style={{ width: '55px', flexShrink: 0 }}>
+    <div style={{ width: '55px', flexShrink: 0, borderRight: '5px solid #121212' }}>
       <Toolbar>
         <NavIcons>
           <Link to={`/ft_transcendence/profile`}>
-            <StyledBadge
-              overlap="circular"
-              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              variant="dot"
-            >
-              <Avatar src={data?.profile} alt="Avatar" />
-            </StyledBadge>
+            <Tooltip title="Profile" placement="right" arrow>
+              <StyledBadge
+                overlap="circular"
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                variant="dot"
+              >
+                <Avatar src={data?.profile} alt="Avatar" />
+              </StyledBadge>
+            </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/home`}>
             <Tooltip title="Home" placement="right" arrow>
@@ -105,9 +107,11 @@ const LeftSideBar = () => {
             </Tooltip>
           </Link>
           <Link to={`/ft_transcendence/login`}>
-            <MyFab aria-label="add" className="sideBarIconLast" onClick={onClickLogOut}>
-              <LogoutIcon />
-            </MyFab>
+            <Tooltip title="Logout" placement="right" arrow>
+              <MyFab aria-label="add" className="sideBarIconLast" onClick={onClickLogOut}>
+                <LogoutIcon />
+              </MyFab>
+            </Tooltip>
           </Link>
         </NavIcons>
       </Toolbar>

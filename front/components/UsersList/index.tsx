@@ -14,7 +14,7 @@ const style = {
   bgcolor: '#1e1e1e',
 };
 
-export default function ListDividers() {
+const UserList = () => {
   const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
   return (
     <Scrollbars>
@@ -110,4 +110,6 @@ export default function ListDividers() {
       </List>
     </Scrollbars>
   );
-}
+};
+
+export default UserList;

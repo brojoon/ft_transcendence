@@ -3,6 +3,7 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
+import Scrollbars from 'react-custom-scrollbars';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -15,7 +16,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 const Achievements = () => {
   return (
-    <Box sx={{ flexGrow: 1 }} style={{ backgroundColor: '#121212', padding: '20px 50px' }}>
+    <Box sx={{ flexGrow: 1 }} style={{ padding: '20px 50px' }}>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={4}>
           <Item>
