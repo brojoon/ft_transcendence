@@ -15,6 +15,10 @@ import ChannelRoomSettingModal from '@components/ChannelRoomSettingModal';
 import BasicModal from '@components/BasicModal';
 import ChannelInviteModal from '@components/ChannelInviteModal';
 
+import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
+import BlockIcon from '@mui/icons-material/Block';
+import ContactlessIcon from '@mui/icons-material/Contactless';
+
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -234,6 +238,7 @@ const ChannelRoom = () => {
       )}
       {channelLeaveModal && (
         <BasicModal
+          headerContent="Leave Channel"
           content={`Are you really leaving this channel?`}
           NoBtn={onClickChannelLeaveModal}
           YesBtn={onClickChannelLeaveMdoalYes}

@@ -7,7 +7,12 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import ListDividers from '@components/UsersList';
+import UsersList from '@components/UsersList';
+import fetcher from '@utils/fetcher';
+import useSWR from 'swr';
+import FriendsList from '@components/FriendsList';
+import { IFriendList, IAllUser } from '@typings/db';
+import BlockList from '@components/BlockList';
 
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
@@ -45,6 +50,12 @@ function a11yProps(index: number) {
 }
 
 const SocialSlider = () => {
+  const { data: usersList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
+  const { data: dmList, mutate: mutateFriendList } = useSWR<IFriendList[]>(
+    '/api/friend/friendlist',
+    fetcher,
+  );
+
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
 
@@ -67,7 +78,7 @@ const SocialSlider = () => {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="🌐 ONLINE" {...a11yProps(0)} />
+          <Tab label="🌐 ONLINE" {...a11yProps(0)}></Tab>
           <Tab label="👥 FRIENDS" {...a11yProps(1)} />
           <Tab label="🚨 BLOCKED" {...a11yProps(2)} />
         </Tabs>
@@ -79,13 +90,13 @@ const SocialSlider = () => {
         style={{ color: 'white' }}
       >
         <TabPanel value={value} index={0}>
-          <ListDividers />
+          <UsersList />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <ListDividers />
+          <FriendsList />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <ListDividers />
+          <BlockList />
         </TabPanel>
       </SwipeableViews>
     </Box>

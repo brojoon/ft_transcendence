@@ -44,6 +44,7 @@ const ft_transcendence = () => {
         <Route path="/ft_transcendence/home" component={Home} />
         <Route path="/ft_transcendence/social" component={Social} />
         <Route path="/ft_transcendence/channels" component={Channels} />
+        <Route path="/ft_transcendence/users/:id" component={Profile} />
         <Route path="/ft_transcendence/users" component={Users} />
         <Route path="/ft_transcendence/achievements" component={Achievements} />
         <Route path="/ft_transcendence/game" component={Game} />
