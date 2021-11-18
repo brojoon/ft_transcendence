@@ -145,6 +145,7 @@ export class AuthController {
   }
 
   @Post('optCodeCheck/:otp')
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '2차 인증 true시 otp check' })
   @ApiResponse ({
     status: 200,
