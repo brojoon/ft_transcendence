@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import ListDividers from '@components/UsersList';
+import UserList from '@components/UsersList';
 import Scrollbars from 'react-custom-scrollbars';
 
 const Search = styled('div')(({ theme }) => ({
@@ -83,7 +83,7 @@ export default function Users() {
               <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
             </Search>
           </Toolbar>
-          <ListDividers />
+          <UserList />
         </AppBar>
       </Box>
     </div>

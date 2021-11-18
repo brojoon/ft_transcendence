@@ -147,8 +147,14 @@ const ProfileSetting = () => {
       >
         <div style={{ padding: '20px 20px 20px 20px' }}>
           <div style={{ height: '70px' }}>Avatar</div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <div style={{ display: 'flex' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <div style={{ position: 'relative' }}>
               <label htmlFor="contained-button-file">
                 <Input
                   accept="image/*"
@@ -163,7 +169,10 @@ const ProfileSetting = () => {
                   style={{ width: '150px', height: '150px' }}
                 />
               </label>
-              <div onClick={onClickClearImg}>
+              <div
+                onClick={onClickClearImg}
+                style={{ position: 'absolute', top: '-5px', right: '-20px', zIndex: 10 }}
+              >
                 <IconButton style={{ color: 'white' }}>
                   <CloseIcon />
                 </IconButton>

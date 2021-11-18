@@ -185,6 +185,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
           <BasicModal
             NoBtn={onClickChannelDeleteModal}
             YesBtn={DeleteClickChannelBtn}
+            headerContent="Delete Channel"
             content="This will remove the channel as well as all of its messages"
           />
         ) : (

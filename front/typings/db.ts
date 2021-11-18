@@ -66,5 +66,12 @@ export interface IMemberList {
   updatedAt: Date,
   muteExpired: Date,
 
+}
 
+export interface IFriendList {
+  userId2: string,
+}
+
+export interface IBlockList {
+  userId2: string,
 }

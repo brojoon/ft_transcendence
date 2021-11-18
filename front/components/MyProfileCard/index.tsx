@@ -10,7 +10,7 @@ import gravatar from 'gravatar';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { IUser } from '@typings/db';
 
@@ -20,10 +20,12 @@ const bull = (
   </Box>
 );
 
-const UserCard = () => {
+const MyProfileCard = () => {
+  const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
+
   return (
     <Box sx={{ width: '100%' }}>
       <Card
@@ -33,8 +35,7 @@ const UserCard = () => {
           color: 'white',
           border: '1px solid rgba(57, 57, 57, 0.5)',
           width: '100%',
-          height: '305px',
-          padding: '5px 10px 0 10px',
+          padding: '5px 10px 15px 10px',
         }}
       >
         <CardContent
@@ -45,7 +46,11 @@ const UserCard = () => {
             alignItems: 'center',
           }}
         >
-          <Avatar src={myData?.profile} alt="Avatar" style={{ width: '150px', height: '150px' }} />
+          <Avatar
+            src={myData?.profile}
+            alt="Avatar"
+            style={{ width: '130px', height: '130px', marginBottom: '20px' }}
+          />
           <Typography variant="h5" component="div">
             {myData?.userId}
           </Typography>
@@ -83,4 +88,4 @@ const UserCard = () => {
   );
 };
 
-export default UserCard;
+export default MyProfileCard;

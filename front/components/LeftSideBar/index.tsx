@@ -14,9 +14,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import EqualizerIcon from '@mui/icons-material/Equalizer';
 import getToken from '@utils/getToken';
 import Tooltip from '@mui/material/Tooltip';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 
 const LeftSideBar = () => {
   const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -95,7 +95,7 @@ const LeftSideBar = () => {
           <Link to={`/ft_transcendence/achievements`}>
             <Tooltip title="Achievements" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">
-                <EqualizerIcon />
+                <MilitaryTechIcon />
               </MyFab>
             </Tooltip>
           </Link>

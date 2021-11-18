@@ -8,6 +8,7 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import { IAllUser } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
+import { Link } from 'react-router-dom';
 
 const style = {
   width: '100%',
@@ -21,92 +22,17 @@ const UserList = () => {
       <List sx={style} component="nav" aria-label="mailbox folders" style={{ height: '100%' }}>
         {users?.map((user) => {
           return (
-            <ListItem button>
-              <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
-              <ListItemText primary={user.userId} style={{ marginLeft: '12px' }} />
-            </ListItem>
+            <Link
+              to={`/ft_transcendence/users/${user.userId}`}
+              style={{ textDecoration: 'none', color: 'white' }}
+            >
+              <ListItem button>
+                <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
+                <ListItemText primary={user.userId} style={{ marginLeft: '12px' }} />
+              </ListItem>
+            </Link>
           );
         })}
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>{' '}
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
-        <ListItem button>
-          <Avatar src="aae" alt="Avatar" style={{ border: '2px solid red' }} />
-          <ListItemText primary="spam" style={{ marginLeft: '12px' }} />
-        </ListItem>
       </List>
     </Scrollbars>
   );
