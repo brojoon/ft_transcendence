@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
@@ -11,6 +11,7 @@ import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import { dividerClasses } from '@mui/material';
 import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
+import ListItemButton from '@mui/material/ListItemButton';
 
 const style = {
   width: '100%',
@@ -24,9 +25,14 @@ const DMLeftDrawerBar = () => {
     dedupingInterval: 2000,
   });
 
-  const onClickDMuser = useCallback(() => {
-    console.log('hi');
-  }, []);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const handleListItemClick = useCallback(
+    (event: any, index: number) => {
+      setSelectedIndex(index);
+    },
+    [selectedIndex, setSelectedIndex],
+  );
   return (
     <div
       style={{
@@ -62,58 +68,90 @@ const DMLeftDrawerBar = () => {
           height: '14%',
         }}
       >
-        <ListItem button style={{ backgroundColor: '#666666', color: 'white' }}>
-          <EmojiPeopleRoundedIcon style={{ marginRight: '20px' }} />
-          <ListItemText primary="Friends" />
-        </ListItem>
+        <Link to={`/ft_transcendence/social`} style={{ textDecoration: 'none' }}>
+          <List
+            component="nav"
+            aria-label="main mailbox folders"
+            sx={{
+              '& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected': {
+                bgcolor: '#666666',
+              },
+              margin: 0,
+              padding: 0,
+            }}
+          >
+            <ListItemButton
+              selected={selectedIndex === 0}
+              style={{ color: 'white' }}
+              onClick={(event: any) => handleListItemClick(event, 0)}
+            >
+              <EmojiPeopleRoundedIcon style={{ marginRight: '20px' }} />
+              <ListItemText primary="Friends" />
+            </ListItemButton>
+          </List>
+        </Link>
       </div>
       <div style={{ height: '79%' }}>
         <Scrollbars>
           <div>
-            {dmlist?.map((dm: any) => {
+            {dmlist?.map((dm: any, index: number) => {
               return (
                 <Link
                   to={`/ft_transcendence/social/dm/${dm.id}`}
                   style={{ textDecoration: 'none' }}
                 >
-                  <ListItem button style={{ paddingLeft: '0' }} onClick={onClickDMuser}>
-                    {users?.map((user: any) => {
-                      if (
-                        user.userId === dm.Dmcontents[0].userId1 &&
-                        dm.Dmcontents[0].userId1 != myData?.userId
-                      )
-                        return (
-                          <>
-                            <Avatar
-                              src={user.profile}
-                              alt="Avatar"
-                              style={{ border: '2px solid red' }}
-                            />
-                            <ListItemText
-                              primary={dm.Dmcontents[0].userId1}
-                              style={{ marginLeft: '12px', color: 'white' }}
-                            />
-                          </>
-                        );
-                      else if (
-                        user.userId === dm.Dmcontents[0].userId2 &&
-                        dm.Dmcontents[0]?.userId2 != myData?.userId
-                      )
-                        return (
-                          <>
-                            <Avatar
-                              src={user.profile}
-                              alt="Avatar"
-                              style={{ border: '2px solid red' }}
-                            />
-                            <ListItemText
-                              primary={dm.Dmcontents[0].userId2}
-                              style={{ marginLeft: '12px', color: 'white' }}
-                            />
-                          </>
-                        );
-                    })}
-                  </ListItem>
+                  <List
+                    component="nav"
+                    aria-label="main mailbox folders"
+                    sx={{
+                      '& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected': {
+                        bgcolor: '#666666',
+                      },
+                    }}
+                  >
+                    <ListItemButton
+                      selected={selectedIndex === index + 1}
+                      style={{ paddingLeft: '0' }}
+                      onClick={(event: any) => handleListItemClick(event, index + 1)}
+                    >
+                      {users?.map((user: any) => {
+                        if (
+                          user.userId === dm.Dmcontents[0].userId1 &&
+                          dm.Dmcontents[0].userId1 != myData?.userId
+                        )
+                          return (
+                            <>
+                              <Avatar
+                                src={user.profile}
+                                alt="Avatar"
+                                style={{ border: '2px solid red' }}
+                              />
+                              <ListItemText
+                                primary={dm.Dmcontents[0].userId1}
+                                style={{ marginLeft: '12px', color: 'white' }}
+                              />
+                            </>
+                          );
+                        else if (
+                          user.userId === dm.Dmcontents[0].userId2 &&
+                          dm.Dmcontents[0]?.userId2 != myData?.userId
+                        )
+                          return (
+                            <>
+                              <Avatar
+                                src={user.profile}
+                                alt="Avatar"
+                                style={{ border: '2px solid red' }}
+                              />
+                              <ListItemText
+                                primary={dm.Dmcontents[0].userId2}
+                                style={{ marginLeft: '12px', color: 'white' }}
+                              />
+                            </>
+                          );
+                      })}
+                    </ListItemButton>
+                  </List>
                 </Link>
               );
             })}

@@ -250,8 +250,8 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
             style={{
               width: '100%',
               height: '35px',
-              backgroundColor: '##0E0F27',
-              borderColor: '##0E0F27',
+              backgroundColor: '#1678d1',
+              borderColor: '#1678d1',
               fontWeight: 'bold',
             }}
           >

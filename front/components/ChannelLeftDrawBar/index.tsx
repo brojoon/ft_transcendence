@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
@@ -26,11 +26,11 @@ const ChannelLeftDrawBar = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const handleListItemClick = (event: any, index: number) => {
+  const handleListItemClick = useCallback((event: any, index: number) => {
     setSelectedIndex(index);
-  };
+  }, [selectedIndex, setSelectedIndex]);
 
   return (
     <div

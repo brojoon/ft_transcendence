@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { MyFab, NavIcons, StyledBadge, Toolbar } from './style';
 import ForumIcon from '@mui/icons-material/Forum';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
@@ -17,11 +17,20 @@ import fetcher from '@utils/fetcher';
 import getToken from '@utils/getToken';
 import Tooltip from '@mui/material/Tooltip';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import ListItemButton from '@mui/material/ListItemButton';
+import List from '@mui/material/List';
 
 const LeftSideBar = () => {
   const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const handleListItemClick = (event: any, index: number) => {
+    setSelectedIndex(index);
+  };
+
   const onClickLogOut = useCallback(() => {
     axios
       .get('/api/auth/logout', {
@@ -64,6 +73,9 @@ const LeftSideBar = () => {
               </StyledBadge>
             </Tooltip>
           </Link>
+          <div
+            style={{ backgroundColor: '#4d4d4d', marginTop: '8px', width: '30px', height: '1px' }}
+          ></div>
           <Link to={`/ft_transcendence/home`}>
             <Tooltip title="Home" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">

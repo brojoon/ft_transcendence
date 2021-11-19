@@ -10,6 +10,7 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import { IAllUser } from '@typings/db';
 import { useParams } from 'react-router-dom';
+import GamepadIcon from '@mui/icons-material/Gamepad';
 
 const DMChatHeader = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,17 +37,18 @@ const DMChatHeader = () => {
             })}
           </Typography>
           <Button
-            sx={{
-              backgroundColor: '#355DFF',
+            style={{
+              backgroundColor: '#1678d1',
+              borderColor: '#1678d1',
               color: 'white',
-              width: '113',
-              height: '36px',
+              width: '160px',
+              height: '35px',
               padding: '0 16px',
-              fontWeight: 600,
+              fontWeight: 'bold',
             }}
           >
-            CHALLENGE
-            <span className="mdif786 mdi-sword-cross"></span>
+            CHALLENGE&nbsp;
+            <GamepadIcon />
           </Button>
         </Toolbar>
       </AppBar>
