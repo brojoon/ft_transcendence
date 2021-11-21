@@ -1,24 +1,31 @@
 import React, { useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
+import useSWR from 'swr';
+import { IUser } from '@typings/db';
+import fetcher from '@utils/fetcher';
 
 export default function BasicTextFields() {
+  const { data: userData } = useSWR<IUser>(`/api/users`, fetcher);
   const onSubmitForm = useCallback((e) => {
     console.log(e.target.value);
-    axios
-      .post(`/api/auth/qrlogin`, {
-        userId: 'youngchoi',
-        username: '쌍문동 성기훈',
-        oauthId: 54612484714,
-        email: 'youngchoi@42seoul.com',
-        profile: '인터넷url or /upload/profile/ex.png',
-        TwoFactorAuthcode: e.target.value,
-      })
-      .then(() => {
-        console.log('tow-factor성공');
-      })
-      .catch(console.error);
+    if (userData) {
+      axios
+        .post(`/api/auth/qrlogin`, {
+          userId: userData.userId,
+          username: userData.username,
+          email: userData.email,
+          profile: userData.profile,
+          oauthId: 54612484714,
+          TwoFactorAuthcode: e.target.value,
+        })
+        .then(() => {
+          console.log('tow-factor성공');
+        })
+        .catch(console.error);
+    }
   }, []);
+
   const onKeydownOTP = useCallback(
     (e) => {
       if (e.key === 'Enter') {
