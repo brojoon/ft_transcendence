@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
@@ -19,8 +19,19 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const Achievements = () => {
-  const { data: friendNumber } = useSWR<number>(`/api/friend/countFriend`, fetcher);
-  const { data: DmListNum } = useSWR<number>(`/api/dms/getDmListNum`, fetcher);
+  const { data: friendCount } = useSWR<number>(`/api/friend/countFriend`, fetcher);
+  const { data: DmListCount } = useSWR<number>(`/api/dms/getDmListNum`, fetcher);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (friendCount) {
+        if (progress < 20) {
+          setProgress((prev) => prev + 1);
+        }
+      }
+    }, 20);
+  }, [progress, setProgress, friendCount]);
 
   return (
     <Box sx={{ flexGrow: 1 }} style={{ padding: '20px 20px' }}>
@@ -93,7 +104,7 @@ const Achievements = () => {
                   transform: 'translateX(50%)',
                 }}
               >
-                {friendNumber} / 100
+                {progress} / 100
               </div>
               <div
                 style={{
@@ -103,9 +114,10 @@ const Achievements = () => {
                   fontWeight: 500,
                   borderRadius: '0 0 3px 3px',
 
-                  width: `${friendNumber ? friendNumber : 0}%`,
+                  width: `${progress ? progress : 0}%`,
                   height: '23px',
                   textAlign: 'center',
+                  transition: 'all ease-out 0.5s',
                 }}
               ></div>
               <div
@@ -114,7 +126,7 @@ const Achievements = () => {
                   width: '100%',
                   fontWeight: 500,
                   borderRadius: '0 0 3px 3px',
-                  textAlign: 'center',
+
                   height: '23px',
                 }}
               ></div>
