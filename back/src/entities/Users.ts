@@ -28,7 +28,7 @@ export class Users {
     example: '쌍문동 성기훈',
     required: true 
   })
-  @Column("varchar", { name: "username", length: 30,  unique: true })
+  @Column("varchar", { name: "username", length: 30 })
   username: string;
 
   @IsInt()
@@ -68,6 +68,15 @@ export class Users {
 
   @Column( { name: 'twofactorEnable',  default: () => "'0'" })
   twofactorEnable: boolean;
+
+  @Column( { name: 'admin',  default: () => "'0'" })
+  admin: boolean;
+
+  @Column( { name: 'moderator',  default: () => "'0'" })
+  moderator: boolean;
+
+  @Column( { name: 'ban',  default: () => "'0'" })
+  ban: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

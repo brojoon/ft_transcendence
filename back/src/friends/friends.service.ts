@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Block } from 'src/entities/Block';
 import { Friend } from 'src/entities/Friend';
 import { Users } from 'src/entities/Users';
+import { EventsGateway } from 'src/events/events.gateway';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -11,6 +12,7 @@ export class FriendsService {
     @InjectRepository(Users) private usersRepository: Repository<Users>,
     @InjectRepository(Friend) private friendRepository: Repository<Friend>,
     @InjectRepository(Block) private blockRepository: Repository<Block>,
+    private eventsGateway:EventsGateway
   ) { }
 
   // 상태방이나 나나 Block해놓은 사람이면 친구 추가가 안되게
@@ -30,6 +32,7 @@ export class FriendsService {
       newFriend2.userId1 = userId2;
       newFriend2.userId2 = userId1;
       await this.friendRepository.save(newFriend2);
+      this.eventsGateway.server.to(`${userId2}`).emit('friend', null); 
       return (true);      
     } catch (error) {
       if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
@@ -52,6 +55,7 @@ export class FriendsService {
       newBlock.userId1 = userId1;
       newBlock.userId2 = userId2;
       await this.blockRepository.save(newBlock);
+      this.eventsGateway.server.to(`${userId2}`).emit('friend', null); 
       return (true);    
     } catch (error) {
       if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 400))
@@ -75,7 +79,8 @@ export class FriendsService {
           .delete()
           .where('userId1 = :userId2', {userId2} )
           .andWhere('userId2 = :userId1', {userId1} )
-          .execute();        
+          .execute();
+        this.eventsGateway.server.to(`${userId2}`).emit('friend', null);    
         return (true);        
       }
       return (false);      

@@ -154,6 +154,19 @@ export class UsersController {
     return (this.usersService.uploadPofileImage(User.userId, file)) ;
   }
 
+
+  @ApiOperation({ summary: 'username 보유 확인'})
+  @ApiResponse ({
+    status: 200,
+    description: 'return : true => 닉네임 보유중',
+    type: Boolean
+  })
+  @HttpCode(200)
+  @Get('haveUsername')
+  async haveUsername(@User() user) {
+    return this.usersService.haveUsername(user.userId);
+  }
+
   @ApiOperation({ summary: 'username 수정'})
   @ApiResponse ({
     status: 200,
@@ -162,7 +175,7 @@ export class UsersController {
   })
   @HttpCode(200)
   @Get('update-username/:newname')
-  async updat(@User() user, @Param('newname') newname: string) {
+  async updateUsername(@User() user, @Param('newname') newname: string) {
     return this.usersService.updateUsername(user.userId, newname);
   }
 
@@ -213,4 +226,76 @@ export class UsersController {
   async twoFactorStatus(@User() user){
     return  this.usersService.twoFactorStatus(user.userId);
   }
+
+
+  @ApiOperation({ summary: 'moderators 추가'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공시 return: true',
+    type: Boolean
+  })
+  @HttpCode(200)
+  @Get('addModerator/:userId')
+  async addModerator(@User() user, @Param('userId') userId: string){
+    return  this.usersService.addAndRemoveModerator(user.userId, userId , true);
+  }
+
+  @ApiOperation({ summary: 'moderators 제거'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공시 return: true',
+    type: Boolean
+  })
+  @HttpCode(200)
+  @Get('removeModerator/:userId')
+  async removeModerator(@User() user, @Param('userId') userId: string){
+    return  this.usersService.addAndRemoveModerator(user.userId, userId , false);
+  }
+
+  @ApiOperation({ summary: 'moderators list'})
+  @ApiResponse ({
+    status: 200,
+    description: 'moderators 목록 출력',
+  })
+  @HttpCode(200)
+  @Get('removeModerator')
+  async listModerator(@User() user){
+    return  this.usersService.listModerator(user.userId);
+  }
+
+  @ApiOperation({ summary: 'ban 추가'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공시 return: true',
+    type: Boolean
+  })
+  @HttpCode(200)
+  @Get('addBan/:userId')
+  async addBan(@User() user, @Param('userId') userId: string){
+    return  this.usersService.addAndRemoveBan(user.userId, userId , true);
+  }
+
+  @ApiOperation({ summary: 'ban 제거'})
+  @ApiResponse ({
+    status: 200,
+    description: '성공시 return: true',
+    type: Boolean
+  })
+  @HttpCode(200)
+  @Get('removeBan/:userId')
+  async removeBan(@User() user, @Param('userId') userId: string){
+    return  this.usersService.addAndRemoveBan(user.userId, userId , false);
+  }
+
+  @ApiOperation({ summary: 'ban list'})
+  @ApiResponse ({
+    status: 200,
+    description: 'ban 목록 출력',
+  })
+  @HttpCode(200)
+  @Get('listBan')
+  async listBan(@User() user){
+    return  this.usersService.listBan(user.userId);
+  }
+
 }

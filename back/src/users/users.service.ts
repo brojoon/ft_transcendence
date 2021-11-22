@@ -133,6 +133,26 @@ export class UsersService {
     }
   }
   
+  // 닉네임 있는지 확인
+  async haveUsername(userId: string) {
+    try{
+      const result = await this.usersRepository.findOne({
+        select: ['username'],
+        where: { userId },   
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      if (result.username === "")
+        return (false);
+      return (true);
+    } catch (error) {
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("haveUsername 조회 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);  
+    }
+  }
+
   // profile 닉네임 수정
   async updateUsername(userId: string, username: string) {
     try{
@@ -206,9 +226,7 @@ export class UsersService {
     try{
       await this.usersRepository.createQueryBuilder()
           .update()
-          .set({
-            twofactorEnable: twofactorEnable,
-          })
+          .set({ twofactorEnable: twofactorEnable })
           .where('userId = :userId', {userId})
           .execute()    
       return (true);    
@@ -216,4 +234,121 @@ export class UsersService {
       throw new BadRequestException('two-factor 스위치 실패');
     } 
   }
+
+  async checkAdmin(userId: string) {
+    try {
+      const result = await this.usersRepository.findOne({
+        select: ['admin'],
+        where: { userId },  
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      return (result.admin);
+    } catch (error) {
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("checkAdmin 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);  
+    } 
+  }
+
+  async checkModerator(userId: string) {
+    try {
+      const result = await this.usersRepository.findOne({
+        select: ['moderator'],
+        where: { userId },  
+      });
+      if (!result)
+        throw new NotFoundException('유저 정보 없음');
+      return (result.moderator);      
+    } catch (error) {
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+      throw new BadRequestException("checkAdmin 실패");
+    else if (error.response.statusCode === 404)
+      throw new NotFoundException(error.response.message);        
+    }
+  }
+
+  async addAndRemoveModerator(userId: string, moderator: string, bool: boolean) {
+    try {
+      const result = await this.checkAdmin(userId);
+      if (!result)
+        throw new ForbiddenException('admin이 아닙니다');
+      await this.usersRepository.createQueryBuilder()
+        .update()
+        .set({ moderator: bool })
+        .where('userId = :userId', {userId : moderator})
+        .execute()    
+      return (true);       
+    } catch (error) {
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("addAndRemoveModerator 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);    
+    }
+  }
+
+  async listModerator(userId: string) {
+    try {
+      const result = await this.checkAdmin(userId);
+      if (!result)
+        throw new ForbiddenException('admin이 아닙니다');
+      const res = await this.usersRepository.find({
+        select: ['userId', 'username', 'email', 'profile'],
+        where: { moderator: true },  
+      });
+      return (res);       
+    } catch (error) {
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("listModerator 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);    
+    }
+  }
+
+  async addAndRemoveBan(userId: string, banId: string, bool: boolean) {
+    try {
+      if (!(await this.checkAdmin(userId)) && !(await this.checkModerator(userId)))
+        throw new ForbiddenException('권한이 없습니다.');
+      if ((await this.checkAdmin(banId)) || await this.checkModerator(banId))
+        throw new ForbiddenException('관리자 혹은 Moderator 입니다');
+      await this.usersRepository.createQueryBuilder()
+        .update()
+        .set({ ban: bool })
+        .where('userId = :userId', {userId : banId})
+        .execute()    
+      return (true);       
+    } catch (error) {
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("addAndRemoveBan 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);    
+    }
+  }
+
+  async listBan(userId: string) {
+    try {
+      if (!(await this.checkAdmin(userId)) && !(await this.checkModerator(userId)))
+        throw new ForbiddenException('권한이 없습니다.');
+      const res = await this.usersRepository.find({
+        select: ['userId', 'username', 'email', 'profile'],
+        where: { ban: true },  
+      });
+      return (res);       
+    } catch (error) {
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("listBan 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);    
+    }
+  }
+
 }
