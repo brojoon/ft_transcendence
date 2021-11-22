@@ -15,6 +15,8 @@ import BasicModal from '@components/BasicModal';
 import getToken from '@utils/getToken';
 import axios from 'axios';
 import { Container } from './style';
+import ChannelProfile from '@components/ChannelProfile';
+import ChannelMember from '@components/ChannelMember';
 
 interface Props {
   onClickSettingBtn: (e: any) => void;
@@ -47,13 +49,20 @@ const ChannelMemberDrawBar: VFC<Props> = ({
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-
   const history = useHistory();
+  const [isChannelProfileModal, setIsChannelProfileModal] = useState(false);
+
   if (memberList?.length === 0) {
     history.push('/ft_transcendence/channels');
   }
 
-  console.log('memberDrawBar', membersToggle);
+  const ChannelProfileModal = useCallback(
+    (e) => {
+      e.preventDefault();
+      setIsChannelProfileModal((prev) => !prev);
+    },
+    [isChannelProfileModal],
+  );
   return (
     <>
       {membersToggle && (
@@ -150,19 +159,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                 if (member.auth === 0) {
                   return alluser?.map((user) => {
                     if (user.userId == member.userId) {
-                      return (
-                        <ListItem button>
-                          <Avatar
-                            src={user.profile}
-                            alt="Avatar"
-                            style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                          />
-                          <ListItemText
-                            primary={user.userId}
-                            style={{ marginLeft: '12px', color: 'white' }}
-                          />
-                        </ListItem>
-                      );
+                      return <ChannelMember user={user} />;
                     }
                   });
                 }
