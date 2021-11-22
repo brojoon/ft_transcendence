@@ -24,7 +24,7 @@ export class AuthService {
         where: { userId },
         select: ['twoFactorAuth'],
       });
-      return authenticator.verify({token: twoFactorAuthenticationCode,secret: result.twoFactorAuth})      
+      return authenticator.verify({token: twoFactorAuthenticationCode, secret: result.twoFactorAuth})      
     } catch (error) {
       throw new ForbiddenException('isTwoFactorAuthenticationCodeValid 실패');
     }
