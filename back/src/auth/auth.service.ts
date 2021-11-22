@@ -95,10 +95,14 @@ export class AuthService {
       const newUser = new Users();
       newUser.oauthId = oauthId;
       newUser.userId = userId;
-      newUser.username = userId;
+      newUser.username = "";
       newUser.email = email;
       newUser.profile = profile;
       newUser.password = hashedPassword;
+      if (userId === process.env.ADMIN1 || userId === process.env.ADMIN2 || userId === process.env.ADMIN3)
+        newUser.admin = true;
+      else
+        newUser.admin = false;
       await this.usersRepository.save(newUser);
       const connect = new Connect();
       connect.userId = userId;
@@ -106,8 +110,9 @@ export class AuthService {
       await this.connectRepository.save(connect);
       return (true);      
     } catch (error) {
+      throw error;
       if (error.errno !== undefined || error.response.statusCode !== 403)
-        throw new BadRequestException("DM방 맴버 확인 실패");
+        throw new BadRequestException("회원 가입 실패");
       else if (error.response.statusCode === 403)
         throw new ForbiddenException(error.response.message);
     }

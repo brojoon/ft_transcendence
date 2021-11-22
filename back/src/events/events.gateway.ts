@@ -44,6 +44,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       throw new BadRequestException('접속상태 업뎃 실패');
     }
     socket.emit('onlineList', Object.values(onlineMap));
+    socket.join(`${data.userId}`);
     data.Dms.forEach((dm) => {
       socket.join(`dm-${dm}`);
     });
