@@ -297,10 +297,10 @@ export class DmsService {
         .getCount();
       const user = await this.usersRepository.findOne({userId});
       const star = user.maxStarOfDms;
-      if (checkdm / 5 > star && (checkdm / 5 < 6)){
+      if (Math.floor(checkdm / 5) > star && (checkdm / 5 < 6)){
         const now = Date();
-        await this.usersRepository.update({userId}, {maxStarOfDms:checkdm / 5, maxStarOfDmsTime:now});
-        return {number:checkdm, star:checkdm, time:now};
+        await this.usersRepository.update({userId}, {maxStarOfDms:Math.floor(checkdm / 5), maxStarOfDmsTime:now});
+        return {number:checkdm, star:Math.floor(checkdm / 5), time:now};
       }
       return {number:checkdm, star, time:user.maxStarOfDmsTime};
     } catch (error) {

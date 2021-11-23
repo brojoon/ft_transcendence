@@ -220,10 +220,10 @@ export class GameService {
     const numberOfWin =  await this.historyRepository.count({winner:userId});
     const user = await this.usersRepository.findOne({userId});
     const star = user.maxStarOfVictory;
-    if (numberOfWin / 5 > star && (numberOfWin / 5 < 6)){
+    if (Math.floor(numberOfWin / 5) > star && (numberOfWin / 5 < 6)){
       const now = Date();
-      await this.usersRepository.update({userId}, {maxStarOfVictory:numberOfWin / 5, maxStarOfVictoryTime:now});
-      return {number:numberOfWin, star:numberOfWin, time:now};
+      await this.usersRepository.update({userId}, {maxStarOfVictory:Math.floor(numberOfWin / 5), maxStarOfVictoryTime:now});
+      return {number:numberOfWin, star:Math.floor(numberOfWin / 5), time:now};
     }
     return {number:numberOfWin, star, time:user.maxStarOfVictoryTime}
   }
@@ -232,10 +232,10 @@ export class GameService {
     const numberOfLose =  await this.historyRepository.count({winner:userId});
     const user = await this.usersRepository.findOne({userId});
     const star = user.maxStarOfLose;
-    if (numberOfLose / 5 > star && (numberOfLose / 5 < 6)){
+    if (Math.floor(numberOfLose / 5) > star && (numberOfLose / 5 < 6)){
       const now = Date();
-      await this.usersRepository.update({userId}, {maxStarOfLose:numberOfLose / 5, maxStarOfLoseTime:now});
-      return {number:numberOfLose, star:numberOfLose, time:now};
+      await this.usersRepository.update({userId}, {maxStarOfLose:Math.floor(numberOfLose / 5), maxStarOfLoseTime:now});
+      return {number:numberOfLose, star:Math.floor(numberOfLose / 5), time:now};
     }
     return {number:numberOfLose, star, time:user.maxStarOfLoseTime}
     
@@ -247,10 +247,10 @@ export class GameService {
     const numberOfFight =  numberOfWin + numberOfLose;
     const user = await this.usersRepository.findOne({userId});
     const star = user.maxStarOfFight;
-    if (numberOfFight / 5 > star && (numberOfFight / 5 < 6)){
+    if (Math.floor(numberOfFight / 5) > star && (numberOfFight / 5 < 6)){
       const now = Date();
-      await this.usersRepository.update({userId}, {maxStarOfFight:numberOfFight / 5, maxStarOfFightTime:now});
-      return {number:numberOfFight, star:numberOfFight, time:now};
+      await this.usersRepository.update({userId}, {maxStarOfFight:Math.floor(numberOfFight / 5), maxStarOfFightTime:now});
+      return {number:numberOfFight, star:Math.floor(numberOfFight / 5), time:now};
     }
     return {number:numberOfFight, star, time:user.maxStarOfFightTime}
   }
