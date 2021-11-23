@@ -4,10 +4,8 @@ import { Users } from "src/entities/Users";
 
 export class TwoFactorDto extends PickType(Users, [
   'oauthId',
-  'username',
   'userId',
   'email',
-  'profile'
   ] as const) {    
   @IsString()
   @ApiProperty({

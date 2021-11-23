@@ -49,10 +49,8 @@ export class AuthController {
       throw new NotFoundException('유저 정보 없음');
     const user = {
       oauthId: +result.oauthId,
-      username: result.username,
       userId: result.userId,
       email: result.email,
-      profile: result.profile
     }
     res.clearCookie('ts_token');
     const token = await this.authService.login(user);
@@ -156,10 +154,6 @@ export class AuthController {
   async optCodeCheck(@User() user: UserDto,  @Param('otp') optCode: string) {
     const isCodeValid =  await this.authService.isTwoFactorAuthenticationCodeValid(optCode, user.userId); 
     return isCodeValid;
-    if (isCodeValid === false)
-      return false;
-    
   }
-
 }
 
