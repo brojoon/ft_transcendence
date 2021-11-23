@@ -158,10 +158,10 @@ export class FriendsService {
       const numberOfFriends = await this.friendRepository.count({userId1});
       const user = await this.usersRepository.findOne({userId:userId1});
       const star = user.maxStarOfFreinds;
-      if (numberOfFriends / 5 > star && (numberOfFriends / 5 < 6)){
+      if (Math.floor(numberOfFriends / 5) > star && (numberOfFriends / 5 < 6)){
         const now = Date();
-        await this.usersRepository.update({userId:userId1}, {maxStarOfFreinds:numberOfFriends / 5, maxStarOfFreindsTime:now});
-        return {number:numberOfFriends, star:numberOfFriends, time:now};
+        await this.usersRepository.update({userId:userId1}, {maxStarOfFreinds:Math.floor(numberOfFriends / 5), maxStarOfFreindsTime:now});
+        return {number:numberOfFriends, star:Math.floor(numberOfFriends / 5), time:now};
       }
       return {number:numberOfFriends, star, time:user.maxStarOfFreindsTime};
     } catch (error) {
