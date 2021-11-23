@@ -6,17 +6,21 @@ import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 
 export default function BasicTextFields() {
-  const { data: userData } = useSWR<IUser>(`/api/users`, fetcher);
   const onSubmitForm = useCallback((e) => {
     console.log(e.target.value);
-    if (userData) {
+    let token = document.cookie.slice(document.cookie.indexOf('userCookie') + 15);
+    console.log(token);
+    token = unescape(token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' ')));
+    const obj = JSON.parse(token);
+    console.log(token);
+    if (token) {
       axios
         .post(`/api/auth/qrlogin`, {
-          userId: userData.userId,
-          username: userData.username,
-          email: userData.email,
-          profile: userData.profile,
-          oauthId: 54612484714,
+          userId: obj.userId,
+          username: obj.username,
+          email: obj.email,
+          profile: obj.profile,
+          oauthId: parseInt(obj.oauthId),
           TwoFactorAuthcode: e.target.value,
         })
         .then(() => {

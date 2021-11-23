@@ -49,6 +49,19 @@ const ChannelRoom = () => {
   const [membersToggle, setMembersToggle] = useState(false);
   const [channelLeaveModal, setChannelLeaveModal] = useState(false);
   const [channelInviteModal, setChannelInviteModal] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  const onClickMember = useCallback(
+    (e, index) => {
+      e.preventDefault();
+      if (selectedIndex === index) {
+        setSelectedIndex(-1);
+      } else {
+        setSelectedIndex(index);
+      }
+    },
+    [selectedIndex],
+  );
 
   const onClickChannelInviteModal = useCallback(
     (e) => {
@@ -62,6 +75,7 @@ const ChannelRoom = () => {
     (e) => {
       e.preventDefault();
       console.log(membersToggle);
+      setSelectedIndex(-1);
       setMembersToggle((prev) => !prev);
     },
     [membersToggle, setMembersToggle],
@@ -180,7 +194,6 @@ const ChannelRoom = () => {
     socket?.on('leave', channelRevalidate);
     socket?.on('channelType', channelRevalidate);
     socket?.on('channelDelete', channelRevalidate);
-    // socket?.on('invite');
     // socket?.on('admin', channelRevalidate);
     // socket?.on('ban', channelRevalidate);
     return () => {
@@ -189,7 +202,6 @@ const ChannelRoom = () => {
       socket?.off('leave', channelRevalidate);
       socket?.off('channelType', channelRevalidate);
       socket?.off('channelDelete', channelRevalidate);
-      // socket?.off('invite', channelRevalidate);
       // socket?.on('admin', channelRevalidate);
       // socket?.on('ban', channelRevalidate);
     };
@@ -228,6 +240,8 @@ const ChannelRoom = () => {
         onClickSettingBtn={onClickSettingBtn}
         onClickChannelLeaveModal={onClickChannelLeaveModal}
         onClickChannelInviteModal={onClickChannelInviteModal}
+        onClickMember={onClickMember}
+        selectedIndex={selectedIndex}
         membersToggle={membersToggle}
       />
       {channelInviteModal && (
