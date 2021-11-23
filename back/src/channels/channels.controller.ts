@@ -168,7 +168,7 @@ export class ChannelsController {
   }
 
   @Get("/achevement/numOfChannels")
-  async achievementChannelNumber(@User() user) :Promise<number>{
+  async achievementChannelNumber(@User() user) {
     return await this.channelsService.achievementChannelNumber(user.userId);
   }
 }

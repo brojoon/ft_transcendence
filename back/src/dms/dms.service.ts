@@ -295,7 +295,14 @@ export class DmsService {
         .orWhere('dc.userId2 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
         .orderBy('dm.createdAt', 'DESC')
         .getCount();
-      return (checkdm)
+      const user = await this.usersRepository.findOne({userId});
+      const star = user.maxStarOfDms;
+      if (checkdm / 5 > star && (checkdm / 5 < 6)){
+        const now = Date();
+        await this.usersRepository.update({userId}, {maxStarOfDms:checkdm / 5, maxStarOfDmsTime:now});
+        return {number:checkdm, star:checkdm, time:now};
+      }
+      return {number:checkdm, star, time:user.maxStarOfDmsTime};
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
         throw new BadRequestException('DM 방 수 조회 실패');

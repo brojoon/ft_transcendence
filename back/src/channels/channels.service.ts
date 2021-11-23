@@ -69,7 +69,6 @@ export class ChannelsService {
     newChannel.name = channelName;
     newChannel.type = channelType;
     newChannel.authId = userId;
-    
     if (channelType == 1){
       if (!password)
         throw new BadRequestException("protected방에는 비밀번호가 있어야 합니다")
@@ -388,6 +387,13 @@ export class ChannelsService {
 
   async achievementChannelNumber(userId:string){
     const numberOfChannel = await this.chatmemberRepository.count({userId});
-    return numberOfChannel;
+    const user = await this.usersRepository.findOne({userId});
+    const star = user.maxStarOfChannels;
+    if (numberOfChannel / 5 > star && (numberOfChannel / 5 < 6)){
+      const now = Date();
+      await this.usersRepository.update({userId}, {maxStarOfChannels:numberOfChannel / 5, maxStarOfChannelsTime:now});
+      return {number:numberOfChannel, star:numberOfChannel, time:now};
+    }
+    return {number:numberOfChannel, star, time:user.maxStarOfChannelsTime}
   }
 }

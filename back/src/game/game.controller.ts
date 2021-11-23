@@ -37,6 +37,6 @@ export class GameController {
 
   @Get("/achevement/numOfFight")
   async numOfFight(@User() user){
-    return ((await this.gameService.numOfWin(user.userId)) + (await this.gameService.numOfLose(user.userId)));
+    return await this.gameService.numOfFight(user.userId);
   }
 }

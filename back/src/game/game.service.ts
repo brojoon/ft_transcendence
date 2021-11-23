@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Dmcontent } from 'src/entities/Dmcontent';
 import { History } from 'src/entities/History';
+import { Users } from 'src/entities/Users';
 import { EventsGateway } from 'src/events/events.gateway';
 import { Repository } from 'typeorm';
 import { gameMap } from './gameMap';
@@ -17,6 +18,7 @@ export class GameService {
   constructor(
     @InjectRepository(History) private historyRepository: Repository<History>,
     @InjectRepository(Dmcontent) private dmcontentRepository:Repository<Dmcontent>,
+    @InjectRepository(Users) private usersRepository:Repository<Users>,
     public eventsGateway:EventsGateway
   ) {}
 
@@ -215,11 +217,41 @@ export class GameService {
   }
 
   async numOfWin(userId:string){
-    return await this.historyRepository.count({winner:userId});
+    const numberOfWin =  await this.historyRepository.count({winner:userId});
+    const user = await this.usersRepository.findOne({userId});
+    const star = user.maxStarOfVictory;
+    if (numberOfWin / 5 > star && (numberOfWin / 5 < 6)){
+      const now = Date();
+      await this.usersRepository.update({userId}, {maxStarOfVictory:numberOfWin / 5, maxStarOfVictoryTime:now});
+      return {number:numberOfWin, star:numberOfWin, time:now};
+    }
+    return {number:numberOfWin, star, time:user.maxStarOfVictoryTime}
   }
 
   async numOfLose(userId:string){
-    return await this.historyRepository.count({loser:userId});
+    const numberOfLose =  await this.historyRepository.count({winner:userId});
+    const user = await this.usersRepository.findOne({userId});
+    const star = user.maxStarOfLose;
+    if (numberOfLose / 5 > star && (numberOfLose / 5 < 6)){
+      const now = Date();
+      await this.usersRepository.update({userId}, {maxStarOfLose:numberOfLose / 5, maxStarOfLoseTime:now});
+      return {number:numberOfLose, star:numberOfLose, time:now};
+    }
+    return {number:numberOfLose, star, time:user.maxStarOfLoseTime}
+    
   }
 
+  async numOfFight(userId:string){
+    const numberOfWin =  await this.historyRepository.count({winner:userId});
+    const numberOfLose =  await this.historyRepository.count({winner:userId});
+    const numberOfFight =  numberOfWin + numberOfLose;
+    const user = await this.usersRepository.findOne({userId});
+    const star = user.maxStarOfFight;
+    if (numberOfFight / 5 > star && (numberOfFight / 5 < 6)){
+      const now = Date();
+      await this.usersRepository.update({userId}, {maxStarOfFight:numberOfFight / 5, maxStarOfFightTime:now});
+      return {number:numberOfFight, star:numberOfFight, time:now};
+    }
+    return {number:numberOfFight, star, time:user.maxStarOfFightTime}
+  }
 }
