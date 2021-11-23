@@ -8,6 +8,7 @@ import { Dmcontent } from "./Dmcontent";
 import { Friend } from "./Friend";
 import { History } from "./History";
 import { IsEmail, IsNotEmpty, IsString, IsInt } from 'class-validator';
+import { Blockmember } from './Blockmember';
 
 @Entity()
 export class Users {
@@ -119,4 +120,8 @@ export class Users {
 
   @OneToMany(() => History, (history) => history.UserIds2)
   History2: History[];
+  Blockmembers: any;
+
+  @OneToMany(() => Blockmember, (blockmember) => blockmember.User)
+  Blockmember: History[];
 }

@@ -9,6 +9,7 @@ import * as bcrypt from "bcrypt";
 import { NotFoundError, timeout } from 'rxjs';
 import { EventsGateway } from 'src/events/events.gateway';
 import { name } from 'ormconfig';
+import { Blockmember } from 'src/entities/Blockmember';
 @Injectable()
 export class ChannelsService {
   constructor(
@@ -16,6 +17,7 @@ export class ChannelsService {
     @InjectRepository(Chatchannel) private chatchannelRepository: Repository<Chatchannel>,
     @InjectRepository(Chatmember) private chatmemberRepository: Repository<Chatmember>,
     @InjectRepository(Chatcontent) private chatcontentRepository: Repository<Chatcontent>,
+    @InjectRepository(Blockmember) private blockmemberRepository:Repository<Blockmember>,
     private eventsGateway:EventsGateway,
   ) { }
 
@@ -87,6 +89,8 @@ export class ChannelsService {
     const channel = await this.chatchannelRepository.findOne({id:channelId});
     if (!channel)
       throw new NotFoundException("없는 채팅방입니다");
+    if (await this.blockmemberRepository.findOne({userId}))
+      throw new ForbiddenException("밴 먹은 사용자입니다");
     if (channel.type == 1){
       const auth = await bcrypt.compare(channelPassword, channel.password);//channelPassword = null일때?
       if (!auth)
@@ -117,6 +121,8 @@ export class ChannelsService {
       console.log("admin:", administer);
       if (!administer || administer.auth < 1)
         throw new ForbiddenException("administer가 아닌데 초대를 시도함.");
+      if (await this.blockmemberRepository.findOne({userId:visitorId}))
+        throw new ForbiddenException("밴 먹은 사용자입니다");
       if (await this.chatmemberRepository.findOne({channelId, userId:visitorId}))
         throw new BadRequestException("이미 채팅방에 있는 사용자임");
       if (!await this.chatchannelRepository.findOne({id:channelId}))
@@ -235,40 +241,83 @@ export class ChannelsService {
 
   async checkAdmin(channelId:number, userId:string) {
     const chatmember = await this.chatmemberRepository.findOne({where:{channelId, userId}});
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:userId, admin:true}, {userId:userId, moderator:true}]});
     if (!chatmember)
-      throw new ForbiddenException(".");
-    return (chatmember.auth > 0);//bool로 반환? 
+      return false;//bool로 반환? 
+    else if (isSiteOwner)
+      return true;
+    else 
+      return (chatmember.auth > 0);
   }
 
   async checkOwner(channelId:number, userId:string) {
     const chatmember = await this.chatmemberRepository.findOne({where:{channelId, userId}});
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:userId, admin:true}, {userId:userId, moderator:true}]});
     if (!chatmember)
-      throw new ForbiddenException(".");
-    return (chatmember.auth > 1);//bool로 반환? 
+      return false;//bool로 반환? 
+    else if (isSiteOwner)
+      return true;
+    else 
+      return (chatmember.auth > 1);
   }
 
   async giveAdmin(channelId:number, ownerId:string, userId:string) {
-    if (await this.checkAdmin(channelId, ownerId) == false)
-      throw new ForbiddenException(".");
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:ownerId, admin:true}, {userId:ownerId, moderator:true}]});
+    if (await this.checkAdmin(channelId, ownerId) == false && !isSiteOwner)
+      throw new ForbiddenException("권한 없음");
     await this.chatmemberRepository.update({channelId, userId}, {auth:1})
     this.eventsGateway.server.to(`channel-${channelId}`).emit('admin', null);
   }
 
+  async removeAdmin(channelId:number, ownerId:string, userId:string) {
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:ownerId, admin:true}, {userId:ownerId, moderator:true}]});
+    if (await this.checkAdmin(channelId, ownerId) == false && !isSiteOwner)
+      throw new ForbiddenException("권한 없음");
+    await this.chatmemberRepository.update({channelId, userId}, {auth:0})
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('admin', null);
+  }
+
   async banUser(channelId:number, adminId:string, banId:string) {
-    if (!await this.chatmemberRepository.findOne({channelId, userId:adminId}))
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:adminId, admin:true}, {userId:adminId, moderator:true}]});
+    console.log(isSiteOwner);
+    if (!await this.chatmemberRepository.findOne({channelId, userId:adminId}) && !isSiteOwner)
       throw new ForbiddenException("채팅방에 없는 사용자임");
     const banUser = await this.chatmemberRepository.findOne({channelId, userId:banId});
     if (!banUser)
       throw new ForbiddenException("채팅방에 없는 사용자임");
-    else if ((await banUser).auth > 0)//여기도 await??
+    else if ((await banUser).auth > 0 && !isSiteOwner)
       throw new ForbiddenException("관리자나 소유자를 ban할 수는 없음");
-    if (await this.checkAdmin(channelId, adminId) == false)
-      throw new ForbiddenException(".");
+    if (await this.checkAdmin(channelId, adminId) == false && !isSiteOwner)
+      throw new ForbiddenException("권한 없음");
     await this.chatmemberRepository.delete({channelId, userId:banId});
+    const banRegister = new Blockmember();
+    banRegister.channelId = channelId;
+    banRegister.userId = banId;
+    await this.blockmemberRepository.save(banRegister);
     this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
-    /*setTimeout(() => {
-      await this.chatmemberRepository.update({channelId, userId}, {mute:true})
-    }, timeout);*/
+  }
+
+  async removeBan(channelId:number, adminId:string, banId:string){
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:adminId, admin:true}, {userId:adminId, moderator:true}]});
+    if (await this.checkAdmin(channelId, adminId) == false && !isSiteOwner)
+      throw new ForbiddenException("소유주나 관리자만 밴을 풀수있음");
+    await this.blockmemberRepository.delete({userId:banId});
+  }
+
+  async kickUser(channelId:number, adminId:string, kickId:string) {
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:adminId, admin:true}, {userId:adminId, moderator:true}]});
+    console.log(isSiteOwner);
+    if (!await this.chatmemberRepository.findOne({channelId, userId:adminId}) && !isSiteOwner)
+      throw new ForbiddenException("채팅방에 없는 사용자임");
+    const banUser = await this.chatmemberRepository.findOne({channelId, userId:kickId});
+    if (!banUser)
+      throw new ForbiddenException("채팅방에 없는 사용자임");
+    else if ((await banUser).auth > 0 && !isSiteOwner)
+      throw new ForbiddenException("관리자나 소유자를 ban할 수는 없음");
+    if (await this.checkAdmin(channelId, adminId) == false && !isSiteOwner)
+      throw new ForbiddenException("권한 없음");
+    await this.chatmemberRepository.delete({channelId, userId:kickId});
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
   }
 
   async updateChannel(channelId:number, userId:string, channelName:string, channelType:number, channelPassword:string){
@@ -321,19 +370,18 @@ export class ChannelsService {
     if(!muteUser)
       throw new BadRequestException("그런 사용자가 없습니다");
     const expiredTime:Date = new Date(+(new Date()) + time * 1000);
-    console.log("now? ", new Date());
-    console.log("expired Time: ", expiredTime, "mute?", !muteUser.mute);
     await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:!muteUser.mute, muteExpired:expiredTime});
     setTimeout(() => {(async () => {await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:false}).then(()=>{this.eventsGateway.server.to(`channel-${channelId}`).emit('mute', null);}) })(); }, time * 1000);
     this.eventsGateway.server.to(`channel-${channelId}`).emit('mute', null);
   }
 
 
-  async deleteChannel(channelId:number, ownerId:string) {
+  async deleteChannel(channelId:number, ownerId:string) {//사이트
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:ownerId, admin:true}, {userId:ownerId, moderator:true}]});
     if (!await this.chatchannelRepository.findOne({id:channelId}))
       throw new BadRequestException("없는 채팅방임");
-    if (await this.checkOwner(channelId, ownerId) == false)
-      throw new ForbiddenException(".");
+    if (await this.checkOwner(channelId, ownerId) == false && !isSiteOwner)
+      throw new ForbiddenException("권한 없음");
     await this.chatchannelRepository.delete({id:channelId});
     this.eventsGateway.server.to(`channel-${channelId}`).emit('channelDelete', null);
   }

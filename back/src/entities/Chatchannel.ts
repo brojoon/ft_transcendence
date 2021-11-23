@@ -1,4 +1,5 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Blockmember } from "./Blockmember";
 import { Chatcontent } from "./Chatcontent";
 import { Chatmember } from "./Chatmember";
 
@@ -33,4 +34,7 @@ export class Chatchannel {
 
   @OneToMany(() => Chatmember, (chatmember) => chatmember.Channel)
   Chatmembers: Chatmember[];
+
+  @OneToMany(() => Blockmember, (blockmember) => blockmember.Channel)
+  Blockmembers: Blockmember[];
 }

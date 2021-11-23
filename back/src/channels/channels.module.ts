@@ -7,6 +7,7 @@ import { Chatchannel } from 'src/entities/Chatchannel';
 import { Chatmember } from 'src/entities/Chatmember';
 import { Chatcontent } from 'src/entities/Chatcontent';
 import { EventsModule } from 'src/events/events.module';
+import { Blockmember } from 'src/entities/Blockmember';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { EventsModule } from 'src/events/events.module';
       Users,
       Chatchannel,
       Chatmember,
-      Chatcontent
+      Chatcontent,
+      Blockmember
     ]),
     EventsModule,
   ],

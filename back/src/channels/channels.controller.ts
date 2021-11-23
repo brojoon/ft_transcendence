@@ -132,9 +132,24 @@ export class ChannelsController {
     await this.channelsService.giveAdmin(channelId, owner.userId, givenUser);
   }
 
+  @Get("/removeAdmin/:channelId/:stolenUser")
+  async removeAdmin(@Param("channelId") channelId:number, @User() owner, @Param('stolenUser') stolenUser:string){
+    await this.channelsService.removeAdmin(channelId, owner.userId, stolenUser);
+  }
+    
   @Get("/banUser/:channelId/:banId/")
   async banUser(@Param("channelId") channelId:number, @User() admin, @Param("banId") banId:string){
     await this.channelsService.banUser(channelId, admin.userId, banId);
+  }
+
+  @Get("/removeBan/:channelId/:userId")
+  async removeBan(@Param("channelId") channelId:number, @User() admin, @Param("userId") userId:string){
+    await this.channelsService.removeBan(channelId, admin.userId, userId);
+  }
+
+  @Get("/kickUser/:channelId/:kickId/")
+  async kickUser(@Param("channelId") channelId:number, @User() admin, @Param("kickId") kickId:string){
+    await this.channelsService.kickUser(channelId, admin.userId, kickId);
   }
 
   @Get("/updateChannel/:channelId/:channelName/:channelType")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
