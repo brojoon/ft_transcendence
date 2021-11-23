@@ -9,6 +9,7 @@ import { UserDto } from 'common/dto/user.dto';
 import { authenticator } from 'otplib';
 import { toFileStream } from 'qrcode';
 import { Connect } from 'src/entities/Connect';
+import { TwoFactorDto } from 'common/dto/two-factor.dto';
 
 @Injectable()
 export class AuthService {
@@ -67,7 +68,7 @@ export class AuthService {
     try {
       const user = await this.usersRepository.findOne({
         where: { oauthId },
-        select: ['oauthId', 'userId', 'username', 'email', 'profile', 'password'],
+        select: ['oauthId', 'userId', 'email', 'password'],
       });
       if (!user) {
         return null;
@@ -110,7 +111,6 @@ export class AuthService {
       await this.connectRepository.save(connect);
       return (true);      
     } catch (error) {
-      throw error;
       if (error.errno !== undefined || error.response.statusCode !== 403)
         throw new BadRequestException("회원 가입 실패");
       else if (error.response.statusCode === 403)
@@ -118,14 +118,12 @@ export class AuthService {
     }
   }
 
-  async login(user: UserDto) {
+  async login(user) {
     try {
       const payload = {
         oauthId: user.oauthId,
-        username: user.username,
         userId: user.userId,
         email: user.email,
-        profile: user.profile 
       };
       return {access_token: this.jwtService.sign(payload)};      
     } catch (error) {
