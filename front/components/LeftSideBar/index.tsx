@@ -19,6 +19,7 @@ import Tooltip from '@mui/material/Tooltip';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import ListItemButton from '@mui/material/ListItemButton';
 import List from '@mui/material/List';
+import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
 
 const LeftSideBar = () => {
   const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -79,7 +80,7 @@ const LeftSideBar = () => {
           <Link to={`/ft_transcendence/home`}>
             <Tooltip title="Home" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">
-                <HomeIcon />
+                <DashboardSharpIcon />
               </MyFab>
             </Tooltip>
           </Link>

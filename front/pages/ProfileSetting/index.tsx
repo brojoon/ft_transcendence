@@ -89,7 +89,6 @@ const ProfileSetting = () => {
       .post('/api/users/upload', formData, config)
       .then((res) => {
         mutateMyData();
-
         console.log('upload!!');
       })
       .catch((err) => {

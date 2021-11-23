@@ -24,8 +24,6 @@ const ft_transcendence = () => {
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
 
-  console.log('DMList', DMList);
-  console.log('ChannelList', ChannelList);
   let socket = getSocket();
   useEffect(() => {
     if (DMList && ChannelList && myData) {
