@@ -16,13 +16,15 @@ import getToken from '@utils/getToken';
 import axios from 'axios';
 import { Container } from './style';
 import ChannelProfile from '@components/ChannelProfile';
-import ChannelMember from '@components/ChannelMember';
+// import ChannelMember from '@components/ChannelMember';
 
 interface Props {
   onClickSettingBtn: (e: any) => void;
   onClickMembersToggle: (e: any) => void;
   onClickChannelLeaveModal: (e: any) => void;
   onClickChannelInviteModal: (e: any) => void;
+  onClickMember: (e: any, index: number) => void;
+  selectedIndex: number;
   membersToggle: boolean;
 }
 const ChannelMemberDrawBar: VFC<Props> = ({
@@ -30,6 +32,8 @@ const ChannelMemberDrawBar: VFC<Props> = ({
   onClickSettingBtn,
   onClickChannelLeaveModal,
   onClickChannelInviteModal,
+  onClickMember,
+  selectedIndex,
   membersToggle,
 }) => {
   const { id } = useParams<{ id: string }>();
@@ -50,19 +54,10 @@ const ChannelMemberDrawBar: VFC<Props> = ({
     dedupingInterval: 2000,
   });
   const history = useHistory();
-  const [isChannelProfileModal, setIsChannelProfileModal] = useState(false);
 
   if (memberList?.length === 0) {
     history.push('/ft_transcendence/channels');
   }
-
-  const ChannelProfileModal = useCallback(
-    (e) => {
-      e.preventDefault();
-      setIsChannelProfileModal((prev) => !prev);
-    },
-    [isChannelProfileModal],
-  );
   return (
     <>
       {membersToggle && (
@@ -101,65 +96,86 @@ const ChannelMemberDrawBar: VFC<Props> = ({
       >
         <Scrollbars>
           <div>
-            <ListItem style={{ fontSize: '12px', marginTop: '11px', color: 'gray' }}>
+            <ListItem style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}>
               Owner
             </ListItem>
             {memberList &&
               memberList?.map((member) => {
                 if (member.auth === 2) {
-                  return alluser?.map((user) => {
+                  return alluser?.map((user, index) => {
                     if (user.userId == member.userId) {
                       return (
-                        <ListItem button>
-                          <Avatar
-                            src={user.profile}
-                            alt="Avatar"
-                            style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                          />
-                          <ListItemText
-                            primary={user.userId}
-                            style={{ marginLeft: '12px', color: 'white' }}
-                          />
-                        </ListItem>
+                        <>
+                          {selectedIndex === index && <ChannelProfile user={user} />}
+                          <ListItem button onClick={(e) => onClickMember(e, index)}>
+                            <Avatar
+                              src={user.profile}
+                              alt="Avatar"
+                              style={{ border: '2px solid red', width: '38px', height: '38px' }}
+                            />
+                            <ListItemText
+                              primary={user.userId}
+                              style={{ marginLeft: '12px', color: 'white' }}
+                            />
+                          </ListItem>
+                        </>
                       );
                     }
                   });
                 }
               })}
-            <ListItem style={{ fontSize: '12px', marginTop: '11px', color: 'gray' }}>
+            <ListItem style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}>
               Admin
             </ListItem>
             {memberList &&
               memberList?.map((member) => {
                 if (member.auth === 1) {
-                  return alluser?.map((user) => {
+                  return alluser?.map((user, index) => {
                     if (user.userId == member.userId) {
                       return (
-                        <ListItem button>
-                          <Avatar
-                            src={user.profile}
-                            alt="Avatar"
-                            style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                          />
-                          <ListItemText
-                            primary={user.userId}
-                            style={{ marginLeft: '12px', color: 'white' }}
-                          />
-                        </ListItem>
+                        <>
+                          {selectedIndex === index && <ChannelProfile user={user} />}
+                          <ListItem button onClick={(e) => onClickMember(e, index)}>
+                            <Avatar
+                              src={user.profile}
+                              alt="Avatar"
+                              style={{ border: '2px solid red', width: '38px', height: '38px' }}
+                            />
+                            <ListItemText
+                              primary={user.userId}
+                              style={{ marginLeft: '12px', color: 'white' }}
+                            />
+                          </ListItem>
+                        </>
                       );
                     }
                   });
                 }
               })}
-            <ListItem style={{ fontSize: '12px', marginTop: '11px', color: 'gray' }}>
+            <ListItem style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}>
               Users
             </ListItem>
             {memberList &&
-              memberList?.map((member) => {
+              memberList?.map((member, index) => {
                 if (member.auth === 0) {
                   return alluser?.map((user) => {
                     if (user.userId == member.userId) {
-                      return <ChannelMember user={user} />;
+                      return (
+                        <>
+                          {selectedIndex === index && <ChannelProfile user={user} />}
+                          <ListItem button onClick={(e) => onClickMember(e, index)}>
+                            <Avatar
+                              src={user.profile}
+                              alt="Avatar"
+                              style={{ border: '2px solid red', width: '38px', height: '38px' }}
+                            />
+                            <ListItemText
+                              primary={user.userId}
+                              style={{ marginLeft: '12px', color: 'white' }}
+                            />
+                          </ListItem>
+                        </>
+                      );
                     }
                   });
                 }
