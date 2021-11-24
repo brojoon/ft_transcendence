@@ -88,7 +88,7 @@ export class ChannelsService {
     const channel = await this.chatchannelRepository.findOne({id:channelId});
     if (!channel)
       throw new NotFoundException("없는 채팅방입니다");
-    if (await this.blockmemberRepository.findOne({userId}))
+    if (await this.blockmemberRepository.findOne({userId, channelId}))
       throw new ForbiddenException("밴 먹은 사용자입니다");
     if (channel.type == 1){
       const auth = await bcrypt.compare(channelPassword, channel.password);//channelPassword = null일때?
@@ -120,7 +120,7 @@ export class ChannelsService {
       console.log("admin:", administer);
       if (!administer || administer.auth < 1)
         throw new ForbiddenException("administer가 아닌데 초대를 시도함.");
-      if (await this.blockmemberRepository.findOne({userId:visitorId}))
+      if (await this.blockmemberRepository.findOne({userId:visitorId, channelId}))
         throw new ForbiddenException("밴 먹은 사용자입니다");
       if (await this.chatmemberRepository.findOne({channelId, userId:visitorId}))
         throw new BadRequestException("이미 채팅방에 있는 사용자임");
@@ -159,7 +159,8 @@ export class ChannelsService {
   }
 
   async getAllMessage(channelId:number, userId:string) {
-    if (!await this.chatmemberRepository.findOne({channelId, userId}))
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if (!await this.chatmemberRepository.findOne({channelId, userId}) || !isSiteOwner)
       throw new ForbiddenException("채팅방에 없는 사용자인데 메시지를 조회하려고 함"); 
     const chatContent = await this.chatcontentRepository.find({where:{channelId}, select:["userId", "message", "updatedAt"],order: {
       createdAt: "DESC",
@@ -168,7 +169,8 @@ export class ChannelsService {
   }
 
   async get20Message(channelId:number, userId:string, skip:number){
-    if (!await this.chatmemberRepository.findOne({channelId, userId}))
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if (!await this.chatmemberRepository.findOne({channelId, userId}) && !isSiteOwner)
       throw new ForbiddenException("채팅방에 참여중이지 않은 사용자인데 메시지를 조회하려고 함"); 
     const query = await this.chatcontentRepository.createQueryBuilder('m')
     .where("m.channelId=:channelId", {channelId})
@@ -179,6 +181,9 @@ export class ChannelsService {
   }
 
   async userListOnlyId(channelId:number, userId:string) {
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if (!await this.chatmemberRepository.findOne({channelId, userId}) && !isSiteOwner)
+      throw new ForbiddenException("채팅방에 참여중이지 않은 사용자인데 유저들을 조회하려고 함"); 
     const userList = await this.chatmemberRepository.find({where:{channelId}});
     let ret = new Array();
     let size = userList.length;
@@ -189,6 +194,9 @@ export class ChannelsService {
   }
 
   async userList(channelId:number, userId:string) {
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if (!await this.chatmemberRepository.findOne({channelId, userId}) && !isSiteOwner)
+      throw new ForbiddenException("채팅방에 참여중이지 않은 사용자인데 유저들을 조회하려고 함"); 
     const userList = await this.chatmemberRepository.find({where:{channelId}});
     return userList
     /*
@@ -206,7 +214,10 @@ export class ChannelsService {
   }
 
   async mutedMembers(channelId, userId){
-    const ret = this.chatmemberRepository.find({channelId, userId, mute:true});
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if ((!await this.chatmemberRepository.findOne({userId, channelId})) && !isSiteOwner)
+      throw new ForbiddenException("볼 권한이 없음")
+    const ret = this.chatmemberRepository.find({where:{channelId, mute:true}, select:["userId", "channelId", "muteExpired"]});
     return ret;
   }
 
@@ -320,9 +331,10 @@ export class ChannelsService {
   }
 
   async updateChannel(channelId:number, userId:string, channelName:string, channelType:number, channelPassword:string){
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
     if (!await this.chatchannelRepository.findOne({id:channelId}))
       throw new NotFoundException("없는 채팅방입니다");
-    if (await this.checkOwner(channelId, userId) == false)
+    if (await this.checkOwner(channelId, userId) == false && !isSiteOwner)
       throw new ForbiddenException("소유자가 아닙니다");
     const name = !channelName ? await (await this.chatchannelRepository.findOne({id:channelId})).name : channelName;
     const type = !channelType ? await (await this.chatchannelRepository.findOne({id:channelId})).type : channelType;//null아니고 NaN
@@ -336,16 +348,18 @@ export class ChannelsService {
   }
 
   async updateType(channelId:number, userId:string, type:number) {
-    if (await this.checkOwner(channelId, userId) == false)
-      throw new ForbiddenException(".");
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if (await this.checkOwner(channelId, userId) == false && !isSiteOwner)
+      throw new ForbiddenException("권한없음.");
     await this.chatchannelRepository.update({id:channelId}, {type})
     this.eventsGateway.server.to(`channel-${channelId}`).emit('channelType', null);
     return type;
   }
 
   async updateChannelName(channelId:number, userId:string, name:string) {
-    if (await this.checkOwner(channelId, userId) == false)
-      throw new ForbiddenException(".");
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if (await this.checkOwner(channelId, userId) == false && !isSiteOwner)
+      throw new ForbiddenException("권한없음.");
     if (await this.chatchannelRepository.findOne({name:name}))
       throw new BadRequestException("이미 있는 이름의 채팅방입니다");
     await this.chatchannelRepository.update({id:channelId}, {name})
@@ -354,8 +368,9 @@ export class ChannelsService {
   }
 
   async updateChannelPassword(channelId:number, userId:string, password:string) {
-    if (await this.checkOwner(channelId, userId) == false)
-      throw new ForbiddenException(".");
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if (await this.checkOwner(channelId, userId) == false && !isSiteOwner)
+      throw new ForbiddenException("권한없음.");
     
     const newPassword = await bcrypt.hash(password, 12);
     await this.chatchannelRepository.update({id:channelId}, {password : newPassword});
@@ -363,7 +378,8 @@ export class ChannelsService {
   }
 
   async muteSwitch(channelId, adminId, muteId, time:number) {
-    if (await this.checkAdmin(channelId, adminId) == false)
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId:adminId, admin:true}, {userId:adminId, moderator:true}]});
+    if (await this.checkAdmin(channelId, adminId) == false && !isSiteOwner)
       throw new ForbiddenException(".");
     const muteUser = await this.chatmemberRepository.findOne({channelId, userId:muteId});
     if(!muteUser)
@@ -389,7 +405,7 @@ export class ChannelsService {
     const numberOfChannel = await this.chatmemberRepository.count({userId});
     const user = await this.usersRepository.findOne({userId});
     const star = user.maxStarOfChannels;
-    if (Math.floor(numberOfChannel / 5) > star && (numberOfChannel / 5 < 6)){
+    if (Math.floor(numberOfChannel / 5) > star && (numberOfChannel / 5 <= 5) && (numberOfChannel % 5 == 0)){
       const now = Date();
       await this.usersRepository.update({userId}, {maxStarOfChannels:Math.floor(numberOfChannel / 5), maxStarOfChannelsTime:now});
       return {number:numberOfChannel, star:Math.floor(numberOfChannel / 5), time:now};
