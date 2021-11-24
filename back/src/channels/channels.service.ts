@@ -405,7 +405,8 @@ export class ChannelsService {
     const numberOfChannel = await this.chatmemberRepository.count({userId});
     const user = await this.usersRepository.findOne({userId});
     const star = user.maxStarOfChannels;
-    if (Math.floor(numberOfChannel / 5) > star && (numberOfChannel / 5 <= 5) && (numberOfChannel % 5 == 0)){
+    
+    if (Math.floor(numberOfChannel / 5) > star && (numberOfChannel / 5 <= 5)){
       const now = Date();
       await this.usersRepository.update({userId}, {maxStarOfChannels:Math.floor(numberOfChannel / 5), maxStarOfChannelsTime:now});
       return {number:numberOfChannel, star:Math.floor(numberOfChannel / 5), time:now};

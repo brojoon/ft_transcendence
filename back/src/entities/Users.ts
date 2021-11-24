@@ -81,40 +81,40 @@ export class Users {
 
   //////////////////////////////////////////////////
 
-  @Column( { name: 'maxStarOfFreinds',  default: () => 0 })
+  @Column( { name: 'maxStarOfFreinds',  default: () => "'0'" })
   maxStarOfFreinds: number;
 
-  @Column( { name: 'maxStarOfFreindsTime',  default: () => 0 })
+  @Column( { name: 'maxStarOfFreindsTime' })
   maxStarOfFreindsTime: Date;
 
-  @Column( { name: 'maxStarOfDms',  default: () => 0 })
+  @Column( { name: 'maxStarOfDms',  default: () => "'0'" })
   maxStarOfDms: number;
 
-  @Column( { name: 'maxStarOfDmsTime',  default: () => 0 })
+  @Column( { name: 'maxStarOfDmsTime' })
   maxStarOfDmsTime: Date;
 
-  @Column( { name: 'maxStarOfChannels',  default: () => 0 })
+  @Column( { name: 'maxStarOfChannels',  default: () => "'0'" })
   maxStarOfChannels: number;
 
-  @Column( { name: 'maxStarOfChannelsTime',  default: () => 0 })
+  @Column( { name: 'maxStarOfChannelsTime' })
   maxStarOfChannelsTime: Date;
 
-  @Column( { name: 'maxStarOfVictory',  default: () => 0 })
+  @Column( { name: 'maxStarOfVictory',  default: () => "'0'" })
   maxStarOfVictory: number;
 
-  @Column( { name: 'maxStarOfVictoryTime',  default: () => 0 })
+  @Column( { name: 'maxStarOfVictoryTime' })
   maxStarOfVictoryTime: Date;
 
-  @Column( { name: 'maxStarOfLose',  default: () => 0 })
+  @Column( { name: 'maxStarOfLose',  default: () => "'0'" })
   maxStarOfLose: number;
 
-  @Column( { name: 'maxStarOfLoseTime',  default: () => 0 })
+  @Column( { name: 'maxStarOfLoseTime' })
   maxStarOfLoseTime: Date;
 
-  @Column( { name: 'maxStarOfFight',  default: () => 0 })
+  @Column( { name: 'maxStarOfFight',  default: () => "'0'" })
   maxStarOfFight: number;
 
-  @Column( { name: 'maxStarOfFightTime',  default: () => 0 })
+  @Column( { name: 'maxStarOfFightTime' })
   maxStarOfFightTime: Date;
 
   //////////////////////////////////////////////////

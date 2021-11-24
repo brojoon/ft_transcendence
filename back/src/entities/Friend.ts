@@ -3,7 +3,6 @@ import { IsNotEmpty, IsString } from "class-validator";
 import { Column, Entity, Index, JoinColumn, ManyToOne } from "typeorm";
 import { Users } from "./Users";
 
-@Index("FK_users_TO_friend_2", ["userId2"], {})
 @Entity()
 export class Friend {
 
