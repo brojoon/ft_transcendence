@@ -245,19 +245,36 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
             justifyContent: 'space-betweens',
           }}
         >
-          <Button
-            variant="contained"
-            style={{
-              width: '100%',
-              height: '35px',
-              backgroundColor: '#1678d1',
-              borderColor: '#1678d1',
-              fontWeight: 'bold',
-            }}
-          >
-            CHALLENGE&nbsp;
-            <GamepadIcon />
-          </Button>
+          {isBlock ? (
+            <Button
+              variant="contained"
+              disabled
+              style={{
+                width: '100%',
+                height: '35px',
+                backgroundColor: '#393939',
+                borderColor: '#393939',
+                fontWeight: 'bold',
+              }}
+            >
+              BLOCKED&nbsp;
+              <GamepadIcon />
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              style={{
+                width: '100%',
+                height: '35px',
+                backgroundColor: '#1678d1',
+                borderColor: '#1678d1',
+                fontWeight: 'bold',
+              }}
+            >
+              CHALLENGE&nbsp;
+              <GamepadIcon />
+            </Button>
+          )}
           {isBlock ? (
             <Button
               variant="contained"
@@ -341,21 +358,39 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
               <PersonOffIcon />
             </Button>
           )}
-          <Button
-            onClick={onClickMessageBtn}
-            variant="contained"
-            style={{
-              width: '100%',
-              height: '35px',
-              backgroundColor: '#9CFA24',
-              borderColor: '#9CFA24',
-              fontWeight: 'bold',
-              margin: '20px 0 0 0',
-            }}
-          >
-            MESSAGE&nbsp;
-            <ChatIcon />
-          </Button>
+          {isBlock ? (
+            <Button
+              variant="contained"
+              disabled
+              style={{
+                width: '100%',
+                height: '35px',
+                backgroundColor: '#393939',
+                borderColor: '#393939',
+                fontWeight: 'bold',
+                margin: '20px 0 0 0',
+              }}
+            >
+              BLOCKED&nbsp;
+              <ChatIcon />
+            </Button>
+          ) : (
+            <Button
+              onClick={onClickMessageBtn}
+              variant="contained"
+              style={{
+                width: '100%',
+                height: '35px',
+                backgroundColor: '#9CFA24',
+                borderColor: '#9CFA24',
+                fontWeight: 'bold',
+                margin: '20px 0 0 0',
+              }}
+            >
+              MESSAGE&nbsp;
+              <ChatIcon />
+            </Button>
+          )}
         </CardActions>
       </Card>
     </Box>

@@ -41,6 +41,16 @@ const ChannelRoom = () => {
     `/api/channels/myChannelList`,
     fetcher,
   );
+  const { data: myMute, mutate: mutateMyMute } = useSWR<boolean>(
+    `/api/channels/checkMyMute/${id}`,
+    fetcher,
+  );
+
+  const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
+    `/api/channels/mutedMembers/${id}`,
+    fetcher,
+  );
+
   const scrollbarRef = useRef<Scrollbars>(null);
   const socket = getSocket();
   const history = useHistory();
@@ -102,18 +112,23 @@ const ChannelRoom = () => {
           });
           return prevChatData;
         }, false);
-        axios.post(
-          `/api/channels/send/${id}`,
-          {
-            msg: chat,
-          },
-          {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
+        axios
+          .post(
+            `/api/channels/send/${id}`,
+            {
+              msg: chat,
             },
-          },
-        );
+            {
+              withCredentials: true,
+              headers: {
+                Authorization: `Bearer ${getToken()}`,
+              },
+            },
+          )
+          .then(() => {})
+          .catch((error) => {
+            console.log(error.data);
+          });
         console.log(chat);
         setChat('');
         setTimeout(() => {
@@ -162,6 +177,9 @@ const ChannelRoom = () => {
     mutateChannelMembers();
     mutateMyChannelList();
     mutateAllChannelList();
+    mutateMyMute();
+    mutateMymuteMmbers();
+    mutateMymuteMmbers();
   }, []);
 
   const onMessage = useCallback(
@@ -194,16 +212,18 @@ const ChannelRoom = () => {
     socket?.on('leave', channelRevalidate);
     socket?.on('channelType', channelRevalidate);
     socket?.on('channelDelete', channelRevalidate);
-    // socket?.on('admin', channelRevalidate);
-    // socket?.on('ban', channelRevalidate);
+    socket?.on('admin', channelRevalidate);
+    socket?.on('ban', channelRevalidate);
+    socket?.on('mute', channelRevalidate);
     return () => {
       socket?.off('ch', onMessage);
       socket?.off('join', channelRevalidate);
       socket?.off('leave', channelRevalidate);
       socket?.off('channelType', channelRevalidate);
       socket?.off('channelDelete', channelRevalidate);
-      // socket?.on('admin', channelRevalidate);
-      // socket?.on('ban', channelRevalidate);
+      socket?.off('admin', channelRevalidate);
+      socket?.off('ban', channelRevalidate);
+      socket?.off('mute', channelRevalidate);
     };
   }, [socket, onMessage, channelRevalidate]);
 
@@ -233,7 +253,7 @@ const ChannelRoom = () => {
           onClickMembersToggle={onClickMembersToggle}
         />
         <ChannelChatList chatData={chatData} scrollbarRef={scrollbarRef} />
-        <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />
+        {!myMute && <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />}
       </div>
       <ChannelMemberDrawBar
         onClickMembersToggle={onClickMembersToggle}

@@ -17,12 +17,12 @@ const style = {
 
 const BlockList = () => {
   const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
-  const { data: BlockList } = useSWR<IBlockList[]>(`/api/friend/blocklist`, fetcher);
+  const { data: blockList } = useSWR<IBlockList[]>(`/api/friend/blocklist`, fetcher);
 
   return (
     <Scrollbars>
       <List sx={style} component="nav" aria-label="mailbox folders" style={{ height: '100%' }}>
-        {BlockList?.map((friend: any) => {
+        {blockList?.map((friend: any) => {
           return users?.map((user) => {
             if (user?.userId === friend?.userId2)
               return (

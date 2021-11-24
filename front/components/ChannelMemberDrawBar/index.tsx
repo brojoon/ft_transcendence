@@ -17,6 +17,8 @@ import axios from 'axios';
 import { Container } from './style';
 import ChannelProfile from '@components/ChannelProfile';
 // import ChannelMember from '@components/ChannelMember';
+import VoiceOverOffIcon from '@mui/icons-material/VoiceOverOff';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 
 interface Props {
   onClickSettingBtn: (e: any) => void;
@@ -53,6 +55,13 @@ const ChannelMemberDrawBar: VFC<Props> = ({
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
+  const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
+    `/api/channels/mutedMembers/${id}`,
+    fetcher,
+  );
+
+  console.log(MymuteMmbers);
+
   const history = useHistory();
 
   if (memberList?.length === 0) {
@@ -80,7 +89,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
           {
             // backgroundColor: '#363636',
             // width: '380px',
-            // height: '100%',
+            // height: '100%',mutateMymuteMmbers
             // right: 0,
             // display: 'flex',
             // margin: 0,
@@ -106,7 +115,9 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                     if (user.userId == member.userId) {
                       return (
                         <>
-                          {selectedIndex === index && <ChannelProfile user={user} />}
+                          {selectedIndex === index && user.userId !== myData?.userId && (
+                            <ChannelProfile user={user} />
+                          )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
                             <Avatar
                               src={user.profile}
@@ -117,6 +128,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                               primary={user.userId}
                               style={{ marginLeft: '12px', color: 'white' }}
                             />
+                            <RecordVoiceOverIcon style={{ color: 'white' }} />
                           </ListItem>
                         </>
                       );
@@ -134,7 +146,9 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                     if (user.userId == member.userId) {
                       return (
                         <>
-                          {selectedIndex === index && <ChannelProfile user={user} />}
+                          {selectedIndex === index && user.userId !== myData?.userId && (
+                            <ChannelProfile user={user} />
+                          )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
                             <Avatar
                               src={user.profile}
@@ -145,6 +159,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                               primary={user.userId}
                               style={{ marginLeft: '12px', color: 'white' }}
                             />
+                            <RecordVoiceOverIcon style={{ color: 'white' }} />
                           </ListItem>
                         </>
                       );
@@ -158,24 +173,63 @@ const ChannelMemberDrawBar: VFC<Props> = ({
             {memberList &&
               memberList?.map((member, index) => {
                 if (member.auth === 0) {
+                  console.log(11);
                   return alluser?.map((user) => {
                     if (user.userId == member.userId) {
-                      return (
-                        <>
-                          {selectedIndex === index && <ChannelProfile user={user} />}
-                          <ListItem button onClick={(e) => onClickMember(e, index)}>
-                            <Avatar
-                              src={user.profile}
-                              alt="Avatar"
-                              style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                            />
-                            <ListItemText
-                              primary={user.userId}
-                              style={{ marginLeft: '12px', color: 'white' }}
-                            />
-                          </ListItem>
-                        </>
-                      );
+                      if (MymuteMmbers && MymuteMmbers.length > 0) {
+                        console.log(12);
+                        return MymuteMmbers?.map((muteMember: IMemberList) => {
+                          if (muteMember.userId === user.userId) {
+                            console.log(13);
+
+                            if (muteMember.mute) {
+                              return (
+                                <>
+                                  {selectedIndex === index && user.userId !== myData?.userId && (
+                                    <ChannelProfile user={user} />
+                                  )}
+                                  <ListItem button onClick={(e) => onClickMember(e, index)}>
+                                    <Avatar
+                                      src={user.profile}
+                                      alt="Avatar"
+                                      style={{
+                                        border: '2px solid red',
+                                        width: '38px',
+                                        height: '38px',
+                                      }}
+                                    />
+                                    <ListItemText
+                                      primary={user.userId}
+                                      style={{ marginLeft: '12px', color: 'white' }}
+                                    />
+                                    <VoiceOverOffIcon style={{ color: 'red' }} />
+                                  </ListItem>
+                                </>
+                              );
+                            }
+                          }
+                        });
+                      } else {
+                        return (
+                          <>
+                            {selectedIndex === index && user.userId !== myData?.userId && (
+                              <ChannelProfile user={user} />
+                            )}
+                            <ListItem button onClick={(e) => onClickMember(e, index)}>
+                              <Avatar
+                                src={user.profile}
+                                alt="Avatar"
+                                style={{ border: '2px solid red', width: '38px', height: '38px' }}
+                              />
+                              <ListItemText
+                                primary={user.userId}
+                                style={{ marginLeft: '12px', color: 'white' }}
+                              />
+                              <RecordVoiceOverIcon style={{ color: 'white' }} />
+                            </ListItem>
+                          </>
+                        );
+                      }
                     }
                   });
                 }
