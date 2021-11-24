@@ -171,4 +171,36 @@ export class ChannelsController {
   async achievementChannelNumber(@User() user) {
     return await this.channelsService.achievementChannelNumber(user.userId);
   }
+  
+  /////////////////////////////////////////////////////////
+
+  @Get("/ownerApi/siteOwnerChannelList")
+  async siteOwnerChannelList(@User() user){
+    return await this.channelsService.siteOwnerChannelList(user.userId);
+  }
+
+  @Get("/ownerApi/siteOwnerChannelDelete/:chanelId")
+  async siteOwnerChannelDelete(@Param("channelId") channelId, @User() user){
+    await this.channelsService.siteOwnerChannelDelete(channelId, user.userId);
+  }
+
+  @Get("/ownerApi/siteOwnerChannelUserAdmin/:chanelId/:givenId")
+  async siteOwnerChannelUserAdmin(@Param("channelId") channelId, @Param("givenId") givenId, @User() user){
+    await this.channelsService.siteOwnerChannelUserAdmin(channelId, user.userId, givenId);
+  }
+
+  @Get("/ownerApi/siteOwnerChannelUserAdminRemove/:chanelId/:removed")
+  async siteOwnerChannelUserAdminRemove(@Param("channelId") channelId, @Param("removed") removed, @User() user){
+    await this.channelsService.siteOwnerChannelUserAdminRemove(channelId, user.userId, removed);
+  }
+
+  @Get("/ownerApi/siteOwnerChannelUserBan/:chanelId/:banId")
+  async siteOwnerChannelUserBan(@Param("channelId") channelId, @Param("banId") banId, @User() user){
+    await this.channelsService.siteOwnerChannelUserBan(channelId, user.userId, banId);
+  }
+
+  @Get("/ownerApi/siteOwnerChannelUserBanRemove/:chanelId/:banRemoveId")
+  async siteOwnerChannelUserBanRemove(@Param("channelId") channelId, @Param("banRemoveId") banRemoveId, @User() user){
+    await this.channelsService.siteOwnerChannelUserBanRemove(channelId, user.userId, banRemoveId);
+  }
 }
