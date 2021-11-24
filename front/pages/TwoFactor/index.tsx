@@ -9,17 +9,19 @@ export default function BasicTextFields() {
   const onSubmitForm = useCallback((e) => {
     console.log(e.target.value);
     let token = document.cookie.slice(document.cookie.indexOf('userCookie') + 15);
-    console.log(token);
     token = unescape(token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' ')));
-    const obj = JSON.parse(token);
-    console.log(token);
+    console.log(token.slice(0, token.length));
+    const obj = JSON.parse(token.slice(0, token.length));
+    console.log(obj);
+    console.log(obj.userId);
+    console.log(obj.email);
+    console.log(obj.oauthId);
+    console.log(e.target.value);
     if (token) {
       axios
         .post(`/api/auth/qrlogin`, {
           userId: obj.userId,
-          username: obj.username,
           email: obj.email,
-          profile: obj.profile,
           oauthId: parseInt(obj.oauthId),
           TwoFactorAuthcode: e.target.value,
         })

@@ -62,7 +62,6 @@ const ChannelBody = () => {
       .catch((e) => {
         mutateAllChannelList();
         mutateMyChannelList();
-        history.push(`ft_transcendence/channels`);
       });
   }, []);
 

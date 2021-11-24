@@ -90,6 +90,23 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
       console.log('pass1', PasswordValues);
       console.log('visibility', visibility);
       if (name) {
+        if (visibility) {
+          axios
+            .get(`/api/channels/changeChannelName/${id}/${name}`, {
+              withCredentials: true,
+              headers: {
+                Authorization: `Bearer ${getToken()}`,
+              },
+            })
+            .then(() => {
+              MutateAllChannelList();
+              channelListMutate();
+              setName('');
+            })
+            .catch(() => {
+              setCreateError(true);
+            });
+        }
         axios
           .get(`/api/channels/changeChannelName/${id}/${name}`, {
             withCredentials: true,

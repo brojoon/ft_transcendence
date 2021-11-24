@@ -63,7 +63,7 @@ const LeftSideBar = () => {
     <div style={{ width: '55px', flexShrink: 0, borderRight: '5px solid #121212' }}>
       <Toolbar>
         <NavIcons>
-          <Link to={`/ft_transcendence/profile`}>
+          <Link to={`/ft_transcendence/profile`} style={{ textDecoration: 'none' }}>
             <Tooltip title="Profile" placement="right" arrow>
               <StyledBadge
                 overlap="circular"
