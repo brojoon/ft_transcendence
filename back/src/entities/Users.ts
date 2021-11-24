@@ -80,41 +80,40 @@ export class Users {
   ban: boolean;
 
   //////////////////////////////////////////////////
-
-  @Column( { name: 'maxStarOfFreinds',  default: () => 0 })
+  @Column("int", { name: 'maxStarOfFreinds',  default: () => "'0'"})
   maxStarOfFreinds: number;
 
-  @Column( { name: 'maxStarOfFreindsTime',  default: () => 0 })
+  @Column("timestamp", { name: 'maxStarOfFreindsTime', nullable: true })
   maxStarOfFreindsTime: Date;
 
-  @Column( { name: 'maxStarOfDms',  default: () => 0 })
+  @Column("int", { name: 'maxStarOfDms',  default: () => "'0'" })
   maxStarOfDms: number;
 
-  @Column( { name: 'maxStarOfDmsTime',  default: () => 0 })
+  @Column("timestamp", { name: 'maxStarOfDmsTime', nullable: true })
   maxStarOfDmsTime: Date;
 
-  @Column( { name: 'maxStarOfChannels',  default: () => 0 })
+  @Column("int", { name: 'maxStarOfChannels',  default: () => "'0'" })
   maxStarOfChannels: number;
 
-  @Column( { name: 'maxStarOfChannelsTime',  default: () => 0 })
+  @Column("timestamp", { name: 'maxStarOfChannelsTime', nullable: true })
   maxStarOfChannelsTime: Date;
 
-  @Column( { name: 'maxStarOfVictory',  default: () => 0 })
+  @Column("int", { name: 'maxStarOfVictory',  default: () => "'0'" })
   maxStarOfVictory: number;
 
-  @Column( { name: 'maxStarOfVictoryTime',  default: () => 0 })
+  @Column("timestamp", { name: 'maxStarOfVictoryTime', nullable: true })
   maxStarOfVictoryTime: Date;
 
-  @Column( { name: 'maxStarOfLose',  default: () => 0 })
+  @Column("int", { name: 'maxStarOfLose',  default: () => "'0'" })
   maxStarOfLose: number;
 
-  @Column( { name: 'maxStarOfLoseTime',  default: () => 0 })
+  @Column("timestamp", { name: 'maxStarOfLoseTime', nullable: true })
   maxStarOfLoseTime: Date;
 
-  @Column( { name: 'maxStarOfFight',  default: () => 0 })
+  @Column("int", { name: 'maxStarOfFight',  default: () => "'0'" })
   maxStarOfFight: number;
 
-  @Column( { name: 'maxStarOfFightTime',  default: () => 0 })
+  @Column("timestamp", { name: 'maxStarOfFightTime', nullable: true })
   maxStarOfFightTime: Date;
 
   //////////////////////////////////////////////////
