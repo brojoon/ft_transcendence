@@ -83,37 +83,37 @@ export class Users {
   @Column("int", { name: 'maxStarOfFreinds',  default: () => "'0'"})
   maxStarOfFreinds: number;
 
-  @Column("timestamp", { name: 'maxStarOfFreindsTime', nullable: true })
+  @Column("timestamptz", { name: 'maxStarOfFreindsTime', nullable: true })
   maxStarOfFreindsTime: Date;
 
   @Column("int", { name: 'maxStarOfDms',  default: () => "'0'" })
   maxStarOfDms: number;
 
-  @Column("timestamp", { name: 'maxStarOfDmsTime', nullable: true })
+  @Column("timestamptz", { name: 'maxStarOfDmsTime', nullable: true })
   maxStarOfDmsTime: Date;
 
   @Column("int", { name: 'maxStarOfChannels',  default: () => "'0'" })
   maxStarOfChannels: number;
 
-  @Column("timestamp", { name: 'maxStarOfChannelsTime', nullable: true })
+  @Column("timestamptz", { name: 'maxStarOfChannelsTime', nullable: true })
   maxStarOfChannelsTime: Date;
 
   @Column("int", { name: 'maxStarOfVictory',  default: () => "'0'" })
   maxStarOfVictory: number;
 
-  @Column("timestamp", { name: 'maxStarOfVictoryTime', nullable: true })
+  @Column("timestamptz", { name: 'maxStarOfVictoryTime', nullable: true })
   maxStarOfVictoryTime: Date;
 
   @Column("int", { name: 'maxStarOfLose',  default: () => "'0'" })
   maxStarOfLose: number;
 
-  @Column("timestamp", { name: 'maxStarOfLoseTime', nullable: true })
+  @Column("timestamptz", { name: 'maxStarOfLoseTime', nullable: true })
   maxStarOfLoseTime: Date;
 
   @Column("int", { name: 'maxStarOfFight',  default: () => "'0'" })
   maxStarOfFight: number;
 
-  @Column("timestamp", { name: 'maxStarOfFightTime', nullable: true })
+  @Column("timestamptz", { name: 'maxStarOfFightTime', nullable: true })
   maxStarOfFightTime: Date;
 
   //////////////////////////////////////////////////
