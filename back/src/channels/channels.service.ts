@@ -217,7 +217,7 @@ export class ChannelsService {
     const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
     if ((!await this.chatmemberRepository.findOne({userId, channelId})) && !isSiteOwner)
       throw new ForbiddenException("볼 권한이 없음")
-    const ret = this.chatmemberRepository.find({where:{channelId, mute:true}, select:["userId", "channelId", "muteExpired"]});
+    const ret = this.chatmemberRepository.find({where:{channelId, mute:true}});
     return ret;
   }
 
@@ -412,5 +412,29 @@ export class ChannelsService {
       return {number:numberOfChannel, star:Math.floor(numberOfChannel / 5), time:now};
     }
     return {number:numberOfChannel, star, time:user.maxStarOfChannelsTime}
+  }
+
+  async siteOwnerChannelDelete(){
+
+  }
+
+  async siteOwnerChannelUserMute(){
+
+  }
+
+  async siteOwnerChannelUserAdmin(){
+
+  }
+
+  async siteOwnerChannelUserAdminRemove(){
+
+  }
+
+  async siteOwnerChannelUserBan(){
+
+  }
+
+  async siteOwnerChannelUserBanRemove(){
+
   }
 }
