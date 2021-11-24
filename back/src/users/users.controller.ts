@@ -252,13 +252,24 @@ export class UsersController {
     return  this.usersService.addAndRemoveModerator(user.userId, userId , false);
   }
 
+  @ApiOperation({ summary: 'admin list'})
+  @ApiResponse ({
+    status: 200,
+    description: 'moderators 목록 출력',
+  })
+  @HttpCode(200)
+  @Get('listAdmin')
+  async listAdmin(@User() user){
+    return  this.usersService.listAdmin(user.userId);
+  }
+
   @ApiOperation({ summary: 'moderators list'})
   @ApiResponse ({
     status: 200,
     description: 'moderators 목록 출력',
   })
   @HttpCode(200)
-  @Get('removeModerator')
+  @Get('listModerator')
   async listModerator(@User() user){
     return  this.usersService.listModerator(user.userId);
   }

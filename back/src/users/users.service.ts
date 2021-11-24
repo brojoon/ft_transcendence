@@ -292,9 +292,8 @@ export class UsersService {
 
   async listModerator(userId: string) {
     try {
-      const result = await this.checkAdmin(userId);
-      if (!result)
-        throw new ForbiddenException('admin이 아닙니다');
+      if (!(await this.checkAdmin(userId)) && !(await this.checkModerator(userId)))
+        throw new ForbiddenException('권한이 없습니다.');
       const res = await this.usersRepository.find({
         select: ['userId', 'username', 'email', 'profile'],
         where: { moderator: true },  
@@ -303,6 +302,25 @@ export class UsersService {
     } catch (error) {
       if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
         throw new BadRequestException("listModerator 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);    
+    }
+  }
+
+  async listAdmin(userId: string) {
+    try {
+      if (!(await this.checkAdmin(userId)) && !(await this.checkModerator(userId)))
+        throw new ForbiddenException('권한이 없습니다.');
+      const res = await this.usersRepository.find({
+        select: ['userId', 'username', 'email', 'profile'],
+        where: { admin: true },  
+      });
+      return (res);       
+    } catch (error) {
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
+        throw new BadRequestException("listAdmin 실패");
       else if (error.response.statusCode === 403)
         throw new ForbiddenException(error.response.message);
       else if (error.response.statusCode === 404)
