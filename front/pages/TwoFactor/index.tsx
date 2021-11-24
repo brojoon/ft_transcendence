@@ -9,6 +9,7 @@ export default function BasicTextFields() {
   const onSubmitForm = useCallback((e) => {
     console.log(e.target.value);
     let token = document.cookie.slice(document.cookie.indexOf('userCookie') + 15);
+    console.log(token.slice(0, token.length));
     token = unescape(token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' ')));
     console.log(token.slice(0, token.length));
     const obj = JSON.parse(token.slice(0, token.length));

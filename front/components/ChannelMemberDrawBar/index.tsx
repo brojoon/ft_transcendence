@@ -181,8 +181,10 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                         return MymuteMmbers?.map((muteMember: IMemberList) => {
                           if (muteMember.userId === user.userId) {
                             console.log(13);
-
+                            console.log(muteMember);
                             if (muteMember.mute) {
+                              console.log(14);
+
                               return (
                                 <>
                                   {selectedIndex === index && user.userId !== myData?.userId && (
@@ -206,7 +208,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                                   </ListItem>
                                 </>
                               );
-                            }
+                            
                           }
                         });
                       } else {
