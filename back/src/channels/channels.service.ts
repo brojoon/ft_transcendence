@@ -223,16 +223,13 @@ export class ChannelsService {
     let expired:Date = chatmember.muteExpired;
     let now:Date = new Date();
     if (!chatmember.mute){
-      console.log("not mute");
       return false;
     }
     else if (expired < now){
-      console.log("over the expired!!!");
       await this.chatmemberRepository.update({userId}, {mute:false})
       return false;
     }
     else{
-      console.log("before the expired");
       return true;
     }
   }
@@ -363,7 +360,9 @@ export class ChannelsService {
       throw new BadRequestException("그런 사용자가 없습니다");
     const expiredTime:Date = new Date(+(new Date()) + time * 1000);
     await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:!muteUser.mute, muteExpired:expiredTime});
-    setTimeout(() => {(async () => {await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:false}).then(()=>{this.eventsGateway.server.to(`channel-${channelId}`).emit('mute', null);}) })(); }, time * 1000);
+    setTimeout(() => {(async () => {
+      await this.chatmemberRepository.update({channelId, userId:muteId
+      }, {mute:false}).then(()=>{this.eventsGateway.server.to(`channel-${channelId}`).emit('mute', null);}) })(); }, time * 1000);
     this.eventsGateway.server.to(`channel-${channelId}`).emit('mute', null);
   }
 
@@ -405,24 +404,20 @@ export class ChannelsService {
     await this.chatchannelRepository.delete({id:channelId});
   }
 
-  /*
-  async siteOwnerChannelUserMute(channelId:number, userId:string){
+  async siteOwnerChannelUserMuteSwitch(channelId:number, userId:string, muteId:string, time:number){
     const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
     if (!isSiteOwner)
       throw new ForbiddenException("권한 없음");
-    const newMute = new Blockmember();
-    newMute.channelId = channelId;
-    newMute.userId = userId;
-    await this.blockmemberRepository.save(newMute);
+      const muteUser = await this.chatmemberRepository.findOne({channelId, userId:muteId});
+      if(!muteUser)
+        throw new BadRequestException("그런 사용자가 없습니다");
+    const expiredTime:Date = new Date(+(new Date()) + time * 1000);
+    await this.chatmemberRepository.update({channelId, userId:muteId}, {mute:!muteUser.mute, muteExpired:expiredTime});
+    setTimeout(() => {(async () => {
+      await this.chatmemberRepository.update({channelId, userId:muteId
+      }, {mute:false}).then(()=>{this.eventsGateway.server.to(`channel-${channelId}`).emit('mute', null);}) })(); }, time * 1000);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('mute', null);
   }
-
-  async siteOwnerChannelUserMuteRemove(channelId:number, userId:string){
-    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
-    if (!isSiteOwner)
-      throw new ForbiddenException("권한 없음");
-    await this.blockmemberRepository.delete({userId, channelId});
-  }
-  */
 
   async siteOwnerChannelUserAdmin(channelId:number, userId:string, givenId:string){
     const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});

@@ -184,6 +184,13 @@ export class ChannelsController {
     await this.channelsService.siteOwnerChannelDelete(channelId, user.userId);
   }
 
+  @Get("/ownerApi/siteOwnerChannelUserMuteSwitch/:channelId/:mutedId/:time")
+  async siteOwnerChannelUserMuteSwitch(@User() User, @Param("channelId") channelId, @Param("mutedId") mutedId, @Param("time") time){
+    if (!time)
+      time = 60;//60초
+    await this.channelsService.siteOwnerChannelUserMuteSwitch(channelId, User.userId, mutedId, time);
+  }
+
   @Get("/ownerApi/siteOwnerChannelUserAdmin/:chanelId/:givenId")
   async siteOwnerChannelUserAdmin(@Param("channelId") channelId, @Param("givenId") givenId, @User() user){
     await this.channelsService.siteOwnerChannelUserAdmin(channelId, user.userId, givenId);
