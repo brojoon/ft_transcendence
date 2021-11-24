@@ -467,4 +467,16 @@ export class ChannelsService {
       throw new ForbiddenException("권한 없음");
     await this.blockmemberRepository.delete({userId, channelId});
   }
+
+  async siteOwnerChannelUserKick(channelId:number, userId:string, banId:string){
+    const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
+    if (!isSiteOwner)
+      throw new ForbiddenException("권한 없음");
+    const removed = await this.chatmemberRepository.findOne({userId:banId, channelId});
+    if (removed.auth == 2){
+      throw new ForbiddenException("소유자를 킥할수는 없음")
+    }
+    await this.chatmemberRepository.delete({userId, channelId});
+  }
+
 }

@@ -203,4 +203,9 @@ export class ChannelsController {
   async siteOwnerChannelUserBanRemove(@Param("channelId") channelId, @Param("banRemoveId") banRemoveId, @User() user){
     await this.channelsService.siteOwnerChannelUserBanRemove(channelId, user.userId, banRemoveId);
   }
+  
+  @Get("/ownerApi/siteOwnerChannelUserKick/:chanelId/:kickId")
+  async siteOwnerChannelUserKick(@Param("channelId") channelId, @Param("kickId") kickId, @User() user){
+    await this.channelsService.siteOwnerChannelUserKick(channelId, user.userId, kickId);
+  }
 }
