@@ -255,7 +255,7 @@ export class UsersController {
   @ApiOperation({ summary: 'admin list'})
   @ApiResponse ({
     status: 200,
-    description: 'moderators 목록 출력',
+    description: 'admin 목록 출력',
   })
   @HttpCode(200)
   @Get('listAdmin')
