@@ -98,13 +98,7 @@ const DMLeftDrawerBar = () => {
             {dmlist?.map((dm: IDmList, index: number) => {
               let isblock = false;
               blockList?.map((blockedUser) => {
-                if (
-                  (blockedUser.userId2 === dm.Dmcontents[0].userId1 &&
-                    dm.Dmcontents[0].userId1 != myData?.userId) ||
-                  (blockedUser.userId2 === dm.Dmcontents[0].userId2 &&
-                    dm.Dmcontents[0].userId2 != myData?.userId)
-                )
-                  isblock = true;
+                if (blockedUser.userId2 === dm.userId) isblock = true;
               });
               if (!isblock) {
                 return (
@@ -127,10 +121,7 @@ const DMLeftDrawerBar = () => {
                         onClick={(event: any) => handleListItemClick(event, index + 1)}
                       >
                         {users?.map((user: any) => {
-                          if (
-                            user.userId === dm.Dmcontents[0].userId1 &&
-                            dm.Dmcontents[0].userId1 != myData?.userId
-                          )
+                          if (user.userId === dm.userId) {
                             return (
                               <>
                                 <Avatar
@@ -139,28 +130,12 @@ const DMLeftDrawerBar = () => {
                                   style={{ border: '2px solid red' }}
                                 />
                                 <ListItemText
-                                  primary={dm.Dmcontents[0].userId1}
+                                  primary={dm.userId}
                                   style={{ marginLeft: '12px', color: 'white' }}
                                 />
                               </>
                             );
-                          else if (
-                            user.userId === dm.Dmcontents[0].userId2 &&
-                            dm.Dmcontents[0]?.userId2 != myData?.userId
-                          )
-                            return (
-                              <>
-                                <Avatar
-                                  src={user.profile}
-                                  alt="Avatar"
-                                  style={{ border: '2px solid red' }}
-                                />
-                                <ListItemText
-                                  primary={dm.Dmcontents[0].userId2}
-                                  style={{ marginLeft: '12px', color: 'white' }}
-                                />
-                              </>
-                            );
+                          }
                         })}
                       </ListItemButton>
                     </List>
