@@ -335,11 +335,13 @@ export class ChannelsService {
     const channelData = await this.getChannelData(channelId);
     if (await this.checkOwner(channelId, userId) == false)
       throw new ForbiddenException("소유자가 아닙니다");
-    const type = !channelType ? await (await this.chatchannelRepository.findOne({id:channelId})).type : channelType;//null아니고 NaN
+    const type = channelType;//null아니고 NaN
     if (type !== 0 && type !== 1 && type !== 2)
       throw new BadRequestException("채팅방 타입은 0,1,2만 올수있음");
-    if (await this.chatchannelRepository.findOne({name:channelData.name, type}))
+    if (await this.chatchannelRepository.findOne({name:channelData.name, type})){
+      console.log(channelData.name, "    ", type, "    ", channelType);
       throw new BadRequestException("이미 존재하는 채팅방입니다");
+    }
     if (await this.checkOwner(channelId, userId) == false)
       throw new ForbiddenException("권한없음.");
     await this.chatchannelRepository.update({id:channelId}, {type})
@@ -353,7 +355,7 @@ export class ChannelsService {
     const channelData = await this.getChannelData(channelId);
     if (await this.checkOwner(channelId, userId) == false)
       throw new ForbiddenException("소유자가 아닙니다");
-    const name = !channelName ? await (await this.chatchannelRepository.findOne({id:channelId})).name : channelName;
+    const name = channelName;
     if (await this.checkOwner(channelId, userId) == false)
       throw new ForbiddenException("권한없음.");
     if (await this.chatchannelRepository.findOne({name, type:channelData.type}))
@@ -369,7 +371,7 @@ export class ChannelsService {
       throw new NotFoundException("없는 채팅방입니다");
     if (await this.checkOwner(channelId, userId) == false)
       throw new ForbiddenException("소유자가 아닙니다");
-    const password = !channelPassword ? await (await this.chatchannelRepository.findOne({id:channelId})).password : bcrypt(channelPassword, 12);
+    const password = !channelPassword ? await (await this.chatchannelRepository.findOne({id:channelId})).password : channelPassword;
     if (await this.checkOwner(channelId, userId) == false)
       throw new ForbiddenException("권한없음.");
     const newPassword = await bcrypt.hash(password, 12);

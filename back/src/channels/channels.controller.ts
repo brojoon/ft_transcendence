@@ -157,15 +157,15 @@ export class ChannelsController {
   //   return await this.channelsService.updateChannel(channelId, user.userId, channelName, type, dto.password);
   // }
 
-  @Get("/updateChannel/:channelId/:channelType")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
+  @Get("/updateChannelType/:channelId/:channelType")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
   async updateChannelType(@Param("channelId") channelId:number, @User() user, @Param('channelType') type:number){
     return await this.channelsService.updateChannelType(channelId, user.userId, type);
   }
-  @Get("/updateChannel/:channelId/:channelName")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
+  @Get("/updateChannelName/:channelId/:channelName")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
   async updateChannelName(@Param("channelId") channelId:number, @User() user, @Param('channelName') channelName:string){
     return await this.channelsService.updateChannelName(channelId, user.userId, channelName);
   }
-  @Get("/updateChannel/:channelId")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
+  @Post("/updateChannelPassword/:channelId")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
   async updateChannelPassword(@Param("channelId") channelId:number, @User() user, @Body() dto:ChannelDto){
     return await this.channelsService.updateChannelPassword(channelId, user.userId, dto.password);
   }
