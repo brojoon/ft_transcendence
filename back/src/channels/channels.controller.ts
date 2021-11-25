@@ -180,7 +180,7 @@ export class ChannelsController {
     await this.channelsService.deleteChannel(channelId, owner.userId);
   }
 
-  @Get("/achevement/numOfChannels")
+  @Get("/achievement/numOfChannels")
   async achievementChannelNumber(@User() user) {
     return await this.channelsService.achievementChannelNumber(user.userId);
   }

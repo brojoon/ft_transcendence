@@ -21,7 +21,7 @@ interface Props {
 
 const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn }) => {
   const { id } = useParams<{ id: string }>();
-  const { mutate: channelListMutate } = useSWR<IChannelList[]>(
+  const { data: myChannelList, mutate: channelListMutate } = useSWR<IChannelList[]>(
     '/api/channels/myChannelList',
     fetcher,
   );
@@ -87,28 +87,9 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
   const onSubmitChannelCreate = useCallback(
     (e) => {
       e.preventDefault();
-      console.log('pass1', PasswordValues);
-      console.log('visibility', visibility);
       if (name) {
-        if (visibility) {
-          axios
-            .get(`/api/channels/changeChannelName/${id}/${name}`, {
-              withCredentials: true,
-              headers: {
-                Authorization: `Bearer ${getToken()}`,
-              },
-            })
-            .then(() => {
-              MutateAllChannelList();
-              channelListMutate();
-              setName('');
-            })
-            .catch(() => {
-              setCreateError(true);
-            });
-        }
         axios
-          .get(`/api/channels/changeChannelName/${id}/${name}`, {
+          .get(`/api/channels/updateChannelName/${id}/${name}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
@@ -123,9 +104,9 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
             setCreateError(true);
           });
       }
-      if (visibility) {
+      if (visibility !== '') {
         axios
-          .get(`/api/channels/changeChannelType/${id}/${visibility}`, {
+          .get(`/api/channels/updateChannelType/${id}/${visibility}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
@@ -138,7 +119,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
 
               axios
                 .post(
-                  `/api/channels/changeChannelPassword/${id}/${PasswordValues.password}`,
+                  `/api/channels/updateChannelPassword/${id}`,
                   {
                     password: PasswordValues.password,
                   },

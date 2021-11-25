@@ -208,7 +208,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                                   </ListItem>
                                 </>
                               );
-                            
+                            }
                           }
                         });
                       } else {

@@ -1,5 +1,5 @@
 import LeftSideBar from '@components/LeftSideBar';
-import Achivements from '@pages/Achivements';
+import Achievements from '@pages/Achievements';
 import Channels from '@pages/Channels';
 import Social from '@pages/Social';
 import Game from '@pages/Game';
@@ -44,7 +44,7 @@ const ft_transcendence = () => {
         <Route path="/ft_transcendence/channels" component={Channels} />
         <Route path="/ft_transcendence/users/:id" component={Profile} />
         <Route path="/ft_transcendence/users" component={Users} />
-        <Route path="/ft_transcendence/achievements" component={Achivements} />
+        <Route path="/ft_transcendence/achievements" component={Achievements} />
         <Route path="/ft_transcendence/game" component={Game} />
         <Route path="/ft_transcendence/profile/setting" component={ProfileSetting} />
         <Route path="/ft_transcendence/profile" component={Profile} />

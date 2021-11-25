@@ -113,13 +113,31 @@ export class DmsService {
       await this.checkHaveUser(userId, userId);
       const checkdm = await this.dmRepository
         .createQueryBuilder('dm')
-        .select(['dm.id', 'dc.userId1', 'dc.userId2'],)
-        .leftJoin("dm.Dmcontents","dc")
+        .select(['dm.id', 'dc.userId1', 'dc.userId2', 'u1.username', 'u2.username'],)
+        .innerJoin("dm.Dmcontents","dc")
+        .innerJoin("dc.UserIds1","u1")
+        .innerJoin("dc.UserIds2","u2")
         .where('dc.userId1 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
         .orWhere('dc.userId2 = :userId AND dc.message = :ms ', { userId, ms: process.env.DB })
         .orderBy('dm.createdAt', 'DESC')
         .getMany();
-      return (checkdm)
+      const dmlist = [];
+      checkdm.forEach((dm) => {
+        if (dm.Dmcontents[0].userId1 === userId) {
+          dmlist.push({
+            id: dm.id,
+            userId: dm.Dmcontents[0].userId2,
+            username: dm.Dmcontents[0].UserIds2.username
+          });
+        } else {
+          dmlist.push({
+            id: dm.id,
+            userId: dm.Dmcontents[0].userId1,
+            username: dm.Dmcontents[0].UserIds1.username
+          });
+        }
+      });
+      return (dmlist)
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
         throw new BadRequestException('DM 리스트 조회 실패');
