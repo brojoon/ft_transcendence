@@ -150,8 +150,8 @@ export class AuthController {
     description: '"otp 인증 성공시": return: true / 이거 ture확인 후 따로 이차인증 true api요청해야 됨',
   })
   @HttpCode(200)
-  @Get('optCodeCheck/:otp')
-  async optCodeCheck(@User() user: UserDto,  @Param('otp') optCode: string) {
+  @Get('otpCodeCheck/:otp')
+  async otpCodeCheck(@User() user: UserDto,  @Param('otp') optCode: string) {
     const isCodeValid =  await this.authService.isTwoFactorAuthenticationCodeValid(optCode, user.userId); 
     return isCodeValid;
   }

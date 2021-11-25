@@ -25,17 +25,17 @@ export class GameController {
     return await this.gameService.gameHistory(gameId);
   }
 
-  @Get("/achevement/numOfWin")
+  @Get("/achievement/numOfWin")
   async numOfWin(@User() user){
     return await this.gameService.numOfWin(user.userId);
   }
 
-  @Get("/achevement/numOfLose")
+  @Get("/achievement/numOfLose")
   async numOfLose(@User() user){
     return await this.gameService.numOfLose(user.userId);
   }
 
-  @Get("/achevement/numOfFight")
+  @Get("/achievement/numOfFight")
   async numOfFight(@User() user){
     return await this.gameService.numOfFight(user.userId);
   }
