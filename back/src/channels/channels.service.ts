@@ -328,7 +328,23 @@ export class ChannelsService {
   private async getChannelData(channelId:number){
     return await this.chatchannelRepository.findOne({id:channelId});
   }
-
+  
+  async updateChannelName(channelId:number, userId:string, channelName:string) {
+    if (!await this.chatchannelRepository.findOne({id:channelId}))
+      throw new NotFoundException("없는 채팅방입니다");
+    const channelData = await this.getChannelData(channelId);
+    if (await this.checkOwner(channelId, userId) == false)
+      throw new ForbiddenException("소유자가 아닙니다");
+    const name = channelName;
+    if (await this.checkOwner(channelId, userId) == false)
+      throw new ForbiddenException("권한없음.");
+    if (await this.chatchannelRepository.findOne({name, type:channelData.type}) && name != channelData.name)
+      throw new BadRequestException("이미 존재하는 채팅방입니다");
+    await this.chatchannelRepository.update({id:channelId}, {name})
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('channelType', null);
+    return name;
+  }
+  
   async updateChannelType(channelId:number, userId:string, channelType:number) {
     if (!await this.chatchannelRepository.findOne({id:channelId}))
       throw new NotFoundException("없는 채팅방입니다");
@@ -338,7 +354,7 @@ export class ChannelsService {
     const type = channelType;//null아니고 NaN
     if (type !== 0 && type !== 1 && type !== 2)
       throw new BadRequestException("채팅방 타입은 0,1,2만 올수있음");
-    if (await this.chatchannelRepository.findOne({name:channelData.name, type})){
+    if (await this.chatchannelRepository.findOne({name:channelData.name, type}) && type != channelData.type){
       console.log(channelData.name, "    ", type, "    ", channelType);
       throw new BadRequestException("이미 존재하는 채팅방입니다");
     }
@@ -349,21 +365,6 @@ export class ChannelsService {
     return type;
   }
 
-  async updateChannelName(channelId:number, userId:string, channelName:string) {
-    if (!await this.chatchannelRepository.findOne({id:channelId}))
-      throw new NotFoundException("없는 채팅방입니다");
-    const channelData = await this.getChannelData(channelId);
-    if (await this.checkOwner(channelId, userId) == false)
-      throw new ForbiddenException("소유자가 아닙니다");
-    const name = channelName;
-    if (await this.checkOwner(channelId, userId) == false)
-      throw new ForbiddenException("권한없음.");
-    if (await this.chatchannelRepository.findOne({name, type:channelData.type}))
-      throw new BadRequestException("이미 존재하는 채팅방입니다");
-    await this.chatchannelRepository.update({id:channelId}, {name})
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('channelType', null);
-    return name;
-  }
 
   
   async updateChannelPassword(channelId:number, userId:string, channelPassword:string) {
