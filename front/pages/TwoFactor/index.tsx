@@ -4,21 +4,17 @@ import axios from 'axios';
 import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
+import { useHistory } from 'react-router-dom';
 
-export default function BasicTextFields() {
+const TwoFactor = () => {
+  const history = useHistory();
   const onSubmitForm = useCallback((e) => {
     console.log(e.target.value);
     let token = document.cookie.slice(document.cookie.indexOf('userCookie') + 15);
-    console.log(token.slice(0, token.length));
     token = unescape(token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' ')));
-    console.log(token.slice(0, token.length));
     const obj = JSON.parse(token.slice(0, token.length));
     console.log(obj);
-    console.log(obj.userId);
-    console.log(obj.email);
-    console.log(obj.oauthId);
-    console.log(e.target.value);
-    if (token) {
+    if (obj) {
       axios
         .post(`/api/auth/qrlogin`, {
           userId: obj.userId,
@@ -28,6 +24,7 @@ export default function BasicTextFields() {
         })
         .then(() => {
           console.log('tow-factor성공');
+          history.push('/ft_transcendence/home');
         })
         .catch(console.error);
     }
@@ -68,4 +65,6 @@ export default function BasicTextFields() {
       </form>
     </div>
   );
-}
+};
+
+export default TwoFactor;

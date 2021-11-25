@@ -179,7 +179,6 @@ const ChannelRoom = () => {
     mutateAllChannelList();
     mutateMyMute();
     mutateMymuteMmbers();
-    mutateMymuteMmbers();
   }, []);
 
   const onMessage = useCallback(
