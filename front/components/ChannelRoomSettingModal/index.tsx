@@ -84,22 +84,12 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
     [isChannelDeleteModal, setIsChannelDeleteModal],
   );
 
-  let roomType = -1;
-  let roomName = '';
-
-  myChannelList?.map((myChannel) => {
-    if (myChannel.id === parseInt(id)) {
-      roomType = myChannel.type;
-      roomName = myChannel.name;
-    }
-  });
-
   const onSubmitChannelCreate = useCallback(
     (e) => {
       e.preventDefault();
       if (name) {
         axios
-          .get(`/api/channels/changeChannelName/${id}/${name}`, {
+          .get(`/api/channels/updateChannelName/${id}/${name}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
@@ -114,9 +104,9 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
             setCreateError(true);
           });
       }
-      if (visibility) {
+      if (visibility !== '') {
         axios
-          .get(`/api/channels/changeChannelType/${id}/${visibility}`, {
+          .get(`/api/channels/updateChannelType/${id}/${visibility}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
@@ -129,7 +119,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
 
               axios
                 .post(
-                  `/api/channels/changeChannelPassword/${id}/${PasswordValues.password}`,
+                  `/api/channels/updateChannelPassword/${id}`,
                   {
                     password: PasswordValues.password,
                   },

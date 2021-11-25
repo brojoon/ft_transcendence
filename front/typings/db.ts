@@ -12,15 +12,10 @@ export interface IAllUser {
   email: string;
   profile: string;
 }
-
-export interface IDmcontents {
-  userId1: string;
-  userId2: string;
-}
-
 export interface IDmList {
   id: number,
-  Dmcontents: IDmcontents[];
+  userId: string,
+  username: string,
 }
 
 export interface IChatList {
