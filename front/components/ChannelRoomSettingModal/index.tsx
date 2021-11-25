@@ -21,7 +21,7 @@ interface Props {
 
 const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn }) => {
   const { id } = useParams<{ id: string }>();
-  const { mutate: channelListMutate } = useSWR<IChannelList[]>(
+  const { data: myChannelList, mutate: channelListMutate } = useSWR<IChannelList[]>(
     '/api/channels/myChannelList',
     fetcher,
   );
@@ -84,29 +84,20 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
     [isChannelDeleteModal, setIsChannelDeleteModal],
   );
 
+  let roomType = -1;
+  let roomName = '';
+
+  myChannelList?.map((myChannel) => {
+    if (myChannel.id === parseInt(id)) {
+      roomType = myChannel.type;
+      roomName = myChannel.name;
+    }
+  });
+
   const onSubmitChannelCreate = useCallback(
     (e) => {
       e.preventDefault();
-      console.log('pass1', PasswordValues);
-      console.log('visibility', visibility);
       if (name) {
-        if (visibility) {
-          axios
-            .get(`/api/channels/changeChannelName/${id}/${name}`, {
-              withCredentials: true,
-              headers: {
-                Authorization: `Bearer ${getToken()}`,
-              },
-            })
-            .then(() => {
-              MutateAllChannelList();
-              channelListMutate();
-              setName('');
-            })
-            .catch(() => {
-              setCreateError(true);
-            });
-        }
         axios
           .get(`/api/channels/changeChannelName/${id}/${name}`, {
             withCredentials: true,

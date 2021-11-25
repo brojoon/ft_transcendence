@@ -152,9 +152,22 @@ export class ChannelsController {
     await this.channelsService.kickUser(channelId, admin.userId, kickId);
   }
 
-  @Get("/updateChannel/:channelId/:channelName/:channelType")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
-  async updateChannel(@Param("channelId") channelId:number, @User() user, @Param('channelName') channelName:string, @Param('channelType') type:number, @Body() dto:ChannelDto){
-    return await this.channelsService.updateChannel(channelId, user.userId, channelName, type, dto.password);
+  // @Get("/updateChannel/:channelId/:channelName/:channelType")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
+  // async updateChannel(@Param("channelId") channelId:number, @User() user, @Param('channelName') channelName:string, @Param('channelType') type:number, @Body() dto:ChannelDto){
+  //   return await this.channelsService.updateChannel(channelId, user.userId, channelName, type, dto.password);
+  // }
+
+  @Get("/updateChannelType/:channelId/:channelType")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
+  async updateChannelType(@Param("channelId") channelId:number, @User() user, @Param('channelType') type:number){
+    return await this.channelsService.updateChannelType(channelId, user.userId, type);
+  }
+  @Get("/updateChannelName/:channelId/:channelName")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
+  async updateChannelName(@Param("channelId") channelId:number, @User() user, @Param('channelName') channelName:string){
+    return await this.channelsService.updateChannelName(channelId, user.userId, channelName);
+  }
+  @Post("/updateChannelPassword/:channelId")//await 빠진 부분 다 붙이기, 컨트롤러 함수들 다 async 해주기
+  async updateChannelPassword(@Param("channelId") channelId:number, @User() user, @Body() dto:ChannelDto){
+    return await this.channelsService.updateChannelPassword(channelId, user.userId, dto.password);
   }
 
   @Get("/muteUser/:channelId/:muteId/:time")
@@ -167,7 +180,7 @@ export class ChannelsController {
     await this.channelsService.deleteChannel(channelId, owner.userId);
   }
 
-  @Get("/achevement/numOfChannels")
+  @Get("/achievement/numOfChannels")
   async achievementChannelNumber(@User() user) {
     return await this.channelsService.achievementChannelNumber(user.userId);
   }
