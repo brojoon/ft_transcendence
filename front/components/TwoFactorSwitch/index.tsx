@@ -13,20 +13,21 @@ const TwoFactorSwitch = () => {
   const [checked, setChecked] = useState(!isTwoFactor);
   const [imgsrc, setImgsrc] = useState('');
   const [isQRModal, setisQRModal] = useState(false);
-  const [OTPvalue, setOTPvalue] = useState(0);
+  const [OTPvalue, setOTPvalue] = useState('');
 
   const onSubmitOTPvalue = useCallback(
     (e) => {
       console.log(OTPvalue);
       if (e.key === 'Enter') {
         axios
-          .get(`/api/auth/optCodeCheck/${OTPvalue}`, {
+          .get(`/api/auth/otpCodeCheck/${OTPvalue}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
             },
           })
           .then((e) => {
+            setOTPvalue('');
             if (e.data === true) {
               axios
                 .get('/api/users/turn-on', {

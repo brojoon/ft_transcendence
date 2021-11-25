@@ -9,7 +9,7 @@ import Users from '@pages/Users';
 import { IDmList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import React, { useEffect } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import useSWR from 'swr';
 import { Container } from './style';
 import { disconnect } from 'process';
@@ -24,17 +24,26 @@ const ft_transcendence = () => {
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
 
+  const history = useHistory();
+
+  // if (myData && myData.username === '') {
+  //   history.push('/ft_transcendence/login/first-step');
+  // }
+
   let socket = getSocket();
   useEffect(() => {
     if (DMList && ChannelList && myData) {
       socket.emit('login', {
         userId: myData?.userId,
+        // userName: myData?.username,
         Dms: DMList,
         channels: ChannelList,
       });
     }
   }, [socket, DMList, ChannelList, myData]);
+
   if (!myData) return null;
+
   return (
     <Container>
       <LeftSideBar />
