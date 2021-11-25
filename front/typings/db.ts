@@ -75,3 +75,9 @@ export interface IFriendList {
 export interface IBlockList {
   userId2: string,
 }
+
+export interface IAchievement {
+  number: number,
+  start: number,
+  time: Date,
+}
