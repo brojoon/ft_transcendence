@@ -73,6 +73,6 @@ export interface IBlockList {
 
 export interface IAchievement {
   number: number,
-  start: number,
+  star: number,
   time: Date,
 }

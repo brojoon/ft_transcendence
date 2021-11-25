@@ -1,5 +1,7 @@
 import React, { useEffect, useState, VFC } from 'react';
 import { IAchievement } from '@typings/db';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
 
 interface Props {
   curValue: IAchievement | undefined;
@@ -9,18 +11,24 @@ interface Props {
   condition: string;
 }
 
+dayjs.locale('ko');
+
 const Achievement: VFC<Props> = ({ Icon, curValue, maxCount, header, condition }) => {
   const [progress, setProgress] = useState(0);
   useEffect(() => {
     setTimeout(() => {
       if (curValue?.number) {
-        if (progress >= maxCount) {
+        if (maxCount <= curValue?.number && curValue?.star >= maxCount / 5) {
+          return;
         } else if (progress < curValue?.number) {
+          console.log('curValue?.number', curValue?.number);
           setProgress((prev) => prev + 1);
+        } else if (progress > curValue?.number) {
+          setProgress((prev) => prev - 1);
         }
       }
     }, 40);
-  }, [progress, curValue?.number, maxCount]);
+  }, [progress, curValue, maxCount]);
   return (
     <div
       style={{
@@ -53,9 +61,14 @@ const Achievement: VFC<Props> = ({ Icon, curValue, maxCount, header, condition }
             position: 'absolute',
             right: '50%',
             transform: 'translateX(50%)',
+            lineHeight: '22px',
+            fontSize: '12px',
+            whiteSpace: 'nowrap',
           }}
         >
-          {progress < maxCount ? progress + ' / ' + maxCount : progress}
+          {curValue && (curValue?.star >= maxCount / 5 || curValue.number >= maxCount)
+            ? dayjs(curValue.time).format('YYYY. MM. DD. A HH:mm:ss')
+            : progress + ' / ' + maxCount}
         </div>
         <div
           style={{
@@ -65,7 +78,11 @@ const Achievement: VFC<Props> = ({ Icon, curValue, maxCount, header, condition }
             fontWeight: 500,
             borderRadius: '0 0 3px 3px',
 
-            width: `${progress < maxCount ? (progress / maxCount) * 100 : '100%'}%`,
+            width: `${
+              curValue && (curValue?.star >= maxCount / 5 || curValue?.number >= maxCount)
+                ? '100'
+                : (progress / maxCount) * 100
+            }%`,
             height: '23px',
             textAlign: 'center',
             transition: 'all ease-out 0.5s',
