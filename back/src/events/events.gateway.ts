@@ -34,13 +34,13 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() data: { userId: string; username: string, Dms: number[], channels: number[] },
     @ConnectedSocket() socket: Socket ){
 
-    onlineMap[socket.id] = { userId:data.userId, userName:data.username };
-    console.log(`login : ${socket.id}, ${onlineMap[socket.id]}`);
+    onlineMap[socket.id] = { userId:data.userId, username:data.username };
+    console.log(`login : ${socket.id}, ${onlineMap[socket.id].userId}`);
     try{
       await this.connectRepository.createQueryBuilder()
           .update()
           .set({ state: true })
-          .where('userId = :userId', {userId: onlineMap[socket.id]})
+          .where('userId = :userId', {userId: onlineMap[socket.id].userId})
           .execute()
     }catch{
       throw new BadRequestException('접속상태 업뎃 실패');
@@ -60,23 +60,23 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleConnection(@ConnectedSocket() socket: Socket) { }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
-    console.log(`logout : ${socket.id}, ${onlineMap[socket.id]}`);
+    console.log(`logout : ${socket.id}, ${onlineMap[socket.id].userId}`);
     // matching 초기화
-    if (users.playerOne === onlineMap[socket.id])
+    if (users.playerOne === onlineMap[socket.id].userId)
       users.playerOne = null;
-    else if (users.playerTwo === onlineMap[socket.id]) {
+    else if (users.playerTwo === onlineMap[socket.id].userId) {
       users.playerOne = null;
       users.playerTwo = null;
     }
     // game중 인거 있으면 join 0으로 돌로주기
     try{
-      const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id], playerOneJoin: 1})
-      const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id], playerTwoJoin: 1})
+      const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id].userId, playerOneJoin: 1})
+      const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id].userId, playerTwoJoin: 1})
       if (result1) {
         await this.historyRepository.createQueryBuilder()
           .update()
           .set({ playerOneJoin: 0 })
-          .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id], num: 1})
+          .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
           .execute();
         if (result1.state != 2 && gameMap[result1.id] != undefined) {
           gameMap[result1.id].player_one_ready = 0;
@@ -90,7 +90,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         await this.historyRepository.createQueryBuilder()
           .update()
           .set({ playerTwoJoin: 0 })
-          .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id], num: 1})
+          .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
           .execute();
         if (result2.state != 2 && gameMap[result2.id] != undefined) {
           gameMap[result2.id].player_two_ready = 0;
@@ -103,18 +103,18 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     } catch (error) {
       throw new BadRequestException('레디 0 실패');
     }
-    // 접속상태 업데이트
-    socket.emit('onlineList', Object.values(onlineMap));
     try{
       await this.connectRepository.createQueryBuilder()
           .update()
           .set({ state: false })
-          .where('userId = :userId', {userId: onlineMap[socket.id]})
+          .where('userId = :userId', {userId: onlineMap[socket.id].userId})
           .execute()
     }catch (error) {
       throw new BadRequestException('접속상태 업뎃 실패');
     }
     delete onlineMap[socket.id];
+    // 접속상태 업데이트
+    socket.emit('onlineList', Object.values(onlineMap));
   }
 
   //////////////////////////////////////////////////////////////////////////
