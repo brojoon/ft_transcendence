@@ -26,9 +26,9 @@ const ft_transcendence = () => {
 
   const history = useHistory();
 
-  // if (myData && myData.username === '') {
-  //   history.push('/ft_transcendence/login/first-step');
-  // }
+  if (myData && myData.username === '') {
+    history.push('/ft_transcendence/login/first-step');
+  }
 
   let socket = getSocket();
   useEffect(() => {
