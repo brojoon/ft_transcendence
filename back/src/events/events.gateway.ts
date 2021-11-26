@@ -104,12 +104,19 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       throw new BadRequestException('레디 0 실패');
     }
     try{
-      await this.connectRepository.createQueryBuilder()
-          .update()
-          .set({ state: false })
-          .where('userId = :userId', {userId: onlineMap[socket.id].userId})
-          .execute()
-    }catch (error) {
+      let connectNum = 0;
+      Object.keys(onlineMap).forEach(function(v){
+        if (onlineMap[v].userId === onlineMap[socket.id].userId)
+          ++connectNum;
+      })
+      if (connectNum === 1) {
+        await this.connectRepository.createQueryBuilder()
+        .update()
+        .set({ state: false })
+        .where('userId = :userId', {userId: onlineMap[socket.id].userId})
+        .execute()
+      }
+    } catch (error) {
       throw new BadRequestException('접속상태 업뎃 실패');
     }
     delete onlineMap[socket.id];
