@@ -1,6 +1,7 @@
 import Avatar from '@mui/material/Avatar';
-import { IChatList, IAllUser, IUser, IChannelChatList } from '@typings/db';
+import { IChatList, IAllUser, IUser, IChannelChatList, IBlockList } from '@typings/db';
 import fetcher from '@utils/fetcher';
+import { BlockList } from 'net';
 import React, { RefObject, VFC } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useParams } from 'react-router';
@@ -14,6 +15,7 @@ interface Props {
 const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
   const { id } = useParams<{ id: string }>();
   const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
+  const { data: blockList } = useSWR<IBlockList[]>('/api/friend/blocklist', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
@@ -31,26 +33,32 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
     >
       <Scrollbars autoHide ref={scrollbarRef}>
         {chatSections?.map((chat) => {
-          return (
-            <div style={{ color: 'white', display: ' flex' }}>
-              <div style={{ marginRight: '10px' }}>
-                {alluser?.map((user) => {
-                  if (user.userId === chat.userId)
-                    return (
-                      <Avatar
-                        src={user.profile}
-                        alt="Avatar"
-                        style={{ width: '40px', height: '40px', marginBottom: '25px' }}
-                      />
-                    );
-                })}
+          let isblock = false;
+          blockList?.map((blockUser) => {
+            if (chat.userId === blockUser.userId2) isblock = true;
+          });
+          if (!isblock) {
+            return (
+              <div style={{ color: 'white', display: ' flex' }}>
+                <div style={{ marginRight: '10px' }}>
+                  {alluser?.map((user) => {
+                    if (user.userId === chat.userId)
+                      return (
+                        <Avatar
+                          src={user.profile}
+                          alt="Avatar"
+                          style={{ width: '40px', height: '40px', marginBottom: '25px' }}
+                        />
+                      );
+                  })}
+                </div>
+                <div>
+                  <div>{chat.userId}</div>
+                  <p style={{ marginTop: '0' }}>{chat.message}</p>
+                </div>
               </div>
-              <div>
-                <div>{chat.userId}</div>
-                <p style={{ marginTop: '0' }}>{chat.message}</p>
-              </div>
-            </div>
-          );
+            );
+          }
         })}
       </Scrollbars>
     </div>
