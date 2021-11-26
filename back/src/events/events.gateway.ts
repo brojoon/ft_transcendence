@@ -15,6 +15,7 @@ import { Connect } from 'src/entities/Connect';
 import { History } from 'src/entities/History';
 import initData from 'src/game/gameInit';
 import { gameMap } from 'src/game/gameMap';
+import { UsernameDto } from 'src/users/dto/username.dto';
 import { Repository } from 'typeorm';
 import users from './matchInfo';
 import { onlineMap } from './onlineMap';
@@ -30,9 +31,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('login')
   async handleLogin(
-    @MessageBody() data: { userId: string; Dms: number[], channels: number[] },
+    @MessageBody() data: { userId: string; username: string, Dms: number[], channels: number[] },
     @ConnectedSocket() socket: Socket ){
-    onlineMap[socket.id] = data.userId;
+
+    onlineMap[socket.id] = { userId:data.userId, userName:data.username };
     console.log(`login : ${socket.id}, ${onlineMap[socket.id]}`);
     try{
       await this.connectRepository.createQueryBuilder()

@@ -29,7 +29,7 @@ export class AuthController {
       username: id,
       userId: id,
       email: `${id}@naver.com`,
-      profile: 'pricture'
+      profile: undefined
     }
     this.authService.Join(user.oauthId, user.username, user.userId, user.email, user.profile);
     const token = await this.authService.login(user);
