@@ -83,26 +83,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
           }}
         ></div>
       )}
-      <Container
-        className={'MemberDrawBar ' + (membersToggle ? 'visible' : 'hidden')}
-        style={
-          {
-            // backgroundColor: '#363636',
-            // width: '380px',
-            // height: '100%',mutateMymuteMmbers
-            // right: 0,
-            // display: 'flex',
-            // margin: 0,
-            // flexDirection: 'column',
-            // alignItems: 'center',
-            // visibility: 'hidden',
-            // left: 'auto',
-            // transform: 'translate(0%)',
-            // overflowY: 'auto',
-            // overflowX: 'hidden',
-          }
-        }
-      >
+      <Container className={'MemberDrawBar ' + (membersToggle ? 'visible' : 'hidden')}>
         <Scrollbars>
           <div>
             <ListItem style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}>
@@ -173,18 +154,12 @@ const ChannelMemberDrawBar: VFC<Props> = ({
             {memberList &&
               memberList?.map((member, index) => {
                 if (member.auth === 0) {
-                  console.log(11);
                   return alluser?.map((user) => {
                     if (user.userId == member.userId) {
                       if (MymuteMmbers && MymuteMmbers.length > 0) {
-                        console.log(12);
                         return MymuteMmbers?.map((muteMember: IMemberList) => {
                           if (muteMember.userId === user.userId) {
-                            console.log(13);
-                            console.log(muteMember);
                             if (muteMember.mute) {
-                              console.log(14);
-
                               return (
                                 <>
                                   {selectedIndex === index && user.userId !== myData?.userId && (

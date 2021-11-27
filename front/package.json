@@ -15,6 +15,7 @@
     "@emotion/styled": "^11.3.0",
     "@loadable/component": "^5.15.0",
     "@mui/icons-material": "^5.0.3",
+    "@mui/lab": "^5.0.0-alpha.57",
     "@mui/material": "^5.0.3",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.1",
     "@types/gravatar": "^1.8.3",

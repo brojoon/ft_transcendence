@@ -46,6 +46,17 @@ export interface IChannelList {
   deleteAt: null
 }
 
+export interface IChannelList2 {
+  id: number,
+  name: string,
+  type: number,
+  authId: string | undefined,
+  password: null,
+  createdAt: Date,
+  updatedAt: Date,
+  deleteAt: null
+}
+
 // export interface IMember {
 //   userId: string,
 //   mute: boolean,

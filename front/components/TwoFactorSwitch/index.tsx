@@ -10,7 +10,7 @@ import TextField from '@mui/material/TextField';
 
 const TwoFactorSwitch = () => {
   const { data: isTwoFactor } = useSWR<Boolean>('/api/users/two-factor-status', fetcher);
-  const [checked, setChecked] = useState(!isTwoFactor);
+  const [checked, setChecked] = useState(isTwoFactor);
   const [imgsrc, setImgsrc] = useState('');
   const [isQRModal, setisQRModal] = useState(false);
   const [OTPvalue, setOTPvalue] = useState('');
