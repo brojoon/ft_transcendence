@@ -179,8 +179,6 @@ export class ChannelsService {
   }
 
   async userListOnlyId(channelId:number, userId:string) {
-    if (!await this.chatmemberRepository.findOne({channelId, userId}))
-      throw new ForbiddenException("채팅방에 참여중이지 않은 사용자인데 유저들을 조회하려고 함"); 
     const userList = await this.chatmemberRepository.find({where:{channelId}});
     let ret = new Array();
     let size = userList.length;
@@ -191,8 +189,6 @@ export class ChannelsService {
   }
 
   async userList(channelId:number, userId:string) {
-    if (!await this.chatmemberRepository.findOne({channelId, userId}))
-      throw new ForbiddenException("채팅방에 참여중이지 않은 사용자인데 유저들을 조회하려고 함"); 
     const userList = await this.chatmemberRepository.find({where:{channelId}});
     return userList
     /*
@@ -478,17 +474,17 @@ export class ChannelsService {
       throw new ForbiddenException("소유자를 밴할수는 없음")
     }
     const newBan = new Blockmember();
-    newBan.userId = userId;
+    newBan.userId = banId;
     newBan.channelId = channelId;
     await this.blockmemberRepository.save(newBan);
-    await this.chatmemberRepository.delete({userId, channelId});
+    await this.chatmemberRepository.delete({userId:banId, channelId});
   }
 
   async siteOwnerChannelUserBanRemove(channelId:number, userId:string, banId:string){
     const isSiteOwner = await this.usersRepository.findOne({where:[{userId, admin:true}, {userId, moderator:true}]});
     if (!isSiteOwner)
       throw new ForbiddenException("권한 없음");
-    await this.blockmemberRepository.delete({userId, channelId});
+    await this.blockmemberRepository.delete({userId:banId, channelId});
   }
 
   async siteOwnerChannelUserKick(channelId:number, userId:string, banId:string){
@@ -499,7 +495,7 @@ export class ChannelsService {
     if (removed.auth == 2){
       throw new ForbiddenException("소유자를 킥할수는 없음")
     }
-    await this.chatmemberRepository.delete({userId, channelId});
+    await this.chatmemberRepository.delete({userId:banId, channelId});
   }
 
 }

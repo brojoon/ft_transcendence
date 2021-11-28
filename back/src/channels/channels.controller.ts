@@ -174,9 +174,9 @@ export class ChannelsController {
   async muteSwitch(@Param("channelId") channelId:number, @User() admin, @Param('muteId') muteId:string, @Param("time") time:number){
     await this.channelsService.muteSwitch(channelId, admin.userId, muteId, time);
   }
+
   @Get("/deleteChannel/:channelId")
   async deleteChannel(@Param("channelId") channelId:number, @User() owner){
-    console.log("test\n",owner,"\ntest");
     await this.channelsService.deleteChannel(channelId, owner.userId);
   }
 
@@ -192,40 +192,40 @@ export class ChannelsController {
     return await this.channelsService.siteOwnerChannelList(user.userId);
   }
 
-  @Get("/ownerApi/siteOwnerChannelDelete/:chanelId")
-  async siteOwnerChannelDelete(@Param("channelId") channelId, @User() user){
+  @Get("/ownerApi/siteOwnerChannelDelete/:channelId")
+  async siteOwnerChannelDelete(@Param("channelId") channelId:number, @User() user){
     await this.channelsService.siteOwnerChannelDelete(channelId, user.userId);
   }
 
   @Get("/ownerApi/siteOwnerChannelUserMuteSwitch/:channelId/:mutedId/:time")
-  async siteOwnerChannelUserMuteSwitch(@User() User, @Param("channelId") channelId, @Param("mutedId") mutedId, @Param("time") time){
+  async siteOwnerChannelUserMuteSwitch(@User() User, @Param("channelId") channelId:number, @Param("mutedId") mutedId:string, @Param("time") time:number){
     if (!time)
       time = 60;//60초
     await this.channelsService.siteOwnerChannelUserMuteSwitch(channelId, User.userId, mutedId, time);
   }
 
-  @Get("/ownerApi/siteOwnerChannelUserAdmin/:chanelId/:givenId")
-  async siteOwnerChannelUserAdmin(@Param("channelId") channelId, @Param("givenId") givenId, @User() user){
+  @Get("/ownerApi/siteOwnerChannelUserAdmin/:channelId/:givenId")
+  async siteOwnerChannelUserAdmin(@Param("channelId") channelId:number, @Param("givenId") givenId:string, @User() user){
     await this.channelsService.siteOwnerChannelUserAdmin(channelId, user.userId, givenId);
   }
 
-  @Get("/ownerApi/siteOwnerChannelUserAdminRemove/:chanelId/:removed")
-  async siteOwnerChannelUserAdminRemove(@Param("channelId") channelId, @Param("removed") removed, @User() user){
+  @Get("/ownerApi/siteOwnerChannelUserAdminRemove/:channelId/:removed")
+  async siteOwnerChannelUserAdminRemove(@Param("channelId") channelId:number, @Param("removed") removed:string, @User() user){
     await this.channelsService.siteOwnerChannelUserAdminRemove(channelId, user.userId, removed);
   }
 
-  @Get("/ownerApi/siteOwnerChannelUserBan/:chanelId/:banId")
-  async siteOwnerChannelUserBan(@Param("channelId") channelId, @Param("banId") banId, @User() user){
+  @Get("/ownerApi/siteOwnerChannelUserBan/:channelId/:banId")
+  async siteOwnerChannelUserBan(@Param("channelId") channelId:number, @Param("banId") banId:string, @User() user){
     await this.channelsService.siteOwnerChannelUserBan(channelId, user.userId, banId);
   }
 
-  @Get("/ownerApi/siteOwnerChannelUserBanRemove/:chanelId/:banRemoveId")
-  async siteOwnerChannelUserBanRemove(@Param("channelId") channelId, @Param("banRemoveId") banRemoveId, @User() user){
+  @Get("/ownerApi/siteOwnerChannelUserBanRemove/:channelId/:banRemoveId")
+  async siteOwnerChannelUserBanRemove(@Param("channelId") channelId:number, @Param("banRemoveId") banRemoveId:string, @User() user){
     await this.channelsService.siteOwnerChannelUserBanRemove(channelId, user.userId, banRemoveId);
   }
   
-  @Get("/ownerApi/siteOwnerChannelUserKick/:chanelId/:kickId")
-  async siteOwnerChannelUserKick(@Param("channelId") channelId, @Param("kickId") kickId, @User() user){
+  @Get("/ownerApi/siteOwnerChannelUserKick/:channelId/:kickId")
+  async siteOwnerChannelUserKick(@Param("channelId") channelId:number, @Param("kickId") kickId:string, @User() user){
     await this.channelsService.siteOwnerChannelUserKick(channelId, user.userId, kickId);
   }
 }
