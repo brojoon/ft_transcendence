@@ -19,16 +19,12 @@ interface Props {
   user: IAllUser;
 }
 
-const ChannelProfile: VFC<Props> = ({ user }) => {
+const AdminPageProfile: VFC<Props> = ({ user }) => {
   const { id } = useParams<{ id: string }>();
   const { data: dmList, mutate: mutateDmList } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-  const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
-    `/api/channels/mutedMembers/${id}`,
-    fetcher,
-  );
   const { data: blockList } = useSWR<IBlockList[]>(`/api/friend/blocklist`, fetcher);
   const { data: channelUserList, mutate: mutateChannelUserList } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id}`,
@@ -52,24 +48,20 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
   const onClickMuteBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/muteUser/${id}/${user.userId}/20`, {
+      .get(`/api/channels/ownerApi/siteOwnerChannelUserMuteSwitch/${id}/${user.userId}/20`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${getToken()}`,
         },
       })
-      .then((res) => {
-        mutateMymuteMmbers();
-      })
-      .catch(() => {
-        mutateMymuteMmbers();
-      });
+      .then((res) => {})
+      .catch(() => {});
   }, []);
 
   const onClickKickBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/kickUser/${id}/${user.userId}`, {
+      .get(`/api/channels/ownerApi/siteOwnerChannelUserKick/${id}/${user.userId}`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -82,7 +74,7 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
   const onClickBanBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/banUser/${id}/${user.userId}`, {
+      .get(`/api/channels/ownerApi/siteOwnerChannelUserBan/${id}/${user.userId}`, {
         withCredentials: true,
         headers: {
           Authorization: `Bearer ${getToken()}`,
@@ -92,31 +84,12 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
       .catch(() => {});
   }, []);
 
-  const onClickMessageBtn = useCallback(
-    (e) => {
-      e.preventDefault();
-      axios
-        .get(`/api/dms/create/${user.userId}`, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        })
-        .then((res) => {
-          mutateDmList();
-          history.push(`/ft_transcendence/social/dm/${res.data}`);
-        })
-        .catch(() => {});
-    },
-    [user, mutateDmList, dmList],
-  );
-
   const onClickAppointAdmin = useCallback(
     (e) => {
       e.preventDefault();
       if (userAuth === 0) {
         axios
-          .get(`/api/channels/giveAdmin/${id}/${user.userId}`, {
+          .get(`/api/channels/ownerApi/siteOwnerChannelUserAdmin/${id}/${user.userId}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
@@ -128,7 +101,7 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
           .catch(() => {});
       } else if (userAuth === 1) {
         axios
-          .get(`/api/channels/removeAdmin/${id}/${user.userId}`, {
+          .get(`/api/channels/ownerApi/siteOwnerChannelUserAdminRemove/${id}/${user.userId}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
@@ -152,7 +125,10 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
         backgroundColor: '#1e1e1e',
         color: 'white',
         position: 'fixed',
-        left: '-301px',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: '9999',
         boxShadow:
           '0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%)',
       }}
@@ -171,7 +147,7 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
           />
         </div>
         <div style={{ lineHeight: '70px' }}>{user.userId}</div>
-        {myAuth === 2 && userAuth !== 2 && (
+        {userAuth !== 2 && (
           <div>
             <Button
               onClick={onClickAppointAdmin}
@@ -207,20 +183,8 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
               profile
             </Button>
           </Link>
-          {blockList?.map((blockedUser: IBlockList) => {
-            if (blockedUser.userId2 === user.userId) isBlcok = true;
-          })}
-          {!isBlcok && (
-            <Button
-              onClick={onClickMessageBtn}
-              style={{ color: '#43a047', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
-              message
-            </Button>
-          )}
         </div>
-        {userAuth === 0 && (myAuth === 1 || myAuth === 2) && (
+        {userAuth === 0 && (
           <div>
             <Button
               onClick={onClickMuteBtn}
@@ -250,4 +214,4 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
   );
 };
 
-export default ChannelProfile;
+export default AdminPageProfile;

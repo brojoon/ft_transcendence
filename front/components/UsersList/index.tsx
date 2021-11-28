@@ -3,7 +3,6 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
-import gravatar from 'gravatar';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import { IAllUser } from '@typings/db';

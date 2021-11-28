@@ -23,9 +23,11 @@ import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import VoiceOverOffIcon from '@mui/icons-material/VoiceOverOff';
-import { useParams, useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom';
+import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-import ChannelProfile from '@components/ChannelProfile';
+import AdminPageProfile from '@components/AdminPageProfile';
 
 const Admin = () => {
   const { id } = useParams<{ id: string }>();
@@ -60,18 +62,46 @@ const Admin = () => {
 
   const [value, setValue] = useState('1');
   const [isUnModeratorModal, setIsUnModeratorModal] = useState(false);
-  const [UnModeratorSelected, setUnModeratorSelected] = useState('');
   const [isUnBanUserModal, setIsUnBanUserModal] = useState(false);
-  const [UnBanUserSelected, setUnBanUserSelected] = useState('');
+  const [unModeratorSelected, setUnModeratorSelected] = useState('');
+  const [unBanUserSelected, setUnBanUserSelected] = useState('');
   const [isUserPrivilegeModal, setIsUserPrivilegeModal] = useState(false);
   const [userPrivilegeSelected, setUserPrivilegeSelected] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
+
   const onClickUserPrivilege = useCallback(
     (e, userId) => {
       setUserPrivilegeSelected(userId);
       setIsUserPrivilegeModal(true);
     },
-    [UnModeratorSelected],
+    [isUserPrivilegeModal, userPrivilegeSelected],
+  );
+
+  const DeleteClickChannelBtn = useCallback(
+    (e) => {
+      e.preventDefault();
+      axios
+        .get(`/api/channels/deleteChannel/${id}`, {
+          withCredentials: true,
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        })
+        .then(() => {
+          mutateChannelList();
+          mutateMymuteMmbers();
+        });
+    },
+    [id],
+  );
+
+  const onClickChannelDeleteModal = useCallback(
+    (e) => {
+      e.preventDefault();
+      setIsChannelDeleteModal((prev) => !prev);
+    },
+    [isChannelDeleteModal],
   );
 
   const onClickMember = useCallback(
@@ -80,6 +110,7 @@ const Admin = () => {
       if (selectedIndex === index) {
         setSelectedIndex(-1);
       } else {
+        console.log(index);
         setSelectedIndex(index);
       }
     },
@@ -105,7 +136,7 @@ const Admin = () => {
         setIsUnModeratorModal(true);
       }
     },
-    [UnModeratorSelected, adminList, myData],
+    [unModeratorSelected, adminList, myData],
   );
   const onCloseUnModeratorModal = useCallback(
     (e) => {
@@ -120,7 +151,7 @@ const Admin = () => {
       setUnBanUserSelected(userId);
       setIsUnBanUserModal(true);
     },
-    [UnModeratorSelected],
+    [unModeratorSelected],
   );
 
   const onCloseUnBanUserModal = useCallback(
@@ -168,9 +199,9 @@ const Admin = () => {
   const onSubmitUnModerator = useCallback(
     (e) => {
       e.preventDefault();
-      if (UnModeratorSelected) {
+      if (unModeratorSelected) {
         axios
-          .get(`/api/users/removeModerator/${UnModeratorSelected}`, {
+          .get(`/api/users/removeModerator/${unModeratorSelected}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
@@ -185,7 +216,7 @@ const Admin = () => {
           .catch(() => {});
       }
     },
-    [UnModeratorSelected],
+    [unModeratorSelected],
   );
 
   const onSubmitBan = useCallback(
@@ -214,9 +245,9 @@ const Admin = () => {
   const onSubmitUnBanUser = useCallback(
     (e) => {
       e.preventDefault();
-      if (UnBanUserSelected) {
+      if (unBanUserSelected) {
         axios
-          .get(`/api/users/removeBan/${UnBanUserSelected}`, {
+          .get(`/api/users/removeBan/${unBanUserSelected}`, {
             withCredentials: true,
             headers: {
               Authorization: `Bearer ${getToken()}`,
@@ -231,11 +262,19 @@ const Admin = () => {
           .catch(() => {});
       }
     },
-    [UnBanUserSelected],
+    [unBanUserSelected],
   );
 
   return (
     <div style={{ backgroundColor: 'white', height: '100%' }}>
+      {isChannelDeleteModal && (
+        <BasicModal
+          NoBtn={onClickChannelDeleteModal}
+          YesBtn={DeleteClickChannelBtn}
+          headerContent="Delete Channel"
+          content="This will remove the channel as well as all of its messages"
+        />
+      )}
       {isUnModeratorModal && (
         <BasicModal
           headerContent="Remove from moderator list"
@@ -369,143 +408,36 @@ const Admin = () => {
               <List sx={{ width: '100%' }} component="nav" aria-label="mailbox folders">
                 {channelList?.map((channel) => {
                   return (
-                    <Accordion>
-                      <AccordionSummary
-                        expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
-                      >
-                        <Typography>{channel.name}</Typography>
-                      </AccordionSummary>
-                      <AccordionDetails>
-                        <Typography>
-                          <div>
-                            <ListItem
-                              style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
-                            >
-                              Owner
-                            </ListItem>
-                            {memberList &&
-                              memberList?.map((member) => {
-                                if (member.auth === 2) {
-                                  return alluserList?.map((user, index) => {
-                                    if (user.userId == member.userId) {
-                                      return (
-                                        <>
-                                          {selectedIndex === index &&
-                                            user.userId !== myData?.userId && (
-                                              <ChannelProfile user={user} />
-                                            )}
-                                          <ListItem button onClick={(e) => onClickMember(e, index)}>
-                                            <Avatar
-                                              src={user.profile}
-                                              alt="Avatar"
-                                              style={{
-                                                border: '2px solid red',
-                                                width: '38px',
-                                                height: '38px',
-                                              }}
-                                            />
-                                            <ListItemText
-                                              primary={user.userId}
-                                              style={{ marginLeft: '12px', color: 'white' }}
-                                            />
-                                            <RecordVoiceOverIcon style={{ color: 'white' }} />
-                                          </ListItem>
-                                        </>
-                                      );
-                                    }
-                                  });
-                                }
-                              })}
-                            <ListItem
-                              style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
-                            >
-                              Admin
-                            </ListItem>
-                            {memberList &&
-                              memberList?.map((member) => {
-                                if (member.auth === 1) {
-                                  return alluserList?.map((user, index) => {
-                                    if (user.userId == member.userId) {
-                                      return (
-                                        <>
-                                          {selectedIndex === index &&
-                                            user.userId !== myData?.userId && (
-                                              <ChannelProfile user={user} />
-                                            )}
-                                          <ListItem button onClick={(e) => onClickMember(e, index)}>
-                                            <Avatar
-                                              src={user.profile}
-                                              alt="Avatar"
-                                              style={{
-                                                border: '2px solid red',
-                                                width: '38px',
-                                                height: '38px',
-                                              }}
-                                            />
-                                            <ListItemText
-                                              primary={user.userId}
-                                              style={{ marginLeft: '12px', color: 'white' }}
-                                            />
-                                            <RecordVoiceOverIcon style={{ color: 'white' }} />
-                                          </ListItem>
-                                        </>
-                                      );
-                                    }
-                                  });
-                                }
-                              })}
-                            <ListItem
-                              style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
-                            >
-                              Users
-                            </ListItem>
-                            {memberList &&
-                              memberList?.map((member, index) => {
-                                if (member.auth === 0) {
-                                  return alluserList?.map((user) => {
-                                    if (user.userId == member.userId) {
-                                      if (MymuteMmbers && MymuteMmbers.length > 0) {
-                                        return MymuteMmbers?.map((muteMember: IMemberList) => {
-                                          if (muteMember.userId === user.userId) {
-                                            if (muteMember.mute) {
-                                              return (
-                                                <>
-                                                  {selectedIndex === index &&
-                                                    user.userId !== myData?.userId && (
-                                                      <ChannelProfile user={user} />
-                                                    )}
-                                                  <ListItem
-                                                    button
-                                                    onClick={(e) => onClickMember(e, index)}
-                                                  >
-                                                    <Avatar
-                                                      src={user.profile}
-                                                      alt="Avatar"
-                                                      style={{
-                                                        border: '2px solid red',
-                                                        width: '38px',
-                                                        height: '38px',
-                                                      }}
-                                                    />
-                                                    <ListItemText
-                                                      primary={user.userId}
-                                                      style={{ marginLeft: '12px', color: 'white' }}
-                                                    />
-                                                    <VoiceOverOffIcon style={{ color: 'red' }} />
-                                                  </ListItem>
-                                                </>
-                                              );
-                                            }
-                                          }
-                                        });
-                                      } else {
+                    <Link
+                      to={`/ft_transcendence/admin/${channel.id}`}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <Accordion>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="panel1a-content"
+                          id="panel1a-header"
+                        >
+                          <Typography>{channel.name}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          <Typography>
+                            <div>
+                              <ListItem
+                                style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
+                              >
+                                Owner
+                              </ListItem>
+                              {memberList &&
+                                memberList?.map((member) => {
+                                  if (member.auth === 2) {
+                                    return alluserList?.map((user, index) => {
+                                      if (user.userId == member.userId) {
                                         return (
                                           <>
                                             {selectedIndex === index &&
                                               user.userId !== myData?.userId && (
-                                                <ChannelProfile user={user} />
+                                                <AdminPageProfile user={user} />
                                               )}
                                             <ListItem
                                               button
@@ -522,21 +454,158 @@ const Admin = () => {
                                               />
                                               <ListItemText
                                                 primary={user.userId}
-                                                style={{ marginLeft: '12px', color: 'white' }}
+                                                style={{ marginLeft: '12px' }}
                                               />
-                                              <RecordVoiceOverIcon style={{ color: 'white' }} />
+                                              <RecordVoiceOverIcon />
                                             </ListItem>
                                           </>
                                         );
                                       }
-                                    }
-                                  });
-                                }
-                              })}
-                          </div>
-                        </Typography>
-                      </AccordionDetails>
-                    </Accordion>
+                                    });
+                                  }
+                                })}
+                              <ListItem
+                                style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
+                              >
+                                Admin
+                              </ListItem>
+                              {memberList &&
+                                memberList?.map((member) => {
+                                  if (member.auth === 1) {
+                                    return alluserList?.map((user, index) => {
+                                      if (user.userId == member.userId) {
+                                        return (
+                                          <>
+                                            {selectedIndex === index &&
+                                              user.userId !== myData?.userId && (
+                                                <AdminPageProfile user={user} />
+                                              )}
+                                            <ListItem
+                                              button
+                                              onClick={(e) => onClickMember(e, index)}
+                                            >
+                                              <Avatar
+                                                src={user.profile}
+                                                alt="Avatar"
+                                                style={{
+                                                  border: '2px solid red',
+                                                  width: '38px',
+                                                  height: '38px',
+                                                }}
+                                              />
+                                              <ListItemText
+                                                primary={user.userId}
+                                                style={{ marginLeft: '12px' }}
+                                              />
+                                              <RecordVoiceOverIcon />
+                                            </ListItem>
+                                          </>
+                                        );
+                                      }
+                                    });
+                                  }
+                                })}
+                              <ListItem
+                                style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
+                              >
+                                Users
+                              </ListItem>
+                              {memberList &&
+                                memberList?.map((member, index) => {
+                                  if (member.auth === 0) {
+                                    return alluserList?.map((user) => {
+                                      if (user.userId == member.userId) {
+                                        if (MymuteMmbers && MymuteMmbers.length > 0) {
+                                          return MymuteMmbers?.map((muteMember: IMemberList) => {
+                                            if (muteMember.userId === user.userId) {
+                                              if (muteMember.mute) {
+                                                return (
+                                                  <>
+                                                    {selectedIndex === index &&
+                                                      user.userId !== myData?.userId && (
+                                                        <AdminPageProfile user={user} />
+                                                      )}
+                                                    <ListItem
+                                                      button
+                                                      onClick={(e) => onClickMember(e, index)}
+                                                    >
+                                                      <Avatar
+                                                        src={user.profile}
+                                                        alt="Avatar"
+                                                        style={{
+                                                          border: '2px solid red',
+                                                          width: '38px',
+                                                          height: '38px',
+                                                        }}
+                                                      />
+                                                      <ListItemText
+                                                        primary={user.userId}
+                                                        style={{
+                                                          marginLeft: '12px',
+                                                          color: 'white',
+                                                        }}
+                                                      />
+                                                      <VoiceOverOffIcon style={{ color: 'red' }} />
+                                                    </ListItem>
+                                                  </>
+                                                );
+                                              }
+                                            }
+                                          });
+                                        } else {
+                                          return (
+                                            <>
+                                              {selectedIndex === index &&
+                                                user.userId !== myData?.userId && (
+                                                  <AdminPageProfile user={user} />
+                                                )}
+                                              <ListItem
+                                                button
+                                                onClick={(e) => onClickMember(e, index)}
+                                              >
+                                                <Avatar
+                                                  src={user.profile}
+                                                  alt="Avatar"
+                                                  style={{
+                                                    border: '2px solid red',
+                                                    width: '38px',
+                                                    height: '38px',
+                                                  }}
+                                                />
+                                                <ListItemText
+                                                  primary={user.userId}
+                                                  style={{ marginLeft: '12px' }}
+                                                />
+                                                <RecordVoiceOverIcon />
+                                              </ListItem>
+                                            </>
+                                          );
+                                        }
+                                      }
+                                    });
+                                  }
+                                })}
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'flex-end',
+                                marginTop: '20px',
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                startIcon={<DeleteIcon />}
+                                onClick={onClickChannelDeleteModal}
+                                style={{ backgroundColor: 'red', fontWeight: 600 }}
+                              >
+                                DELETE CHANNEL
+                              </Button>
+                            </div>
+                          </Typography>
+                        </AccordionDetails>
+                      </Accordion>
+                    </Link>
                   );
                 })}
               </List>

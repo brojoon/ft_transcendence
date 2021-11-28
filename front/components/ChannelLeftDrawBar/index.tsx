@@ -28,9 +28,12 @@ const ChannelLeftDrawBar = () => {
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const handleListItemClick = useCallback((event: any, index: number) => {
-    setSelectedIndex(index);
-  }, [selectedIndex, setSelectedIndex]);
+  const handleListItemClick = useCallback(
+    (event: any, index: number) => {
+      setSelectedIndex(index);
+    },
+    [selectedIndex, setSelectedIndex],
+  );
 
   return (
     <div

@@ -81,7 +81,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
       e.preventDefault();
       setIsChannelDeleteModal((prev) => !prev);
     },
-    [isChannelDeleteModal, setIsChannelDeleteModal],
+    [isChannelDeleteModal],
   );
 
   const onSubmitChannelCreate = useCallback(
