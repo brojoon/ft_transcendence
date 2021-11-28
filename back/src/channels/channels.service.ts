@@ -206,8 +206,8 @@ export class ChannelsService {
   }
 
   async mutedMembers(channelId, userId){
-    if ((!await this.chatmemberRepository.findOne({userId, channelId})))
-      throw new ForbiddenException("볼 권한이 없음")
+    // if ((!await this.chatmemberRepository.findOne({userId, channelId})))
+    //   throw new ForbiddenException("볼 권한이 없음")
     const ret = this.chatmemberRepository.find({where:{channelId, mute:true}});
     return ret;
   }
