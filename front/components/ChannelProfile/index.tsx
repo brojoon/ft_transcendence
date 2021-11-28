@@ -17,9 +17,10 @@ import useSWR from 'swr';
 
 interface Props {
   user: IAllUser;
+  setSelectedIndex: (e: any) => void;
 }
 
-const ChannelProfile: VFC<Props> = ({ user }) => {
+const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const { id } = useParams<{ id: string }>();
   const { data: dmList, mutate: mutateDmList } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -60,6 +61,7 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
       })
       .then((res) => {
         mutateMymuteMmbers();
+        setSelectedIndex(-1);
       })
       .catch(() => {
         mutateMymuteMmbers();
@@ -75,7 +77,9 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
           Authorization: `Bearer ${getToken()}`,
         },
       })
-      .then((res) => {})
+      .then((res) => {
+        setSelectedIndex(-1);
+      })
       .catch(() => {});
   }, []);
 
@@ -88,7 +92,9 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
           Authorization: `Bearer ${getToken()}`,
         },
       })
-      .then((res) => {})
+      .then((res) => {
+        setSelectedIndex(-1);
+      })
       .catch(() => {});
   }, []);
 
@@ -123,6 +129,7 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
             },
           })
           .then(() => {
+            setSelectedIndex(-1);
             mutateChannelUserList();
           })
           .catch(() => {});
@@ -135,6 +142,7 @@ const ChannelProfile: VFC<Props> = ({ user }) => {
             },
           })
           .then(() => {
+            setSelectedIndex(-1);
             mutateChannelUserList();
           })
           .catch(() => {});
