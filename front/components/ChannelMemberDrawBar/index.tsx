@@ -27,6 +27,7 @@ interface Props {
   onClickChannelInviteModal: (e: any) => void;
   onClickMember: (e: any, index: number) => void;
   selectedIndex: number;
+  setSelectedIndex: (e: any) => void;
   membersToggle: boolean;
 }
 const ChannelMemberDrawBar: VFC<Props> = ({
@@ -36,6 +37,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
   onClickChannelInviteModal,
   onClickMember,
   selectedIndex,
+  setSelectedIndex,
   membersToggle,
 }) => {
   const { id } = useParams<{ id: string }>();
@@ -97,7 +99,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                       return (
                         <>
                           {selectedIndex === index && user.userId !== myData?.userId && (
-                            <ChannelProfile user={user} />
+                            <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
                             <Avatar
@@ -128,7 +130,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                       return (
                         <>
                           {selectedIndex === index && user.userId !== myData?.userId && (
-                            <ChannelProfile user={user} />
+                            <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
                             <Avatar
@@ -156,61 +158,45 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                 if (member.auth === 0) {
                   return alluser?.map((user) => {
                     if (user.userId == member.userId) {
-                      if (MymuteMmbers && MymuteMmbers.length > 0) {
-                        return MymuteMmbers?.map((muteMember: IMemberList) => {
-                          if (muteMember.userId === user.userId) {
-                            if (muteMember.mute) {
-                              return (
-                                <>
-                                  {selectedIndex === index && user.userId !== myData?.userId && (
-                                    <ChannelProfile user={user} />
-                                  )}
-                                  <ListItem button onClick={(e) => onClickMember(e, index)}>
-                                    <Avatar
-                                      src={user.profile}
-                                      alt="Avatar"
-                                      style={{
-                                        border: '2px solid red',
-                                        width: '38px',
-                                        height: '38px',
-                                      }}
-                                    />
-                                    <ListItemText
-                                      primary={user.userId}
-                                      style={{ marginLeft: '12px', color: 'white' }}
-                                    />
-                                    <VoiceOverOffIcon style={{ color: 'red' }} />
-                                  </ListItem>
-                                </>
-                              );
-                            }
-                          }
-                        });
-                      } else {
-                        return (
-                          <>
-                            {selectedIndex === index && user.userId !== myData?.userId && (
-                              <ChannelProfile user={user} />
-                            )}
-                            <ListItem button onClick={(e) => onClickMember(e, index)}>
-                              <Avatar
-                                src={user.profile}
-                                alt="Avatar"
-                                style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                              />
-                              <ListItemText
-                                primary={user.userId}
-                                style={{ marginLeft: '12px', color: 'white' }}
-                              />
+                      let isMute = false;
+
+                      MymuteMmbers?.map((muteMember: IMemberList) => {
+                        if (muteMember.userId === user.userId) {
+                          if (muteMember.mute) isMute = true;
+                        }
+                      });
+                      return (
+                        <>
+                          {selectedIndex === index && user.userId !== myData?.userId && (
+                            <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
+                          )}
+                          <ListItem button onClick={(e) => onClickMember(e, index)}>
+                            <Avatar
+                              src={user.profile}
+                              alt="Avatar"
+                              style={{
+                                border: '2px solid red',
+                                width: '38px',
+                                height: '38px',
+                              }}
+                            />
+                            <ListItemText
+                              primary={user.userId}
+                              style={{ marginLeft: '12px', color: 'white' }}
+                            />
+                            {isMute ? (
+                              <VoiceOverOffIcon style={{ color: 'red' }} />
+                            ) : (
                               <RecordVoiceOverIcon style={{ color: 'white' }} />
-                            </ListItem>
-                          </>
-                        );
-                      }
+                            )}
+                          </ListItem>
+                        </>
+                      );
                     }
                   });
                 }
               })}
+            ;
           </div>
         </Scrollbars>
         {isOwner && (

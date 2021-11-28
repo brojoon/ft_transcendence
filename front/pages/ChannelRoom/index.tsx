@@ -262,6 +262,7 @@ const ChannelRoom = () => {
         onClickMember={onClickMember}
         selectedIndex={selectedIndex}
         membersToggle={membersToggle}
+        setSelectedIndex={setSelectedIndex}
       />
       {channelInviteModal && (
         <ChannelInviteModal

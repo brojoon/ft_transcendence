@@ -17,9 +17,10 @@ import useSWR from 'swr';
 
 interface Props {
   user: IAllUser;
+  setSelectedIndex: (e: any) => void;
 }
 
-const AdminPageProfile: VFC<Props> = ({ user }) => {
+const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const { id } = useParams<{ id: string }>();
   const { data: dmList, mutate: mutateDmList } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -54,7 +55,9 @@ const AdminPageProfile: VFC<Props> = ({ user }) => {
           Authorization: `Bearer ${getToken()}`,
         },
       })
-      .then((res) => {})
+      .then((res) => {
+        setSelectedIndex(-1);
+      })
       .catch(() => {});
   }, []);
 
@@ -67,7 +70,9 @@ const AdminPageProfile: VFC<Props> = ({ user }) => {
           Authorization: `Bearer ${getToken()}`,
         },
       })
-      .then((res) => {})
+      .then((res) => {
+        setSelectedIndex(-1);
+      })
       .catch(() => {});
   }, []);
 
@@ -80,7 +85,9 @@ const AdminPageProfile: VFC<Props> = ({ user }) => {
           Authorization: `Bearer ${getToken()}`,
         },
       })
-      .then((res) => {})
+      .then((res) => {
+        setSelectedIndex(-1);
+      })
       .catch(() => {});
   }, []);
 
@@ -96,6 +103,7 @@ const AdminPageProfile: VFC<Props> = ({ user }) => {
             },
           })
           .then(() => {
+            setSelectedIndex(-1);
             mutateChannelUserList();
           })
           .catch(() => {});
@@ -108,12 +116,13 @@ const AdminPageProfile: VFC<Props> = ({ user }) => {
             },
           })
           .then(() => {
+            setSelectedIndex(-1);
             mutateChannelUserList();
           })
           .catch(() => {});
       }
     },
-    [myAuth],
+    [myAuth, userAuth],
   );
   return (
     <div

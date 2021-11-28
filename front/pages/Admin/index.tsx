@@ -437,7 +437,10 @@ const Admin = () => {
                                           <>
                                             {selectedIndex === index &&
                                               user.userId !== myData?.userId && (
-                                                <AdminPageProfile user={user} />
+                                                <AdminPageProfile
+                                                  user={user}
+                                                  setSelectedIndex={setSelectedIndex}
+                                                />
                                               )}
                                             <ListItem
                                               button
@@ -478,7 +481,10 @@ const Admin = () => {
                                           <>
                                             {selectedIndex === index &&
                                               user.userId !== myData?.userId && (
-                                                <AdminPageProfile user={user} />
+                                                <AdminPageProfile
+                                                  user={user}
+                                                  setSelectedIndex={setSelectedIndex}
+                                                />
                                               )}
                                             <ListItem
                                               button
@@ -515,72 +521,47 @@ const Admin = () => {
                                   if (member.auth === 0) {
                                     return alluserList?.map((user) => {
                                       if (user.userId == member.userId) {
-                                        if (MymuteMmbers && MymuteMmbers.length > 0) {
-                                          return MymuteMmbers?.map((muteMember: IMemberList) => {
-                                            if (muteMember.userId === user.userId) {
-                                              if (muteMember.mute) {
-                                                return (
-                                                  <>
-                                                    {selectedIndex === index &&
-                                                      user.userId !== myData?.userId && (
-                                                        <AdminPageProfile user={user} />
-                                                      )}
-                                                    <ListItem
-                                                      button
-                                                      onClick={(e) => onClickMember(e, index)}
-                                                    >
-                                                      <Avatar
-                                                        src={user.profile}
-                                                        alt="Avatar"
-                                                        style={{
-                                                          border: '2px solid red',
-                                                          width: '38px',
-                                                          height: '38px',
-                                                        }}
-                                                      />
-                                                      <ListItemText
-                                                        primary={user.userId}
-                                                        style={{
-                                                          marginLeft: '12px',
-                                                          color: 'white',
-                                                        }}
-                                                      />
-                                                      <VoiceOverOffIcon style={{ color: 'red' }} />
-                                                    </ListItem>
-                                                  </>
-                                                );
-                                              }
-                                            }
-                                          });
-                                        } else {
-                                          return (
-                                            <>
-                                              {selectedIndex === index &&
-                                                user.userId !== myData?.userId && (
-                                                  <AdminPageProfile user={user} />
-                                                )}
-                                              <ListItem
-                                                button
-                                                onClick={(e) => onClickMember(e, index)}
-                                              >
-                                                <Avatar
-                                                  src={user.profile}
-                                                  alt="Avatar"
-                                                  style={{
-                                                    border: '2px solid red',
-                                                    width: '38px',
-                                                    height: '38px',
-                                                  }}
+                                        let isMute = false;
+                                        MymuteMmbers?.map((muteMember: IMemberList) => {
+                                          if (muteMember.userId === user.userId) {
+                                            if (muteMember.mute) isMute = true;
+                                          }
+                                        });
+                                        return (
+                                          <>
+                                            {selectedIndex === index &&
+                                              user.userId !== myData?.userId && (
+                                                <AdminPageProfile
+                                                  user={user}
+                                                  setSelectedIndex={setSelectedIndex}
                                                 />
-                                                <ListItemText
-                                                  primary={user.userId}
-                                                  style={{ marginLeft: '12px' }}
-                                                />
-                                                <RecordVoiceOverIcon />
-                                              </ListItem>
-                                            </>
-                                          );
-                                        }
+                                              )}
+                                            <ListItem
+                                              button
+                                              onClick={(e) => onClickMember(e, index)}
+                                            >
+                                              <Avatar
+                                                src={user.profile}
+                                                alt="Avatar"
+                                                style={{
+                                                  border: '2px solid red',
+                                                  width: '38px',
+                                                  height: '38px',
+                                                }}
+                                              />
+                                              <ListItemText
+                                                primary={user.userId}
+                                                style={{
+                                                  marginLeft: '12px',
+                                                  color: 'white',
+                                                }}
+                                              />
+                                              isMute ? <VoiceOverOffIcon style={{ color: 'red' }} />
+                                              :
+                                              <RecordVoiceOverIcon />
+                                            </ListItem>
+                                          </>
+                                        );
                                       }
                                     });
                                   }
