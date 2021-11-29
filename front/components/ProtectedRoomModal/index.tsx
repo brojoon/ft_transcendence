@@ -99,7 +99,7 @@ const ProtectedRoomModal: VFC<Props> = ({
           mutateChannelList();
           mutateAllChannelList();
 
-          history.push(`/ft_transcendence/channels/${channelPasswordRoomNumber}`);
+          history.push(`/channels/${channelPasswordRoomNumber}`);
           setChannelPasswordRoomNumber('');
         })
         .catch((error) => {

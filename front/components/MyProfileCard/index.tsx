@@ -64,10 +64,7 @@ const MyProfileCard = () => {
             alignItems: 'center',
           }}
         >
-          <Link
-            to="/ft_transcendence/profile/setting"
-            style={{ textDecoration: 'none', width: '100%' }}
-          >
+          <Link to="/profile/setting" style={{ textDecoration: 'none', width: '100%' }}>
             <Button
               variant="contained"
               style={{

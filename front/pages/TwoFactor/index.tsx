@@ -24,7 +24,7 @@ const TwoFactor = () => {
         })
         .then(() => {
           console.log('tow-factor성공');
-          history.push('/ft_transcendence/home');
+          history.push('/home');
         })
         .catch(console.error);
     }

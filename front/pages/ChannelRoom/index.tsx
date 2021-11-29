@@ -166,7 +166,7 @@ const ChannelRoom = () => {
           mutateAllChannelList();
           mutateMyChannelList();
           setChannelLeaveModal(false);
-          history.push('/ft_transcendence/channels');
+          history.push('/channels');
         });
     },
     [channelLeaveModal],

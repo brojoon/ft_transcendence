@@ -17,7 +17,7 @@ import io from 'socket.io-client';
 import getSocket from '@utils/useSocket';
 import ProfileSetting from '@pages/ProfileSetting';
 
-const ft_transcendence = () => {
+const Content = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
@@ -27,7 +27,7 @@ const ft_transcendence = () => {
   const history = useHistory();
 
   if (myData && myData.username === '') {
-    history.push('/ft_transcendence/login/first-step');
+    history.push('/login/first-step');
   }
 
   let socket = getSocket();
@@ -48,18 +48,18 @@ const ft_transcendence = () => {
     <Container>
       <LeftSideBar />
       <Switch>
-        <Route path="/ft_transcendence/home" component={Home} />
-        <Route path="/ft_transcendence/social" component={Social} />
-        <Route path="/ft_transcendence/channels" component={Channels} />
-        <Route path="/ft_transcendence/users/:id" component={Profile} />
-        <Route path="/ft_transcendence/users" component={Users} />
-        <Route path="/ft_transcendence/achievements" component={Achievements} />
-        <Route path="/ft_transcendence/game" component={Game} />
-        <Route path="/ft_transcendence/profile/setting" component={ProfileSetting} />
-        <Route path="/ft_transcendence/profile" component={Profile} />
+        <Route path="/home" component={Home} />
+        <Route path="/social" component={Social} />
+        <Route path="/channels" component={Channels} />
+        <Route path="/users/:id" component={Profile} />
+        <Route path="/users" component={Users} />
+        <Route path="/achievements" component={Achievements} />
+        <Route path="/game" component={Game} />
+        <Route path="/profile/setting" component={ProfileSetting} />
+        <Route path="/profile" component={Profile} />
       </Switch>
     </Container>
   );
 };
 
-export default ft_transcendence;
+export default Content;

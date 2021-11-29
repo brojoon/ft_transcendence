@@ -27,7 +27,7 @@ const FriendsList = () => {
             if (user?.userId === friend?.userId2)
               return (
                 <Link
-                  to={`/ft_transcendence/users/${user.userId}`}
+                  to={`/users/${user.userId}`}
                   style={{ textDecoration: 'none', color: 'white' }}
                 >
                   <ListItem button>

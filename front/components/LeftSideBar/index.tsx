@@ -45,7 +45,7 @@ const LeftSideBar = () => {
       })
       .catch((error) => {
         if (error.response.data.code === 401) {
-          window.location.href = '/ft_transcendence/login';
+          window.location.href = '/login';
         } else {
           toast.error(error.message, {
             autoClose: 3000,
@@ -63,7 +63,7 @@ const LeftSideBar = () => {
     <div style={{ width: '55px', flexShrink: 0, borderRight: '5px solid #121212' }}>
       <Toolbar>
         <NavIcons>
-          <Link to={`/ft_transcendence/profile`} style={{ textDecoration: 'none' }}>
+          <Link to={`/profile`} style={{ textDecoration: 'none' }}>
             <Tooltip title="Profile" placement="right" arrow>
               <StyledBadge
                 overlap="circular"
@@ -77,49 +77,49 @@ const LeftSideBar = () => {
           <div
             style={{ backgroundColor: '#4d4d4d', marginTop: '8px', width: '30px', height: '1px' }}
           ></div>
-          <Link to={`/ft_transcendence/home`}>
+          <Link to={`/home`}>
             <Tooltip title="Home" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">
                 <DashboardSharpIcon />
               </MyFab>
             </Tooltip>
           </Link>
-          <Link to={`/ft_transcendence/social`}>
+          <Link to={`/social`}>
             <Tooltip title="Social" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">
                 <ConnectWithoutContactIcon />
               </MyFab>
             </Tooltip>
           </Link>
-          <Link to={`/ft_transcendence/channels`}>
+          <Link to={`/channels`}>
             <Tooltip title="Channels" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">
                 <ForumIcon />
               </MyFab>
             </Tooltip>
           </Link>
-          <Link to={`/ft_transcendence/users`}>
+          <Link to={`/users`}>
             <Tooltip title="Users" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">
                 <GroupIcon />
               </MyFab>
             </Tooltip>
           </Link>
-          <Link to={`/ft_transcendence/achievements`}>
+          <Link to={`/achievements`}>
             <Tooltip title="Achievements" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">
                 <MilitaryTechIcon />
               </MyFab>
             </Tooltip>
           </Link>
-          <Link to={`/ft_transcendence/game`}>
+          <Link to={`/game`}>
             <Tooltip title="Game" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIcon">
                 <VideogameAssetIcon />
               </MyFab>
             </Tooltip>
           </Link>
-          <Link to={`/ft_transcendence/login`}>
+          <Link to={`/login`}>
             <Tooltip title="Logout" placement="right" arrow>
               <MyFab aria-label="add" className="sideBarIconLast" onClick={onClickLogOut}>
                 <LogoutIcon />

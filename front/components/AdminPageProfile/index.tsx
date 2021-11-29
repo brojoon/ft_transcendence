@@ -184,7 +184,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       </div>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ borderBottom: '1px solid #3a3a3a' }}>
-          <Link to={`/ft_transcendence/users/${user.userId}`} style={{ textDecoration: 'none' }}>
+          <Link to={`/users/${user.userId}`} style={{ textDecoration: 'none' }}>
             <Button
               style={{ color: '#979797', fontWeight: 600, margin: '17px 15px 20px 20px' }}
               variant="text"

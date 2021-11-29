@@ -6,21 +6,20 @@ import Scrollbars from 'react-custom-scrollbars';
 const LogIn = loadable(() => import('@pages/LogIn'));
 const TwoFactor = loadable(() => import('@pages/TwoFactor'));
 const FirstStep = loadable(() => import('@pages/FirstStep'));
-const ft_transcendence = loadable(() => import('@layouts/ft_transcendence'));
+const Content = loadable(() => import('@layouts/Content'));
 const Admin = loadable(() => import('@pages/Admin'));
 
 const App = () => {
   return (
     <Scrollbars>
       <Switch>
-        <Redirect exact path="/" to="/ft_transcendence/login" />
-        <Redirect exact path="/ft_transcendence" to="/ft_transcendence/login" />
-        <Route exact path="/ft_transcendence/login/first-step" component={FirstStep} />
-        <Route exact path="/ft_transcendence/login" component={LogIn} />
-        <Route exact path="/ft_transcendence/two-factor" component={TwoFactor} />
-        <Route path="/ft_transcendence/admin/:id" component={Admin} />
-        <Route path="/ft_transcendence/admin" component={Admin} />
-        <Route path="/ft_transcendence/:content" component={ft_transcendence} />
+        <Route exact path="/login" component={LogIn} />
+        <Redirect exact path="/" to="/login" />
+        <Route exact path="/login/first-step" component={FirstStep} />
+        <Route exact path="/two-factor" component={TwoFactor} />
+        <Route path="/admin/:id" component={Admin} />
+        <Route path="/admin" component={Admin} />
+        <Route path="/:content" component={Content} />
       </Switch>
     </Scrollbars>
   );

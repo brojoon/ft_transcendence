@@ -49,7 +49,7 @@ const FirstStep = () => {
                 setIsNicknameError(true);
               } else {
                 mutateMyData();
-                history.push('/ft_transcendence/home');
+                history.push('/home');
               }
             })
             .catch(() => {
