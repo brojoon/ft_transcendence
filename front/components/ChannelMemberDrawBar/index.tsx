@@ -67,7 +67,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
   const history = useHistory();
 
   if (memberList?.length === 0) {
-    history.push('/ft_transcendence/channels');
+    history.push('/channels');
   }
   return (
     <>

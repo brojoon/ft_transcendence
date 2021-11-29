@@ -170,7 +170,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
           channelListMutate();
           MutateAllChannelList();
           muatememberList();
-          history.push('/ft_transcendence/channels');
+          history.push('/channels');
         });
     },
     [id],

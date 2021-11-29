@@ -408,10 +408,7 @@ const Admin = () => {
               <List sx={{ width: '100%' }} component="nav" aria-label="mailbox folders">
                 {channelList?.map((channel) => {
                   return (
-                    <Link
-                      to={`/ft_transcendence/admin/${channel.id}`}
-                      style={{ textDecoration: 'none' }}
-                    >
+                    <Link to={`/admin/${channel.id}`} style={{ textDecoration: 'none' }}>
                       <Accordion>
                         <AccordionSummary
                           expandIcon={<ExpandMoreIcon />}

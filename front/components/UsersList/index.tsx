@@ -21,10 +21,7 @@ const UserList = () => {
       <List sx={style} component="nav" aria-label="mailbox folders" style={{ height: '100%' }}>
         {users?.map((user) => {
           return (
-            <Link
-              to={`/ft_transcendence/users/${user.userId}`}
-              style={{ textDecoration: 'none', color: 'white' }}
-            >
+            <Link to={`/users/${user.userId}`} style={{ textDecoration: 'none', color: 'white' }}>
               <ListItem button>
                 <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
                 <ListItemText primary={user.userId} style={{ marginLeft: '12px' }} />

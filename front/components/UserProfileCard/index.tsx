@@ -168,7 +168,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         })
         .then((res) => {
           mutateDmList();
-          history.push(`/ft_transcendence/social/dm/${res.data}`);
+          history.push(`/social/dm/${res.data}`);
         })
         .catch(() => {});
     },

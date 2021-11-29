@@ -105,7 +105,7 @@ const Channel = () => {
           });
           mutateChannelList();
           if (allchannelList) {
-            history.push(`/ft_transcendence/channels/${response.data}`);
+            history.push(`/channels/${response.data}`);
           }
         })
         .catch((error) => {
@@ -144,10 +144,10 @@ const Channel = () => {
       <ChannelLeftDrawBar />
 
       <Switch>
-        <Route exact path="/ft_transcendence/channels" render={() => <ChannelDiscover />} />
+        <Route exact path="/channels" render={() => <ChannelDiscover />} />
         <Route
           exact
-          path="/ft_transcendence/channels/create"
+          path="/channels/create"
           render={() => (
             <ChannelCreate
               onSubmitChannelCreate={onSubmitChannelCreate}
@@ -163,7 +163,7 @@ const Channel = () => {
             />
           )}
         />
-        <Route path="/ft_transcendence/channels/:id" render={() => <ChannelRoom />} />
+        <Route path="/channels/:id" render={() => <ChannelRoom />} />
       </Switch>
     </Container>
   );

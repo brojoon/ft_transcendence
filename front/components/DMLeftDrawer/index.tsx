@@ -69,7 +69,7 @@ const DMLeftDrawerBar = () => {
           height: '14%',
         }}
       >
-        <Link to={`/ft_transcendence/social`} style={{ textDecoration: 'none' }}>
+        <Link to={`/social`} style={{ textDecoration: 'none' }}>
           <List
             component="nav"
             aria-label="main mailbox folders"
@@ -102,10 +102,7 @@ const DMLeftDrawerBar = () => {
               });
               if (!isblock) {
                 return (
-                  <Link
-                    to={`/ft_transcendence/social/dm/${dm.id}`}
-                    style={{ textDecoration: 'none' }}
-                  >
+                  <Link to={`/social/dm/${dm.id}`} style={{ textDecoration: 'none' }}>
                     <List
                       component="nav"
                       aria-label="main mailbox folders"

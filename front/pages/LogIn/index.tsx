@@ -14,11 +14,11 @@ const LogIn = () => {
   const history = useHistory();
 
   if (myData && myData.username !== '') {
-    history.push('/ft_transcendence/home');
+    history.push('/home');
   }
 
   if (myData && myData.username === '') {
-    history.push('/ft_transcendence/login/first-step');
+    history.push('/login/first-step');
   }
 
   const onClickGoogleLogin = useCallback(() => {

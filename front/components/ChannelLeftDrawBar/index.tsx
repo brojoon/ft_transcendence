@@ -71,7 +71,7 @@ const ChannelLeftDrawBar = () => {
           height: '14%',
         }}
       >
-        <Link to={`/ft_transcendence/channels`} style={{ textDecoration: 'none' }}>
+        <Link to={`/channels`} style={{ textDecoration: 'none' }}>
           <List
             component="nav"
             aria-label="main mailbox folders"
@@ -104,10 +104,7 @@ const ChannelLeftDrawBar = () => {
               channelMode = 'Private';
             }
             return (
-              <Link
-                to={`/ft_transcendence/channels/${channel.id}`}
-                style={{ textDecoration: 'none' }}
-              >
+              <Link to={`/channels/${channel.id}`} style={{ textDecoration: 'none' }}>
                 <List
                   component="nav"
                   aria-label="main mailbox folders"
@@ -139,7 +136,7 @@ const ChannelLeftDrawBar = () => {
       <div
         style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '11%' }}
       >
-        <Link to={`/ft_transcendence/channels/create`} style={{ textDecoration: 'none' }}>
+        <Link to={`/channels/create`} style={{ textDecoration: 'none' }}>
           <Button
             variant="contained"
             style={{

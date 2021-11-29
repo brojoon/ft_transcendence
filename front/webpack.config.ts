@@ -68,6 +68,7 @@ const config: Configuration = {
       // },
     }),
     new webpack.EnvironmentPlugin({ NODE_ENV: isDevelopment ? 'development' : 'production' }),
+
   ],
   output: {
     path: path.join(__dirname, 'dist'),

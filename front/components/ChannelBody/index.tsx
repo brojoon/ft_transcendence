@@ -57,7 +57,7 @@ const ChannelBody = () => {
       .then(() => {
         mutateAllChannelList();
         mutateMyChannelList();
-        history.push(`/ft_transcendence/channels/${channelId}`);
+        history.push(`/channels/${channelId}`);
       })
       .catch((e) => {
         mutateAllChannelList();
