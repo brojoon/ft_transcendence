@@ -82,11 +82,11 @@ export class AuthController {
     const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
     if (result){
       res.cookie('userCookie', req.user);
-      res.status(302).redirect('http://localhost:3090/ft_transcendence/two-factor')
+      res.status(302).redirect('http://localhost:3090/two-factor')
     }else{
       const token = await this.authService.login(req.user);
       res.cookie('ts_token', token.access_token, { httpOnly: false });
-      res.status(302).redirect('http://localhost:3090/ft_transcendence/home')
+      res.status(302).redirect('http://localhost:3090/home')
     }
   }
 
