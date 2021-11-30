@@ -1,7 +1,7 @@
 version: "3"
 services:
   postgresql:
-    image: postgres:latest
+    image: postgres:13.4-buster #<- 버전이 높으면 안됨. 맥 도커 버전이 낮아서..
     container_name: postgresql
     restart: always
     ports:
@@ -15,23 +15,24 @@ services:
         POSTGRES_DB: "${POSTGRES_DB}"
         TZ: "Asia/Seoul"
     volumes:
-      - ./postgresql:/var/lib/postgresql/data
+      - postgresql:/var/lib/postgresql/data
+      #- ./postgresql:/var/lib/postgresql/data
       #- ./db.sql:/docker-entrypoint-initdb.d/db.sql
-  # back:
-  #   build:
-  #     context: ./back
-  #     dockerfile: Dockerfile
-  #   container_name: back
-  #   restart: always
-  #   ports:
-  #     - 3095:3095
-  #   depends_on:
-  #     - postgresql
-  #   networks:
-  #     - database
-  #     - frontApp
-  #   volumes:
-  #     - ./back:/usr/src/app
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: back
+    restart: always
+    ports:
+      - 3095:3095
+    depends_on:
+      - postgresql
+    networks:
+      - database
+      - frontApp
+    #volumes:
+      #- ./back:/usr/src/app
 
   # front:
   #   build:
@@ -46,8 +47,8 @@ services:
   #   networks:
   #     - frontApp
 
-# volumes:
-#   postgresql:
+volumes:
+  postgresql:
 
 networks:
   database:
