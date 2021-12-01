@@ -16,6 +16,8 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import { Translate } from '@mui/icons-material';
 
 const socket = getSocket();
 
@@ -72,8 +74,8 @@ const PingPong = (data: any) => {
   });
   const { data: allUserList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const gameId = data.match.params.id;
-  const [ball_x, setBallX] = useState(500);
-  const [ball_y, setBallY] = useState(250);
+  const [ball_x, setBallX] = useState(495);
+  const [ball_y, setBallY] = useState(245);
   const [player_one_y, setPlayOneY] = useState(200);
   const [player_two_y, setPlayTwoY] = useState(200);
   const [player1Ready, setPlay1Ready] = useState(0);
@@ -440,24 +442,30 @@ const PingPong = (data: any) => {
                 style={{ width: '300px', height: '300px' }}
               />
             </div>
-            <div style={{ marginTop: '10px' }}>
+            <div style={{ margin: '10px 0' }}>
               {player === 'playerOne' ? myData?.userId + '(나)' : opponent + '(상대편)'}
             </div>
-            {player === 'playerOne' ? (
-              player1Ready === 0 ? (
-                <Button variant="contained" onClick={readyPlayer1} style={{ marginTop: '5px' }}>
-                  ready
+            <div>
+              {player === 'playerOne' ? (
+                player1Ready === 0 ? (
+                  <Button variant="contained" onClick={readyPlayer1}>
+                    ready
+                  </Button>
+                ) : (
+                  <Button variant="contained" disabled style={{ color: 'white' }}>
+                    완료
+                  </Button>
+                )
+              ) : player1Ready === 0 ? (
+                <Button variant="contained" disabled style={{ color: 'white' }}>
+                  준비중..
                 </Button>
               ) : (
-                <Button variant="contained" disabled style={{ marginTop: '5px', color: 'white' }}>
+                <Button variant="contained" disabled style={{ color: 'white' }}>
                   완료
                 </Button>
-              )
-            ) : player1Ready === 0 ? (
-              <div>준비중..</div>
-            ) : (
-              <div>완료</div>
-            )}
+              )}
+            </div>
           </div>
 
           <div
@@ -467,7 +475,7 @@ const PingPong = (data: any) => {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'space-between',
+              justifyContent: 'center',
             }}
           >
             <div>VS</div>
@@ -480,67 +488,71 @@ const PingPong = (data: any) => {
                 style={{ width: '300px', height: '300px' }}
               />
             </div>
-            <div style={{ marginTop: '10px' }}>
-              {player === 'playerTwo' ? myData?.userId + '(나)' : opponent + '(상대편) '}
+            <div style={{ margin: '10px 0' }}>
+              {player === 'playerTwo' ? myData?.userId + '(나)' : opponent + '(상대편)'}
             </div>
-            <div style={{ marginTop: '10px' }}>
+            <div>
               {player === 'playerTwo' ? (
                 player2Ready === 0 ? (
-                  <Button variant="contained" onClick={readyPlayer2} style={{ marginTop: '5x' }}>
+                  <Button variant="contained" onClick={readyPlayer2}>
                     ready
                   </Button>
                 ) : (
-                  <Button variant="contained" disabled style={{ marginTop: '5px', color: 'white' }}>
+                  <Button variant="contained" disabled style={{ color: 'white' }}>
                     완료
                   </Button>
                 )
               ) : player2Ready === 0 ? (
-                <div>준비중..</div>
+                <Button variant="contained" disabled style={{ color: 'white' }}>
+                  준비중..
+                </Button>
               ) : (
-                <div>완료</div>
+                <Button variant="contained" disabled style={{ color: 'white' }}>
+                  완료
+                </Button>
               )}
             </div>
           </div>
         </div>
       )}
-      {/* [ {userId} 화면 ({player !== '' ? player : '구경꾼'}) ] */}
+
       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 15px' }}>
-        {/* <div>
-          {myData?.userId}
-          {player === 'playerOne'
-            ? player1Ready === 0
-              ? '준비중..'
-              : '완료'
-            : player2Ready === 0
-            ? '준비중..'
-            : '완료'}
-        </div> */}
-        <div>
-          <div>
-            {(player === 'playerOne' ? myData?.userId : opponent) +
-              ' Point: [ ' +
-              user1Point +
-              ' ]'}
-
-            <b> (up: w / down: s) </b>
+        {isGameStart && (
+          <div style={{ display: 'flex' }}>
+            {(player === 'playerOne' ? myData?.userId : opponent) + ' Point'}
+            <EventNoteIcon style={{ fontSize: '27px' }} /> {': [ ' + user2Point + ' ] '}
           </div>
-        </div>
-        {player1Ready && player2Ready ? (
-          <Button variant="contained" onClick={changeGameSet} style={{ color: 'white' }}>
-            게임시작
-          </Button>
-        ) : (
-          <Button variant="contained" disabled style={{ color: 'white' }}>
-            게임시작
-          </Button>
         )}
-        <div>
-          {(player === 'playerTwo' ? myData?.userId : opponent) + ' Point: [ ' + user2Point + ' ]'}
 
-          <b> (up: o / down: l) </b>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            width: `${isGameStart ? '' : '100%'}`,
+          }}
+        >
+          {player1Ready && player2Ready ? (
+            <Button variant="contained" onClick={changeGameSet} style={{ color: 'white' }}>
+              게임시작
+            </Button>
+          ) : (
+            <Button variant="contained" disabled style={{ color: 'white' }}>
+              게임시작
+            </Button>
+          )}
+          <div style={{ marginTop: '5px' }}> (모두 레디 시 시작됨) [key : t] </div>
+          <div>(up: w / down: s)</div>
+          {player === '' && <div>관전중...</div>}
         </div>
+        {isGameStart && (
+          <div style={{ display: 'flex' }}>
+            {(player === 'playerTwo' ? myData?.userId : opponent) + ' Point'}
+            <EventNoteIcon style={{ fontSize: '27px' }} /> {': [ ' + user2Point + ' ] '}
+          </div>
+        )}
       </div>
-      <div> (모두 레디 시 시작됨) [key : t] </div>
     </div>
   );
 };
