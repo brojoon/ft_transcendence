@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Button from '@mui/material/Button';
 import getCookie from '@utils/cookie';
+import { Link } from 'react-router-dom';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
 const option = {
   headers: {
@@ -29,26 +32,40 @@ const History = (data: any) => {
           setWinner(res.data.winner);
           // if (res.data.winner === null)
           //   window.location.href = `http://localhost:3000/history/${gameId}`;
-        });
+        })
+        .catch(() => {});
     }
     if (userId1 === '') getGameInfo();
   }, [gameId, userId1]);
 
-  const match = () => {
-    window.location.href = `http://localhost:3095/match`;
-  };
-
   return (
-    <div>
-      <h1>
-        [{userId1}] : {player1Point} 승
-      </h1>
-      <h1>
-        [{userId2}] : {player2Point} 승
-      </h1>
-      <h1> 승리자 : {winner} </h1>
+    <div
+      style={{
+        color: 'white',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        fontSize: '30px',
+        height: '100vh',
+      }}
+    >
+      <div style={{ marginBottom: '15px', color: `${winner === userId1 ? 'white' : 'red'}` }}>
+        [{userId1}] : {player1Point} Point
+      </div>
+      <div style={{ marginBottom: '15px', color: `${winner === userId2 ? 'white' : 'red'}` }}>
+        [{userId2}] : {player2Point} Point
+      </div>
+
+      <div style={{ display: 'flex', marginBottom: '18px' }}>
+        <EmojiEventsIcon style={{ fontSize: '45px' }} />
+        <div style={{ fontSize: '30px' }}>승리자 : {winner}</div>
+      </div>
       <div>
-        <button onClick={match}> to match page </button>
+        <Link to="/game" style={{ textDecoration: 'none' }}>
+          <Button variant="contained"> 매치 페이지로 이동 </Button>
+        </Link>
       </div>
     </div>
   );
