@@ -16,12 +16,29 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ForumIcon from '@mui/icons-material/Forum';
+import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 import SportsBaseballIcon from '@mui/icons-material/SportsBaseball';
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import ShieldIcon from '@mui/icons-material/Shield';
+import SecurityIcon from '@mui/icons-material/Security';
+import LocalPoliceIcon from '@mui/icons-material/LocalPolice';
+import SchoolIcon from '@mui/icons-material/School';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import GavelIcon from '@mui/icons-material/Gavel';
 import { IAchievement } from '@typings/db';
 
 const Achievements = () => {
-  const { data: friendCount } = useSWR<IAchievement>(`/api/friend/countFriend`, fetcher);
+  const { data: friendCount } = useSWR<IAchievement>(
+    `/api/friend/coun
+  tFriend`,
+    fetcher,
+  );
   const { data: DmListCount } = useSWR<IAchievement>(`/api/dms/getDmListNum`, fetcher);
+  const { data: matchCount } = useSWR<IAchievement>(`/api/game/achievement/numOfFight`, fetcher);
+  const { data: winCount } = useSWR<IAchievement>(`/api/game/achievement/numOfWin`, fetcher);
+  const { data: loseCount } = useSWR<IAchievement>(`/api/game/achievement/numOfLose`, fetcher);
+
   const { data: channelCount } = useSWR<IAchievement>(
     `/api/channels/achievement/numOfChannels`,
     fetcher,
@@ -57,7 +74,51 @@ const Achievements = () => {
             condition={'DM to 30 people'}
           />
         </Grid>
-
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={LocalPoliceIcon}
+            maxCount={15}
+            curValue={loseCount}
+            header={'Captain America'}
+            condition={'Lose 15 games'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={LightbulbIcon}
+            maxCount={5}
+            curValue={matchCount}
+            header={'Welcome newbie '}
+            condition={'Match 5 times'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={SchoolIcon}
+            maxCount={30}
+            curValue={matchCount}
+            header={'Alumnus'}
+            condition={'Match 30 times'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={LocalDiningIcon}
+            maxCount={5}
+            curValue={winCount}
+            header={'Warriors'}
+            condition={'Win 5 games'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={LocalFireDepartmentIcon}
+            maxCount={15}
+            curValue={winCount}
+            header={'Fighter'}
+            condition={'Win 15 games'}
+          />
+        </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <Achievement
             Icon={BusinessIcon}
@@ -74,6 +135,53 @@ const Achievements = () => {
             curValue={channelCount}
             header={'Community member'}
             condition={'Join 60 channels'}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={SendIcon}
+            maxCount={5}
+            curValue={DmListCount}
+            header={'Paper Airplane'}
+            condition={'DM to 5 people'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={FacebookIcon}
+            maxCount={150}
+            curValue={channelCount}
+            header={'Addicted to social media'}
+            condition={'Join 150 channels'}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={AirplanemodeActiveIcon}
+            maxCount={300}
+            curValue={matchCount}
+            header={'Air Force Medal of honor'}
+            condition={'Match 300 times'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={ShieldIcon}
+            maxCount={5}
+            curValue={loseCount}
+            header={'Shield'}
+            condition={'Lose 5 games'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={4}>
+          <Achievement
+            Icon={SecurityIcon}
+            maxCount={100}
+            curValue={loseCount}
+            header={'Aegis'}
+            condition={'Lose 100 games'}
           />
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
@@ -96,20 +204,11 @@ const Achievements = () => {
         </Grid>
         <Grid item xs={12} sm={6} md={4}>
           <Achievement
-            Icon={SendIcon}
-            maxCount={5}
-            curValue={DmListCount}
-            header={'You are not alone'}
-            condition={'DM to 5 people'}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Achievement
-            Icon={FacebookIcon}
-            maxCount={150}
-            curValue={channelCount}
-            header={'Addicted to social media'}
-            condition={'Join 150 channels'}
+            Icon={GavelIcon}
+            maxCount={100}
+            curValue={winCount}
+            header={'Mjolnir'}
+            condition={'Win 100 games'}
           />
         </Grid>
       </Grid>
