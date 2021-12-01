@@ -2,6 +2,13 @@ import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
 import getSocket from '@utils/useSocket';
 import getCookie from '@utils/cookie';
+import { useHistory } from 'react-router-dom';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import { IUser } from '@typings/db';
+import fetcher from '@utils/fetcher';
+import useSWR from 'swr';
 
 const option = {
   headers: {
@@ -11,39 +18,22 @@ const option = {
 };
 
 const Match = () => {
-  const [userId, setUserId] = useState('');
-  const [button, setButton] = useState('MATCH');
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
+    dedupingInterval: 2000,
+  });
+  const [ismatching, setIsMatching] = useState(false);
 
+  const history = useHistory();
   const socket = getSocket();
 
-  useEffect(() => {
-    async function getGameInfo() {
-      axios
-        .get(`http://localhost:3095/api/users`, option)
-        .then((res: any) => {
-          setUserId(res.data.userId);
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            setUserId('등록 되지 않는 아이디 입니다.');
-          }
-        });
-    }
-    if (userId === '') getGameInfo();
-  }, [userId]);
-
   const onClickMatch = useCallback(() => {
-    if (userId === '등록 되지 않는 아이디 입니다.' || userId === '') {
-      window.location.href = 'http://localhost:3095';
-    } else {
-      setButton('기다리는 중');
-      socket.emit('matching', { userId: userId, gameId: 0 });
-    }
-  }, [userId, socket]);
+    setIsMatching(true);
+    socket.emit('matching', { userId: myData?.userId, gameId: 0 });
+  }, [myData, socket]);
 
   useEffect(() => {
     socket.on('matched', (matched: any) => {
-      if (userId === matched.playerOne && matched.gameId === 0) {
+      if (myData?.userId === matched.playerOne && matched.gameId === 0) {
         axios
           .post(
             `http://localhost:3095/api/dms/sendMessage/${matched.playerTwo}/1/0`,
@@ -55,23 +45,47 @@ const Match = () => {
             },
           )
           .then((res) => {
-            socket.emit('matching', { userId: userId, gameId: res.data });
-            window.location.href = `http://localhost:3095/pingPong/${res.data}`;
+            socket.emit('matching', { userId: myData?.userId, gameId: res.data });
+            history.push(`/game/ping-pong/${res.data}`);
           });
-      } else if (userId === matched.playerTwo && matched.gameId !== 0) {
-        window.location.href = `http://localhost:3095/pingPong/${matched.gameId}`;
+      } else if (myData?.userId === matched.playerTwo && matched.gameId !== 0) {
+        history.push(`/game/ping-pong/${matched.gameId}`);
       }
     });
-  }, [socket, userId]);
+  }, [socket, myData]);
 
   return (
-    <div>
-      <div>
-        <b>ID : {userId} </b>
-      </div>
-      <div>
-        <button onClick={onClickMatch}>{button}</button>
-      </div>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+      }}
+    >
+      {ismatching ? (
+        <Box
+          sx={{ display: 'flex' }}
+          style={{
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            background: '#121212',
+            color: 'white',
+            width: '100%',
+            height: '100vh',
+          }}
+        >
+          <CircularProgress style={{ color: 'white' }} />
+          <h1>Waiting for opponent...</h1>
+        </Box>
+      ) : (
+        <div style={{ height: '100vh', alignItems: 'center', display: 'flex' }}>
+          <Button variant="contained" onClick={onClickMatch}>
+            MATCH
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
