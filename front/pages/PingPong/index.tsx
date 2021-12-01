@@ -1,10 +1,21 @@
 import * as PIXI from 'pixi.js';
 import { Stage, PixiComponent } from '@inlet/react-pixi';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import getSocket from '@utils/useSocket';
 import getCookie from '@utils/cookie';
 import 'regenerator-runtime';
+import { useHistory } from 'react-router-dom';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import useInput from '@hooks/useInput';
+import { IUser, IAllUser } from '@typings/db';
+import useSWR from 'swr';
+import fetcher from '@utils/fetcher';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 
 const socket = getSocket();
 
@@ -28,7 +39,7 @@ PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST;
 //사각형
 const Rectangle = PixiComponent<RectangleProps, PIXI.Graphics>('Rectangle', {
   create: () => new PIXI.Graphics(),
-  applyProps: (g: any, _: any, props) => {
+  applyProps: (g, _, props) => {
     const { fill, x, y, width, height } = props;
     g.clear();
     g.beginFill(fill);
@@ -39,7 +50,7 @@ const Rectangle = PixiComponent<RectangleProps, PIXI.Graphics>('Rectangle', {
 // 원
 const Circle = PixiComponent<CircleProps, PIXI.Graphics>('Circle', {
   create: () => new PIXI.Graphics(),
-  applyProps: (g: any, _: any, props) => {
+  applyProps: (g, _, props) => {
     const { fill, x, y, radius } = props;
     g.clear();
     g.beginFill(fill);
@@ -56,6 +67,10 @@ const option = {
 };
 
 const PingPong = (data: any) => {
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
+    dedupingInterval: 2000,
+  });
+  const { data: allUserList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const gameId = data.match.params.id;
   const [ball_x, setBallX] = useState(500);
   const [ball_y, setBallY] = useState(250);
@@ -71,6 +86,93 @@ const PingPong = (data: any) => {
   const [random, setRandom] = useState(0);
   const [userId, setUserId] = useState('');
   const [player, setPlayer] = useState('');
+  const [isGameStart, setIsGameStart] = useState(false);
+
+  const [opponent, setOpponent] = useState('');
+  const [opponentProfile, setOpponentProfile] = useState('');
+
+  const [gameSpeed, setGameSpeed] = useState(2);
+  const [gameCount, setGameCount] = useState(3);
+  const [mapSelect, setMapSelect] = useState(0);
+  const [ballRandom, setBallRandom] = useState(0);
+
+  const history = useHistory();
+
+  useEffect(() => {
+    if (opponent) {
+      allUserList?.map((user) => {
+        if (user.userId === opponent) {
+          setOpponentProfile(user.profile);
+        }
+      });
+    }
+  }, [opponent]);
+
+  useEffect(() => {
+    socket.emit('changeGameSet', {
+      gameId: gameId,
+      speed: gameSpeed,
+      set: gameCount,
+      map: mapSelect,
+      random: ballRandom,
+    });
+  }, []);
+
+  const onChangeSpeed = useCallback(
+    (e: any) => {
+      if (player1Ready || player2Ready) return;
+      socket.emit('changeGameSet', {
+        gameId: gameId,
+        speed: e.target.value,
+        set: gameCount,
+        map: mapSelect,
+        random: ballRandom,
+      });
+    },
+    [player1Ready, player2Ready],
+  );
+
+  const onChangeMapSelect = useCallback(
+    (e: any) => {
+      if (player1Ready || player2Ready) return;
+      socket.emit('changeGameSet', {
+        gameId: gameId,
+        speed: gameSpeed,
+        set: gameCount,
+        map: e.target.value,
+        random: ballRandom,
+      });
+    },
+    [player1Ready, player2Ready],
+  );
+
+  const onChangeGameCount = useCallback(
+    (e: any) => {
+      if (player1Ready || player2Ready) return;
+      socket.emit('changeGameSet', {
+        gameId: gameId,
+        speed: gameSpeed,
+        set: e.target.value,
+        map: mapSelect,
+        random: ballRandom,
+      });
+    },
+    [player1Ready, player2Ready],
+  );
+
+  const onChangeBallRandom = useCallback(
+    (e: any) => {
+      if (player1Ready || player2Ready) return;
+      socket.emit('changeGameSet', {
+        gameId: gameId,
+        speed: gameSpeed,
+        set: gameCount,
+        map: mapSelect,
+        random: e.target.value,
+      });
+    },
+    [player1Ready, player2Ready],
+  );
 
   // 내정보 받아오고 => 게임 기록 가져오고 => 내정보와 userId 매칭후 player one인지 two인지 확인
   // playerOne인 경우 게임 리셋하고 게임포인트 집어 넣기
@@ -86,11 +188,11 @@ const PingPong = (data: any) => {
       await axios
         .get(`http://localhost:3095/api/game/history/${gameId}`, option)
         .then((res: any) => {
-          if (res.data.state === 2)
-            window.location.href = `http://localhost:3000/history/${gameId}`;
+          if (res.data.state === 2) history.push(`/game/history/${gameId}`);
           setUserId(temUserId);
           if (temUserId === res.data.userId1) {
             setPlayer('playerOne');
+            setOpponent(res.data.userId2);
             setPlay2Ready(res.data.playerTwoJoin);
             socket.emit('game', {
               gameId: gameId,
@@ -101,6 +203,8 @@ const PingPong = (data: any) => {
           } else if (temUserId === res.data.userId2) {
             setPlayer('playerTwo');
             setPlay1Ready(res.data.playerOneJoin);
+            setOpponent(res.data.userId1);
+
             socket.emit('game', {
               gameId: gameId,
               player: 'playerTwo',
@@ -128,6 +232,7 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     socket.on('gameInfo', (gameInfo: any) => {
+      if (!isGameStart) setIsGameStart(true);
       setBallX(gameInfo.ball_x);
       setBallY(gameInfo.ball_y);
     });
@@ -142,7 +247,7 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     socket.on('end', () => {
-      window.location.href = `http://localhost:3000/history/${gameId}`;
+      history.push(`/game/history/${gameId}`);
     });
   }, [gameId]);
 
@@ -167,10 +272,11 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     socket.on('gameSet', (set: any) => {
-      setSpeed(set.length);
-      setSet(set.game_set);
-      setMap(set.game_map);
-      setRandom(set.random_map);
+      console.log(set);
+      setGameSpeed(set.length);
+      setGameCount(set.game_set);
+      setMapSelect(set.game_map);
+      setBallRandom(set.random_map);
     });
   }, []);
 
@@ -221,168 +327,220 @@ const PingPong = (data: any) => {
       });
     }
   };
-  const speed1 = () => {
-    if (player !== '') {
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: 2,
-        set: set,
-        map: map,
-        random: random,
-      });
-    }
-  };
-  const speed2 = () => {
-    if (player !== '') {
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: 3,
-        set: set,
-        map: map,
-        random: random,
-      });
-    }
-  };
-  const speed3 = () => {
-    if (player !== '') {
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: 4,
-        set: set,
-        map: map,
-        random: random,
-      });
-    }
-  };
-  const set3 = () => {
-    if (player !== '' && user1Point < 2 && user2Point < 2) {
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: speed,
-        set: 3,
-        map: map,
-        random: random,
-      });
-    }
-  };
-  const set5 = () => {
-    if (player !== '') {
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: speed,
-        set: 5,
-        map: map,
-        random: random,
-      });
-    }
-  };
-  const map0 = () => {
-    if (player !== '')
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: speed,
-        set: set,
-        map: 0,
-        random: random,
-      });
-  };
-  const map1 = () => {
-    if (player !== '') {
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: speed,
-        set: set,
-        map: 1,
-        random: random,
-      });
-    }
-  };
-  const random0 = () => {
-    if (player !== '') {
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: speed,
-        set: set,
-        map: map,
-        random: 0,
-      });
-    }
-  };
-  const random1 = () => {
-    if (player !== '') {
-      socket.emit('changeGameSet', {
-        gameId: gameId,
-        speed: speed,
-        set: set,
-        map: map,
-        random: 1,
-      });
-    }
-  };
 
   const changeGameSet = async () => {
     if (player !== '') await axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
+    setIsGameStart(true);
   };
 
   return (
     <div
       style={{
-        backgroundColor: '#f1dde8',
+        backgroundColor: '#424242',
         margin: 0,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        width: '100%',
+        height: '100vh',
+        color: 'white',
       }}
     >
-      <div>
-        <h3>
-          [ {userId} 화면 ({player !== '' ? player : '구경꾼'}) ]
-        </h3>
-        <b> playerOne {player1Ready === 0 ? '준비중..' : '완료'} </b>
-        <button onClick={readyPlayer1}>{player1Ready === 0 ? 'ready' : '완료'}</button>
-        <b> playerTwo {player2Ready === 0 ? '준비중..' : '완료'} </b>
-        <button onClick={readyPlayer2}>{player2Ready === 0 ? 'ready' : '완료'}</button>
+      {isGameStart && (
+        <div
+          style={{
+            border: '5px solid #ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0x000000 }}>
+            <Rectangle x={0} y={player_one_y} width={15} height={100} fill={0xffffff} />
+            <Rectangle x={985} y={player_two_y} width={15} height={100} fill={0xffffff} />
+            {mapSelect === 1 ? (
+              <Rectangle x={350} y={100} width={300} height={50} fill={0x263238} />
+            ) : null}
+            {mapSelect === 1 ? (
+              <Rectangle x={350} y={350} width={300} height={50} fill={0x263238} />
+            ) : null}
+            <Circle x={ball_x} y={ball_y} radius={10} fill={0xffffff} />
+          </Stage>
+        </div>
+      )}
+      {!isGameStart && (
+        <div style={{ display: 'flex', flexDirection: 'row', marginTop: '20px' }}>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">게임판수</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={gameCount}
+              label="게임판수"
+              onChange={onChangeGameCount}
+            >
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">맵선택</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={mapSelect}
+              label="맵선택"
+              onChange={onChangeMapSelect}
+            >
+              <MenuItem value={0}>Normal</MenuItem>
+              <MenuItem value={1}>obstacle</MenuItem>
+            </Select>
+          </FormControl>
+
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">Speed</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={gameSpeed}
+              label="Speed"
+              onChange={onChangeSpeed}
+            >
+              <MenuItem value={2}>1단계</MenuItem>
+              <MenuItem value={3}>2단계</MenuItem>
+              <MenuItem value={4}>3단계</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">ballRandom</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={ballRandom}
+              label="ballRandom"
+              onChange={onChangeBallRandom}
+            >
+              <MenuItem value={0}>Normal</MenuItem>
+              <MenuItem value={1}>Random</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      )}
+      {!isGameStart && (
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            margin: '20px',
+          }}
+        >
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div>
+              <Avatar
+                src={player === 'playerOne' ? myData?.profile : opponentProfile}
+                alt="Avatar"
+                style={{ width: '300px', height: '300px' }}
+              />
+            </div>
+            <div style={{ marginTop: '10px' }}>
+              {player === 'playerOne' ? myData?.userId + '(나)' : opponent + '(상대편)'}
+            </div>
+            {player === 'playerOne' ? (
+              player1Ready === 0 ? (
+                <Button variant="contained" onClick={readyPlayer1} style={{ marginTop: '5px' }}>
+                  ready
+                </Button>
+              ) : (
+                <Button variant="contained" disabled style={{ marginTop: '5px', color: 'white' }}>
+                  완료
+                </Button>
+              )
+            ) : player1Ready === 0 ? (
+              <div>준비중..</div>
+            ) : (
+              <div>완료</div>
+            )}
+          </div>
+
+          <div
+            style={{
+              fontWeight: 700,
+              fontSize: '30px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>VS</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div>
+              <Avatar
+                src={player === 'playerTwo' ? myData?.profile : opponentProfile}
+                alt="Avatar"
+                style={{ width: '300px', height: '300px' }}
+              />
+            </div>
+            <div style={{ marginTop: '10px' }}>
+              {player === 'playerTwo' ? myData?.userId + '(나)' : opponent + '(상대편) '}
+            </div>
+            <div style={{ marginTop: '10px' }}>
+              {player === 'playerTwo' ? (
+                player2Ready === 0 ? (
+                  <Button variant="contained" onClick={readyPlayer2} style={{ marginTop: '5x' }}>
+                    ready
+                  </Button>
+                ) : (
+                  <Button variant="contained" disabled style={{ marginTop: '5px', color: 'white' }}>
+                    완료
+                  </Button>
+                )
+              ) : player2Ready === 0 ? (
+                <div>준비중..</div>
+              ) : (
+                <div>완료</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* [ {userId} 화면 ({player !== '' ? player : '구경꾼'}) ] */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 15px' }}>
+        {/* <div>
+          {myData?.userId}
+          {player === 'playerOne'
+            ? player1Ready === 0
+              ? '준비중..'
+              : '완료'
+            : player2Ready === 0
+            ? '준비중..'
+            : '완료'}
+        </div> */}
+        <div>
+          <div>
+            {(player === 'playerOne' ? myData?.userId : opponent) +
+              ' Point: [ ' +
+              user1Point +
+              ' ]'}
+
+            <b> (up: w / down: s) </b>
+          </div>
+        </div>
+        {player1Ready && player2Ready ? (
+          <Button variant="contained" onClick={changeGameSet} style={{ color: 'white' }}>
+            게임시작
+          </Button>
+        ) : (
+          <Button variant="contained" disabled style={{ color: 'white' }}>
+            게임시작
+          </Button>
+        )}
+        <div>
+          {(player === 'playerTwo' ? myData?.userId : opponent) + ' Point: [ ' + user2Point + ' ]'}
+
+          <b> (up: o / down: l) </b>
+        </div>
       </div>
-      <div>
-        <button onClick={changeGameSet}>게임시작 </button>
-        <b> (모두 레디 시 시작됨) [key : t] </b>
-      </div>
-      <div>
-        <b> playerOne Point: [ {user1Point} ] </b>
-        <b> (up: w / down: s) </b>
-        <b> playerTwo Point: [ {user2Point} ] </b>
-        <b> (up: o / down: l) </b>
-      </div>
-      <div style={{ border: '5px solid #f38bc4' }}>
-        <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0xeec5da }}>
-          <Rectangle x={0} y={player_one_y} width={15} height={100} fill={0xac1a6a} />
-          <Rectangle x={985} y={player_two_y} width={15} height={100} fill={0xac1a6a} />
-          {map === 1 ? <Rectangle x={350} y={100} width={300} height={50} fill={0xf38bc4} /> : null}
-          {map === 1 ? <Rectangle x={350} y={350} width={300} height={50} fill={0xf38bc4} /> : null}
-          <Circle x={ball_x} y={ball_y} radius={10} fill={0x940665} />
-        </Stage>
-      </div>
-      <div>
-        <b>total set: {set} </b>
-        <button onClick={set3}>3판</button>
-        <button onClick={set5}>5판</button>
-      </div>
-      <div>
-        <b>speed: {speed === 2 ? '1단계' : speed === 3 ? '2단계' : '3단계'} </b>
-        <button onClick={speed1}> 1단계</button>
-        <button onClick={speed2}> 2단계</button>
-        <button onClick={speed3}> 3단계</button>
-      </div>
-      <div>
-        <b>map: {map} </b>
-        <button onClick={map0}>기본맵</button>
-        <button onClick={map1}>장애물맵</button>
-      </div>
-      <div>
-        <b>random: {random} </b>
-        <button onClick={random0}>기본</button>
-        <button onClick={random1}>랜덤팅김</button>
-      </div>
+      <div> (모두 레디 시 시작됨) [key : t] </div>
     </div>
   );
 };
