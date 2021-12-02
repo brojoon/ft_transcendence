@@ -14,6 +14,7 @@ import { useHistory } from 'react-router-dom';
 import useSWR from 'swr';
 import { IChannelList } from '@typings/db';
 import fetcher from '@utils/fetcher';
+import config from '@utils/config';
 
 interface Props {
   channelPasswordModal: boolean;
@@ -83,12 +84,7 @@ const ProtectedRoomModal: VFC<Props> = ({
           {
             password: PasswordValues.password,
           },
-          {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          },
+          config,
         )
         .then((response) => {
           setPasswordValues({

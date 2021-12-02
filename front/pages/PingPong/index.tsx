@@ -229,8 +229,14 @@ const PingPong = (data: any) => {
   }, [gameId, myData]);
 
   useEffect(() => {
-    socket.on('gameInfo', (gameInfo: any) => {
+    socket.on('gameStart', (gameStart: any) => {
+      console.log('gameStart', gameStart);
       setIsGameStart(true);
+    });
+  }, []);
+
+  useEffect(() => {
+    socket.on('gameInfo', (gameInfo: any) => {
       setBallX(gameInfo.ball_x);
       setBallY(gameInfo.ball_y);
     });

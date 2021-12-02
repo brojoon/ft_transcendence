@@ -38,11 +38,7 @@ const Match = () => {
           .post(
             `http://localhost:3095/api/dms/sendMessage/${matched.playerTwo}/1/0`,
             { message: '' },
-            {
-              headers: {
-                Authorization: `Bearer ${getCookie('ts_token', 1)}`,
-              },
-            },
+            option,
           )
           .then((res) => {
             socket.emit('matching', { userId: myData?.userId, gameId: res.data });
@@ -52,6 +48,9 @@ const Match = () => {
         history.push(`/game/ping-pong/${matched.gameId}`);
       }
     });
+    return () => {
+      socket.off('matched');
+    };
   }, [socket, myData]);
 
   return (

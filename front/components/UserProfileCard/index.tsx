@@ -20,6 +20,7 @@ import axios from 'axios';
 import getToken from '@utils/getToken';
 import BasicModal from '@components/BasicModal';
 import { FormatListBulleted } from '@mui/icons-material';
+import config from '@utils/config';
 
 interface Props {
   UserData: IUser;
@@ -93,12 +94,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
   const onClickAddFriendBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/friend/addfriend/${UserData.userId}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/friend/addfriend/${UserData.userId}`, config)
       .then(() => {
         mutateisFriend();
         removeAllModals();
@@ -109,12 +105,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
   const onClickRemoveFriendBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/friend/removefriend/${UserData.userId}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/friend/removefriend/${UserData.userId}`, config)
       .then(() => {
         mutateisFriend();
         removeAllModals();
@@ -125,12 +116,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
   const onClickAddBlockBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/friend/addblock/${UserData.userId}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/friend/addblock/${UserData.userId}`, config)
       .then(() => {
         mutateisFriend();
         mutateIsBlock();
@@ -142,12 +128,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
   const onClickRemoveBlockBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/friend/removeblock/${UserData.userId}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/friend/removeblock/${UserData.userId}`, config)
       .then(() => {
         mutateisFriend();
         mutateIsBlock();
@@ -160,12 +141,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
     (e) => {
       e.preventDefault();
       axios
-        .get(`/api/dms/create/${UserData.userId}`, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        })
+        .get(`/api/dms/create/${UserData.userId}`, config)
         .then((res) => {
           mutateDmList();
           history.push(`/social/dm/${res.data}`);

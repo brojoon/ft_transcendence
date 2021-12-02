@@ -11,6 +11,8 @@ import fetcher from '@utils/fetcher';
 import { IAllUser } from '@typings/db';
 import { useParams } from 'react-router-dom';
 import GamepadIcon from '@mui/icons-material/Gamepad';
+import axios from 'axios';
+import config from '@utils/config';
 
 const DMChatHeader = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +22,7 @@ const DMChatHeader = () => {
   const onClickChallengeBtn = useCallback(
     (e) => {
       e.preventDefault();
+      axios.get(`/api/dms/sendMessage/${userId}/1/0`, config);
     },
     [userId, alluser],
   );

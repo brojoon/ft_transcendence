@@ -14,10 +14,7 @@ import ChannelMemberDrawBar from '@components/ChannelMemberDrawBar';
 import ChannelRoomSettingModal from '@components/ChannelRoomSettingModal';
 import BasicModal from '@components/BasicModal';
 import ChannelInviteModal from '@components/ChannelInviteModal';
-
-import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
-import BlockIcon from '@mui/icons-material/Block';
-import ContactlessIcon from '@mui/icons-material/Contactless';
+import config from '@utils/config';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -118,12 +115,7 @@ const ChannelRoom = () => {
             {
               msg: chat,
             },
-            {
-              withCredentials: true,
-              headers: {
-                Authorization: `Bearer ${getToken()}`,
-              },
-            },
+            config,
           )
           .then(() => {})
           .catch((error) => {
@@ -155,19 +147,12 @@ const ChannelRoom = () => {
   const onClickChannelLeaveMdoalYes = useCallback(
     (e) => {
       e.preventDefault();
-      axios
-        .get(`/api/channels/getout/${id}`, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        })
-        .then(() => {
-          mutateAllChannelList();
-          mutateMyChannelList();
-          setChannelLeaveModal(false);
-          history.push('/channels');
-        });
+      axios.get(`/api/channels/getout/${id}`, config).then(() => {
+        mutateAllChannelList();
+        mutateMyChannelList();
+        setChannelLeaveModal(false);
+        history.push('/channels');
+      });
     },
     [channelLeaveModal],
   );

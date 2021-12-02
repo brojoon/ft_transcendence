@@ -13,6 +13,7 @@ import axios from 'axios';
 import getToken from '@utils/getToken';
 import { useHistory } from 'react-router-dom';
 import ChannelForm from '@components/ChannelForm';
+import config from '@utils/config';
 
 interface Props {
   settingToggle: boolean;
@@ -89,12 +90,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
       e.preventDefault();
       if (name) {
         axios
-          .get(`/api/channels/updateChannelName/${id}/${name}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(`/api/channels/updateChannelName/${id}/${name}`, config)
           .then(() => {
             MutateAllChannelList();
             channelListMutate();
@@ -105,52 +101,40 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
           });
       }
       if (visibility !== '') {
-        axios
-          .get(`/api/channels/updateChannelType/${id}/${visibility}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
-          .then(() => {
-            console.log('pass1.5', PasswordValues);
-            if (parseInt(visibility) === 1) {
-              console.log('pass1.6', PasswordValues);
+        axios.get(`/api/channels/updateChannelType/${id}/${visibility}`, config).then(() => {
+          console.log('pass1.5', PasswordValues);
+          if (parseInt(visibility) === 1) {
+            console.log('pass1.6', PasswordValues);
 
-              axios
-                .post(
-                  `/api/channels/updateChannelPassword/${id}`,
-                  {
-                    password: PasswordValues.password,
-                  },
-                  {
-                    withCredentials: true,
-                    headers: {
-                      Authorization: `Bearer ${getToken()}`,
-                    },
-                  },
-                )
-                .then(() => {
-                  console.log('pass2', PasswordValues);
-                  MutateAllChannelList();
-                  channelListMutate();
-                  setVisibility('');
-                  setPasswordValues({
-                    password: '',
-                    showPassword: false,
-                  });
-                  console.log('pass3', PasswordValues);
+            axios
+              .post(
+                `/api/channels/updateChannelPassword/${id}`,
+                {
+                  password: PasswordValues.password,
+                },
+                config,
+              )
+              .then(() => {
+                console.log('pass2', PasswordValues);
+                MutateAllChannelList();
+                channelListMutate();
+                setVisibility('');
+                setPasswordValues({
+                  password: '',
+                  showPassword: false,
                 });
-            } else {
-              MutateAllChannelList();
-              channelListMutate();
-              setVisibility('');
-              setPasswordValues({
-                password: '',
-                showPassword: false,
+                console.log('pass3', PasswordValues);
               });
-            }
-          });
+          } else {
+            MutateAllChannelList();
+            channelListMutate();
+            setVisibility('');
+            setPasswordValues({
+              password: '',
+              showPassword: false,
+            });
+          }
+        });
       }
     },
     [name, visibility, PasswordValues],
@@ -159,19 +143,12 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
   const DeleteClickChannelBtn = useCallback(
     (e) => {
       e.preventDefault();
-      axios
-        .get(`/api/channels/deleteChannel/${id}`, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        })
-        .then(() => {
-          channelListMutate();
-          MutateAllChannelList();
-          muatememberList();
-          history.push('/channels');
-        });
+      axios.get(`/api/channels/deleteChannel/${id}`, config).then(() => {
+        channelListMutate();
+        MutateAllChannelList();
+        muatememberList();
+        history.push('/channels');
+      });
     },
     [id],
   );

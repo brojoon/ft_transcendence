@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
+import config from '@utils/config';
 
 interface Props {
   user: IAllUser;
@@ -53,12 +54,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const onClickMuteBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/muteUser/${id}/${user.userId}/20`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/channels/muteUser/${id}/${user.userId}/20`, config)
       .then((res) => {
         mutateMymuteMmbers();
         setSelectedIndex(-1);
@@ -71,12 +67,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const onClickKickBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/kickUser/${id}/${user.userId}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/channels/kickUser/${id}/${user.userId}`, config)
       .then((res) => {
         setSelectedIndex(-1);
       })
@@ -86,12 +77,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const onClickBanBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/banUser/${id}/${user.userId}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/channels/banUser/${id}/${user.userId}`, config)
       .then((res) => {
         setSelectedIndex(-1);
       })
@@ -102,12 +88,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
     (e) => {
       e.preventDefault();
       axios
-        .get(`/api/dms/create/${user.userId}`, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        })
+        .get(`/api/dms/create/${user.userId}`, config)
         .then((res) => {
           mutateDmList();
           history.push(`/social/dm/${res.data}`);
@@ -122,12 +103,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       e.preventDefault();
       if (userAuth === 0) {
         axios
-          .get(`/api/channels/giveAdmin/${id}/${user.userId}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(`/api/channels/giveAdmin/${id}/${user.userId}`, config)
           .then(() => {
             setSelectedIndex(-1);
             mutateChannelUserList();
@@ -135,12 +111,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
           .catch(() => {});
       } else if (userAuth === 1) {
         axios
-          .get(`/api/channels/removeAdmin/${id}/${user.userId}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(`/api/channels/removeAdmin/${id}/${user.userId}`, config)
           .then(() => {
             setSelectedIndex(-1);
             mutateChannelUserList();

@@ -20,6 +20,7 @@ import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import ListItemButton from '@mui/material/ListItemButton';
 import List from '@mui/material/List';
 import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
+import config from '@utils/config';
 
 const LeftSideBar = () => {
   const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -34,12 +35,7 @@ const LeftSideBar = () => {
 
   const onClickLogOut = useCallback(() => {
     axios
-      .get('/api/auth/logout', {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get('/api/auth/logout', config)
       .then(() => {
         mutate();
       })

@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import loadable from '@loadable/component';
 import Scrollbars from 'react-custom-scrollbars';
+import getToken from '@utils/getToken';
 
 const LogIn = loadable(() => import('@pages/LogIn'));
 const TwoFactor = loadable(() => import('@pages/TwoFactor'));
@@ -13,8 +14,8 @@ const App = () => {
   return (
     <Scrollbars>
       <Switch>
-        <Route exact path="/login" component={LogIn} />
         <Redirect exact path="/" to="/login" />
+        <Route exact path="/login" component={LogIn} />
         <Route exact path="/login/first-step" component={FirstStep} />
         <Route exact path="/two-factor" component={TwoFactor} />
         <Route path="/admin/:id" component={Admin} />
