@@ -32,6 +32,7 @@ export class GameService {
       this.reset(gameId);
       await this.historyRepository.update({id:gameId}, {state:1});
       gameMap[gameId].game_state = 1;
+      gameMap[gameId].game_start = 1;
       gameMap[gameId].interval = setInterval(this.moveCircle.bind(this, gameId), gameMap[gameId].interval_time);
     }
   }
