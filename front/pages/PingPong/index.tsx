@@ -82,10 +82,6 @@ const PingPong = (data: any) => {
   const [player2Ready, setPlay2Ready] = useState(0);
   const [user1Point, setUser1Point] = useState(0);
   const [user2Point, setUser2Point] = useState(0);
-  const [set, setSet] = useState(5);
-  const [map, setMap] = useState(0);
-  const [speed, setSpeed] = useState(3);
-  const [random, setRandom] = useState(0);
   const [userId, setUserId] = useState('');
   const [player, setPlayer] = useState('');
   const [isGameStart, setIsGameStart] = useState(false);
@@ -229,12 +225,12 @@ const PingPong = (data: any) => {
           });
         });
     }
-    if (userId === '') getGameInfo();
-  }, [gameId, userId, map, player, random, speed]);
+    if (myData?.userId) getGameInfo();
+  }, [gameId, myData]);
 
   useEffect(() => {
     socket.on('gameInfo', (gameInfo: any) => {
-      if (!isGameStart) setIsGameStart(true);
+      setIsGameStart(true);
       setBallX(gameInfo.ball_x);
       setBallY(gameInfo.ball_y);
     });
@@ -245,7 +241,7 @@ const PingPong = (data: any) => {
       setUser1Point(point.player1);
       setUser2Point(point.player2);
     });
-  }, [set, gameId]);
+  }, []);
 
   useEffect(() => {
     socket.on('end', () => {
@@ -274,7 +270,6 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     socket.on('gameSet', (set: any) => {
-      console.log(set);
       setGameSpeed(set.length);
       setGameCount(set.game_set);
       setMapSelect(set.game_map);
@@ -316,7 +311,7 @@ const PingPong = (data: any) => {
       socket.emit('gameReady', {
         gameId: gameId,
         player: 1,
-        userId: userId,
+        userId: myData?.userId,
       });
     }
   };
@@ -325,7 +320,7 @@ const PingPong = (data: any) => {
       socket.emit('gameReady', {
         gameId: gameId,
         player: 2,
-        userId: userId,
+        userId: myData?.userId,
       });
     }
   };
@@ -520,7 +515,7 @@ const PingPong = (data: any) => {
         {isGameStart && (
           <div style={{ display: 'flex' }}>
             {(player === 'playerOne' ? myData?.userId : opponent) + ' Point'}
-            <EventNoteIcon style={{ fontSize: '27px' }} /> {': [ ' + user2Point + ' ] '}
+            <EventNoteIcon style={{ fontSize: '27px' }} /> {': [ ' + user1Point + ' ] '}
           </div>
         )}
 

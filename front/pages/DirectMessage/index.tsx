@@ -73,6 +73,7 @@ const DirectMessage = () => {
   );
   const onMessage = useCallback(
     (data) => {
+      console.log(data);
       console.log('dm왔다!');
       if (data.userId1 != myData?.userId) {
         mutateChat((prevchatData) => {
