@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -16,6 +16,13 @@ const DMChatHeader = () => {
   const { id } = useParams<{ id: string }>();
   const { data: userId } = useSWR<string>(`/api/dms/findDmUser/${id}`, fetcher);
   const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
+
+  const onClickChallengeBtn = useCallback(
+    (e) => {
+      e.preventDefault();
+    },
+    [userId, alluser],
+  );
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -46,6 +53,7 @@ const DMChatHeader = () => {
               padding: '0 16px',
               fontWeight: 'bold',
             }}
+            onClick={onClickChallengeBtn}
           >
             CHALLENGE&nbsp;
             <GamepadIcon />
