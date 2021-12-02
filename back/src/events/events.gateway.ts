@@ -139,7 +139,45 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     await this.server.to(`game-${data.gameId}`).emit('ready', {
       player1: gameMap[data.gameId].player_one_ready,
       player2: gameMap[data.gameId].player_two_ready, 
-    }); 
+    });
+  }
+  
+  @SubscribeMessage('gameOff')
+  async gameOff(@ConnectedSocket() socket: Socket){
+    try{
+      const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id].userId, playerOneJoin: 1})
+      const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id].userId, playerTwoJoin: 1})
+      if (result1) {
+        await this.historyRepository.createQueryBuilder()
+          .update()
+          .set({ playerOneJoin: 0 })
+          .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
+          .execute();
+        if (result1.state != 2 && gameMap[result1.id] != undefined) {
+          gameMap[result1.id].player_one_ready = 0;
+          this.server.to(`game-${result1.id}`).emit('ready', {
+            player1: gameMap[result1.id].player_one_ready,
+            player2: gameMap[result1.id].player_two_ready
+          });
+        }
+      }
+      if (result2) {
+        await this.historyRepository.createQueryBuilder()
+          .update()
+          .set({ playerTwoJoin: 0 })
+          .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
+          .execute();
+        if (result2.state != 2 && gameMap[result2.id] != undefined) {
+          gameMap[result2.id].player_two_ready = 0;
+          this.server.to(`game-${result2.id}`).emit('ready', {
+            player1: gameMap[result2.id].player_one_ready,
+            player2: gameMap[result2.id].player_two_ready 
+          });
+        }
+      }   
+    } catch (error) {
+      throw new BadRequestException('레디 0 실패');
+    }
   }
 
   @SubscribeMessage('matching')
