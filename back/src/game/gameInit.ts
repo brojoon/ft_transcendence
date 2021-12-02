@@ -9,6 +9,7 @@ const initData ={
     game_set: 5,
     random_map:0,
     game_state: 0,
+    game_start: 0,
     complete_game_set: 0,
     length: 3,
     bar_seed: 30,
