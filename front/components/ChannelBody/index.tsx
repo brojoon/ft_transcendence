@@ -16,6 +16,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import axios from 'axios';
 import getToken from '@utils/getToken';
 import ProtectedRoomModal from '@components/ProtectedRoomModal';
+import config from '@utils/config';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -45,14 +46,9 @@ const ChannelBody = () => {
       .post(
         `/api/channels/join/${channelId}`,
         {
-          password: '1234',
+          password: '',
         },
-        {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        },
+        config,
       )
       .then(() => {
         mutateAllChannelList();

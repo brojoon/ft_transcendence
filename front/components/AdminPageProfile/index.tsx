@@ -14,6 +14,7 @@ import axios from 'axios';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
+import config from '@utils/config';
 
 interface Props {
   user: IAllUser;
@@ -49,12 +50,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const onClickMuteBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/ownerApi/siteOwnerChannelUserMuteSwitch/${id}/${user.userId}/20`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/channels/ownerApi/siteOwnerChannelUserMuteSwitch/${id}/${user.userId}/20`, config)
       .then((res) => {
         setSelectedIndex(-1);
       })
@@ -64,12 +60,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const onClickKickBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/ownerApi/siteOwnerChannelUserKick/${id}/${user.userId}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/channels/ownerApi/siteOwnerChannelUserKick/${id}/${user.userId}`, config)
       .then((res) => {
         setSelectedIndex(-1);
       })
@@ -79,12 +70,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const onClickBanBtn = useCallback((e) => {
     e.preventDefault();
     axios
-      .get(`/api/channels/ownerApi/siteOwnerChannelUserBan/${id}/${user.userId}`, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+      .get(`/api/channels/ownerApi/siteOwnerChannelUserBan/${id}/${user.userId}`, config)
       .then((res) => {
         setSelectedIndex(-1);
       })
@@ -96,12 +82,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       e.preventDefault();
       if (userAuth === 0) {
         axios
-          .get(`/api/channels/ownerApi/siteOwnerChannelUserAdmin/${id}/${user.userId}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(`/api/channels/ownerApi/siteOwnerChannelUserAdmin/${id}/${user.userId}`, config)
           .then(() => {
             setSelectedIndex(-1);
             mutateChannelUserList();
@@ -109,12 +90,10 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
           .catch(() => {});
       } else if (userAuth === 1) {
         axios
-          .get(`/api/channels/ownerApi/siteOwnerChannelUserAdminRemove/${id}/${user.userId}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(
+            `/api/channels/ownerApi/siteOwnerChannelUserAdminRemove/${id}/${user.userId}`,
+            config,
+          )
           .then(() => {
             setSelectedIndex(-1);
             mutateChannelUserList();

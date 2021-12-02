@@ -17,6 +17,7 @@ import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import getToken from '@utils/getToken';
 import getSocket from '@utils/useSocket';
+import config from '@utils/config';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -89,12 +90,7 @@ const Channel = () => {
           {
             password: PasswordValues.password,
           },
-          {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          },
+          config,
         )
         .then((response) => {
           setName('');

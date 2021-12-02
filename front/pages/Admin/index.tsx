@@ -26,6 +26,7 @@ import VoiceOverOffIcon from '@mui/icons-material/VoiceOverOff';
 import { useParams, useHistory, Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
+import config from '@utils/config';
 
 import AdminPageProfile from '@components/AdminPageProfile';
 
@@ -81,17 +82,10 @@ const Admin = () => {
   const DeleteClickChannelBtn = useCallback(
     (e) => {
       e.preventDefault();
-      axios
-        .get(`/api/channels/deleteChannel/${id}`, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        })
-        .then(() => {
-          mutateChannelList();
-          mutateMymuteMmbers();
-        });
+      axios.get(`/api/channels/deleteChannel/${id}`, config).then(() => {
+        mutateChannelList();
+        mutateMymuteMmbers();
+      });
     },
     [id],
   );
@@ -177,12 +171,7 @@ const Admin = () => {
       if (isAdmin) {
         if (userPrivilegeSelected) {
           axios
-            .get(`/api/users/addModerator/${userPrivilegeSelected}`, {
-              withCredentials: true,
-              headers: {
-                Authorization: `Bearer ${getToken()}`,
-              },
-            })
+            .get(`/api/users/addModerator/${userPrivilegeSelected}`, config)
             .then(() => {
               mutatemoderatorList();
               mutateAlluserList();
@@ -201,12 +190,7 @@ const Admin = () => {
       e.preventDefault();
       if (unModeratorSelected) {
         axios
-          .get(`/api/users/removeModerator/${unModeratorSelected}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(`/api/users/removeModerator/${unModeratorSelected}`, config)
           .then(() => {
             mutatemoderatorList();
             mutateAlluserList();
@@ -224,12 +208,7 @@ const Admin = () => {
       e.preventDefault();
       if (userPrivilegeSelected) {
         axios
-          .get(`/api/users/addBan/${userPrivilegeSelected}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(`/api/users/addBan/${userPrivilegeSelected}`, config)
           .then(() => {
             mutateBanList();
             mutateAlluserList();
@@ -247,12 +226,7 @@ const Admin = () => {
       e.preventDefault();
       if (unBanUserSelected) {
         axios
-          .get(`/api/users/removeBan/${unBanUserSelected}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(`/api/users/removeBan/${unBanUserSelected}`, config)
           .then(() => {
             mutateBanList();
             mutateAlluserList();

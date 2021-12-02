@@ -11,6 +11,7 @@ import useSWR from 'swr';
 import { useParams } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
 import getToken from '@utils/getToken';
+import config from '@utils/config';
 
 const DirectMessage = () => {
   const [chat, setChat] = useState('');
@@ -49,12 +50,7 @@ const DirectMessage = () => {
           {
             message: chat,
           },
-          {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          },
+          config,
         );
         console.log(chat);
         setChat('');
@@ -99,7 +95,7 @@ const DirectMessage = () => {
   useEffect(() => {
     socket?.on('dm', onMessage);
     return () => {
-      socket?.off('dm', onMessage);
+      socket?.off('dm');
     };
   }, [socket, onMessage]);
 

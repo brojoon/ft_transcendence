@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import TextField from '@mui/material/TextField';
+import config from '@utils/config';
 
 const TwoFactorSwitch = () => {
   const { data: isTwoFactor } = useSWR<Boolean>('/api/users/two-factor-status', fetcher);
@@ -20,22 +21,12 @@ const TwoFactorSwitch = () => {
       console.log(OTPvalue);
       if (e.key === 'Enter') {
         axios
-          .get(`/api/auth/otpCodeCheck/${OTPvalue}`, {
-            withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
-          })
+          .get(`/api/auth/otpCodeCheck/${OTPvalue}`, config)
           .then((e) => {
             setOTPvalue('');
             if (e.data === true) {
               axios
-                .get('/api/users/turn-on', {
-                  withCredentials: true,
-                  headers: {
-                    Authorization: `Bearer ${getToken()}`,
-                  },
-                })
+                .get('/api/users/turn-on', config)
                 .then(() => {
                   setChecked(true);
                   setisQRModal(false);
@@ -62,12 +53,7 @@ const TwoFactorSwitch = () => {
     console.log(checked);
     if (checked === true) {
       axios
-        .get('/api/users/turn-off', {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer  ${getToken()}`,
-          },
-        })
+        .get('/api/users/turn-off', config)
         .then(() => {})
         .catch(() => {
           setChecked(false);

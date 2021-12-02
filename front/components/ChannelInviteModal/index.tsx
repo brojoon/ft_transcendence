@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { IMemberList } from '@typings/db';
 import fetcher from '@utils/fetcher';
+import config from '@utils/config';
 
 interface Props {
   onClickModalClose: (e: any) => void;
@@ -30,12 +31,7 @@ const ChannelInviteModal: VFC<Props> = ({ setChannelInviteModal, onClickModalClo
     (e) => {
       e.preventDefault();
       axios
-        .get(`/api/channels/invite/${id}/${inviteValue}`, {
-          withCredentials: true,
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
-        })
+        .get(`/api/channels/invite/${id}/${inviteValue}`, config)
         .then(() => {
           memberListMutate();
           setInviteValue('');

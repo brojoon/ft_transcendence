@@ -12,6 +12,7 @@ import Input from '@mui/material/Input';
 import axios from 'axios';
 import getToken from '@utils/getToken';
 import { useHistory } from 'react-router-dom';
+import config from '@utils/config';
 
 const FirstStep = () => {
   const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -38,12 +39,7 @@ const FirstStep = () => {
           setIsNicknameError(true);
         } else {
           axios
-            .get(`/api/users/update-username/${nickname}`, {
-              withCredentials: true,
-              headers: {
-                Authorization: `Bearer ${getToken()}`,
-              },
-            })
+            .get(`/api/users/update-username/${nickname}`, config)
             .then((res) => {
               if (res.data === false) {
                 setIsNicknameError(true);
