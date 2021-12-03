@@ -13,16 +13,21 @@ import { useParams } from 'react-router-dom';
 import GamepadIcon from '@mui/icons-material/Gamepad';
 import axios from 'axios';
 import config from '@utils/config';
+import { useHistory } from 'react-router-dom';
 
 const DMChatHeader = () => {
   const { id } = useParams<{ id: string }>();
   const { data: userId } = useSWR<string>(`/api/dms/findDmUser/${id}`, fetcher);
   const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
 
+  const history = useHistory();
+
   const onClickChallengeBtn = useCallback(
     (e) => {
       e.preventDefault();
-      axios.get(`/api/dms/sendMessage/${userId}/1/0`, config);
+      axios.post(`/api/dms/sendMessage/${userId}/1/0`, { message: '' }, config).then((res) => {
+        history.push(`/game/ping-pong/${res.data}`);
+      });
     },
     [userId, alluser],
   );
