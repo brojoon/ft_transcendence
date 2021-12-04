@@ -15,9 +15,9 @@ import { Connect } from 'src/entities/Connect';
 import { History } from 'src/entities/History';
 import initData from 'src/game/gameInit';
 import { gameMap } from 'src/game/gameMap';
-import { UsernameDto } from 'src/users/dto/username.dto';
-import { MinKey, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import users from './matchInfo';
+import { onGameMap, onGameMap_gameId } from './onGameMap';
 import { onlineMap } from './onlineMap';
 
 @WebSocketGateway({ cors: true })
@@ -68,8 +68,25 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       users.playerOne = null;
       users.playerTwo = null;
     }
-    // game중 인거 있으면 join 0으로 돌로주기
-
+    // onGameList remove
+    if (onGameMap[onlineMap[socket.id].userId] !== undefined) {
+      delete onGameMap[onlineMap[socket.id].userId];
+      socket.emit('onGameList', Object.values(onGameMap));
+    }
+    onGameMap_gameId.forEach(function (value, key, mapObjec){
+      value.forEach(function (item, index, arr) {
+        if (item === onlineMap[socket.id].userId){
+          onGameMap_gameId[key].splice(index, 1);
+          //상태 체크하고 그게임방 player1 player2둘다 없으면 게임 종료
+          //dm쪽 history쪽 둘다 완료 만들기 dm쪽 메세지에 업뎃은 어케 하지?
+          //history쪽 승패는 없이 그대로
+          if (onGameMap_gameId[key].length === 0)
+            delete onGameMap_gameId[key];
+          socket.emit('onGameList_gameId', Object.values(onGameMap));
+        }
+      });
+    });
+    // connectDB update => false
     try{
       let connectNum = 0;
       Object.keys(onlineMap).forEach(function(v){
@@ -91,44 +108,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     socket.emit('onlineList', Object.values(onlineMap));
   }
 
-    // try{
-    //   const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id].userId, playerOneJoin: 1})
-    //   const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id].userId, playerTwoJoin: 1})
-    //   if (result1) {
-    //     await this.historyRepository.createQueryBuilder()
-    //       .update()
-    //       .set({ playerOneJoin: 0 })
-    //       .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
-    //       .execute();
-    //     if (result1.state != 2 && gameMap[result1.id] != undefined) {
-    //       gameMap[result1.id].player_one_ready = 0;
-    //       this.server.to(`game-${result1.id}`).emit('ready', {
-    //         player1: gameMap[result1.id].player_one_ready,
-    //         player2: gameMap[result1.id].player_two_ready
-    //       });
-    //     }
-    //   }
-    //   if (result2) {
-    //     await this.historyRepository.createQueryBuilder()
-    //       .update()
-    //       .set({ playerTwoJoin: 0 })
-    //       .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
-    //       .execute();
-    //     if (result2.state != 2 && gameMap[result2.id] != undefined) {
-    //       gameMap[result2.id].player_two_ready = 0;
-    //       this.server.to(`game-${result2.id}`).emit('ready', {
-    //         player1: gameMap[result2.id].player_one_ready,
-    //         player2: gameMap[result2.id].player_two_ready 
-    //       });
-    //     }
-    //   }   
-    // } catch (error) {
-    //   throw new BadRequestException('레디 0 실패');
-    // }
-
-
-
-
   //////////////////////////////////////////////////////////////////////////
   //////////////////////////game 관련////////////////////////////////////////
   @SubscribeMessage('game')
@@ -140,32 +119,57 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
     gameMap[data.gameId].player_one_ready = data.player1Ready;
     gameMap[data.gameId].player_two_ready = data.player2Ready;
-    await socket.join(`game-${data.gameId}`);
-    await this.server.to(`game-${data.gameId}`).emit('ready', {
+    socket.join(`game-${data.gameId}`);
+    this.server.to(`game-${data.gameId}`).emit('ready', {
       player1: gameMap[data.gameId].player_one_ready,
       player2: gameMap[data.gameId].player_two_ready, 
     });
   }
 
-  // @SubscribeMessage('gameOn')
-  // async gameON(
-  //   @MessageBody() data: {gameId: number, player: string},
-  //   @ConnectedSocket() socket: Socket ){
-  //   map[1] = {
-  //     player1 : "",
-  //     player2 : junny,
-  //   }
+  @SubscribeMessage('onGame')
+  async onGame(
+    @MessageBody() data: {gameId: number, player: string},
+    @ConnectedSocket() socket: Socket ){
+    if (onGameMap_gameId[data.gameId] === undefined) {
+      let player_arr = [];
+      onGameMap_gameId[data.gameId] = player_arr;
+    }
+    let check = 0;
+    onGameMap_gameId[data.gameId].forEach(function (item, index, arr) {
+      if (item === data.player)
+        check = 1;
+    });
+    if (check === 0)
+      onGameMap_gameId[data.gameId].push(data.player); 
 
-  //   map2[mike] = gameId;
-  //   map2[mike] = gameId;
-  // }
+    onGameMap[data.player] = data.gameId;
+    socket.emit('onGameList_gameId', Object.values(onGameMap_gameId));
+    socket.emit('onGameList', Object.values(onGameMap));
+  }
 
-  // @SubscribeMessage('gameOff')
-  // async gameOff(
-  //   @MessageBody() data: {gameId: number, player: string},
-  //   @ConnectedSocket() socket: Socket ){
-
-  // }
+  @SubscribeMessage('offGame')
+  async offGame(
+    @MessageBody() data: {gameId: number, player: string},
+    @ConnectedSocket() socket: Socket ){
+    if (onGameMap_gameId[data.gameId] !== undefined) {
+      onGameMap_gameId[data.gameId].forEach(function (item, index, arr) {
+        if (item === data.player){
+          onGameMap_gameId[data.gameId].splice(index, 1);
+          //상태 체크하고 그게임방 player1 player2둘다 없으면 게임 종료
+          //dm쪽 history쪽 둘다 완료 만들기 dm쪽 메세지에 업뎃은 어케 하지?
+          //history쪽 승패는 없이 그대로
+          if (onGameMap_gameId[data.gameId].length === 0) {
+            delete onGameMap_gameId[data.gameId]; 
+          }
+          socket.emit('onGameList_gameId', Object.values(onGameMap_gameId));
+        }
+      });
+    }
+    if (onGameMap[data.player] !== undefined) {
+      delete onGameMap[data.player];
+      socket.emit('onGameList', Object.values(onGameMap));
+    }
+  }
 
   @SubscribeMessage('gameCheck')
   async gameCheck(
@@ -234,16 +238,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       throw new BadRequestException("Ready 정보 업데이트 실패");
     }
   }
-        // await this.historyRepository.createQueryBuilder()
-        //   .update()
-        //   .set({ playerOneJoin: 1 })
-        //   .where('id = :id AND userId1 = :userId', {id: data.gameId, userId: data.userId})
-        //   .execute()
-        // await this.historyRepository.createQueryBuilder()
-        //   .update()
-        //   .set({ playerTwoJoin: 1 })
-        //   .where('id = :id AND userId2 = :userId', {id: data.gameId, userId: data.userId})
-        //   .execute()
+
   @SubscribeMessage('changeGameSet')
   async changeGameSet(@MessageBody() data: {
       gameId: number,
@@ -307,3 +302,51 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     }
   }
 }
+
+
+
+        // await this.historyRepository.createQueryBuilder()
+        //   .update()
+        //   .set({ playerOneJoin: 1 })
+        //   .where('id = :id AND userId1 = :userId', {id: data.gameId, userId: data.userId})
+        //   .execute()
+        // await this.historyRepository.createQueryBuilder()
+        //   .update()
+        //   .set({ playerTwoJoin: 1 })
+        //   .where('id = :id AND userId2 = :userId', {id: data.gameId, userId: data.userId})
+        //   .execute()
+
+  // try{
+    //   const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id].userId, playerOneJoin: 1})
+    //   const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id].userId, playerTwoJoin: 1})
+    //   if (result1) {
+    //     await this.historyRepository.createQueryBuilder()
+    //       .update()
+    //       .set({ playerOneJoin: 0 })
+    //       .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
+    //       .execute();
+    //     if (result1.state != 2 && gameMap[result1.id] != undefined) {
+    //       gameMap[result1.id].player_one_ready = 0;
+    //       this.server.to(`game-${result1.id}`).emit('ready', {
+    //         player1: gameMap[result1.id].player_one_ready,
+    //         player2: gameMap[result1.id].player_two_ready
+    //       });
+    //     }
+    //   }
+    //   if (result2) {
+    //     await this.historyRepository.createQueryBuilder()
+    //       .update()
+    //       .set({ playerTwoJoin: 0 })
+    //       .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
+    //       .execute();
+    //     if (result2.state != 2 && gameMap[result2.id] != undefined) {
+    //       gameMap[result2.id].player_two_ready = 0;
+    //       this.server.to(`game-${result2.id}`).emit('ready', {
+    //         player1: gameMap[result2.id].player_one_ready,
+    //         player2: gameMap[result2.id].player_two_ready 
+    //       });
+    //     }
+    //   }   
+    // } catch (error) {
+    //   throw new BadRequestException('레디 0 실패');
+    // }
