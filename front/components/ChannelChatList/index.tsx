@@ -6,6 +6,7 @@ import React, { RefObject, VFC } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useParams } from 'react-router';
 import useSWR from 'swr';
+import { ChannelChatListContainer } from './style';
 
 interface Props {
   chatData: IChannelChatList[] | undefined;
@@ -23,14 +24,7 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
   const chatSections = chatData ? chatData.flat().reverse() : [];
 
   return (
-    <div
-      style={{
-        background: '#1e1e1e',
-        width: '100%',
-        height: '100%',
-        padding: '8px 0 8px 15px',
-      }}
-    >
+    <ChannelChatListContainer>
       <Scrollbars autoHide ref={scrollbarRef}>
         {chatSections?.map((chat) => {
           let isblock = false;
@@ -39,29 +33,23 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
           });
           if (!isblock) {
             return (
-              <div style={{ color: 'white', display: ' flex' }}>
-                <div style={{ marginRight: '10px' }}>
+              <div className="chat-container">
+                <div className="profile-container ">
                   {alluser?.map((user) => {
                     if (user.userId === chat.userId)
-                      return (
-                        <Avatar
-                          src={user.profile}
-                          alt="Avatar"
-                          style={{ width: '40px', height: '40px', marginBottom: '25px' }}
-                        />
-                      );
+                      return <Avatar className="chat-avatar" src={user.profile} alt="Avatar" />;
                   })}
                 </div>
                 <div>
                   <div>{chat.userId}</div>
-                  <p style={{ marginTop: '0' }}>{chat.message}</p>
+                  <p className="chat-text">{chat.message}</p>
                 </div>
               </div>
             );
           }
         })}
       </Scrollbars>
-    </div>
+    </ChannelChatListContainer>
   );
 };
 

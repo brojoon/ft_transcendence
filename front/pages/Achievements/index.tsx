@@ -29,11 +29,7 @@ import GavelIcon from '@mui/icons-material/Gavel';
 import { IAchievement } from '@typings/db';
 
 const Achievements = () => {
-  const { data: friendCount } = useSWR<IAchievement>(
-    `/api/friend/coun
-  tFriend`,
-    fetcher,
-  );
+  const { data: friendCount } = useSWR<IAchievement>(`/api/friend/countFriend`, fetcher);
   const { data: DmListCount } = useSWR<IAchievement>(`/api/dms/getDmListNum`, fetcher);
   const { data: matchCount } = useSWR<IAchievement>(`/api/game/achievement/numOfFight`, fetcher);
   const { data: winCount } = useSWR<IAchievement>(`/api/game/achievement/numOfWin`, fetcher);
@@ -43,7 +39,7 @@ const Achievements = () => {
     `/api/channels/achievement/numOfChannels`,
     fetcher,
   );
-
+  console.log(friendCount);
   return (
     <Box sx={{ flexGrow: 1 }} style={{ padding: '20px 20px' }}>
       <Grid container spacing={3}>
