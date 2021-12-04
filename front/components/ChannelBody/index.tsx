@@ -17,6 +17,7 @@ import axios from 'axios';
 import getToken from '@utils/getToken';
 import ProtectedRoomModal from '@components/ProtectedRoomModal';
 import config from '@utils/config';
+import { ChannelBodyContainer } from './style';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -76,17 +77,9 @@ const ChannelBody = () => {
     ],
   );
   return (
-    <Box
-      sx={{ flexGrow: 1 }}
-      style={{
-        backgroundColor: '#121212',
-        padding: '15px 8px 15px 15px',
-        width: '100%',
-        height: 'calc(100% - 64px)',
-      }}
-    >
+    <ChannelBodyContainer sx={{ flexGrow: 1 }}>
       <Scrollbars>
-        <Grid container spacing={3} style={{ width: '100%' }}>
+        <Grid className="grid-container" container spacing={3}>
           {channelPasswordModal ? (
             <ProtectedRoomModal
               channelPasswordModal={channelPasswordModal}
@@ -110,18 +103,18 @@ const ChannelBody = () => {
               return (
                 <Grid item xs={12} sm={12} md={6}>
                   <Card
+                    className="card"
                     onClick={(e) => {
                       onClickPublicRoom(Channel.id, e);
                     }}
-                    style={{ backgroundColor: '#1e1e1e', color: 'white' }}
                   >
                     <CardActionArea>
                       <CardContent>
                         <Typography
+                          className="channel-name"
                           gutterBottom
                           variant="h5"
                           component="div"
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
                         >
                           <span>{Channel.name}</span>
                           {Channel.type === 1 ? <span>{<LockIcon />}</span> : null}
@@ -138,18 +131,18 @@ const ChannelBody = () => {
               return (
                 <Grid item xs={12} sm={12} md={6}>
                   <Card
+                    className="card"
                     onClick={(e) => {
                       onClickProtectedRoom(Channel.id, e);
                     }}
-                    style={{ backgroundColor: '#1e1e1e', color: 'white' }}
                   >
                     <CardActionArea>
                       <CardContent>
                         <Typography
+                          className="channel-name"
                           gutterBottom
                           variant="h5"
                           component="div"
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
                         >
                           <span>{Channel.name}</span>
                           {Channel.type === 1 ? <span>{<LockIcon />}</span> : null}
@@ -166,7 +159,7 @@ const ChannelBody = () => {
           })}
         </Grid>
       </Scrollbars>
-    </Box>
+    </ChannelBodyContainer>
   );
 };
 

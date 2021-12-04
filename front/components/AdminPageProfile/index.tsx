@@ -15,6 +15,7 @@ import { useParams, Link, useHistory } from 'react-router-dom';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import config from '@utils/config';
+import { AdminContainer, AdminBtn, ButtonGroupContainer } from './style';
 
 interface Props {
   user: IAllUser;
@@ -104,101 +105,57 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
     [myAuth, userAuth],
   );
   return (
-    <div
-      style={{
-        fontSize: '20px',
-        width: '300px',
-        height: '360px',
-        fontWeight: 600,
-        backgroundColor: '#1e1e1e',
-        color: 'white',
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        zIndex: '9999',
-        boxShadow:
-          '0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%)',
-      }}
-    >
-      <div style={{ display: 'flex', borderBottom: '1px solid #3a3a3a' }}>
+    <AdminContainer>
+      <div className="wrapper">
         <div>
-          <Avatar
-            src={user.profile}
-            alt="Avatar"
-            style={{
-              border: '2px solid red',
-              width: '40px',
-              height: '40px',
-              margin: '17px 15px 20px 20px',
-            }}
-          />
+          <Avatar className="avatar" src={user.profile} alt="Avatar" />
         </div>
-        <div style={{ lineHeight: '70px' }}>{user.userId}</div>
+        <div className="user-name">{user.userId}</div>
         {userAuth !== 2 && (
           <div>
-            <Button
+            <AdminBtn
               onClick={onClickAppointAdmin}
-              style={{
-                color: '' + (userAuth === 1 ? '#f33c36' : '#002BC'),
-                fontWeight: 600,
-                margin: '18px 0 0 40px',
-              }}
+              BtnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
               variant="text"
             >
               admin
-            </Button>
+            </AdminBtn>
           </div>
         )}
       </div>
-      <div style={{ borderBottom: '1px solid #3a3a3a' }}>
-        <div style={{ margin: '17px 15px 20px 20px', display: 'flex' }}>
-          <EmojiEventsIcon style={{ fontSize: '40px' }} />
-          <div style={{ marginLeft: '15px', lineHeight: '40px' }}>Win Count</div>
+      <div className="game-history-container">
+        <div className="game-history-wrapper">
+          <EmojiEventsIcon className="emoji" />
+          <div className="history-text">Win Count</div>
         </div>
-        <div style={{ margin: '17px 15px 20px 20px', display: 'flex' }}>
-          <EventBusyIcon style={{ fontSize: '40px' }} />
-          <div style={{ marginLeft: '15px', lineHeight: '40px' }}>Loss Count</div>
+        <div className="game-history-wrapper">
+          <EventBusyIcon className="emoji" />
+          <div className="history-text">Loss Count</div>
         </div>
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ borderBottom: '1px solid #3a3a3a' }}>
-          <Link to={`/users/${user.userId}`} style={{ textDecoration: 'none' }}>
-            <Button
-              style={{ color: '#979797', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+      <ButtonGroupContainer>
+        <div className="group-wrapper">
+          <Link to={`/users/${user.userId}`}>
+            <Button className="profile-btn" variant="text">
               profile
             </Button>
           </Link>
         </div>
         {userAuth === 0 && (
           <div>
-            <Button
-              onClick={onClickMuteBtn}
-              style={{ color: '#d50000', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+            <Button onClick={onClickMuteBtn} className="feat-button" variant="text">
               mute
             </Button>
-            <Button
-              onClick={onClickKickBtn}
-              style={{ color: '#d50000', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+            <Button onClick={onClickKickBtn} className="feat-button" variant="text">
               kick
             </Button>
-            <Button
-              onClick={onClickBanBtn}
-              style={{ color: '#d50000', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+            <Button onClick={onClickBanBtn} className="feat-button" variant="text">
               ban
             </Button>
           </div>
         )}
-      </div>
-    </div>
+      </ButtonGroupContainer>
+    </AdminContainer>
   );
 };
 

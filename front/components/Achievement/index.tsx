@@ -2,7 +2,7 @@ import React, { useEffect, useState, VFC } from 'react';
 import { IAchievement } from '@typings/db';
 import dayjs from 'dayjs';
 import 'dayjs/locale/ko';
-import { Container, AchieveBody } from './style';
+import { Container, AchieveBody, ProgressBar } from './style';
 
 interface Props {
   curValue: IAchievement | undefined;
@@ -22,7 +22,6 @@ const Achievement: VFC<Props> = ({ Icon, curValue, maxCount, header, condition }
         if (maxCount <= curValue?.number && curValue?.star >= maxCount / 5) {
           return;
         } else if (progress < curValue?.number) {
-          console.log('curValue?.number', curValue?.number);
           setProgress((prev) => prev + 1);
         } else if (progress > curValue?.number) {
           setProgress((prev) => prev - 1);
@@ -47,24 +46,13 @@ const Achievement: VFC<Props> = ({ Icon, curValue, maxCount, header, condition }
             ? dayjs(curValue.time).format('YYYY. MM. DD. A HH:mm:ss')
             : progress + ' / ' + maxCount}
         </div>
-        <div
-          style={{
-            position: 'absolute',
-            zIndex: 10,
-            backgroundColor: '#365dff',
-            fontWeight: 500,
-            borderRadius: '0 0 3px 3px',
-
-            width: `${
-              curValue && (curValue?.star >= maxCount / 5 || curValue?.number >= maxCount)
-                ? '100'
-                : (progress / maxCount) * 100
-            }%`,
-            height: '23px',
-            textAlign: 'center',
-            transition: 'all ease-out 0.5s',
-          }}
-        ></div>
+        <ProgressBar
+          width={`${
+            curValue && (curValue?.star >= maxCount / 5 || curValue?.number >= maxCount)
+              ? '100'
+              : (progress / maxCount) * 100
+          }%`}
+        ></ProgressBar>
         <div className="progress-background"></div>
       </AchieveBody>
     </Container>

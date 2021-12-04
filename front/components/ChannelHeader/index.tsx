@@ -3,6 +3,7 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { ChannelHeaderContainer } from './style';
 
 import { useParams } from 'react-router-dom';
 
@@ -15,15 +16,15 @@ const ChannelHeader: VFC<Props> = ({ content }) => {
 
   return (
     <>
-      <Box style={{ width: '100%' }}>
-        <AppBar position="static" sx={{ bgcolor: '#272727' }}>
+      <ChannelHeaderContainer>
+        <AppBar className="app-bar" position="static">
           <Toolbar>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            <Typography className="header-text" variant="h6" component="div">
               {content}
             </Typography>
           </Toolbar>
         </AppBar>
-      </Box>
+      </ChannelHeaderContainer>
     </>
   );
 };

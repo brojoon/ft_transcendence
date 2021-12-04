@@ -39,10 +39,6 @@ export const AchieveBody = styled.div`
 			white-space: nowrap;
 	}
 
-	& .progress-bar {
-
-	}
-
 	& .progress-background {
 		background-color: #253161;
 		width: 100%;
@@ -50,4 +46,16 @@ export const AchieveBody = styled.div`
 		border-radius: 0 0 3px 3px;
 		height: 23px;
 	}
+`;
+
+export const ProgressBar = styled.div<{ width: string }>`
+  width: ${(props) => props.width};
+	position: absolute;
+	z-index: 10;
+	background-color: #365dff;
+	font-weight: 500;
+	border-radius: 0 0 3px 3px;
+	height: 23px;
+	text-align: center;
+	transition: all ease-out 0.5s;
 `;

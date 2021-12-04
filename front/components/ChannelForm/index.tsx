@@ -10,6 +10,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
+import { ChannelFormContainer, ChannelCreateBtn, ErrorText } from './style';
 
 interface Props {
   onSubmitChannelCreate: (e: any) => void;
@@ -52,73 +53,58 @@ const ChannelForm: VFC<Props> = ({
       noValidate
       autoComplete="off"
     >
-      <FormControl
-        variant="standard"
-        sx={{ color: 'white !importance' }}
-        style={{ color: 'white', width: '100%' }}
-      >
-        <InputLabel htmlFor="component-simple" style={{ color: 'white' }}>
+      <ChannelFormContainer variant="standard">
+        <InputLabel className="input" htmlFor="component-simple">
           Name
         </InputLabel>
-        <Input
-          id="component-simple"
-          value={name}
-          onChange={onChangeName}
-          style={{ color: 'white' }}
-        />
-      </FormControl>
-      <FormControl variant="standard" sx={{ width: '100%', color: 'white' }}>
-        <InputLabel id="demo-simple-select-standard-label" style={{ color: 'white' }}>
+        <Input className="input2" id="component-simple" value={name} onChange={onChangeName} />
+      </ChannelFormContainer>
+      <ChannelFormContainer variant="standard">
+        <InputLabel className="input" id="demo-simple-select-standard-label">
           Visibility
         </InputLabel>
         <Select
+          className="input"
           labelId="demo-simple-select-standard-label"
           id="demo-simple-select-standard"
           value={visibility}
           onChange={onChangeVisibility}
           label="Visibility"
-          style={{ color: 'white' }}
         >
-          {' '}
           <MenuItem value={0}>Public</MenuItem>
           <MenuItem value={1}>Protected</MenuItem>
           <MenuItem value={2}>Private</MenuItem>
         </Select>
-
-        {parseInt(visibility) === 1 ? (
-          <FormControl sx={{ width: '100%', color: 'white', marginTop: '15px' }} variant="standard">
-            <InputLabel htmlFor="standard-adornment-password" style={{ color: 'white' }}>
-              Password
-            </InputLabel>
-            <Input
-              id="standard-adornment-password"
-              type={PasswordValues.showPassword ? 'text' : 'password'}
-              value={PasswordValues.password}
-              onChange={handleChange('password')}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    style={{ color: 'white' }}
-                  >
-                    {PasswordValues.showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              }
-            />
-          </FormControl>
-        ) : null}
-      </FormControl>
-      <Button
-        variant="contained"
-        style={{ width: '91px', height: '36px', margin: '5px 0 12px 8px', fontWeight: 600 }}
-        onClick={onSubmitChannelCreate}
-      >
+      </ChannelFormContainer>
+      {parseInt(visibility) === 1 ? (
+        <ChannelFormContainer variant="standard">
+          <InputLabel className="input" htmlFor="standard-adornment-password">
+            Password
+          </InputLabel>
+          <Input
+            id="standard-adornment-password"
+            type={PasswordValues.showPassword ? 'text' : 'password'}
+            value={PasswordValues.password}
+            onChange={handleChange('password')}
+            endAdornment={
+              <InputAdornment position="end">
+                <IconButton
+                  className="input"
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                >
+                  {PasswordValues.showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            }
+          />
+        </ChannelFormContainer>
+      ) : null}
+      <ChannelCreateBtn variant="contained" onClick={onSubmitChannelCreate}>
         {value}
-      </Button>
-      {createError && <h3 style={{ color: 'red' }}>This channel already exists</h3>}
+      </ChannelCreateBtn>
+      {createError && <ErrorText>This channel already exists</ErrorText>}
     </Box>
   );
 };
