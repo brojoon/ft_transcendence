@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { MyFab, NavIcons, StyledBadge, Toolbar } from './style';
+import { MyFab, NavIcons, StyledBadge, Toolbar, LeftSideBarContainer } from './style';
 import ForumIcon from '@mui/icons-material/Forum';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
@@ -19,15 +19,15 @@ import Tooltip from '@mui/material/Tooltip';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import ListItemButton from '@mui/material/ListItemButton';
 import List from '@mui/material/List';
+import Scrollbars from 'react-custom-scrollbars';
 import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
 import config from '@utils/config';
-
 const LeftSideBar = () => {
   const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const handleListItemClick = (event: any, index: number) => {
     setSelectedIndex(index);
@@ -56,75 +56,126 @@ const LeftSideBar = () => {
       });
   }, [document.cookie]);
   return (
-    <div style={{ width: '55px', flexShrink: 0, borderRight: '5px solid #121212' }}>
+    <LeftSideBarContainer>
       <Toolbar>
-        <NavIcons>
-          <Link to={`/profile`} style={{ textDecoration: 'none' }}>
-            <Tooltip title="Profile" placement="right" arrow>
-              <StyledBadge
-                overlap="circular"
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                variant="dot"
-              >
-                <Avatar src={data?.profile} alt="Avatar" />
-              </StyledBadge>
-            </Tooltip>
-          </Link>
-          <div
-            style={{ backgroundColor: '#4d4d4d', marginTop: '8px', width: '30px', height: '1px' }}
-          ></div>
-          <Link to={`/home`}>
-            <Tooltip title="Home" placement="right" arrow>
-              <MyFab aria-label="add" className="sideBarIcon">
-                <DashboardSharpIcon />
-              </MyFab>
-            </Tooltip>
-          </Link>
-          <Link to={`/social`}>
-            <Tooltip title="Social" placement="right" arrow>
-              <MyFab aria-label="add" className="sideBarIcon">
-                <ConnectWithoutContactIcon />
-              </MyFab>
-            </Tooltip>
-          </Link>
-          <Link to={`/channels`}>
-            <Tooltip title="Channels" placement="right" arrow>
-              <MyFab aria-label="add" className="sideBarIcon">
-                <ForumIcon />
-              </MyFab>
-            </Tooltip>
-          </Link>
-          <Link to={`/users`}>
-            <Tooltip title="Users" placement="right" arrow>
-              <MyFab aria-label="add" className="sideBarIcon">
-                <GroupIcon />
-              </MyFab>
-            </Tooltip>
-          </Link>
-          <Link to={`/achievements`}>
-            <Tooltip title="Achievements" placement="right" arrow>
-              <MyFab aria-label="add" className="sideBarIcon">
-                <MilitaryTechIcon />
-              </MyFab>
-            </Tooltip>
-          </Link>
-          <Link to={`/game`}>
-            <Tooltip title="Game" placement="right" arrow>
-              <MyFab aria-label="add" className="sideBarIcon">
-                <VideogameAssetIcon />
-              </MyFab>
-            </Tooltip>
-          </Link>
-          <Link to={`/login`}>
-            <Tooltip title="Logout" placement="right" arrow>
-              <MyFab aria-label="add" className="sideBarIconLast" onClick={onClickLogOut}>
-                <LogoutIcon />
-              </MyFab>
-            </Tooltip>
-          </Link>
-        </NavIcons>
+        <Scrollbars>
+          <NavIcons>
+            <Link to={`/profile`}>
+              <Tooltip title="Profile" placement="right" arrow>
+                <StyledBadge
+                  className="sideBarProfileIcon"
+                  onClick={(e) => {
+                    handleListItemClick(e, -1);
+                  }}
+                  overlap="circular"
+                  anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                  variant="dot"
+                >
+                  <Avatar src={data?.profile} alt="Avatar" />
+                </StyledBadge>
+              </Tooltip>
+            </Link>
+            <div className="fab-wrapper"></div>
+            <Link to={`/home`}>
+              <Tooltip title="Home" placement="right" arrow>
+                <MyFab
+                  aria-label="add"
+                  className="sideBarIcon"
+                  selected={selectedIndex === 0}
+                  onClick={(e) => {
+                    handleListItemClick(e, 0);
+                  }}
+                >
+                  <DashboardSharpIcon />
+                </MyFab>
+              </Tooltip>
+            </Link>
+            <Link to={`/social`}>
+              <Tooltip title="Social" placement="right" arrow>
+                <MyFab
+                  aria-label="add"
+                  className="sideBarIcon"
+                  selected={selectedIndex === 1}
+                  onClick={(e) => {
+                    handleListItemClick(e, 1);
+                  }}
+                >
+                  <ConnectWithoutContactIcon />
+                </MyFab>
+              </Tooltip>
+            </Link>
+            <Link to={`/channels`}>
+              <Tooltip title="Channels" placement="right" arrow>
+                <MyFab
+                  aria-label="add"
+                  className="sideBarIcon"
+                  selected={selectedIndex === 2}
+                  onClick={(e) => {
+                    handleListItemClick(e, 2);
+                  }}
+                >
+                  <ForumIcon />
+                </MyFab>
+              </Tooltip>
+            </Link>
+            <Link to={`/users`}>
+              <Tooltip title="Users" placement="right" arrow>
+                <MyFab
+                  aria-label="add"
+                  className="sideBarIcon"
+                  selected={selectedIndex === 3}
+                  onClick={(e) => {
+                    handleListItemClick(e, 3);
+                  }}
+                >
+                  <GroupIcon />
+                </MyFab>
+              </Tooltip>
+            </Link>
+            <Link to={`/achievements`}>
+              <Tooltip title="Achievements" placement="right" arrow>
+                <MyFab
+                  aria-label="add"
+                  className="sideBarIcon"
+                  selected={selectedIndex === 4}
+                  onClick={(e) => {
+                    handleListItemClick(e, 4);
+                  }}
+                >
+                  <MilitaryTechIcon />
+                </MyFab>
+              </Tooltip>
+            </Link>
+            <Link to={`/game`}>
+              <Tooltip title="Game" placement="right" arrow>
+                <MyFab
+                  aria-label="add"
+                  className="sideBarIcon"
+                  selected={selectedIndex === 5}
+                  onClick={(e) => {
+                    handleListItemClick(e, 5);
+                  }}
+                >
+                  <VideogameAssetIcon />
+                </MyFab>
+              </Tooltip>
+            </Link>
+            <Link to={`/login`}>
+              <Tooltip title="Logout" placement="right" arrow>
+                <MyFab
+                  aria-label="add"
+                  className="sideBarIconLast"
+                  selected={selectedIndex === 6}
+                  onClick={onClickLogOut}
+                >
+                  <LogoutIcon />
+                </MyFab>
+              </Tooltip>
+            </Link>
+          </NavIcons>
+        </Scrollbars>
       </Toolbar>
-    </div>
+    </LeftSideBarContainer>
   );
 };
 

@@ -15,6 +15,7 @@ import { useParams, Link, useHistory } from 'react-router-dom';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import config from '@utils/config';
+import { Container, AdminBtn, MatchDataContainer, ButtonGroupsContainer } from './style';
 
 interface Props {
   user: IAllUser;
@@ -122,67 +123,38 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
     [myAuth],
   );
   return (
-    <div
-      style={{
-        fontSize: '20px',
-        width: '300px',
-        height: '360px',
-        fontWeight: 600,
-        backgroundColor: '#1e1e1e',
-        color: 'white',
-        position: 'fixed',
-        left: '-301px',
-        boxShadow:
-          '0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%)',
-      }}
-    >
-      <div style={{ display: 'flex', borderBottom: '1px solid #3a3a3a' }}>
+    <Container>
+      <div className="header">
         <div>
-          <Avatar
-            src={user.profile}
-            alt="Avatar"
-            style={{
-              border: '2px solid red',
-              width: '40px',
-              height: '40px',
-              margin: '17px 15px 20px 20px',
-            }}
-          />
+          <Avatar className="avatar" src={user.profile} alt="Avatar" />
         </div>
-        <div style={{ lineHeight: '70px' }}>{user.userId}</div>
+        <div className="admin-btn-wrapper">{user.userId}</div>
         {myAuth === 2 && userAuth !== 2 && (
           <div>
-            <Button
+            <AdminBtn
               onClick={onClickAppointAdmin}
-              style={{
-                color: '' + (userAuth === 1 ? '#f33c36' : '#002BC'),
-                fontWeight: 600,
-                margin: '18px 0 0 40px',
-              }}
+              btnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
               variant="text"
             >
               admin
-            </Button>
+            </AdminBtn>
           </div>
         )}
       </div>
-      <div style={{ borderBottom: '1px solid #3a3a3a' }}>
-        <div style={{ margin: '17px 15px 20px 20px', display: 'flex' }}>
-          <EmojiEventsIcon style={{ fontSize: '40px' }} />
-          <div style={{ marginLeft: '15px', lineHeight: '40px' }}>Win Count</div>
+      <MatchDataContainer>
+        <div className="count-wrapper">
+          <EmojiEventsIcon className="match-icon" />
+          <div className="match-text">Win Count</div>
         </div>
-        <div style={{ margin: '17px 15px 20px 20px', display: 'flex' }}>
-          <EventBusyIcon style={{ fontSize: '40px' }} />
-          <div style={{ marginLeft: '15px', lineHeight: '40px' }}>Loss Count</div>
+        <div className="count-wrapper">
+          <EventBusyIcon className="match-icon" />
+          <div className="match-text">Loss Count</div>
         </div>
-      </div>
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ borderBottom: '1px solid #3a3a3a' }}>
-          <Link to={`/users/${user.userId}`} style={{ textDecoration: 'none' }}>
-            <Button
-              style={{ color: '#979797', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+      </MatchDataContainer>
+      <ButtonGroupsContainer>
+        <div className="profile-message-wrapper">
+          <Link to={`/users/${user.userId}`}>
+            <Button className="profile-btn" variant="text">
               profile
             </Button>
           </Link>
@@ -190,42 +162,26 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
             if (blockedUser.userId2 === user.userId) isBlcok = true;
           })}
           {!isBlcok && (
-            <Button
-              onClick={onClickMessageBtn}
-              style={{ color: '#43a047', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+            <Button className="message-btn" onClick={onClickMessageBtn} variant="text">
               message
             </Button>
           )}
         </div>
         {userAuth === 0 && (myAuth === 1 || myAuth === 2) && (
           <div>
-            <Button
-              onClick={onClickMuteBtn}
-              style={{ color: '#d50000', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+            <Button onClick={onClickMuteBtn} className="mute-kick-ban-btn" variant="text">
               mute
             </Button>
-            <Button
-              onClick={onClickKickBtn}
-              style={{ color: '#d50000', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+            <Button onClick={onClickKickBtn} className="mute-kick-ban-btn" variant="text">
               kick
             </Button>
-            <Button
-              onClick={onClickBanBtn}
-              style={{ color: '#d50000', fontWeight: 600, margin: '17px 15px 20px 20px' }}
-              variant="text"
-            >
+            <Button onClick={onClickBanBtn} className="mute-kick-ban-btn" variant="text">
               ban
             </Button>
           </div>
         )}
-      </div>
-    </div>
+      </ButtonGroupsContainer>
+    </Container>
   );
 };
 

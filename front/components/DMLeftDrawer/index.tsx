@@ -12,11 +12,7 @@ import axios from 'axios';
 import { dividerClasses } from '@mui/material';
 import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
 import ListItemButton from '@mui/material/ListItemButton';
-
-const style = {
-  width: '100%',
-  bgcolor: '#1e1e1e',
-};
+import { DMLeftDrawerContainer, DMListContainer } from './style';
 
 const DMLeftDrawerBar = () => {
   const { data: dmlist } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
@@ -35,64 +31,23 @@ const DMLeftDrawerBar = () => {
     [selectedIndex, setSelectedIndex],
   );
   return (
-    <div
-      style={{
-        width: '300px',
-        height: '100%',
-        padding: '30px 15px',
-        backgroundColor: '#363636',
-        borderRight: '1px solid #4f4f4f',
-      }}
-    >
-      <input
-        style={{
-          width: '100%',
-          outline: 'none',
-          resize: 'none',
-          borderRadius: '4px',
-          background: '#bdbdbd',
-          fontSize: '16px',
-          fontWeight: 'bold',
-          fontFamily: 'monospace',
-          height: '7%',
-          color: 'black',
-          border: 'none',
-          padding: '0 12px',
-        }}
-      ></input>
-      <div
-        style={{
-          borderTop: '1px solid #4f4f4f',
-          borderBottom: '1px solid #4f4f4f',
-          margin: '10px 0',
-          padding: '10px 0',
-          height: '14%',
-        }}
-      >
-        <Link to={`/social`} style={{ textDecoration: 'none' }}>
-          <List
-            component="nav"
-            aria-label="main mailbox folders"
-            sx={{
-              '& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected': {
-                bgcolor: '#666666',
-              },
-              margin: 0,
-              padding: 0,
-            }}
-          >
+    <DMLeftDrawerContainer>
+      <input className="search-input"></input>
+      <div className="friend-icon-wrapper">
+        <Link to={`/social`}>
+          <List className="friend-list-wrapper" component="nav" aria-label="main mailbox folders">
             <ListItemButton
+              className="friend-list-btn"
               selected={selectedIndex === 0}
-              style={{ color: 'white' }}
               onClick={(event: any) => handleListItemClick(event, 0)}
             >
-              <EmojiPeopleRoundedIcon style={{ marginRight: '20px' }} />
+              <EmojiPeopleRoundedIcon className="friend-list-icon" />
               <ListItemText primary="Friends" />
             </ListItemButton>
           </List>
         </Link>
       </div>
-      <div style={{ height: '79%' }}>
+      <DMListContainer>
         <Scrollbars>
           <div>
             {dmlist?.map((dm: IDmList, index: number) => {
@@ -102,34 +57,19 @@ const DMLeftDrawerBar = () => {
               });
               if (!isblock) {
                 return (
-                  <Link to={`/social/dm/${dm.id}`} style={{ textDecoration: 'none' }}>
-                    <List
-                      component="nav"
-                      aria-label="main mailbox folders"
-                      sx={{
-                        '& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected': {
-                          bgcolor: '#666666',
-                        },
-                      }}
-                    >
+                  <Link to={`/social/dm/${dm.id}`}>
+                    <List className="list" component="nav" aria-label="main mailbox folders">
                       <ListItemButton
+                        className="list-item-button"
                         selected={selectedIndex === index + 1}
-                        style={{ paddingLeft: '0' }}
                         onClick={(event: any) => handleListItemClick(event, index + 1)}
                       >
                         {users?.map((user: any) => {
                           if (user.userId === dm.userId) {
                             return (
                               <>
-                                <Avatar
-                                  src={user.profile}
-                                  alt="Avatar"
-                                  style={{ border: '2px solid red' }}
-                                />
-                                <ListItemText
-                                  primary={dm.userId}
-                                  style={{ marginLeft: '12px', color: 'white' }}
-                                />
+                                <Avatar className="avatar" src={user.profile} alt="Avatar" />
+                                <ListItemText className="user-id" primary={dm.userId} />
                               </>
                             );
                           }
@@ -142,8 +82,8 @@ const DMLeftDrawerBar = () => {
             })}
           </div>
         </Scrollbars>
-      </div>
-    </div>
+      </DMListContainer>
+    </DMLeftDrawerContainer>
   );
 };
 

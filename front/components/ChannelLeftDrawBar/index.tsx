@@ -15,10 +15,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import FlareIcon from '@mui/icons-material/Flare';
-const style = {
-  width: '100%',
-  bgcolor: '#1e1e1e',
-};
+import { ChannelLeftDrawBarContainer } from './style';
 
 const ChannelLeftDrawBar = () => {
   const { data: users } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
@@ -36,63 +33,23 @@ const ChannelLeftDrawBar = () => {
   );
 
   return (
-    <div
-      style={{
-        width: '280px',
-        height: '100%',
-        padding: '30px 15px',
-        backgroundColor: '#363636',
-        borderRight: '1px solid #4f4f4f',
-        overflowY: 'hidden',
-      }}
-    >
-      <input
-        style={{
-          width: '100%',
-          outline: 'none',
-          resize: 'none',
-          borderRadius: '4px',
-          background: '#bdbdbd',
-          fontSize: '16px',
-          fontWeight: 'bold',
-          fontFamily: 'monospace',
-          color: 'black',
-          border: 'none',
-          padding: '0 15px',
-          height: '7%',
-        }}
-      ></input>
-      <div
-        style={{
-          borderTop: '1px solid #4f4f4f',
-          borderBottom: '1px solid #4f4f4f',
-          margin: '10px 0',
-          paddingTop: '3px',
-          height: '14%',
-        }}
-      >
-        <Link to={`/channels`} style={{ textDecoration: 'none' }}>
-          <List
-            component="nav"
-            aria-label="main mailbox folders"
-            sx={{
-              '& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected': {
-                bgcolor: '#666666',
-              },
-            }}
-          >
+    <ChannelLeftDrawBarContainer>
+      <input className="search-input"></input>
+      <div className="header-wrapper">
+        <Link to={`/channels`}>
+          <List component="nav" aria-label="main mailbox folders">
             <ListItemButton
+              className="channel-list-btn"
               selected={selectedIndex === 0}
               onClick={(event) => handleListItemClick(event, 0)}
-              style={{ color: 'white' }}
             >
-              <FlareIcon style={{ marginRight: '15px' }} />
+              <FlareIcon className="fireicon" />
               <ListItemText primary="Discover" />
             </ListItemButton>
           </List>
         </Link>
       </div>
-      <div style={{ height: '70%' }}>
+      <div className="list-wrapper">
         <Scrollbars>
           {channelList?.map((channel: any, index) => {
             let channelMode = '';
@@ -104,25 +61,15 @@ const ChannelLeftDrawBar = () => {
               channelMode = 'Private';
             }
             return (
-              <Link to={`/channels/${channel.id}`} style={{ textDecoration: 'none' }}>
-                <List
-                  component="nav"
-                  aria-label="main mailbox folders"
-                  sx={{
-                    '& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected': {
-                      bgcolor: '#666666',
-                    },
-                    margin: 0,
-                    padding: 0,
-                  }}
-                >
+              <Link to={`/channels/${channel.id}`}>
+                <List className="list" component="nav" aria-label="main mailbox folders">
                   <ListItemButton
-                    style={{ padding: 0, margin: 0 }}
+                    className="list-btn"
                     selected={selectedIndex === index + 1}
                     onClick={(event) => handleListItemClick(event, index + 1)}
                   >
                     <ListItemText
-                      style={{ color: 'white', margin: '4px 0 4px 18px' }}
+                      className="list-text"
                       primary={channel.name}
                       secondary={channelMode}
                     />
@@ -133,25 +80,14 @@ const ChannelLeftDrawBar = () => {
           })}
         </Scrollbars>
       </div>
-      <div
-        style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '11%' }}
-      >
-        <Link to={`/channels/create`} style={{ textDecoration: 'none' }}>
-          <Button
-            variant="contained"
-            style={{
-              width: '180px',
-              height: '35px',
-              backgroundColor: '#597aff',
-              borderColor: '#597aff',
-              fontWeight: 'bold',
-            }}
-          >
+      <div className="footer">
+        <Link to={`/channels/create`}>
+          <Button className="create-btn" variant="contained">
             CREATE&nbsp;&nbsp;+
           </Button>
         </Link>
       </div>
-    </div>
+    </ChannelLeftDrawBarContainer>
   );
 };
 

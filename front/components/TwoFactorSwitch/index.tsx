@@ -8,6 +8,7 @@ import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import TextField from '@mui/material/TextField';
 import config from '@utils/config';
+import { TwoFactorSwitchBack, TwoFactorSwitchContainer } from './style';
 
 const TwoFactorSwitch = () => {
   const { data: isTwoFactor } = useSWR<Boolean>('/api/users/two-factor-status', fetcher);
@@ -90,51 +91,22 @@ const TwoFactorSwitch = () => {
     <>
       {isQRModal && checked && (
         <>
-          <div
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              zIndex: 1000,
-              backgroundColor: 'rgba(30, 30, 030, 0.5)',
-            }}
-            onClick={onClickQRModal}
-          ></div>
-          <div
-            style={{
-              position: 'absolute',
-              width: '500px',
-              height: '550px',
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 2000,
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: '#1e1e1e',
-              boxShadow:
-                '0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%)',
-            }}
-          >
-            <IconButton style={{ color: 'white', marginLeft: '430px' }} onClick={onClickQRModal}>
+          <TwoFactorSwitchBack onClick={onClickQRModal}></TwoFactorSwitchBack>
+          <TwoFactorSwitchContainer>
+            <IconButton className="close-icon" onClick={onClickQRModal}>
               <CloseIcon />
             </IconButton>
-            <img
-              style={{ width: '400px', height: '400px', margin: '10px 45px 0 45px' }}
-              src={imgsrc}
-            />
+            <img className="qr-img" src={imgsrc} />
             <TextField
+              className="text-field"
               onKeyPress={onSubmitOTPvalue}
               onChange={onChangeOTPinput}
               value={OTPvalue}
               id="outlined-basic"
               label="OTP"
               variant="outlined"
-              style={{ margin: '20px' }}
             />
-          </div>
+          </TwoFactorSwitchContainer>
         </>
       )}
       <Switch

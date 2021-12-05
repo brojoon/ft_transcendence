@@ -107,6 +107,10 @@ const PingPong = (data: any) => {
   }, [opponent]);
 
   useEffect(() => {
+    socket.emit('gameCheck');
+  }, []);
+
+  useEffect(() => {
     socket.emit('changeGameSet', {
       gameId: gameId,
       speed: gameSpeed,
@@ -232,6 +236,9 @@ const PingPong = (data: any) => {
     socket.on('gameStart', (gameStart: any) => {
       console.log('gameStart', gameStart);
       setIsGameStart(true);
+      return () => {
+        socket.off('gameStart');
+      };
     });
   }, []);
 
@@ -333,7 +340,6 @@ const PingPong = (data: any) => {
 
   const changeGameSet = async () => {
     if (player !== '') await axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
-    setIsGameStart(true);
   };
 
   return (

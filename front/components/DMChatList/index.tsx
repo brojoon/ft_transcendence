@@ -4,6 +4,7 @@ import fetcher from '@utils/fetcher';
 import React, { RefObject, VFC } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
+import { DMChatListContainer } from './style';
 
 interface Props {
   chatData: IChatList[] | undefined;
@@ -19,39 +20,26 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef }) => {
   const chatSections = chatData ? chatData.flat().reverse() : [];
 
   return (
-    <div
-      style={{
-        background: '#1e1e1e',
-        width: '100%',
-        height: '100%',
-        padding: '8px 0 8px 15px',
-      }}
-    >
+    <DMChatListContainer>
       <Scrollbars autoHide ref={scrollbarRef}>
         {chatSections?.map((chat) => {
           return (
-            <div style={{ color: 'white', display: ' flex' }}>
-              <div style={{ marginRight: '10px' }}>
+            <div className="chatList-wrapper">
+              <div className="chatList-profile-wrapper">
                 {alluser?.map((user) => {
                   if (user.userId === chat.userId1)
-                    return (
-                      <Avatar
-                        src={user.profile}
-                        alt="Avatar"
-                        style={{ width: '40px', height: '40px', marginBottom: '25px' }}
-                      />
-                    );
+                    return <Avatar className="avatar" src={user.profile} alt="Avatar" />;
                 })}
               </div>
               <div>
                 <div>{chat.userId1}</div>
-                <p style={{ marginTop: '0' }}>{chat.message}</p>
+                <p className="chat">{chat.message}</p>
               </div>
             </div>
           );
         })}
       </Scrollbars>
-    </div>
+    </DMChatListContainer>
   );
 };
 

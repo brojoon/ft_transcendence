@@ -14,6 +14,7 @@ import GamepadIcon from '@mui/icons-material/Gamepad';
 import axios from 'axios';
 import config from '@utils/config';
 import { useHistory } from 'react-router-dom';
+import { DMChatHeaderContainer } from './style';
 
 const DMChatHeader = () => {
   const { id } = useParams<{ id: string }>();
@@ -33,42 +34,27 @@ const DMChatHeader = () => {
   );
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ bgcolor: '#272727' }}>
+    <DMChatHeaderContainer>
+      <AppBar className="wrapper">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="div" className="user-profile-container">
             {alluser?.map((user) => {
               if (user.userId === userId)
                 return (
-                  <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                    <Avatar
-                      src={user.profile}
-                      alt="Avatar"
-                      style={{ width: '40px', height: '40px', left: '-10px' }}
-                    />
+                  <div className="user-profile-wrapper">
+                    <Avatar className="avatar" src={user.profile} alt="Avatar" />
                     <span>{user.userId}</span>
                   </div>
                 );
             })}
           </Typography>
-          <Button
-            style={{
-              backgroundColor: '#1678d1',
-              borderColor: '#1678d1',
-              color: 'white',
-              width: '160px',
-              height: '35px',
-              padding: '0 16px',
-              fontWeight: 'bold',
-            }}
-            onClick={onClickChallengeBtn}
-          >
+          <Button className="challenge-btn" onClick={onClickChallengeBtn}>
             CHALLENGE&nbsp;
             <GamepadIcon />
           </Button>
         </Toolbar>
       </AppBar>
-    </Box>
+    </DMChatHeaderContainer>
   );
 };
 

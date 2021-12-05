@@ -1,6 +1,7 @@
+
 import styled from '@emotion/styled';
 
-export const ChannelInviteModalBackground = styled.div`
+export const ProtectedRoomModalBack = styled.div`
 	color: white;
 	position: fixed;
 	left: 0;
@@ -8,10 +9,10 @@ export const ChannelInviteModalBackground = styled.div`
 	right: 0;
 	bottom: 0;
 	z-index: 2000;
-	background-color: rgba(30; 30, 030, 0.5);
+	background-color: rgba(30, 30, 030, 0.5);
 `;
 
-export const ChannelInviteModalContainer = styled.div`
+export const ProtectedRoomModalContainer = styled.div`
 	position: fixed;
 	top: 50%;
 	left: 50%;
@@ -25,47 +26,49 @@ export const ChannelInviteModalContainer = styled.div`
 	padding: 10px 20px 10px 20px;
 	z-index: 3000;
 	transform: translate(-50%, -50%);
-	box-shadow:
+	boxShadow:
 		0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
 
-	& .invite-Modal-wrapper {
-		display: flex;
-		flex-direction: column;
-	}
-
-	& .invite-Modal-wrapper h3 {
-		color: red;
-		margin-top: 0;
-	}
-
-	& .invite-Modal-header {
+	& .header {
 		display: flex;
 		color: white;
 		justify-content: space-between;
 	}
 
-	& .invite-Modal-body {
+	& .close-icon {
+		color: white;
+	}
+
+	& .body {
 		display: flex;
+	}
+
+	& .form-control {
 		width: 100%;
-		justify-content: space-between;
+		color: white;
+		margin-top: 15px;
 	}
 
-	& .color-white {
+	& .input-label {
 		color: white;
 	}
 
-	& .invite-Modal-input {
-		width: calc(100% - 130px);
+	& .visibility-icon {
 		color: white;
 	}
 
-	& .invite-Modal-button {
-		width: 110px;
-		height: 42px;
+	& .join-btn {
+		width: 120px;
+		height: 45px;
 		background-color: #597aff;
 		border-color: #597aff;
 		font-weight: bold;
-		margin-top: 10px;
+		margin: 20px 0 0 10px;
+	}
+
+	& .password-error-text {
+		color: red;
+		font-weight: 600;
 	}
 
 	& .css-1480iag-MuiInputBase-root-MuiInput-root {
@@ -78,7 +81,6 @@ export const ChannelInviteModalContainer = styled.div`
 
 	& .css-1480iag-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled):before {
 		border-bottom: 1px solid rgba(255, 255, 255, 1);
-		
-	}
 
+	}
 `;
