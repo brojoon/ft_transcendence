@@ -9,11 +9,7 @@ import fetcher from '@utils/fetcher';
 import { IAllUser, IFriendList } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
-
-const style = {
-  width: '100%',
-  bgcolor: '#1e1e1e',
-};
+import { FriendListContainer } from './style';
 
 const FriendsList = () => {
   const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
@@ -21,24 +17,21 @@ const FriendsList = () => {
 
   return (
     <Scrollbars>
-      <List sx={style} component="nav" aria-label="mailbox folders" style={{ height: '100%' }}>
+      <FriendListContainer aria-label="mailbox folders">
         {friends?.map((friend: any) => {
           return users?.map((user) => {
             if (user?.userId === friend?.userId2)
               return (
-                <Link
-                  to={`/users/${user.userId}`}
-                  style={{ textDecoration: 'none', color: 'white' }}
-                >
+                <Link to={`/users/${user.userId}`}>
                   <ListItem button>
-                    <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
-                    <ListItemText primary={user.userId} style={{ marginLeft: '12px' }} />
+                    <Avatar className="avatar" src={user.profile} alt="Avatar" />
+                    <ListItemText className="text" primary={user.userId} />
                   </ListItem>
                 </Link>
               );
           });
         })}
-      </List>
+      </FriendListContainer>
     </Scrollbars>
   );
 };

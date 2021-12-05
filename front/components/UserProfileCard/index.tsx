@@ -21,16 +21,11 @@ import getToken from '@utils/getToken';
 import BasicModal from '@components/BasicModal';
 import { FormatListBulleted } from '@mui/icons-material';
 import config from '@utils/config';
+import { UserProfileCardContainer } from './style';
 
 interface Props {
   UserData: IUser;
 }
-
-const bull = (
-  <Box component="span" sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}>
-    •
-  </Box>
-);
 
 const UserProfileCard: VFC<Props> = ({ UserData }) => {
   const { id } = useParams<{ id: string }>();
@@ -152,7 +147,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
   );
 
   return (
-    <Box sx={{ width: '100%' }}>
+    <UserProfileCardContainer>
       {isAddFriendModal && (
         <BasicModal
           headerContent={`Add ${id}`}
@@ -186,84 +181,28 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         />
       )}
 
-      <Card
-        variant="outlined"
-        style={{
-          backgroundColor: '#1e1e1e',
-          color: 'white',
-          border: '1px solid rgba(57, 57, 57, 0.5)',
-          width: '100%',
-          padding: '5px 10px 15px 10px',
-        }}
-      >
-        <CardContent
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar
-            src={UserData?.profile}
-            alt="Avatar"
-            style={{ width: '130px', height: '130px', marginBottom: '20px' }}
-          />
+      <Card className="card-container" variant="outlined">
+        <CardContent className="card-content">
+          <Avatar className="card-avatar" src={UserData?.profile} alt="Avatar" />
           <Typography variant="h5" component="div">
             {UserData?.userId}
           </Typography>
-          <span style={{ color: '#52575d', fontWeight: 500 }}>{UserData?.username}</span>
+          <span className="card-user-text">{UserData?.username}</span>
         </CardContent>
-        <CardActions
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-betweens',
-          }}
-        >
+        <CardActions className="card-action">
           {isBlock ? (
-            <Button
-              variant="contained"
-              disabled
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: '#393939',
-                borderColor: '#393939',
-                fontWeight: 'bold',
-              }}
-            >
+            <Button className="challenge-block-btn" variant="contained" disabled>
               BLOCKED&nbsp;
               <GamepadIcon />
             </Button>
           ) : (
-            <Button
-              variant="contained"
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: '#1678d1',
-                borderColor: '#1678d1',
-                fontWeight: 'bold',
-              }}
-            >
+            <Button variant="contained" className="challenge-btn">
               CHALLENGE&nbsp;
               <GamepadIcon />
             </Button>
           )}
           {isBlock ? (
-            <Button
-              variant="contained"
-              disabled
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: '#393939',
-                borderColor: '#393939',
-                fontWeight: 'bold',
-                margin: '20px 0 0 0',
-              }}
-            >
+            <Button variant="contained" disabled className="friend-block-btn">
               BLOCKED&nbsp;
               <PersonAddAlt1Icon />
             </Button>
@@ -271,105 +210,42 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
             <Button
               onClick={onToggleRemoveFriendModal}
               variant="contained"
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: '#1e1e1e',
-                border: '1px solid #3a3a3a',
-                fontWeight: 'bold',
-                margin: '20px 0 0 0',
-                color: '#ec3f31',
-              }}
+              className="friend-unfriend-btn"
             >
               UNFRIEND&nbsp;
               <PersonAddAlt1Icon />
             </Button>
           ) : (
-            <Button
-              onClick={onToggleAddFriendModal}
-              variant="contained"
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: '#5ebdff',
-                borderColor: '#5ebdff',
-                fontWeight: 'bold',
-                margin: '20px 0 0 0',
-              }}
-            >
+            <Button className="friend-btn" onClick={onToggleAddFriendModal} variant="contained">
               FRIEND&nbsp;
               <PersonAddAlt1Icon />
             </Button>
           )}
           {isBlock ? (
-            <Button
-              onClick={onToggleRemoveBlockModal}
-              variant="contained"
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: 'red',
-                borderColor: 'red',
-                fontWeight: 'bold',
-                margin: '20px 0 0 0',
-              }}
-            >
+            <Button className="unblock-btn" onClick={onToggleRemoveBlockModal} variant="contained">
               UNBLOCK&nbsp;
               <PersonAddAlt1Icon />
             </Button>
           ) : (
-            <Button
-              onClick={onToggleBlockModal}
-              variant="contained"
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: 'red',
-                borderColor: 'red',
-                fontWeight: 'bold',
-                margin: '20px 0 0 0',
-              }}
-            >
+            <Button className="block-btn" onClick={onToggleBlockModal} variant="contained">
               BLOCK&nbsp;
               <PersonOffIcon />
             </Button>
           )}
           {isBlock ? (
-            <Button
-              variant="contained"
-              disabled
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: '#393939',
-                borderColor: '#393939',
-                fontWeight: 'bold',
-                margin: '20px 0 0 0',
-              }}
-            >
+            <Button className="message-block-btn" variant="contained" disabled>
               BLOCKED&nbsp;
               <ChatIcon />
             </Button>
           ) : (
-            <Button
-              onClick={onClickMessageBtn}
-              variant="contained"
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: '#9CFA24',
-                borderColor: '#9CFA24',
-                fontWeight: 'bold',
-                margin: '20px 0 0 0',
-              }}
-            >
+            <Button className="message-btn" onClick={onClickMessageBtn} variant="contained">
               MESSAGE&nbsp;
               <ChatIcon />
             </Button>
           )}
         </CardActions>
       </Card>
-    </Box>
+    </UserProfileCardContainer>
   );
 };
 

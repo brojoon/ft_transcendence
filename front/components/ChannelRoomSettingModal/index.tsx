@@ -166,22 +166,8 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
         ) : (
           ''
         )}
-        <div
-          className={settingToggle ? 'visible' : 'hidden'}
-          style={{
-            position: 'fixed',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            top: 0,
-            backgroundColor: '#000000',
-            zIndex: 501,
-            flexDirection: 'column',
-            padding: '0 25px',
-            overflowY: 'auto',
-          }}
-        >
-          <div style={{ display: 'flex', color: 'white', justifyContent: 'space-between' }}>
+        <div className={settingToggle ? 'visible' : 'hidden'}>
+          <div className="setting-modal-header">
             <h1>
               Settings of{' '}
               {allChannelList?.map((channel: IChannelList) => {
@@ -190,16 +176,11 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
                 }
               })}
             </h1>
-            <IconButton aria-label="close" onClick={onClickSettingBtn} style={{ color: 'white' }}>
+            <IconButton className="close-icon" aria-label="close" onClick={onClickSettingBtn}>
               <CloseIcon />
             </IconButton>
           </div>
-          <div
-            style={{
-              backgroundColor: '#1e1e1e',
-              borderRadius: '4px',
-            }}
-          >
+          <div className="setting-modal-body">
             <ChannelForm
               onSubmitChannelCreate={onSubmitChannelCreate}
               onChangeVisibility={onChangeVisibility}
@@ -214,23 +195,13 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
               createError={createError}
             />
           </div>
-          <div
-            style={{
-              width: '100%',
-              height: '120px',
-              backgroundColor: '#1e1e1e',
-              color: '#e24c34',
-              border: '1px solid #a6625f',
-              borderRadius: '4px',
-              padding: '0 15px',
-            }}
-          >
+          <div className="setting-modal-delete-wrapper">
             <h3>Danger Zone</h3>
             <Button
+              className="delete-btn"
               variant="contained"
               startIcon={<DeleteIcon />}
               onClick={onClickChannelDeleteModal}
-              style={{ backgroundColor: 'red', fontWeight: 600 }}
             >
               DELETE CHANNEL
             </Button>

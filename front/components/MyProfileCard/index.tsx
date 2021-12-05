@@ -11,14 +11,8 @@ import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Link, useParams } from 'react-router-dom';
-
 import { IUser } from '@typings/db';
-
-const bull = (
-  <Box component="span" sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}>
-    •
-  </Box>
-);
+import { MyProfileCardContainer } from './style';
 
 const MyProfileCard = () => {
   const { id } = useParams<{ id: string }>();
@@ -27,61 +21,25 @@ const MyProfileCard = () => {
   });
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Card
-        variant="outlined"
-        style={{
-          backgroundColor: '#1e1e1e',
-          color: 'white',
-          border: '1px solid rgba(57, 57, 57, 0.5)',
-          width: '100%',
-          padding: '5px 10px 15px 10px',
-        }}
-      >
-        <CardContent
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar
-            src={myData?.profile}
-            alt="Avatar"
-            style={{ width: '130px', height: '130px', marginBottom: '20px' }}
-          />
+    <MyProfileCardContainer>
+      <Card className="card" variant="outlined">
+        <CardContent className="card-content">
+          <Avatar className="avatar" src={myData?.profile} alt="Avatar" />
           <Typography variant="h5" component="div">
             {myData?.userId}
           </Typography>
-          <span style={{ color: '#52575d', fontWeight: 500 }}>{myData?.username}</span>
+          <span>{myData?.username}</span>
         </CardContent>
-        <CardActions
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <Link to="/profile/setting" style={{ textDecoration: 'none', width: '100%' }}>
-            <Button
-              variant="contained"
-              style={{
-                width: '100%',
-                height: '35px',
-                backgroundColor: '#597aff',
-                borderColor: '#597aff',
-                fontWeight: 'bold',
-              }}
-            >
+        <CardActions className="card-actions">
+          <Link to="/profile/setting" className="setting-link">
+            <Button className="setting-btn" variant="contained">
               SETTING&nbsp;
               <SettingsIcon />
             </Button>
           </Link>
         </CardActions>
       </Card>
-    </Box>
+    </MyProfileCardContainer>
   );
 };
 

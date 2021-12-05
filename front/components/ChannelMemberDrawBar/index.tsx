@@ -19,6 +19,7 @@ import ChannelProfile from '@components/ChannelProfile';
 // import ChannelMember from '@components/ChannelMember';
 import VoiceOverOffIcon from '@mui/icons-material/VoiceOverOff';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import { ModalBackground } from './style';
 
 interface Props {
   onClickSettingBtn: (e: any) => void;
@@ -71,26 +72,11 @@ const ChannelMemberDrawBar: VFC<Props> = ({
   }
   return (
     <>
-      {membersToggle && (
-        <div
-          onClick={onClickMembersToggle}
-          style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(30, 30, 030, 0.5)',
-            zIndex: 100,
-          }}
-        ></div>
-      )}
+      {membersToggle && <ModalBackground onClick={onClickMembersToggle}></ModalBackground>}
       <Container className={'MemberDrawBar ' + (membersToggle ? 'visible' : 'hidden')}>
         <Scrollbars>
           <div>
-            <ListItem style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}>
-              Owner
-            </ListItem>
+            <ListItem className="List-header">Owner</ListItem>
             {memberList &&
               memberList?.map((member) => {
                 if (member.auth === 2) {
@@ -102,16 +88,9 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
-                            <Avatar
-                              src={user.profile}
-                              alt="Avatar"
-                              style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                            />
-                            <ListItemText
-                              primary={user.userId}
-                              style={{ marginLeft: '12px', color: 'white' }}
-                            />
-                            <RecordVoiceOverIcon style={{ color: 'white' }} />
+                            <Avatar className="member-avatar" src={user.profile} alt="Avatar" />
+                            <ListItemText className="member-text" primary={user.userId} />
+                            <RecordVoiceOverIcon className="unmute-icon" />
                           </ListItem>
                         </>
                       );
@@ -119,9 +98,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                   });
                 }
               })}
-            <ListItem style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}>
-              Admin
-            </ListItem>
+            <ListItem className="List-header">Admin</ListItem>
             {memberList &&
               memberList?.map((member) => {
                 if (member.auth === 1) {
@@ -133,16 +110,9 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
-                            <Avatar
-                              src={user.profile}
-                              alt="Avatar"
-                              style={{ border: '2px solid red', width: '38px', height: '38px' }}
-                            />
-                            <ListItemText
-                              primary={user.userId}
-                              style={{ marginLeft: '12px', color: 'white' }}
-                            />
-                            <RecordVoiceOverIcon style={{ color: 'white' }} />
+                            <Avatar className="member-avatar" src={user.profile} alt="Avatar" />
+                            <ListItemText className="member-text" primary={user.userId} />
+                            <RecordVoiceOverIcon className="unmute-icon" />
                           </ListItem>
                         </>
                       );
@@ -150,9 +120,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                   });
                 }
               })}
-            <ListItem style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}>
-              Users
-            </ListItem>
+            <ListItem className="List-header">Users</ListItem>
             {memberList &&
               memberList?.map((member, index) => {
                 if (member.auth === 0) {
@@ -171,23 +139,12 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
-                            <Avatar
-                              src={user.profile}
-                              alt="Avatar"
-                              style={{
-                                border: '2px solid red',
-                                width: '38px',
-                                height: '38px',
-                              }}
-                            />
-                            <ListItemText
-                              primary={user.userId}
-                              style={{ marginLeft: '12px', color: 'white' }}
-                            />
+                            <Avatar className="member-avatar" src={user.profile} alt="Avatar" />
+                            <ListItemText className="member-text" primary={user.userId} />
                             {isMute ? (
-                              <VoiceOverOffIcon style={{ color: 'red' }} />
+                              <VoiceOverOffIcon className="mute-icon" />
                             ) : (
-                              <RecordVoiceOverIcon style={{ color: 'white' }} />
+                              <RecordVoiceOverIcon className="unmute-icon" />
                             )}
                           </ListItem>
                         </>
@@ -200,34 +157,16 @@ const ChannelMemberDrawBar: VFC<Props> = ({
           </div>
         </Scrollbars>
         {isOwner && (
-          <Button
-            variant="contained"
-            onClick={onClickSettingBtn}
-            style={{
-              width: '200px',
-              height: '35px',
-              backgroundColor: '#597aff',
-              borderColor: '#597aff',
-              fontWeight: 'bold',
-              margin: '10px 0',
-            }}
-          >
+          <Button className="channel-room-btn" variant="contained" onClick={onClickSettingBtn}>
             SETTING &nbsp;
             <SettingsIcon />
           </Button>
         )}
         {isAdmin && (
           <Button
+            className="channel-room-btn"
             variant="contained"
             onClick={onClickChannelInviteModal}
-            style={{
-              width: '200px',
-              height: '35px',
-              backgroundColor: '#597aff',
-              borderColor: '#597aff',
-              fontWeight: 'bold',
-              margin: '10px 0',
-            }}
           >
             INVITE &nbsp;
             <PersonAddAlt1RoundedIcon />
@@ -235,16 +174,9 @@ const ChannelMemberDrawBar: VFC<Props> = ({
         )}
         {isOwner === false && (
           <Button
+            className="channel-room-btn"
             variant="contained"
             onClick={onClickChannelLeaveModal}
-            style={{
-              width: '200px',
-              height: '35px',
-              backgroundColor: '#597aff',
-              borderColor: '#597aff',
-              fontWeight: 'bold',
-              margin: '10px 0',
-            }}
           >
             LEAVE &nbsp;
             <ExitToAppIcon />

@@ -3,6 +3,20 @@ import Badge from '@mui/material/Badge';
 import { styled as muiStyled } from '@mui/material/styles';
 import Fab from '@mui/material/Fab';
 
+
+export const LeftSideBarContainer = styled.div`
+	width: 55px;
+	flex-shrink: 0;
+	border-right: '5px solid #121212';
+
+	& .fab-wrapper {
+		background: #4d4d4d;
+		margin-top: 8px;
+		width: 30px;
+		height: 1px;
+	}
+`;
+
 export const Toolbar = styled.div`
 	position: fixed;
 	left : 0;
@@ -30,8 +44,10 @@ export const NavIcons = styled.div`
 
 	.sideBarIcon:hover {
 		background-color: #4a4b54;
-	}
 
+
+	}	
+	
 	.sideBarIconLast {
 		position: fixed;
 		bottom: 5px;
@@ -43,7 +59,9 @@ export const NavIcons = styled.div`
 
 	.sideBarIconLast:hover {
 		background-color: #4a4b54;
+
 	}
+	
 `;
 
 export const StyledBadge = muiStyled(Badge)(({ theme }) => ({
@@ -75,8 +93,8 @@ export const StyledBadge = muiStyled(Badge)(({ theme }) => ({
 	},
 }));
 
-export const MyFab = styled(Fab)`
-	background-color: #363636;
+export const MyFab = styled(Fab) <{ selected: boolean }>`
+	background-color: ${(props) => props.selected ? '#4a4b54' : '#363636'};
 	box-shadow: 0;
 	color: white;
 

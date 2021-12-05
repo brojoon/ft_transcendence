@@ -15,6 +15,7 @@ import useSWR from 'swr';
 import { IChannelList } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import config from '@utils/config';
+import { ProtectedRoomModalBack, ProtectedRoomModalContainer } from './style';
 
 interface Props {
   channelPasswordModal: boolean;
@@ -107,47 +108,17 @@ const ProtectedRoomModal: VFC<Props> = ({
   );
   return (
     <>
-      <div
-        onClick={onClickModalClose}
-        style={{
-          color: 'white',
-          position: 'fixed',
-          left: 0,
-          top: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 2000,
-          backgroundColor: 'rgba(30, 30, 030, 0.5)',
-        }}
-      ></div>
-      <div
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          width: '500px',
-          height: '180px',
-          backgroundColor: '#1e1e1e',
-          color: '#979797',
-          opacity: '1',
-          border: '1px solid #1e1e1e',
-          borderRadius: '3px',
-          padding: '10px 20px 10px 20px',
-          zIndex: 3000,
-          transform: 'translate(-50%, -50%)',
-          boxShadow:
-            '0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%)',
-        }}
-      >
-        <div style={{ display: 'flex', color: 'white', justifyContent: 'space-between' }}>
+      <ProtectedRoomModalBack onClick={onClickModalClose}></ProtectedRoomModalBack>
+      <ProtectedRoomModalContainer>
+        <div className="header">
           <h2>Unlock channel access password</h2>
-          <IconButton aria-label="close" onClick={onClickModalClose} style={{ color: 'white' }}>
+          <IconButton className="close-icon" aria-label="close" onClick={onClickModalClose}>
             <CloseIcon />
           </IconButton>
         </div>
-        <div style={{ display: 'flex' }}>
-          <FormControl sx={{ width: '100%', color: 'white', marginTop: '15px' }} variant="standard">
-            <InputLabel htmlFor="standard-adornment-password" style={{ color: 'white' }}>
+        <div className="body">
+          <FormControl className="form-control" variant="standard">
+            <InputLabel htmlFor="standard-adornment-password" className="input-label">
               What is the password?
             </InputLabel>
             <Input
@@ -158,10 +129,10 @@ const ProtectedRoomModal: VFC<Props> = ({
               endAdornment={
                 <InputAdornment position="end">
                   <IconButton
+                    className="visibility-icon "
                     aria-label="toggle password visibility"
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
-                    style={{ color: 'white' }}
                   >
                     {PasswordValues.showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -169,23 +140,12 @@ const ProtectedRoomModal: VFC<Props> = ({
               }
             />
           </FormControl>
-          <Button
-            onClick={onSubmitPassword}
-            variant="contained"
-            style={{
-              width: '120px',
-              height: '45px',
-              backgroundColor: '#597aff',
-              borderColor: '#597aff',
-              fontWeight: 'bold',
-              margin: '20px 0 0 10px',
-            }}
-          >
+          <Button className="join-btn" onClick={onSubmitPassword} variant="contained">
             JOIN
           </Button>
         </div>
-        {passwordError && <span style={{ color: 'red', fontWeight: 600 }}>passwordError</span>}
-      </div>
+        {passwordError && <span className="password-error-text">passwordError</span>}
+      </ProtectedRoomModalContainer>
     </>
   );
 };

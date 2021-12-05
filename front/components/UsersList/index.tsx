@@ -8,28 +8,24 @@ import fetcher from '@utils/fetcher';
 import { IAllUser } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
-
-const style = {
-  width: '100%',
-  bgcolor: '#1e1e1e',
-};
+import { UsersListContainer } from './style';
 
 const UserList = () => {
   const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
   return (
     <Scrollbars>
-      <List sx={style} component="nav" aria-label="mailbox folders" style={{ height: '100%' }}>
+      <UsersListContainer>
         {users?.map((user) => {
           return (
-            <Link to={`/users/${user.userId}`} style={{ textDecoration: 'none', color: 'white' }}>
-              <ListItem button>
-                <Avatar src={user.profile} alt="Avatar" style={{ border: '2px solid red' }} />
-                <ListItemText primary={user.userId} style={{ marginLeft: '12px' }} />
+            <Link to={`/users/${user.userId}`}>
+              <ListItem className="list-item-wrapper" button>
+                <Avatar className="avatar" src={user.profile} alt="Avatar" />
+                <ListItemText className="user" primary={user.userId} />
               </ListItem>
             </Link>
           );
         })}
-      </List>
+      </UsersListContainer>
     </Scrollbars>
   );
 };
