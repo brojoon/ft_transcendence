@@ -8,6 +8,7 @@ import Avatar from '@mui/material/Avatar';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import { IAllUser } from '@typings/db';
+import { HistoryContainer, UserProfileContainer1, UserProfileContainer2 } from './style';
 
 const option = {
   headers: {
@@ -58,59 +59,33 @@ const History = (data: any) => {
   }, [gameId, userId1]);
 
   return (
-    <div
-      style={{
-        color: 'white',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        fontSize: '30px',
-        height: '100vh',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '100%',
-        }}
-      >
-        <div style={{ marginBottom: '15px', color: `${winner === userId1 ? 'white' : 'red'}` }}>
-          <div style={{ marginLeft: '25px' }}>
-            <Avatar
-              src={userId1Profile}
-              alt="Avatar"
-              style={{ width: '250px', height: '250px', marginBottom: '8px' }}
-            />
-            [{userId1}] : {player1Point} Point
+    <HistoryContainer>
+      <div className="wrapper">
+        <UserProfileContainer1 winner={`${winner === userId1 ? 'white' : 'red'}`}>
+          <div className="profile1-wrapper">
+            <Avatar className="avatar1" src={userId1Profile} alt="Avatar" />[{userId1}] :{' '}
+            {player1Point} Point
           </div>
-        </div>
+        </UserProfileContainer1>
         <div>VS</div>
-        <div style={{ marginBottom: '15px', color: `${winner === userId2 ? 'white' : 'red'}` }}>
-          <div style={{ marginRight: '25px' }}>
-            <Avatar
-              src={userId2Profile}
-              alt="Avatar"
-              style={{ width: '250px', height: '250px', marginBottom: '8px' }}
-            />
-            [{userId2}] : {player2Point} Point
+        <UserProfileContainer2 winner={`${winner === userId2 ? 'white' : 'red'}`}>
+          <div className="profile1-wrapper2">
+            <Avatar className="avatar2" src={userId2Profile} alt="Avatar" />[{userId2}] :{' '}
+            {player2Point} Point
           </div>
-        </div>
+        </UserProfileContainer2>
       </div>
 
-      <div style={{ display: 'flex', marginBottom: '18px' }}>
-        <EmojiEventsIcon style={{ fontSize: '45px' }} />
-        <div style={{ fontSize: '30px' }}>승리자 : {winner}</div>
+      <div className="result-wrapper">
+        <EmojiEventsIcon className="result-icon" />
+        <div className="">승리자 : {winner}</div>
       </div>
       <div>
-        <Link to="/game" style={{ textDecoration: 'none' }}>
+        <Link to="/game">
           <Button variant="contained"> 매치 페이지로 이동 </Button>
         </Link>
       </div>
-    </div>
+    </HistoryContainer>
   );
 };
 

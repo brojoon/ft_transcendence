@@ -10,6 +10,7 @@ import fetcher from '@utils/fetcher';
 import { useParams } from 'react-router-dom';
 import { IUser, IAllUser } from '@typings/db';
 import useSWR from 'swr';
+import { ProfileContainer } from './style';
 
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
@@ -24,7 +25,7 @@ const Profile = () => {
     });
   }
   return (
-    <Box sx={{ flexGrow: 1 }} style={{ backgroundColor: '#121212', padding: '20px' }}>
+    <ProfileContainer>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={3}>
           {id === undefined || id === myData?.userId || !UserData ? (
@@ -40,7 +41,7 @@ const Profile = () => {
           <MyProfileCard />
         </Grid>
       </Grid>
-    </Box>
+    </ProfileContainer>
   );
 };
 

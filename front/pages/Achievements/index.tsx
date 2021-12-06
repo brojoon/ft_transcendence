@@ -27,6 +27,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import GavelIcon from '@mui/icons-material/Gavel';
 import { IAchievement } from '@typings/db';
+import { AchievementsContainer } from './style';
 
 const Achievements = () => {
   const { data: friendCount } = useSWR<IAchievement>(`/api/friend/countFriend`, fetcher);
@@ -41,7 +42,7 @@ const Achievements = () => {
   );
   console.log(friendCount);
   return (
-    <Box sx={{ flexGrow: 1 }} style={{ padding: '20px 20px' }}>
+    <AchievementsContainer>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6} md={4}>
           <Achievement
@@ -208,7 +209,7 @@ const Achievements = () => {
           />
         </Grid>
       </Grid>
-    </Box>
+    </AchievementsContainer>
   );
 };
 

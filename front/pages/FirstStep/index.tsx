@@ -13,6 +13,7 @@ import axios from 'axios';
 import getToken from '@utils/getToken';
 import { useHistory } from 'react-router-dom';
 import config from '@utils/config';
+import { FirstStepContainer, ErrorText } from './style';
 
 const FirstStep = () => {
   const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -57,71 +58,41 @@ const FirstStep = () => {
     [nickname],
   );
   return (
-    <div
-      style={{
-        display: 'flex',
-        color: 'white',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100%',
-        fontWeight: 700,
-        fontSize: '22px',
-      }}
-    >
-      <div style={{ marginBottom: '10px' }}>
+    <FirstStepContainer>
+      <div className="avatar-wrapper">
         <Avatar
+          className="avatar"
           src={myData?.profile === 'pricture' ? undefined : myData?.profile}
           alt="Avatar"
-          style={{ width: '150px', height: '150px' }}
         />
       </div>
       <b>{myData?.userId}</b>
-      <div style={{ margin: '10px 0x' }}>
+      <div className="input-nickname-wrapper">
         <FormControl variant="standard">
-          <InputLabel htmlFor="input-with-icon-adornment">type nickname...</InputLabel>
           <Input
+            className="input-nickname"
             onChange={onChangeNickname}
             value={nickname}
-            style={{ color: 'white' }}
+            placeholder="nickname"
             id="input-with-icon-adornment"
             startAdornment={
               <InputAdornment position="start">
-                <DriveFileRenameOutlineSharpIcon
-                  style={{ color: 'black', backgroundColor: 'white' }}
-                />
+                <DriveFileRenameOutlineSharpIcon className="input-icon " />
               </InputAdornment>
             }
           />
         </FormControl>
       </div>
-      <div
-        style={{
-          color: 'red',
-          marginBottom: '35px',
-          fontSize: '14px',
-          fontWeight: 500,
-          visibility: `${isNicknameError ? 'visible' : 'hidden'}`,
-        }}
-      >
+
+      <ErrorText visible={`${isNicknameError ? 'visible' : 'hidden'}`}>
         bad format or duplicated nickname
-      </div>
+      </ErrorText>
       <div>
-        <Button
-          onClick={onSubmitNickname}
-          variant="contained"
-          style={{
-            height: '35px',
-            backgroundColor: '#597aff',
-            borderColor: '#597aff',
-            fontWeight: 'bold',
-            whiteSpace: 'nowrap',
-          }}
-        >
+        <Button className="submit-btn" onClick={onSubmitNickname} variant="contained">
           FINALIZE REGISTRATION
         </Button>
       </div>
-    </div>
+    </FirstStepContainer>
   );
 };
 

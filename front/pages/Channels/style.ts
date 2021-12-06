@@ -7,5 +7,7 @@ export const Container = styled.div`
 	border-left: 1px solid #4f4f4f;
 	margin: 0;
 	padding: 0;
+	background-color: #1e1e1e;
+	overflow: hidden;
 
 `;

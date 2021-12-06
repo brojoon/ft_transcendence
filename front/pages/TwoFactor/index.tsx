@@ -5,6 +5,7 @@ import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import { useHistory } from 'react-router-dom';
+import { TwoFactorContainer } from './style';
 
 const TwoFactor = () => {
   const history = useHistory();
@@ -13,7 +14,6 @@ const TwoFactor = () => {
     let token = document.cookie.slice(document.cookie.indexOf('userCookie') + 15);
     token = unescape(token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' ')));
     const obj = JSON.parse(token.slice(0, token.length));
-    console.log(obj);
     if (obj) {
       axios
         .post(`/api/auth/qrlogin`, {
@@ -41,29 +41,17 @@ const TwoFactor = () => {
     [onSubmitForm],
   );
   return (
-    <div
-      style={{
-        display: 'flex',
-        position: 'absolute',
-        left: 0,
-        top: 0,
-        bottom: 0,
-        right: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-      }}
-    >
+    <TwoFactorContainer>
       <form onSubmit={onSubmitForm}>
         <TextField
+          className="text-field"
           id="outlined-basic"
           label="OTP"
           variant="outlined"
           onKeyPress={onKeydownOTP}
-          style={{ width: '300px', height: '70px', padding: '5px 10px' }}
         />
       </form>
-    </div>
+    </TwoFactorContainer>
   );
 };
 

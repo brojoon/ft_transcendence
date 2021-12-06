@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
 import getToken from '@utils/getToken';
 import config from '@utils/config';
+import { DirectMessageContainer } from './style';
 
 const DirectMessage = () => {
   const [chat, setChat] = useState('');
@@ -106,18 +107,11 @@ const DirectMessage = () => {
   }, []);
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <DirectMessageContainer>
       <ChatHeader />
       <DMChatList chatData={chatData} scrollbarRef={scrollbarRef} />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />
-    </div>
+    </DirectMessageContainer>
   );
 };
 
