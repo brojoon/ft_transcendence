@@ -7,15 +7,12 @@ import fetcher from '@utils/fetcher';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { styled as muistyled } from '@mui/material/styles';
+
 import axios from 'axios';
 import getToken from '@utils/getToken';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-
-const Input = muistyled('input')({
-  display: 'none',
-});
+import { ProfileSettingContainer, EditNickNameWrapper } from './style';
 
 const ProfileSetting = () => {
   const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -110,82 +107,45 @@ const ProfileSetting = () => {
     reader.readAsDataURL(selectedFile[0]);
   };
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        color: 'white',
-        margin: '20px',
-        width: '100%',
-        fontSize: '22px',
-      }}
-    >
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '20px',
-          backgroundColor: '#1e1e1e',
-        }}
-      >
+    <ProfileSettingContainer>
+      <div className="security-wrapper">
         <div>Security</div>
-        <div style={{ display: 'flex' }}>
+        <div className="two-factor-wrapper">
           <TwoFactorSwitch />
           <span>2-Factor Authentication</span>
         </div>
       </div>
-      <div
-        style={{
-          width: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: '#1e1e1e',
-          marginTop: '25px',
-        }}
-      >
-        <div style={{ padding: '20px 20px 20px 20px' }}>
-          <div style={{ height: '70px' }}>Avatar</div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <div style={{ position: 'relative' }}>
+      <div className="user-avatar-container">
+        <div className="user-avatar-wrapper">
+          <div className="header-avatar">Avatar</div>
+          <div className="user-avatar-upload-section">
+            <div className="avatar-upload-wrapper">
               <label htmlFor="contained-button-file">
-                <Input
+                <input
+                  className="upload-input"
                   accept="image/*"
                   id="contained-button-file"
                   multiple
                   type="file"
                   onChange={onChangeFile}
                 />
-                <Avatar
-                  src={imgUrl ? imgUrl : myData?.profile}
-                  alt="Avatar"
-                  style={{ width: '150px', height: '150px' }}
-                />
+                <Avatar className="avatar" src={imgUrl ? imgUrl : myData?.profile} alt="Avatar" />
               </label>
-              <div
-                onClick={onClickClearImg}
-                style={{ position: 'absolute', top: '-5px', right: '-20px', zIndex: 10 }}
-              >
-                <IconButton style={{ color: 'white' }}>
+              <div className="remove-btn " onClick={onClickClearImg}>
+                <IconButton className="remove-icon">
                   <CloseIcon />
                 </IconButton>
               </div>
             </div>
             <span>{myData?.userId}</span>
-            <span style={{ color: '#52575d', fontWeight: 500 }}>{myData?.username}</span>
-            <div style={{ width: '100%', marginTop: '12px' }}>
+            <span className="user-nickname">{myData?.username}</span>
+            <div className="upload-btn-wrapper">
               <Button
+                className="upload-btn"
                 variant="contained"
                 startIcon={<PhotoCamera />}
                 component="span"
                 onClick={onClickUploadBtn}
-                style={{ width: '100%' }}
               >
                 Upload
               </Button>
@@ -193,17 +153,8 @@ const ProfileSetting = () => {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          backgroundColor: '#1e1e1e',
-          marginTop: '25px',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '20px',
-          color: 'white',
-        }}
-      >
-        <span style={{ marginBottom: '10px' }}>Edit nickname</span>
+      <EditNickNameWrapper>
+        <span className="nick-input-label">Edit nickname</span>
         <TextField
           value={changeNickname}
           onChange={onChangeNickname}
@@ -211,11 +162,9 @@ const ProfileSetting = () => {
           fullWidth
           label="nickname"
           id="fullWidth"
-          sx={{ color: 'white' }}
-          style={{ color: 'white' }}
         />
-      </div>
-    </div>
+      </EditNickNameWrapper>
+    </ProfileSettingContainer>
   );
 };
 

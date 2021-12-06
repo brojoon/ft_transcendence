@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
@@ -13,6 +13,7 @@ import useSWR from 'swr';
 import FriendsList from '@components/FriendsList';
 import { IFriendList, IAllUser } from '@typings/db';
 import BlockList from '@components/BlockList';
+import { SocialSliderContainer, TabPannelBox } from './style';
 
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
@@ -27,9 +28,9 @@ function TabPanel(props: any) {
         {...other}
       >
         {value === index && (
-          <Box style={{ height: '90vh' }}>
+          <TabPannelBox>
             <Typography>{children}</Typography>
-          </Box>
+          </TabPannelBox>
         )}
       </div>
     </div>
@@ -57,7 +58,7 @@ const SocialSlider = () => {
   );
 
   const theme = useTheme();
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
 
   const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
@@ -68,8 +69,8 @@ const SocialSlider = () => {
   };
 
   return (
-    <Box sx={{ bgcolor: '#1e1e1e', width: '100%', height: '100%' }}>
-      <AppBar position="static" sx={{ bgcolor: '#1e1e1e', height: '10vh' }}>
+    <SocialSliderContainer>
+      <AppBar position="static" className="app-bar">
         <Tabs
           value={value}
           onChange={handleChange}
@@ -84,10 +85,10 @@ const SocialSlider = () => {
         </Tabs>
       </AppBar>
       <SwipeableViews
+        className="swipeable-views "
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={value}
         onChangeIndex={handleChangeIndex}
-        style={{ color: 'white' }}
       >
         <TabPanel value={value} index={0}>
           <UsersList />
@@ -99,7 +100,7 @@ const SocialSlider = () => {
           <BlockList />
         </TabPanel>
       </SwipeableViews>
-    </Box>
+    </SocialSliderContainer>
   );
 };
 

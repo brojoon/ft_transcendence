@@ -37,7 +37,7 @@ export const TwoFactorSwitchContainer = styled.div`
 
 	& .text-field {
 		margin: 20px;
-		color: white;
+
 	}
 
 	& .css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root {
@@ -50,6 +50,11 @@ export const TwoFactorSwitchContainer = styled.div`
 
 	& .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
 		border-color: rgba(255, 255, 255, 0.6);
+	}
+
+	& .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+		border-color: rgba(255, 255, 255, 1);
+
 	}
 
 

@@ -1,10 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import ChannelLeftDrawBar from '@components/ChannelLeftDrawBar';
-import { Container } from '@pages/Social/style';
+import { Container } from './style';
 import ChatHeader from '@components/ChannelHeader';
 import ChannelBody from '@components/ChannelBody';
 import { Route, Switch, useHistory } from 'react-router-dom';
@@ -18,13 +17,6 @@ import axios from 'axios';
 import getToken from '@utils/getToken';
 import getSocket from '@utils/useSocket';
 import config from '@utils/config';
-
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
 
 const Channel = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -128,15 +120,7 @@ const Channel = () => {
   // }, [socket2, channelRevalidate]);
 
   return (
-    <Container
-      style={{
-        borderLeft: '1px solid #4f4f4f',
-        margin: '0',
-        padding: '0',
-        backgroundColor: '#1e1e1e',
-        overflow: 'hidden',
-      }}
-    >
+    <Container>
       <ChannelLeftDrawBar />
 
       <Switch>

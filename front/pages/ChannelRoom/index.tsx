@@ -15,6 +15,7 @@ import ChannelRoomSettingModal from '@components/ChannelRoomSettingModal';
 import BasicModal from '@components/BasicModal';
 import ChannelInviteModal from '@components/ChannelInviteModal';
 import config from '@utils/config';
+import { ChannelRoomContainer } from './style';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -223,22 +224,14 @@ const ChannelRoom = () => {
         settingToggle={settingToggle}
         onClickSettingBtn={onClickSettingBtn}
       />
-      <div
-        style={{
-          width: '100%',
-          height: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-        }}
-      >
+      <ChannelRoomContainer>
         <ChannelChatHeader
           membersToggle={membersToggle}
           onClickMembersToggle={onClickMembersToggle}
         />
         <ChannelChatList chatData={chatData} scrollbarRef={scrollbarRef} />
         {!myMute && <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />}
-      </div>
+      </ChannelRoomContainer>
       <ChannelMemberDrawBar
         onClickMembersToggle={onClickMembersToggle}
         onClickSettingBtn={onClickSettingBtn}

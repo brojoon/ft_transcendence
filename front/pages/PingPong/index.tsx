@@ -18,6 +18,12 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import { Translate } from '@mui/icons-material';
+import {
+  PingPongContainer,
+  GameSettingContainer,
+  GameReadyContainer,
+  UserPointContainer,
+} from './style';
 
 const socket = getSocket();
 
@@ -343,24 +349,9 @@ const PingPong = (data: any) => {
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: '#424242',
-        margin: 0,
-        width: '100%',
-        height: '100vh',
-        color: 'white',
-      }}
-    >
+    <PingPongContainer>
       {isGameStart && (
-        <div
-          style={{
-            border: '5px solid #ffffff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
+        <div className="pixi-container">
           <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0x000000 }}>
             <Rectangle x={0} y={player_one_y} width={15} height={100} fill={0xffffff} />
             <Rectangle x={985} y={player_two_y} width={15} height={100} fill={0xffffff} />
@@ -375,7 +366,7 @@ const PingPong = (data: any) => {
         </div>
       )}
       {!isGameStart && (
-        <div style={{ display: 'flex', flexDirection: 'row', marginTop: '20px' }}>
+        <GameSettingContainer>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">게임판수</InputLabel>
             <Select
@@ -430,26 +421,19 @@ const PingPong = (data: any) => {
               <MenuItem value={1}>Random</MenuItem>
             </Select>
           </FormControl>
-        </div>
+        </GameSettingContainer>
       )}
       {!isGameStart && (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            margin: '20px',
-          }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <GameReadyContainer>
+          <div className="player-one-container">
             <div>
               <Avatar
+                className="player-one-avatar"
                 src={player === 'playerOne' ? myData?.profile : opponentProfile}
                 alt="Avatar"
-                style={{ width: '300px', height: '300px' }}
               />
             </div>
-            <div style={{ margin: '10px 0' }}>
+            <div className="player-one-text">
               {player === 'playerOne' ? myData?.userId + '(나)' : opponent + '(상대편)'}
             </div>
             <div>
@@ -459,43 +443,33 @@ const PingPong = (data: any) => {
                     ready
                   </Button>
                 ) : (
-                  <Button variant="contained" disabled style={{ color: 'white' }}>
+                  <Button variant="contained" disabled className="player-one-ready-btn">
                     완료
                   </Button>
                 )
               ) : player1Ready === 0 ? (
-                <Button variant="contained" disabled style={{ color: 'white' }}>
+                <Button variant="contained" disabled className="player-one-ready-btn">
                   준비중..
                 </Button>
               ) : (
-                <Button variant="contained" disabled style={{ color: 'white' }}>
+                <Button variant="contained" disabled className="player-one-ready-btn">
                   완료
                 </Button>
               )}
             </div>
           </div>
-
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: '30px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div className="versus">
             <div>VS</div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div className="player-two-container">
             <div>
               <Avatar
+                className="player-two-avatar"
                 src={player === 'playerTwo' ? myData?.profile : opponentProfile}
                 alt="Avatar"
-                style={{ width: '300px', height: '300px' }}
               />
             </div>
-            <div style={{ margin: '10px 0' }}>
+            <div className="player-two-text">
               {player === 'playerTwo' ? myData?.userId + '(나)' : opponent + '(상대편)'}
             </div>
             <div>
@@ -505,29 +479,29 @@ const PingPong = (data: any) => {
                     ready
                   </Button>
                 ) : (
-                  <Button variant="contained" disabled style={{ color: 'white' }}>
+                  <Button variant="contained" disabled className="player-two-ready-btn">
                     완료
                   </Button>
                 )
               ) : player2Ready === 0 ? (
-                <Button variant="contained" disabled style={{ color: 'white' }}>
+                <Button variant="contained" disabled className="player-two-ready-btn">
                   준비중..
                 </Button>
               ) : (
-                <Button variant="contained" disabled style={{ color: 'white' }}>
+                <Button variant="contained" disabled className="player-two-ready-btn">
                   완료
                 </Button>
               )}
             </div>
           </div>
-        </div>
+        </GameReadyContainer>
       )}
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 15px' }}>
+      <UserPointContainer>
         {isGameStart && (
-          <div style={{ display: 'flex' }}>
+          <div className="point-wrapper">
             {(player === 'playerOne' ? myData?.userId : opponent) + ' Point'}
-            <EventNoteIcon style={{ fontSize: '27px' }} /> {': [ ' + user1Point + ' ] '}
+            <EventNoteIcon className="point-icon" /> {': [ ' + user1Point + ' ] '}
           </div>
         )}
 
@@ -554,13 +528,13 @@ const PingPong = (data: any) => {
           {player === '' && <div>관전중...</div>}
         </div>
         {isGameStart && (
-          <div style={{ display: 'flex' }}>
+          <div className="point-wrapper">
             {(player === 'playerTwo' ? myData?.userId : opponent) + ' Point'}
-            <EventNoteIcon style={{ fontSize: '27px' }} /> {': [ ' + user2Point + ' ] '}
+            <EventNoteIcon className="point-icon" /> {': [ ' + user2Point + ' ] '}
           </div>
         )}
-      </div>
-    </div>
+      </UserPointContainer>
+    </PingPongContainer>
   );
 };
 

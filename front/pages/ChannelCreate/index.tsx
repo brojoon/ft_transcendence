@@ -1,20 +1,7 @@
 import React, { useState, useCallback, VFC, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import FormControl from '@mui/material/FormControl';
-import Input from '@mui/material/Input';
-import InputLabel from '@mui/material/InputLabel';
 import ChannelHeader from '@components/ChannelHeader';
-import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import Button from '@mui/material/Button';
-import axios from 'axios';
-import getToken from '@utils/getToken';
-import useSWR from 'swr';
-import { IChannelList } from '@typings/db';
-import { useHistory } from 'react-router-dom';
-import fetcher from '@utils/fetcher';
 import ChannelForm from '@components/ChannelForm';
+import { ChannelCreateContainer } from './style';
 
 interface Props {
   onSubmitChannelCreate: (e: any) => void;
@@ -42,23 +29,10 @@ const ChannelCreate: VFC<Props> = ({
   createError,
 }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+    <ChannelCreateContainer>
       <ChannelHeader content={'Create a Channel'} />
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          backgroundColor: '#121212',
-        }}
-      >
-        <div
-          style={{
-            backgroundColor: '#1e1e1e',
-            margin: '15px 15px 15px',
-            width: 'calc(100% - 30px)',
-            borderRadius: '4px',
-          }}
-        >
+      <div className="wrapper">
+        <div className="channel-form-wrapper">
           <ChannelForm
             onSubmitChannelCreate={onSubmitChannelCreate}
             onChangeVisibility={onChangeVisibility}
@@ -74,7 +48,7 @@ const ChannelCreate: VFC<Props> = ({
           />
         </div>
       </div>
-    </div>
+    </ChannelCreateContainer>
   );
 };
 

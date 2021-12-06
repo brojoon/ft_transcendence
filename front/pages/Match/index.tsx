@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
+import { MatchContainer } from './style';
 
 const option = {
   headers: {
@@ -54,14 +55,7 @@ const Match = () => {
   }, [socket, myData]);
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-      }}
-    >
+    <MatchContainer>
       {ismatching ? (
         <Box
           sx={{ display: 'flex' }}
@@ -75,7 +69,7 @@ const Match = () => {
             height: '100vh',
           }}
         >
-          <CircularProgress style={{ color: 'white' }} />
+          <CircularProgress className="progress" />
           <h1>Waiting for opponent...</h1>
         </Box>
       ) : (
@@ -85,7 +79,7 @@ const Match = () => {
           </Button>
         </div>
       )}
-    </div>
+    </MatchContainer>
   );
 };
 
