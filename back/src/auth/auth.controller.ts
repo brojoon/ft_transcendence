@@ -33,7 +33,7 @@ export class AuthController {
     }
     this.authService.Join(user.oauthId, user.username, user.userId, user.email, user.profile);
     const token = await this.authService.login(user);
-    res.cookie('ts_token', token.access_token, { httpOnly: false });
+    res.cookie('ts_token', token.access_token, { httpOnly: true });
     res.send(token.access_token);
   }
 
@@ -54,7 +54,7 @@ export class AuthController {
     }
     res.clearCookie('ts_token');
     const token = await this.authService.login(user);
-    res.cookie('ts_token', token.access_token, { httpOnly: false });
+    res.cookie('ts_token', token.access_token, { httpOnly: true });
     res.send(token.access_token);
   }
 
@@ -85,7 +85,7 @@ export class AuthController {
       res.status(302).redirect('http://localhost:3090/two-factor')
     }else{
       const token = await this.authService.login(req.user);
-      res.cookie('ts_token', token.access_token, { httpOnly: false });
+      res.cookie('ts_token', token.access_token, { httpOnly: true });
       res.status(302).redirect('http://localhost:3090/home')
     }
   }
@@ -111,7 +111,7 @@ export class AuthController {
     delete body.TwoFactorAuthcode;
     const token = await this.authService.login(body);
     res.clearCookie('userCookie');
-    res.cookie('ts_token', token.access_token, { httpOnly: false });
+    res.cookie('ts_token', token.access_token, { httpOnly: true });
     res.send(null);
   }
 
