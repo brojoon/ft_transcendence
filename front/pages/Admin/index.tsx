@@ -14,7 +14,6 @@ import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
 import BasicModal from '@components/BasicModal';
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import UserRightModal from '@components/UserRightModal';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -29,6 +28,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import config from '@utils/config';
 
 import AdminPageProfile from '@components/AdminPageProfile';
+import { TabPanel1 } from '@components/TabPanel';
+import { AdminPageContainer, AdminPageWrapper } from './style';
 
 const Admin = () => {
   const { id } = useParams<{ id: string }>();
@@ -240,7 +241,7 @@ const Admin = () => {
   );
 
   return (
-    <div style={{ backgroundColor: 'white', height: '100%' }}>
+    <AdminPageContainer>
       {isChannelDeleteModal && (
         <BasicModal
           NoBtn={onClickChannelDeleteModal}
@@ -274,22 +275,10 @@ const Admin = () => {
           BanBtn={onSubmitBan}
         />
       )}
-      <div
-        style={{
-          backgroundColor: '#d3d3d3',
-          height: '70px',
-          fontWeight: 700,
-          fontSize: '30px',
-          lineHeight: '65px',
-          boxShadow:
-            'rgb(0 0 0 / 20%) 0px 2px 4px -1px, rgb(0 0 0 / 14%) 0px 4px 5px 0px, rgb(0 0 0 / 12%) 0px 1px 10px 0px',
-        }}
-      >
-        <span style={{ marginLeft: '50px' }}>Administrator</span>
+      <div className="admin-page-header">
+        <span className="header-span">Administrator</span>
       </div>
-      <Box
-        sx={{ width: '100%', height: 'calc(100% - 180px)', typography: 'body1', marginTop: '10px' }}
-      >
+      <AdminPageWrapper sx={{ typography: 'body1' }}>
         <TabContext value={value}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <TabList onChange={handleChange} aria-label="lab API tabs example">
@@ -301,26 +290,11 @@ const Admin = () => {
             </TabList>
           </Box>
           <TabPanel value="1">
-            <Scrollbars>
-              <List sx={{ width: '100%' }} component="nav" aria-label="mailbox folders">
-                {adminList?.map((admin) => {
-                  return (
-                    <ListItem button>
-                      <Avatar
-                        src={admin.profile}
-                        alt="Avatar"
-                        style={{ border: '2px solid red' }}
-                      />
-                      <ListItemText primary={admin.userId} style={{ marginLeft: '12px' }} />
-                    </ListItem>
-                  );
-                })}
-              </List>
-            </Scrollbars>
+            <TabPanel1 />
           </TabPanel>
           <TabPanel value="2">
             <Scrollbars>
-              <List sx={{ width: '100%' }} component="nav" aria-label="mailbox folders">
+              <List className="tab-panel-2-list" component="nav" aria-label="mailbox folders">
                 {moderatorList?.map((moderator) => {
                   return (
                     <ListItem
@@ -329,12 +303,8 @@ const Admin = () => {
                         onClickUnModerator(e, moderator.userId);
                       }}
                     >
-                      <Avatar
-                        src={moderator.profile}
-                        alt="Avatar"
-                        style={{ border: '2px solid red' }}
-                      />
-                      <ListItemText primary={moderator.userId} style={{ marginLeft: '12px' }} />
+                      <Avatar className="tab-panel-2-avatar" src={moderator.profile} alt="Avatar" />
+                      <ListItemText className="tab-panel-2-text" primary={moderator.userId} />
                     </ListItem>
                   );
                 })}
@@ -343,7 +313,7 @@ const Admin = () => {
           </TabPanel>
           <TabPanel value="3">
             <Scrollbars>
-              <List sx={{ width: '100%' }} component="nav" aria-label="mailbox folders">
+              <List className="tab-panel-3-list" component="nav" aria-label="mailbox folders">
                 {alluserList?.map((user) => {
                   let visibility = true;
                   banList?.map((banedUser) => {
@@ -364,12 +334,8 @@ const Admin = () => {
                           onClickUserPrivilege(e, user.userId);
                         }}
                       >
-                        <Avatar
-                          src={user.profile}
-                          alt="Avatar"
-                          style={{ border: '2px solid red' }}
-                        />
-                        <ListItemText primary={user.userId} style={{ marginLeft: '12px' }} />
+                        <Avatar className="tab-panel-3-avatar" src={user.profile} alt="Avatar" />
+                        <ListItemText className="tab-panel-3-text" primary={user.userId} />
                       </ListItem>
                     );
                   }
@@ -379,10 +345,10 @@ const Admin = () => {
           </TabPanel>
           <TabPanel value="4">
             <Scrollbars>
-              <List sx={{ width: '100%' }} component="nav" aria-label="mailbox folders">
+              <List className="tab-panel-4-list" component="nav" aria-label="mailbox folders">
                 {channelList?.map((channel) => {
                   return (
-                    <Link to={`/admin/${channel.id}`} style={{ textDecoration: 'none' }}>
+                    <Link to={`/admin/${channel.id}`}>
                       <Accordion>
                         <AccordionSummary
                           expandIcon={<ExpandMoreIcon />}
@@ -394,11 +360,7 @@ const Admin = () => {
                         <AccordionDetails>
                           <Typography>
                             <div>
-                              <ListItem
-                                style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
-                              >
-                                Owner
-                              </ListItem>
+                              <ListItem className="tab-panel-4-list-item">Owner</ListItem>
                               {memberList &&
                                 memberList?.map((member) => {
                                   if (member.auth === 2) {
@@ -418,17 +380,13 @@ const Admin = () => {
                                               onClick={(e) => onClickMember(e, index)}
                                             >
                                               <Avatar
+                                                className="tab-panel-4-avatar"
                                                 src={user.profile}
                                                 alt="Avatar"
-                                                style={{
-                                                  border: '2px solid red',
-                                                  width: '38px',
-                                                  height: '38px',
-                                                }}
                                               />
                                               <ListItemText
+                                                className="tab-pannel-4-text"
                                                 primary={user.userId}
-                                                style={{ marginLeft: '12px' }}
                                               />
                                               <RecordVoiceOverIcon />
                                             </ListItem>
@@ -438,11 +396,7 @@ const Admin = () => {
                                     });
                                   }
                                 })}
-                              <ListItem
-                                style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
-                              >
-                                Admin
-                              </ListItem>
+                              <ListItem className="tab-panel-4-list-item">Admin</ListItem>
                               {memberList &&
                                 memberList?.map((member) => {
                                   if (member.auth === 1) {
@@ -462,17 +416,13 @@ const Admin = () => {
                                               onClick={(e) => onClickMember(e, index)}
                                             >
                                               <Avatar
+                                                className="tab-panel-4-avatar"
                                                 src={user.profile}
                                                 alt="Avatar"
-                                                style={{
-                                                  border: '2px solid red',
-                                                  width: '38px',
-                                                  height: '38px',
-                                                }}
                                               />
                                               <ListItemText
+                                                className="tab-pannel-4-text"
                                                 primary={user.userId}
-                                                style={{ marginLeft: '12px' }}
                                               />
                                               <RecordVoiceOverIcon />
                                             </ListItem>
@@ -482,15 +432,11 @@ const Admin = () => {
                                     });
                                   }
                                 })}
-                              <ListItem
-                                style={{ fontSize: '16px', marginTop: '11px', color: 'gray' }}
-                              >
-                                Users
-                              </ListItem>
+                              <ListItem className="tab-panel-4-list-item">Users</ListItem>
                               {memberList &&
-                                memberList?.map((member, index) => {
+                                memberList?.map((member) => {
                                   if (member.auth === 0) {
-                                    return alluserList?.map((user) => {
+                                    return alluserList?.map((user, index) => {
                                       if (user.userId == member.userId) {
                                         let isMute = false;
                                         MymuteMmbers?.map((muteMember: IMemberList) => {
@@ -512,24 +458,19 @@ const Admin = () => {
                                               onClick={(e) => onClickMember(e, index)}
                                             >
                                               <Avatar
+                                                className="tab-panel-4-avatar"
                                                 src={user.profile}
                                                 alt="Avatar"
-                                                style={{
-                                                  border: '2px solid red',
-                                                  width: '38px',
-                                                  height: '38px',
-                                                }}
                                               />
                                               <ListItemText
+                                                className="tab-pannel-4-text"
                                                 primary={user.userId}
-                                                style={{
-                                                  marginLeft: '12px',
-                                                  color: 'white',
-                                                }}
                                               />
-                                              isMute ? <VoiceOverOffIcon style={{ color: 'red' }} />
-                                              :
-                                              <RecordVoiceOverIcon />
+                                              {isMute ? (
+                                                <VoiceOverOffIcon className="mute-icon" />
+                                              ) : (
+                                                <RecordVoiceOverIcon />
+                                              )}
                                             </ListItem>
                                           </>
                                         );
@@ -538,18 +479,12 @@ const Admin = () => {
                                   }
                                 })}
                             </div>
-                            <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'flex-end',
-                                marginTop: '20px',
-                              }}
-                            >
+                            <div className="delete-channel-wrapper">
                               <Button
+                                className="delete-btn"
                                 variant="contained"
                                 startIcon={<DeleteIcon />}
                                 onClick={onClickChannelDeleteModal}
-                                style={{ backgroundColor: 'red', fontWeight: 600 }}
                               >
                                 DELETE CHANNEL
                               </Button>
@@ -565,7 +500,7 @@ const Admin = () => {
           </TabPanel>
           <TabPanel value="5">
             <Scrollbars>
-              <List sx={{ width: '100%' }} component="nav" aria-label="mailbox folders">
+              <List className="tab-panel-5-list" component="nav" aria-label="mailbox folders">
                 {banList?.map((banedUser) => {
                   return (
                     <ListItem
@@ -574,12 +509,8 @@ const Admin = () => {
                         onClickUnBanUser(e, banedUser.userId);
                       }}
                     >
-                      <Avatar
-                        src={banedUser.profile}
-                        alt="Avatar"
-                        style={{ border: '2px solid red' }}
-                      />
-                      <ListItemText primary={banedUser.userId} style={{ marginLeft: '12px' }} />
+                      <Avatar className="tab-panel-5-avatar" src={banedUser.profile} alt="Avatar" />
+                      <ListItemText className="tab-panel-5-text" primary={banedUser.userId} />
                     </ListItem>
                   );
                 })}
@@ -587,8 +518,8 @@ const Admin = () => {
             </Scrollbars>
           </TabPanel>
         </TabContext>
-      </Box>
-    </div>
+      </AdminPageWrapper>
+    </AdminPageContainer>
   );
 };
 

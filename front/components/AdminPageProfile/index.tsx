@@ -1,15 +1,9 @@
 import React, { VFC, useCallback } from 'react';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import RssFeedIcon from '@mui/icons-material/RssFeed';
-import PowerIcon from '@mui/icons-material/Power';
-import VoiceOverOffSharpIcon from '@mui/icons-material/VoiceOverOffSharp';
-import SensorsIcon from '@mui/icons-material/Sensors';
-import SensorsOffIcon from '@mui/icons-material/SensorsOff';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
-import { IAllUser, IMemberList, IUser, IDmList, IBlockList } from '@typings/db';
+import { IAllUser, IMemberList, IUser } from '@typings/db';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import getToken from '@utils/getToken';
 import axios from 'axios';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import fetcher from '@utils/fetcher';
@@ -24,19 +18,14 @@ interface Props {
 
 const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const { id } = useParams<{ id: string }>();
-  const { data: dmList, mutate: mutateDmList } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-  const { data: blockList } = useSWR<IBlockList[]>(`/api/friend/blocklist`, fetcher);
   const { data: channelUserList, mutate: mutateChannelUserList } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id}`,
     fetcher,
   );
 
-  let isBlcok = false;
-
-  const history = useHistory();
   let myAuth = -1;
   let userAuth = -1;
 
@@ -54,6 +43,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       .get(`/api/channels/ownerApi/siteOwnerChannelUserMuteSwitch/${id}/${user.userId}/20`, config)
       .then((res) => {
         setSelectedIndex(-1);
+        mutateChannelUserList();
       })
       .catch(() => {});
   }, []);
@@ -64,6 +54,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       .get(`/api/channels/ownerApi/siteOwnerChannelUserKick/${id}/${user.userId}`, config)
       .then((res) => {
         setSelectedIndex(-1);
+        mutateChannelUserList();
       })
       .catch(() => {});
   }, []);
@@ -74,6 +65,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       .get(`/api/channels/ownerApi/siteOwnerChannelUserBan/${id}/${user.userId}`, config)
       .then((res) => {
         setSelectedIndex(-1);
+        mutateChannelUserList();
       })
       .catch(() => {});
   }, []);

@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import React from 'react';
 import Grid from '@mui/material/Grid';
-import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import StarIcon from '@mui/icons-material/Star';
-import { Translate } from '@mui/icons-material';
 import BusinessIcon from '@mui/icons-material/Business';
 import Achievement from '@components/Achievement';
 import SendIcon from '@mui/icons-material/Send';
@@ -40,7 +35,6 @@ const Achievements = () => {
     `/api/channels/achievement/numOfChannels`,
     fetcher,
   );
-  console.log(friendCount);
   return (
     <AchievementsContainer>
       <Grid container spacing={3}>

@@ -50,9 +50,6 @@ export const GameReadyContainer = styled.div`
 		margin: 10px 0;
 	}
 
-	& .player-one-ready-btn {
-		color: white;
-	}
 
 	& .versus {
 		font-weight: 700;
@@ -78,7 +75,8 @@ export const GameReadyContainer = styled.div`
 		margin: 10px 0;
 	}
 
-	& .player-two-ready-btn {
+
+	& .css-sghohy-MuiButtonBase-root-MuiButton-root.Mui-disabled {
 		color: white;
 	}
 
@@ -97,6 +95,21 @@ export const UserPointContainer = styled.div`
 		font-size: 27px;
 	}
 
-
-
 `
+
+export const GameInitBtnContainer = styled.div<{ width: string }>`
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: ${(props) => props.width};
+
+	& .game-btn {
+		color: white;
+	}
+
+	& .game-text {
+		margin-top: 5px;
+	}
+`;
