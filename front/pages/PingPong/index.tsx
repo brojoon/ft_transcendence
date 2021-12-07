@@ -23,6 +23,7 @@ import {
   GameSettingContainer,
   GameReadyContainer,
   UserPointContainer,
+  GameInitBtnContainer,
 } from './style';
 
 const socket = getSocket();
@@ -443,16 +444,16 @@ const PingPong = (data: any) => {
                     ready
                   </Button>
                 ) : (
-                  <Button variant="contained" disabled className="player-one-ready-btn">
+                  <Button variant="contained" disabled>
                     완료
                   </Button>
                 )
               ) : player1Ready === 0 ? (
-                <Button variant="contained" disabled className="player-one-ready-btn">
+                <Button variant="contained" disabled>
                   준비중..
                 </Button>
               ) : (
-                <Button variant="contained" disabled className="player-one-ready-btn">
+                <Button variant="contained" disabled>
                   완료
                 </Button>
               )}
@@ -479,16 +480,16 @@ const PingPong = (data: any) => {
                     ready
                   </Button>
                 ) : (
-                  <Button variant="contained" disabled className="player-two-ready-btn">
+                  <Button variant="contained" disabled>
                     완료
                   </Button>
                 )
               ) : player2Ready === 0 ? (
-                <Button variant="contained" disabled className="player-two-ready-btn">
+                <Button variant="contained" disabled>
                   준비중..
                 </Button>
               ) : (
-                <Button variant="contained" disabled className="player-two-ready-btn">
+                <Button variant="contained" disabled>
                   완료
                 </Button>
               )}
@@ -505,28 +506,20 @@ const PingPong = (data: any) => {
           </div>
         )}
 
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-            width: `${isGameStart ? '' : '100%'}`,
-          }}
-        >
+        <GameInitBtnContainer width={`${isGameStart ? '' : '100%'}`}>
           {player1Ready && player2Ready ? (
-            <Button variant="contained" onClick={changeGameSet} style={{ color: 'white' }}>
+            <Button className="game-btn" variant="contained" onClick={changeGameSet}>
               게임시작
             </Button>
           ) : (
-            <Button variant="contained" disabled style={{ color: 'white' }}>
+            <Button className="game-btn" variant="contained" disabled>
               게임시작
             </Button>
           )}
-          <div style={{ marginTop: '5px' }}> (모두 레디 시 시작됨) [key : t] </div>
+          <div className="game-text"> (모두 레디 시 시작됨) [key : t] </div>
           <div>(up: w / down: s)</div>
           {player === '' && <div>관전중...</div>}
-        </div>
+        </GameInitBtnContainer>
         {isGameStart && (
           <div className="point-wrapper">
             {(player === 'playerTwo' ? myData?.userId : opponent) + ' Point'}
