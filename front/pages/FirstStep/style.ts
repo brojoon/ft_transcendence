@@ -33,6 +33,14 @@ export const FirstStepContainer = styled.div`
 		background-color: white;
 	}
 
+	& .submit-btn {
+		height: 35px;
+		background-color: #597aff;
+		border-color: #597aff;
+		font-weight: bold;
+		white-space: nowrap;
+	}
+
 	& .css-1c2i806-MuiFormLabel-root-MuiInputLabel-root {
 		color: white;
 	}
@@ -50,6 +58,6 @@ export const ErrorText = styled.div<{ visible: string }>`
 	color: red;
 	margin-bottom: 15px;
 	font-size: 14px;
-	font-weight: 500;
+	font-weight: 600;
 	visibility: ${(props) => props.visible};
 `;

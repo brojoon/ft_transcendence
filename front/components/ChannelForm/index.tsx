@@ -29,9 +29,9 @@ interface Props {
   value: string;
   PasswordValues: { password: string; showPassword: boolean };
   setPasswordValues: any;
-  createError: boolean;
+  createError: number;
   channelNameError: number;
-  visibilityError: number;
+  channelPasswordError: number;
 }
 
 const ChannelForm: VFC<Props> = ({
@@ -47,7 +47,7 @@ const ChannelForm: VFC<Props> = ({
   setPasswordValues,
   createError,
   channelNameError,
-  visibilityError,
+  channelPasswordError,
 }) => {
   const handleMouseDownPassword = useCallback((event: any) => {
     event.preventDefault();
@@ -77,7 +77,7 @@ const ChannelForm: VFC<Props> = ({
       </ChannelFormContainer>
       <InputCheck textColor={name.length > 20 ? '#dd2c00' : 'hsla(0,0%,100%,.7)'}>
         <NameErrorText visible={channelNameError == 0 ? 'hidden' : 'visible'}>
-          Name length must be less than or equal to 20 characters
+          Name length must be between 1 and 20
         </NameErrorText>
         <span className="name-length"> {name.length} / 20</span>
       </InputCheck>
@@ -124,11 +124,21 @@ const ChannelForm: VFC<Props> = ({
           />
         </ChannelFormContainer>
       ) : null}
+      {channelPasswordError ? <ErrorText>Password length must be between 1 and 20</ErrorText> : ''}
       <ChannelCreateBtn variant="contained" onClick={onSubmitChannelCreate}>
         {value}
       </ChannelCreateBtn>
-      {visibilityError === 1 && <ErrorText>Permissions need to be set</ErrorText>}
-      {createError && <ErrorText>Failed to create channel</ErrorText>}
+      {createError ? (
+        createError === 1 ? (
+          <ErrorText>
+            Failed either the channel already exists or there is a problem with the server
+          </ErrorText>
+        ) : (
+          <ErrorText>Failed to create channel</ErrorText>
+        )
+      ) : (
+        ''
+      )}
     </Box>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useCallback, VFC, useEffect } from 'react';
 import ChannelHeader from '@components/ChannelHeader';
 import ChannelForm from '@components/ChannelForm';
 import { ChannelCreateContainer } from './style';
+import { NumberLiteralType } from 'typescript';
 
 interface Props {
   onSubmitChannelCreate: (e: any) => void;
@@ -13,9 +14,9 @@ interface Props {
   visibility: string;
   PasswordValues: { password: string; showPassword: boolean };
   setPasswordValues: any;
-  createError: boolean;
+  createError: number;
   channelNameError: number;
-  visibilityError: number;
+  channelPasswordError: number;
 }
 
 const ChannelCreate: VFC<Props> = ({
@@ -30,7 +31,7 @@ const ChannelCreate: VFC<Props> = ({
   visibility,
   createError,
   channelNameError,
-  visibilityError,
+  channelPasswordError,
 }) => {
   return (
     <ChannelCreateContainer>
@@ -50,7 +51,7 @@ const ChannelCreate: VFC<Props> = ({
             setPasswordValues={setPasswordValues}
             createError={createError}
             channelNameError={channelNameError}
-            visibilityError={visibilityError}
+            channelPasswordError={channelPasswordError}
           />
         </div>
       </div>
