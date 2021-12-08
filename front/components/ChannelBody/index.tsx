@@ -14,7 +14,6 @@ import fetcher from '@utils/fetcher';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import LockIcon from '@mui/icons-material/Lock';
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import ProtectedRoomModal from '@components/ProtectedRoomModal';
 import config from '@utils/config';
 import { ChannelBodyContainer } from './style';

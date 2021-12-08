@@ -8,7 +8,6 @@ import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
-import getToken from '@utils/getToken';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import useSWR from 'swr';

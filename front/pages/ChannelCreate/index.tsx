@@ -14,6 +14,8 @@ interface Props {
   PasswordValues: { password: string; showPassword: boolean };
   setPasswordValues: any;
   createError: boolean;
+  channelNameError: number;
+  visibilityError: number;
 }
 
 const ChannelCreate: VFC<Props> = ({
@@ -27,6 +29,8 @@ const ChannelCreate: VFC<Props> = ({
   name,
   visibility,
   createError,
+  channelNameError,
+  visibilityError,
 }) => {
   return (
     <ChannelCreateContainer>
@@ -45,6 +49,8 @@ const ChannelCreate: VFC<Props> = ({
             PasswordValues={PasswordValues}
             setPasswordValues={setPasswordValues}
             createError={createError}
+            channelNameError={channelNameError}
+            visibilityError={visibilityError}
           />
         </div>
       </div>

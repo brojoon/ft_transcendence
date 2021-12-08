@@ -9,7 +9,6 @@ import EventBusyIcon from '@mui/icons-material/EventBusy';
 import { IAllUser, IMemberList, IUser, IDmList, IBlockList } from '@typings/db';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import getToken from '@utils/getToken';
 import axios from 'axios';
 import { useParams, Link, useHistory } from 'react-router-dom';
 import fetcher from '@utils/fetcher';

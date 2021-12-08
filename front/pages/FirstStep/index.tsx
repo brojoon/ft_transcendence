@@ -10,7 +10,6 @@ import DriveFileRenameOutlineSharpIcon from '@mui/icons-material/DriveFileRename
 import FormControl from '@mui/material/FormControl';
 import Input from '@mui/material/Input';
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import { useHistory } from 'react-router-dom';
 import config from '@utils/config';
 import { FirstStepContainer, ErrorText } from './style';

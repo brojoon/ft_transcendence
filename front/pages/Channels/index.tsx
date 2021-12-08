@@ -14,7 +14,6 @@ import useSWR, { useSWRConfig } from 'swr';
 import { IChannelList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import getSocket from '@utils/useSocket';
 import config from '@utils/config';
 
@@ -39,6 +38,8 @@ const Channel = () => {
   const [name, setName] = useState('');
   const [visibility, setVisibility] = useState('');
   const [createError, setCreateError] = useState(false);
+  const [channelNameError, setChannelNameError] = useState(0);
+  const [visibilityError, setVisibilityError] = useState(0);
   const [PasswordValues, setPasswordValues] = useState({
     password: '',
     showPassword: false,
@@ -58,6 +59,7 @@ const Channel = () => {
   const onChangeName = useCallback(
     (e: any) => {
       e.preventDefault();
+      setChannelNameError(0);
       setCreateError(false);
       setName(e.target.value);
     },
@@ -67,8 +69,9 @@ const Channel = () => {
   const onChangeVisibility = useCallback(
     (e: any) => {
       e.preventDefault();
-      setCreateError(false);
       setVisibility(e.target.value);
+      setCreateError(false);
+      setVisibilityError(0);
     },
     [visibility, setVisibility],
   );
@@ -76,6 +79,13 @@ const Channel = () => {
   const onSubmitChannelCreate = useCallback(
     (e) => {
       e.preventDefault();
+      if (name.length > 20) {
+        setChannelNameError(1);
+        return;
+      }
+      if (!visibility) {
+        setVisibilityError(1);
+      }
       axios
         .post(
           `/api/channels/create/${name}/${visibility}`,
@@ -140,6 +150,7 @@ const Channel = () => {
               PasswordValues={PasswordValues}
               setPasswordValues={setPasswordValues}
               createError={createError}
+              channelNameError={channelNameError}
             />
           )}
         />

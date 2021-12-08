@@ -1,5 +1,4 @@
 import React from 'react';
-
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -27,7 +26,11 @@ export default function Users() {
               <SearchIconWrapper>
                 <SearchIcon />
               </SearchIconWrapper>
-              <StyledInputBase placeholder="Search…" inputProps={{ 'aria-label': 'search' }} />
+              <StyledInputBase
+                placeholder="Search…"
+                autoComplete="off"
+                inputProps={{ 'aria-label': 'search' }}
+              />
             </Search>
           </Toolbar>
           <UserList />

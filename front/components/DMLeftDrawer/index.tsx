@@ -32,7 +32,7 @@ const DMLeftDrawerBar = () => {
   );
   return (
     <DMLeftDrawerContainer>
-      <input className="search-input"></input>
+      <input className="search-input" autoComplete="off"></input>
       <div className="friend-icon-wrapper">
         <Link to={`/social`}>
           <List className="friend-list-wrapper" component="nav" aria-label="main mailbox folders">

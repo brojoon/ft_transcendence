@@ -7,7 +7,6 @@ import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
 import { useParams, useHistory } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
-import getToken from '@utils/getToken';
 import ChannelChatHeader from '@components/ChannelChatHeader';
 import ChannelChatList from '@components/ChannelChatList';
 import ChannelMemberDrawBar from '@components/ChannelMemberDrawBar';
