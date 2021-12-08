@@ -17,6 +17,7 @@ export const InputCheck = styled.div<{ textColor: string }>`
 
 export const NameErrorText = styled.span<{ visible: string }>`
 	margin-left: 8px;
+	color: #dd2c00;
 	visibility: ${(props) => props.visible};
 `;
 
@@ -53,7 +54,9 @@ export const ChannelCreateBtn = styled(Button)`
 
 
 
-export const ErrorText = styled.h3`
-color: red;
+export const ErrorText = styled.div`
+	color: #dd2c00;
+	font-weight: 600;
+	font-size: 12px;
 `;
 
