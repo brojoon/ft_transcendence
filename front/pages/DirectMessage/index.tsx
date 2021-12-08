@@ -10,7 +10,6 @@ import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
 import { useParams } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
-import getToken from '@utils/getToken';
 import config from '@utils/config';
 import { DirectMessageContainer } from './style';
 

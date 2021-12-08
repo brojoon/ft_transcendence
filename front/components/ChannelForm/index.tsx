@@ -10,7 +10,13 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
-import { ChannelFormContainer, ChannelCreateBtn, ErrorText } from './style';
+import {
+  InputCheck,
+  ChannelFormContainer,
+  ChannelCreateBtn,
+  NameErrorText,
+  ErrorText,
+} from './style';
 
 interface Props {
   onSubmitChannelCreate: (e: any) => void;
@@ -24,6 +30,8 @@ interface Props {
   PasswordValues: { password: string; showPassword: boolean };
   setPasswordValues: any;
   createError: boolean;
+  channelNameError: number;
+  visibilityError: number;
 }
 
 const ChannelForm: VFC<Props> = ({
@@ -38,6 +46,8 @@ const ChannelForm: VFC<Props> = ({
   PasswordValues,
   setPasswordValues,
   createError,
+  channelNameError,
+  visibilityError,
 }) => {
   const handleMouseDownPassword = useCallback((event: any) => {
     event.preventDefault();
@@ -57,8 +67,20 @@ const ChannelForm: VFC<Props> = ({
         <InputLabel className="input" htmlFor="component-simple">
           Name
         </InputLabel>
-        <Input className="input2" id="component-simple" value={name} onChange={onChangeName} />
+        <Input
+          className="input2"
+          id="component-simple"
+          autoComplete="off"
+          value={name}
+          onChange={onChangeName}
+        />
       </ChannelFormContainer>
+      <InputCheck textColor={name.length > 20 ? '#dd2c00' : 'hsla(0,0%,100%,.7)'}>
+        <NameErrorText visible={channelNameError == 0 ? 'hidden' : 'visible'}>
+          Name length must be less than or equal to 20 characters
+        </NameErrorText>
+        <span className="name-length"> {name.length} / 20</span>
+      </InputCheck>
       <ChannelFormContainer variant="standard">
         <InputLabel className="input" id="demo-simple-select-standard-label">
           Visibility
@@ -83,6 +105,7 @@ const ChannelForm: VFC<Props> = ({
           </InputLabel>
           <Input
             id="standard-adornment-password"
+            autoComplete="off"
             type={PasswordValues.showPassword ? 'text' : 'password'}
             value={PasswordValues.password}
             onChange={handleChange('password')}
@@ -104,7 +127,8 @@ const ChannelForm: VFC<Props> = ({
       <ChannelCreateBtn variant="contained" onClick={onSubmitChannelCreate}>
         {value}
       </ChannelCreateBtn>
-      {createError && <ErrorText>This channel already exists</ErrorText>}
+      {visibilityError === 1 && <ErrorText>Permissions need to be set</ErrorText>}
+      {createError && <ErrorText>Failed to create channel</ErrorText>}
     </Box>
   );
 };

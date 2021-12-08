@@ -3,6 +3,25 @@ import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
+export const InputCheck = styled.div<{ textColor: string }>`
+	display: flex;
+	justify-content: space-between;
+	color: ${(props) => props.textColor};
+	font-size: 12px;
+	margin: 0 !important;
+
+	& .name-length {
+		white-space: nowrap;
+	}
+`;
+
+export const NameErrorText = styled.span<{ visible: string }>`
+	margin-left: 8px;
+	visibility: ${(props) => props.visible};
+`;
+
+
+
 export const ChannelFormContainer = styled(FormControl)`
 	width: 100%;
 
@@ -32,7 +51,9 @@ export const ChannelCreateBtn = styled(Button)`
 	font-weight:600;
 `;
 
+
+
 export const ErrorText = styled.h3`
-	color: red;
+color: red;
 `;
 

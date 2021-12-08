@@ -34,7 +34,7 @@ const ChannelLeftDrawBar = () => {
 
   return (
     <ChannelLeftDrawBarContainer>
-      <input className="search-input"></input>
+      <input className="search-input" autoComplete="off"></input>
       <div className="header-wrapper">
         <Link to={`/channels`}>
           <List component="nav" aria-label="main mailbox folders">

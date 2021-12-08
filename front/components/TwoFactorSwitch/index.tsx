@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import Switch from '@mui/material/Switch';
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import useSWR from 'swr';
@@ -65,9 +64,9 @@ const TwoFactorSwitch = () => {
         .get(`/api/auth/make-qrcode`, {
           withCredentials: true,
           responseType: 'blob',
-          headers: {
-            Authorization: `Bearer ${getToken()}`,
-          },
+          // headers: {
+          //   Authorization: `Bearer ${getToken()}`,
+          // },
         })
         .then((res) => {
           setImgsrc(

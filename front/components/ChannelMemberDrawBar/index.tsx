@@ -12,7 +12,6 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 import BasicModal from '@components/BasicModal';
-import getToken from '@utils/getToken';
 import axios from 'axios';
 import { Container } from './style';
 import ChannelProfile from '@components/ChannelProfile';
