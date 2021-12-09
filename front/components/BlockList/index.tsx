@@ -23,7 +23,7 @@ const BlockList = () => {
             if (user?.userId === friend?.userId2)
               return (
                 <Link to={`/users/${user.userId}`}>
-                  <ListItem button>
+                  <ListItem className="block-list-wrapper" button>
                     <Avatar className="avatar" src={user.profile} alt="Avatar" />
                     <ListItemText className="list-text" primary={user.userId} />
                   </ListItem>

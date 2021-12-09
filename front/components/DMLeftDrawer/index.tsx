@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from 'react';
-import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
 import Avatar from '@mui/material/Avatar';
@@ -9,7 +8,6 @@ import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
-import { dividerClasses } from '@mui/material';
 import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
 import ListItemButton from '@mui/material/ListItemButton';
 import { DMLeftDrawerContainer, DMListContainer } from './style';

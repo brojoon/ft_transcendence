@@ -16,7 +16,7 @@ export const DMLeftDrawerContainer = styled.div`
 		font-size: 16px;
 		font-weight: bold;
 		font-family: monospace;
-		height: 7%;
+		height: 40px;
 		color: black;
 		border: none;
 		padding: 0 12px;
@@ -27,7 +27,7 @@ export const DMLeftDrawerContainer = styled.div`
 		border-bottom: 1px solid #4f4f4f;
 		margin: 10px 0;
 		padding: 14px 0 0;
-		height: 14%;
+		height: 80px;
 	}
 
 	& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
@@ -37,6 +37,10 @@ export const DMLeftDrawerContainer = styled.div`
 	& .friend-list-wrapper {
 		margin: 0;
 		padding: 0;
+	}
+
+	& .friend-list-wrapper:hover {
+		background-color: rgba(74,75,84,0.7);
 	}
 
 	& .friend-list-btn {
@@ -52,8 +56,16 @@ export const DMListContainer = styled.div`
 	height: 79%;
 
 	& .list {
-		padding: 5px 0;
+		padding: 0;
 		margin: 0;
+	}
+
+	& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
+		background-color: #666666 !important;
+	}
+
+	& .list:hover {
+		background-color: rgba(74,75,84,0.7);
 	}
 
 	& .list-item-button {

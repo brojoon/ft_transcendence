@@ -37,9 +37,13 @@ const ChannelLeftDrawBar = () => {
       <input className="search-input" autoComplete="off"></input>
       <div className="header-wrapper">
         <Link to={`/channels`}>
-          <List component="nav" aria-label="main mailbox folders">
+          <List
+            className="channel-discover-wrapper"
+            component="nav"
+            aria-label="main mailbox folders"
+          >
             <ListItemButton
-              className="channel-list-btn"
+              className="channel-discover-btn"
               selected={selectedIndex === 0}
               onClick={(event) => handleListItemClick(event, 0)}
             >
@@ -49,7 +53,7 @@ const ChannelLeftDrawBar = () => {
           </List>
         </Link>
       </div>
-      <div className="list-wrapper">
+      <div className="channel-list-wrapper">
         <Scrollbars>
           {channelList?.map((channel: any, index) => {
             let channelMode = '';
@@ -62,14 +66,14 @@ const ChannelLeftDrawBar = () => {
             }
             return (
               <Link to={`/channels/${channel.id}`}>
-                <List className="list" component="nav" aria-label="main mailbox folders">
+                <List className="channel-list" component="nav" aria-label="main mailbox folders">
                   <ListItemButton
-                    className="list-btn"
+                    className="channel-list-btn"
                     selected={selectedIndex === index + 1}
                     onClick={(event) => handleListItemClick(event, index + 1)}
                   >
                     <ListItemText
-                      className="list-text"
+                      className="channel-list-text"
                       primary={channel.name}
                       secondary={channelMode}
                     />

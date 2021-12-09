@@ -1,11 +1,9 @@
 import React from 'react';
-import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import MyProfileCard from '@components/MyProfileCard';
 import UserProfileCard from '@components/UserProfileCard';
 import UserMatches from '@components/UserMatches';
+import UserStatistics from '@components/UserStatistics';
 import fetcher from '@utils/fetcher';
 import { useParams } from 'react-router-dom';
 import { IUser, IAllUser } from '@typings/db';
@@ -24,6 +22,7 @@ const Profile = () => {
       if (user.userId === id) UserData = user;
     });
   }
+
   return (
     <ProfileContainer>
       <Grid container spacing={3}>
@@ -33,9 +32,18 @@ const Profile = () => {
           ) : (
             <UserProfileCard UserData={UserData} />
           )}
+          {id === undefined || id === myData?.userId || !UserData ? (
+            <UserStatistics userData={myData} />
+          ) : (
+            <UserStatistics userData={UserData} />
+          )}
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          <MyProfileCard />
+          {id === undefined || id === myData?.userId || !UserData ? (
+            <UserMatches UserData={myData} />
+          ) : (
+            <UserMatches UserData={UserData} />
+          )}
         </Grid>
         <Grid item xs={12} sm={12} md={3}>
           <MyProfileCard />
