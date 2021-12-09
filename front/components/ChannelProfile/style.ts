@@ -55,8 +55,11 @@ export const MatchDataContainer = styled.div`
 	}
 
 	& .match-text {
+		width: 100%;
 		margin-left: 15px;
 		line-height: 40px;
+		display: flex;
+		justify-content: space-between;
 	}
 `;
 
