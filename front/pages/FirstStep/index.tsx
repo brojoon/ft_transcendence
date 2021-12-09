@@ -10,7 +10,6 @@ import DriveFileRenameOutlineSharpIcon from '@mui/icons-material/DriveFileRename
 import FormControl from '@mui/material/FormControl';
 import Input from '@mui/material/Input';
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import { useHistory } from 'react-router-dom';
 import config from '@utils/config';
 import { FirstStepContainer, ErrorText } from './style';
@@ -19,14 +18,14 @@ const FirstStep = () => {
   const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-  const [isNicknameError, setIsNicknameError] = useState(false);
+  const [isNicknameError, setIsNicknameError] = useState(0);
   const [nickname, setNickname] = useState(myData?.userId);
 
   const history = useHistory();
 
   const onChangeNickname = useCallback(
     (e) => {
-      setIsNicknameError(false);
+      setIsNicknameError(0);
       setNickname(e.target.value);
     },
     [nickname],
@@ -36,21 +35,22 @@ const FirstStep = () => {
     (e) => {
       e.preventDefault();
       if (nickname) {
-        if (nickname?.length === 0 || nickname?.length >= 20) {
-          setIsNicknameError(true);
+        if (nickname?.length < 1 || nickname?.length > 20) {
+          setIsNicknameError(1);
+          return;
         } else {
           axios
             .get(`/api/users/update-username/${nickname}`, config)
             .then((res) => {
               if (res.data === false) {
-                setIsNicknameError(true);
+                setIsNicknameError(2);
               } else {
                 mutateMyData();
                 history.push('/home');
               }
             })
             .catch(() => {
-              setIsNicknameError(true);
+              setIsNicknameError(3);
             });
         }
       }
@@ -85,7 +85,10 @@ const FirstStep = () => {
       </div>
 
       <ErrorText visible={`${isNicknameError ? 'visible' : 'hidden'}`}>
-        bad format or duplicated nickname
+        {isNicknameError === 0 ? 'hidden' : ''}
+        {isNicknameError ? isNicknameError === 1 && 'Nickname length must be between 1 and 20' : ''}
+        {isNicknameError ? isNicknameError === 2 && 'This nickname is already using' : ''}
+        {isNicknameError ? isNicknameError === 3 && 'Something is wrong with the server' : ''}
       </ErrorText>
       <div>
         <Button className="submit-btn" onClick={onSubmitNickname} variant="contained">

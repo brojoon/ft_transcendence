@@ -105,4 +105,12 @@ export const EditNickNameWrapper = styled.div`
 	& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
 		color: white;
 	}
+
+`;
+
+export const NickNameErrorContainer = styled.div<{ visibility: string }>`
+	color: red; 
+	font-size: 14px; 
+	margin-top: 5px;
+	visibility: ${(props) => props.visibility};
 `;

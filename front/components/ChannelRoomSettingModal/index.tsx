@@ -10,7 +10,6 @@ import fetcher from '@utils/fetcher';
 import { Toast } from './style';
 import BasicModal from '@components/BasicModal';
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import { useHistory } from 'react-router-dom';
 import ChannelForm from '@components/ChannelForm';
 import config from '@utils/config';
@@ -39,8 +38,10 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
 
   const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
   const [name, setName] = useState('');
-  const [visibility, setVisibility] = useState('');
-  const [createError, setCreateError] = useState(false);
+  const [visibility, setVisibility] = useState('0');
+  const [createError, setCreateError] = useState(0);
+  const [channelNameError, setChannelNameError] = useState(0);
+  const [channelPasswordError, setChannelPasswordError] = useState(0);
   const [PasswordValues, setPasswordValues] = useState({
     password: '',
     showPassword: false,
@@ -54,6 +55,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
   }, [PasswordValues, setPasswordValues]);
   const handleChange = useCallback(
     (prop: any) => (event: any) => {
+      setChannelPasswordError(0);
       setPasswordValues({ ...PasswordValues, [prop]: event.target.value });
     },
     [PasswordValues, setPasswordValues],
@@ -62,7 +64,8 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
   const onChangeName = useCallback(
     (e: any) => {
       e.preventDefault();
-      setCreateError(false);
+      setCreateError(0);
+      setChannelNameError(0);
       setName(e.target.value);
     },
     [name, setName],
@@ -71,7 +74,8 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
   const onChangeVisibility = useCallback(
     (e: any) => {
       e.preventDefault();
-      setCreateError(false);
+      setCreateError(0);
+      setChannelPasswordError(0);
       setVisibility(e.target.value);
     },
     [visibility, setVisibility],
@@ -87,6 +91,20 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
 
   const onSubmitChannelCreate = useCallback(
     (e) => {
+      if (name.length > 20 || name.length < 1) {
+        setChannelNameError(1);
+        return;
+      }
+      console.log('PasswordValues.password.length', PasswordValues.password.length);
+      console.log('visibility', visibility);
+      if (
+        visibility == '1' &&
+        (PasswordValues.password.length > 20 || PasswordValues.password.length < 1)
+      ) {
+        console.log('hell');
+        setChannelPasswordError(1);
+        return;
+      }
       e.preventDefault();
       if (name) {
         axios
@@ -96,45 +114,52 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
             channelListMutate();
             setName('');
           })
-          .catch(() => {
-            setCreateError(true);
+          .catch((error) => {
+            setCreateError(1);
           });
       }
       if (visibility !== '') {
-        axios.get(`/api/channels/updateChannelType/${id}/${visibility}`, config).then(() => {
-          console.log('pass1.5', PasswordValues);
-          if (parseInt(visibility) === 1) {
-            console.log('pass1.6', PasswordValues);
-
-            axios
-              .post(
-                `/api/channels/updateChannelPassword/${id}`,
-                {
-                  password: PasswordValues.password,
-                },
-                config,
-              )
-              .then(() => {
-                console.log('pass2', PasswordValues);
-                MutateAllChannelList();
-                channelListMutate();
-                setVisibility('');
-                setPasswordValues({
-                  password: '',
-                  showPassword: false,
+        axios
+          .get(`/api/channels/updateChannelType/${id}/${visibility}`, config)
+          .then(() => {
+            console.log('pass1.5', PasswordValues);
+            if (parseInt(visibility) === 1) {
+              console.log('pass1.6', PasswordValues);
+              axios
+                .post(
+                  `/api/channels/updateChannelPassword/${id}`,
+                  {
+                    password: PasswordValues.password,
+                  },
+                  config,
+                )
+                .then(() => {
+                  console.log('pass2', PasswordValues);
+                  MutateAllChannelList();
+                  channelListMutate();
+                  setVisibility('0');
+                  setPasswordValues({
+                    password: '',
+                    showPassword: false,
+                  });
+                  console.log('pass3', PasswordValues);
+                })
+                .catch(() => {
+                  setCreateError(1);
                 });
-                console.log('pass3', PasswordValues);
+            } else {
+              MutateAllChannelList();
+              channelListMutate();
+              setVisibility('0');
+              setPasswordValues({
+                password: '',
+                showPassword: false,
               });
-          } else {
-            MutateAllChannelList();
-            channelListMutate();
-            setVisibility('');
-            setPasswordValues({
-              password: '',
-              showPassword: false,
-            });
-          }
-        });
+            }
+          })
+          .catch(() => {
+            setCreateError(1);
+          });
       }
     },
     [name, visibility, PasswordValues],
@@ -143,12 +168,16 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
   const DeleteClickChannelBtn = useCallback(
     (e) => {
       e.preventDefault();
-      axios.get(`/api/channels/deleteChannel/${id}`, config).then(() => {
-        channelListMutate();
-        MutateAllChannelList();
-        muatememberList();
-        history.push('/channels');
-      });
+      axios
+        .get(`/api/channels/deleteChannel/${id}`, config)
+        .then(() => {
+          channelListMutate();
+          MutateAllChannelList();
+          muatememberList();
+          history.push('/channels');
+        })
+        .then(() => {})
+        .catch(() => {});
     },
     [id],
   );
@@ -193,6 +222,8 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
               PasswordValues={PasswordValues}
               setPasswordValues={setPasswordValues}
               createError={createError}
+              channelNameError={channelNameError}
+              channelPasswordError={channelPasswordError}
             />
           </div>
           <div className="setting-modal-delete-wrapper">

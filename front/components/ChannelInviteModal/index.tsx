@@ -6,7 +6,6 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TextField from '@mui/material/TextField';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import Button from '@mui/material/Button';
-import getToken from '@utils/getToken';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import useSWR from 'swr';

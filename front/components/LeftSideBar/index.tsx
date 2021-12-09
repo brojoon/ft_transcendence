@@ -14,7 +14,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import getToken from '@utils/getToken';
 import Tooltip from '@mui/material/Tooltip';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import ListItemButton from '@mui/material/ListItemButton';

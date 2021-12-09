@@ -9,10 +9,9 @@ import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { ProfileSettingContainer, EditNickNameWrapper } from './style';
+import { ProfileSettingContainer, EditNickNameWrapper, NickNameErrorContainer } from './style';
 
 const ProfileSetting = () => {
   const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -20,6 +19,7 @@ const ProfileSetting = () => {
   });
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [changeNickname, setChangeNickname] = useState('');
+  const [isNickError, setIsNickError] = useState(0);
   const [imgUrl, setImgUrl] = useState('');
 
   const onChangeNickname = useCallback(
@@ -27,6 +27,7 @@ const ProfileSetting = () => {
       e.preventDefault();
       console.log(e.target.keycode);
       setChangeNickname(e.target.value);
+      setIsNickError(0);
     },
     [changeNickname],
   );
@@ -43,14 +44,15 @@ const ProfileSetting = () => {
 
   const onKeyDownNickname = useCallback(
     (e) => {
+      if (changeNickname.length > 20) {
+        setIsNickError(2);
+        return;
+      }
       if (e.key === 'Enter') {
         e.preventDefault();
         axios
           .get(`/api/users/update-username/${changeNickname}`, {
             withCredentials: true,
-            headers: {
-              Authorization: `Bearer ${getToken()}`,
-            },
           })
           .then(() => {
             mutateMyData();
@@ -77,7 +79,6 @@ const ProfileSetting = () => {
     const config = {
       withCredentials: true,
       headers: {
-        Authorization: `Bearer ${getToken()}`,
         'content-type': 'multipart/form-data',
       },
     };
@@ -162,7 +163,15 @@ const ProfileSetting = () => {
           fullWidth
           label="nickname"
           id="fullWidth"
+          autoComplete="off"
         />
+        <NickNameErrorContainer visibility={isNickError === 0 ? 'hidden' : 'visiblle'}>
+          {isNickError && isNickError === 1 ? (
+            <span>This nickname is already in use by another user</span>
+          ) : (
+            <span>Nickname length limit is 20 characters</span>
+          )}
+        </NickNameErrorContainer>
       </EditNickNameWrapper>
     </ProfileSettingContainer>
   );

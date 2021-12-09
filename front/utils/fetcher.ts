@@ -1,15 +1,14 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import getToken from './getToken';
 import { useHistory } from 'react-router-dom';
 
 
 const fetcher = (url: string): any => axios.get(url, {
 	withCredentials: true,
-	headers: {
-		Authorization: `Bearer ${getToken()}`,
-	}
+	// headers: {
+	// 	Authorization: `Bearer ${getToken()}`,
+	// }
 }).then((response) => response.data).catch((error) => {
 	if (error.response.data.code === 401) {
 		const history = useHistory();
