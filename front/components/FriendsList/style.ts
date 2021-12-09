@@ -6,6 +6,10 @@ export const FriendListContainer = styled(List)`
 	height: 100%;
 	background: #1e1e1e;
 
+	& .friend-list-wrapper:hover {
+		background-color: rgba(74,75,84,0.5);
+	}
+
 	& .avatar {
 		border: 2px solid red;
 	}

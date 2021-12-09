@@ -10,6 +10,10 @@ export const UsersListContainer = styled(List)`
 		color: white;
 	}
 
+	& .list-item-wrapper:hover {
+		background-color: rgba(74,75,84,0.5);
+	}
+
 	& .avatar {
 		border: 2px solid red;
 	}

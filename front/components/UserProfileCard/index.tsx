@@ -17,7 +17,6 @@ import ChatIcon from '@mui/icons-material/Chat';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import GamepadIcon from '@mui/icons-material/Gamepad';
 import axios from 'axios';
-import getToken from '@utils/getToken';
 import BasicModal from '@components/BasicModal';
 import { FormatListBulleted } from '@mui/icons-material';
 import config from '@utils/config';

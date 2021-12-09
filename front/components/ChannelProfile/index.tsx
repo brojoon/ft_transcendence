@@ -1,12 +1,7 @@
 import React, { VFC, useCallback } from 'react';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import RssFeedIcon from '@mui/icons-material/RssFeed';
-import PowerIcon from '@mui/icons-material/Power';
-import VoiceOverOffSharpIcon from '@mui/icons-material/VoiceOverOffSharp';
-import SensorsIcon from '@mui/icons-material/Sensors';
-import SensorsOffIcon from '@mui/icons-material/SensorsOff';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
-import { IAllUser, IMemberList, IUser, IDmList, IBlockList } from '@typings/db';
+import { IAllUser, IMemberList, IUser, IDmList, IBlockList, IAchievement } from '@typings/db';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import axios from 'axios';
@@ -36,6 +31,9 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
     `/api/channels/userList/${id}`,
     fetcher,
   );
+
+  const { data: winCount } = useSWR<IAchievement>(`/api/game/achievement/numOfWin`, fetcher);
+  const { data: loseCount } = useSWR<IAchievement>(`/api/game/achievement/numOfLose`, fetcher);
 
   let isBlcok = false;
 
@@ -143,11 +141,17 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       <MatchDataContainer>
         <div className="count-wrapper">
           <EmojiEventsIcon className="match-icon" />
-          <div className="match-text">Win Count</div>
+          <div className="match-text">
+            <span>Win Count</span>
+            <span>{loseCount?.number}</span>
+          </div>
         </div>
         <div className="count-wrapper">
           <EventBusyIcon className="match-icon" />
-          <div className="match-text">Loss Count</div>
+          <div className="match-text">
+            <span>Loss Count</span>
+            <span>{loseCount?.number}</span>
+          </div>
         </div>
       </MatchDataContainer>
       <ButtonGroupsContainer>

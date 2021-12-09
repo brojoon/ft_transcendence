@@ -23,7 +23,7 @@ const FriendsList = () => {
             if (user?.userId === friend?.userId2)
               return (
                 <Link to={`/users/${user.userId}`}>
-                  <ListItem button>
+                  <ListItem className="friend-list-wrapper" button>
                     <Avatar className="avatar" src={user.profile} alt="Avatar" />
                     <ListItemText className="text" primary={user.userId} />
                   </ListItem>

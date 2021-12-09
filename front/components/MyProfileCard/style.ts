@@ -7,7 +7,7 @@ export const MyProfileCardContainer = styled(Box)`
 	& .card {
 		background-color: #1e1e1e;
 		color: white;
-		border: 1px solid rgba(57, 57, 57, 0.5);
+		border: 1px solid rgba(57, 57, 57, 0.7);
 		width: 100%;
 		padding: 5px 10px 15px 10px;
 	}
