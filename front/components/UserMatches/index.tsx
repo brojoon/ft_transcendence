@@ -39,19 +39,19 @@ const ProfileTablePagination = () => {
 };
 
 interface Props {
-  UserData: IUser | null | undefined;
+  userData: IUser | null | undefined;
 }
 
-const UserMatches: VFC<Props> = ({ UserData }) => {
+const UserMatches: VFC<Props> = ({ userData }) => {
   return (
     <UserMatchesContainer>
       <div className="profile-matches-header">Matches</div>
       <div>
-        <Link to={`/users/${UserData?.userId}`}>
+        <Link to={`/users/${userData?.userId}`}>
           <List>
             <ListItem className="list-item-wrapper" button>
-              <Avatar className="avatar" src={UserData?.profile} alt="Avatar" />
-              <ListItemText className="user" primary={UserData?.userId} />
+              <Avatar className="avatar" src={userData?.profile} alt="Avatar" />
+              <ListItemText className="user" primary={userData?.userId} />
               <SentimentVerySatisfiedIcon />
             </ListItem>
           </List>

@@ -4,6 +4,7 @@ import MyProfileCard from '@components/MyProfileCard';
 import UserProfileCard from '@components/UserProfileCard';
 import UserMatches from '@components/UserMatches';
 import UserStatistics from '@components/UserStatistics';
+import UserFriendCard from '@components/UserFriendCard';
 import fetcher from '@utils/fetcher';
 import { useParams } from 'react-router-dom';
 import { IUser, IAllUser } from '@typings/db';
@@ -40,13 +41,17 @@ const Profile = () => {
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
           {id === undefined || id === myData?.userId || !UserData ? (
-            <UserMatches UserData={myData} />
+            <UserMatches userData={myData} />
           ) : (
-            <UserMatches UserData={UserData} />
+            <UserMatches userData={UserData} />
           )}
         </Grid>
         <Grid item xs={12} sm={12} md={3}>
-          <MyProfileCard />
+          {id === undefined || id === myData?.userId || !UserData ? (
+            <UserFriendCard userData={myData} />
+          ) : (
+            <UserFriendCard userData={UserData} />
+          )}
         </Grid>
       </Grid>
     </ProfileContainer>
