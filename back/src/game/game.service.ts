@@ -258,4 +258,46 @@ export class GameService {
     }
     return {number:numberOfFight, star, time:user.maxStarOfFightTime}
   }
+
+  async winLoseFight(userId:string){
+    const numOfWin = await this.historyRepository.count({winner:userId});
+    const numOfLose = await this.historyRepository.count({loser:userId});
+    const ret = new Object();
+    ret["numOfWin"] = numOfWin;
+    ret["numOfLose"] = numOfLose;
+    ret["numOfFight"] = numOfWin + numOfLose;
+    return ret;
+  }
+
+
+  async myGameHistory(userId:string){
+    const arr = await this.historyRepository.find({where:[
+      {winner:userId}, 
+      {loser:userId}
+    ], select:[
+      "id", "userId1", "userId2", "user1Point", "user2Point", "winner", "loser", "updatedAt",
+    ]});
+    arr.sort(function(a,b){
+      // Turn your strings into dates, and then subtract them
+      // to get a value that is either negative, positive, or zero.
+      return (+new Date(b.updatedAt)) - (+new Date(a.updatedAt));
+    });
+    const ret = new Array();
+    for (var i = 0; i < arr.length; i++){
+      ret[i] = new Object();
+      ret[i].historyId = arr[i].id;
+      ret[i].userId = userId;
+      if (arr[i].winner == userId){
+        ret[i].isWinner = true;
+        ret[i].opponent = arr[i].loser;
+        ret[i].point = arr[i].user1Point > arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
+      }
+      else{
+        ret[i].isWinner = false;
+        ret[i].opponent = arr[i].winner;
+        ret[i].point = arr[i].user1Point < arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
+      }
+    }
+    return ret;
+  }
 }
