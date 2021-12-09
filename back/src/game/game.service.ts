@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Dmcontent } from 'src/entities/Dmcontent';
 import { History } from 'src/entities/History';
@@ -259,9 +259,11 @@ export class GameService {
     return {number:numberOfFight, star, time:user.maxStarOfFightTime}
   }
 
-  async winLoseFight(userId:string){
-    const numOfWin = await this.historyRepository.count({winner:userId});
-    const numOfLose = await this.historyRepository.count({loser:userId});
+  async winLoseFight(userId:string, targetUserId:string){
+    if (!await this.usersRepository.findOne({userId}))
+      throw new UnauthorizedException("조회할 권한 없음");
+    const numOfWin = await this.historyRepository.count({winner:targetUserId});
+    const numOfLose = await this.historyRepository.count({loser:targetUserId});
     const ret = new Object();
     ret["numOfWin"] = numOfWin;
     ret["numOfLose"] = numOfLose;
@@ -286,16 +288,19 @@ export class GameService {
     for (var i = 0; i < arr.length; i++){
       ret[i] = new Object();
       ret[i].historyId = arr[i].id;
-      ret[i].userId = userId;
+      //ret[i].userId = userId;
       if (arr[i].winner == userId){
         ret[i].isWinner = true;
         ret[i].opponent = arr[i].loser;
-        ret[i].point = arr[i].user1Point > arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
+        ret[i].myPoint = arr[i].user1Point > arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
+        ret[i].opponentPoint = arr[i].user1Point < arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
+
       }
       else{
         ret[i].isWinner = false;
         ret[i].opponent = arr[i].winner;
-        ret[i].point = arr[i].user1Point < arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
+        ret[i].myPoint = arr[i].user1Point < arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
+        ret[i].opponentPoint = arr[i].user1Point > arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
       }
     }
     return ret;

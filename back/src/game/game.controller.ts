@@ -40,9 +40,9 @@ export class GameController {
     return await this.gameService.numOfFight(user.userId);
   }
 
-  @Get("/history/user/winLoseFight")
-  async winLoseFight(@User() user){
-    return await this.gameService.winLoseFight(user.userId);
+  @Get("/history/winLoseFight/:userId")
+  async winLoseFight(@User() user, @Param("userId") userId:string){
+    return await this.gameService.winLoseFight(user.userId, userId);
   }
 
   @Get("/history/user/myGameHistory")
