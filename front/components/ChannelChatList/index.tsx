@@ -9,7 +9,7 @@ import useSWR from 'swr';
 import { ChannelChatListContainer } from './style';
 
 interface Props {
-  chatData: IChannelChatList[] | undefined;
+  chatData: IChannelChatList[][] | undefined;
   scrollbarRef: RefObject<Scrollbars>;
 }
 

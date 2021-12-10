@@ -16,6 +16,8 @@ export const UserMatchesContainer = styled.div`
 
 	& .profile-pagination-wrapper {
 		border-top: 1px solid rgba(57, 57, 57, 0.7);
+		color: white;
+
 	}
 
 	& .profile-pagination-wrapper {
@@ -40,6 +42,7 @@ export const UserMatchesListWrapper = styled.div`
 		align-items: center;
 		border-top: 1px solid rgba(57, 57, 57, 0.7);
 		padding: 6px 15px;
+		color: white;
 	}
 
 	& .list-item-wrapper:hover {
@@ -49,6 +52,10 @@ export const UserMatchesListWrapper = styled.div`
 	& .avatar {
 		width: 56px;
 		height: 56px;
+	}
+
+	& .opponent-text {
+		color: white;
 	}
 
 	& .user-text {
@@ -63,4 +70,8 @@ export const UserMatchesListWrapper = styled.div`
 		font-size: 34px;
 		color: #ec443b;
 	}
+`;
+
+export const UserMatchesResult = styled.div<{ textColor: string }>`
+	color: ${((props) => props.textColor)};
 `;

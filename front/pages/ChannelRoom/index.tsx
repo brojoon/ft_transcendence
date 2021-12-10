@@ -5,6 +5,7 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState, VFC } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
+import useSWRInfinite from 'swr/infinite';
 import { useParams, useHistory } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
 import ChannelChatHeader from '@components/ChannelChatHeader';
@@ -25,11 +26,6 @@ const ChannelRoom = () => {
     `/api/channels/userList/${id}`,
     fetcher,
   );
-
-  const { data: chatData, mutate: mutateChat } = useSWR<IChannelChatList[]>(
-    `/api/channels/allMessageList/${id}`,
-    fetcher,
-  );
   const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
     `/api/channels/allChannelList`,
     fetcher,
@@ -47,6 +43,19 @@ const ChannelRoom = () => {
     `/api/channels/mutedMembers/${id}`,
     fetcher,
   );
+
+  const {
+    data: chatData,
+    mutate: mutateChat,
+    setSize,
+  } = useSWRInfinite<IChannelChatList[]>(
+    (index) => `/api/dms/get20MessageUseDmId/${id}/${index + 1}`,
+    fetcher,
+  );
+
+  // const isEmpty = chatData?.[0]?.length === 0;
+  // const isReachingEnd =
+  //   isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
 
   const scrollbarRef = useRef<Scrollbars>(null);
   const socket = getSocket();
@@ -102,7 +111,7 @@ const ChannelRoom = () => {
       e.preventDefault();
       if (chat?.trim() && chatData) {
         mutateChat((prevChatData) => {
-          prevChatData?.unshift({
+          prevChatData?.[0].unshift({
             userId: myData?.userId,
             message: chat,
             updatedAt: new Date(),
@@ -166,29 +175,26 @@ const ChannelRoom = () => {
     mutateMymuteMmbers();
   }, []);
 
-  const onMessage = useCallback(
-    (data) => {
-      console.log('ch왔다!');
-      if (data.userId != myData?.userId) {
-        mutateChat((prevchatData) => {
-          prevchatData?.unshift(data);
-          return prevchatData;
-        }, true).then(() => {
-          if (scrollbarRef.current) {
-            if (
-              scrollbarRef.current.getScrollHeight() <
-              scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
-            ) {
-              setTimeout(() => {
-                scrollbarRef.current?.scrollToBottom();
-              }, 50);
-            }
+  const onMessage = useCallback((data) => {
+    console.log('ch왔다!');
+    if (data.userId != myData?.userId) {
+      mutateChat((prevchatData) => {
+        prevchatData?.unshift(data);
+        return prevchatData;
+      }, true).then(() => {
+        if (scrollbarRef.current) {
+          if (
+            scrollbarRef.current.getScrollHeight() <
+            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+          ) {
+            setTimeout(() => {
+              scrollbarRef.current?.scrollToBottom();
+            }, 50);
           }
-        });
-      }
-    },
-    [chatData],
-  );
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     socket?.on('ch', onMessage);

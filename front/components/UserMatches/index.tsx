@@ -2,21 +2,24 @@ import React, { VFC, useState } from 'react';
 import { IUser } from '@typings/db';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
-import { UserMatchesContainer, UserMatchesListWrapper } from './style';
+import { UserMatchesContainer, UserMatchesListWrapper, UserMatchesResult } from './style';
 import TablePagination from '@mui/material/TablePagination';
 import SentimentVeryDissatisfiedSharpIcon from '@mui/icons-material/SentimentVeryDissatisfiedSharp';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import { Link } from 'react-router-dom';
 import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
-import ListItemText from '@mui/material/ListItemText';
-import ListItem from '@mui/material/ListItem';
+import { IUserGameHistory } from '@typings/db';
 
 interface Props {
   userData: IUser | null | undefined;
 }
 
 const UserMatches: VFC<Props> = ({ userData }) => {
+  const { data: userGameHistory, mutate: mutateUserGameHistory } = useSWR<IUserGameHistory[]>(
+    `/api/game/history/userGameHistory/${userData?.userId}`,
+    fetcher,
+  );
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -31,25 +34,30 @@ const UserMatches: VFC<Props> = ({ userData }) => {
     setPage(0);
   };
 
-  let count = 53;
-  const arr = new Array(count).fill(0);
   return (
     <UserMatchesContainer>
       <div className="profile-matches-header">Matches</div>
-      {arr?.map((user, index) => {
+      {userGameHistory?.map((history, index) => {
         if (index >= rowsPerPage * (page + 1)) return;
         if (page > 0) {
           if (index < rowsPerPage * page) return;
         }
         return (
           <UserMatchesListWrapper>
-            <Link to={`/users/${userData?.userId}`}>
+            <Link to={`/game/history/${history?.historyId}`}>
               <List className="list-item-wrapper">
                 <Avatar className="avatar" src={userData?.profile} alt="Avatar" />
-                <span className="user-text">{userData?.userId}</span>
+                <UserMatchesResult textColor={history?.isWinner ? '#ffe937' : '#ec443b'}>
+                  {history?.isWinner ? 'Won' : 'Lost'}
+                  <span className="opponent-text"> against {history?.opponent}</span>
+                </UserMatchesResult>
                 {index}
-                <SentimentVerySatisfiedIcon className="user-matches-icon-win" />
-                <SentimentVeryDissatisfiedSharpIcon className="user-matches-icon-lose" />
+                <span className="">{history?.myPoint + ' - ' + history?.opponentPoint}</span>
+                {history?.isWinner ? (
+                  <SentimentVerySatisfiedIcon className="user-matches-icon-win" />
+                ) : (
+                  <SentimentVeryDissatisfiedSharpIcon className="user-matches-icon-lose" />
+                )}
               </List>
             </Link>
           </UserMatchesListWrapper>
@@ -58,7 +66,7 @@ const UserMatches: VFC<Props> = ({ userData }) => {
       <div className="profile-pagination-wrapper">
         <TablePagination
           component="div"
-          count={53}
+          count={userGameHistory ? userGameHistory?.length : 0}
           page={page}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}

@@ -10,7 +10,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import ChannelCreate from '@pages/ChannelCreate';
 import ChannelDiscover from '@pages/ChannelDiscover';
 import ChannelRoom from '@pages/ChannelRoom';
-import useSWR, { useSWRConfig } from 'swr';
+import useSWR from 'swr';
 import { IChannelList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
@@ -21,18 +21,11 @@ const Channel = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
-  const { data: allchannelList, mutate: mutateChannelList } = useSWR<IChannelList[]>(
+  const { data: mychannelList, mutate: mutateChannelList } = useSWR<IChannelList[]>(
     '/api/channels/myChannelList',
     fetcher,
   );
-  const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
-    `/api/channels/allChannelList`,
-    fetcher,
-  );
-  const { data: myChannelList, mutate: mutateMyChannelList } = useSWR<IChannelList[]>(
-    `/api/channels/myChannelList`,
-    fetcher,
-  );
+
   const history = useHistory();
   const socket2 = getSocket();
   const [name, setName] = useState('');
@@ -108,7 +101,7 @@ const Channel = () => {
             showPassword: false,
           });
           mutateChannelList();
-          if (allchannelList) {
+          if (mychannelList) {
             history.push(`/channels/${response.data}`);
           }
         })
@@ -116,7 +109,7 @@ const Channel = () => {
           setCreateError(1);
         });
     },
-    [name, visibility, allchannelList, PasswordValues],
+    [name, visibility, mychannelList, PasswordValues],
   );
 
   // const channelRevalidate = useCallback(() => {

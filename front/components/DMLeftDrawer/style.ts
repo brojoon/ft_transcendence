@@ -31,7 +31,7 @@ export const DMLeftDrawerContainer = styled.div`
 	}
 
 	& .css-cvhtoe-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
-		background-color: #666666;
+		background-color: #666666 !important;
 	}
 
 	& .friend-list-wrapper {
