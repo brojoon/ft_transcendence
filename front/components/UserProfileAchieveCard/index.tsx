@@ -31,13 +31,28 @@ interface Props {
 }
 
 const UserProfileAchieveCard: VFC<Props> = ({ userData }) => {
-  const { data: friendCount } = useSWR<IAchievement>(`/api/friend/countFriend`, fetcher);
-  const { data: DmListCount } = useSWR<IAchievement>(`/api/dms/getDmListNum`, fetcher);
-  const { data: matchCount } = useSWR<IAchievement>(`/api/game/achievement/numOfFight`, fetcher);
-  const { data: winCount } = useSWR<IAchievement>(`/api/game/achievement/numOfWin`, fetcher);
-  const { data: loseCount } = useSWR<IAchievement>(`/api/game/achievement/numOfLose`, fetcher);
+  const { data: friendCount } = useSWR<IAchievement>(
+    `/api/friend/countFriends/${userData?.userId}`,
+    fetcher,
+  );
+  const { data: DmListCount } = useSWR<IAchievement>(
+    `/api/dms/getDmListNumber/${userData?.userId}`,
+    fetcher,
+  );
+  const { data: matchCount } = useSWR<IAchievement>(
+    `/api/game/achievement/numOfFight/${userData?.userId}`,
+    fetcher,
+  );
+  const { data: winCount } = useSWR<IAchievement>(
+    `/api/game/achievement/numOfWin/${userData?.userId}`,
+    fetcher,
+  );
+  const { data: loseCount } = useSWR<IAchievement>(
+    `/api/game/achievement/numOfLose/${userData?.userId}`,
+    fetcher,
+  );
   const { data: channelCount } = useSWR<IAchievement>(
-    `/api/channels/achievement/numOfChannels`,
+    `/api/channels/achievement/numOfChannels/${userData?.userId}`,
     fetcher,
   );
   return (

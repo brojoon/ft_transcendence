@@ -30,6 +30,8 @@ const Content = () => {
     history.push('/login/first-step');
   }
 
+  if (!myData) return null;
+
   let socket = getSocket();
   useEffect(() => {
     if (DMList && ChannelList && myData) {
@@ -41,8 +43,6 @@ const Content = () => {
       });
     }
   }, [socket, DMList, ChannelList, myData]);
-
-  if (!myData) return null;
 
   return (
     <Container>

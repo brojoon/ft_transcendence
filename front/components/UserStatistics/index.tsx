@@ -12,7 +12,7 @@ interface Props {
 
 const UserStatistics: VFC<Props> = ({ userData }) => {
   const { data: MatchesCount } = useSWR<IUserMatches>(
-    `/api/game/history/winLoseFight/${userData?.userId}`,
+    `/api/game/history/userWinLoseFight/${userData?.userId}`,
     fetcher,
   );
 
