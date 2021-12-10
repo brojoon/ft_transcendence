@@ -8,6 +8,7 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
+import useSWRInfinite from 'swr/infinite';
 import { useParams } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
 import config from '@utils/config';
@@ -21,10 +22,21 @@ const DirectMessage = () => {
   });
   const { data: userId } = useSWR<string>(`/api/dms/findDmUser/${id}`, fetcher);
 
-  const { data: chatData, mutate: mutateChat } = useSWR<IChatList[]>(
-    `/api/dms/getAllMessageUseDmId/${id}`,
+  // const { data: chatData, mutate: mutateChat } = useSWR<IChatList[]>(
+  //   `/api/dms/getAllMessageUseDmId/${id}`,
+  //   fetcher,
+  // );
+  const {
+    data: chatData,
+    mutate: mutateChat,
+    setSize,
+  } = useSWRInfinite<IChatList[]>(
+    (index) => `/api/dms/get20MessageUseDmId/${id}/${index + 1}`,
     fetcher,
   );
+  const isEmpty = chatData?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
   const scrollbarRef = useRef<Scrollbars>(null);
   const socket = getSocket();
   const onSubmitChat = useCallback(
@@ -32,8 +44,8 @@ const DirectMessage = () => {
       e.preventDefault();
       if (chat?.trim() && chatData) {
         mutateChat((prevChatData) => {
-          prevChatData?.unshift({
-            id: prevChatData[0].id + 1,
+          prevChatData?.[0].unshift({
+            id: prevChatData[0][0].id + 1,
             dmId: parseInt(id),
             userId1: myData?.userId,
             userId2: userId,
@@ -108,7 +120,13 @@ const DirectMessage = () => {
   return (
     <DirectMessageContainer>
       <ChatHeader />
-      <DMChatList chatData={chatData} scrollbarRef={scrollbarRef} />
+      <DMChatList
+        chatData={chatData}
+        scrollbarRef={scrollbarRef}
+        isReachingEnd={isReachingEnd}
+        setSize={setSize}
+        isEmpty={isEmpty}
+      />
       <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />
     </DirectMessageContainer>
   );

@@ -5,6 +5,7 @@ import UserProfileCard from '@components/UserProfileCard';
 import UserMatches from '@components/UserMatches';
 import UserStatistics from '@components/UserStatistics';
 import UserFriendCard from '@components/UserFriendCard';
+import UserProfileAchieveCard from '@components/UserProfileAchieveCard';
 import fetcher from '@utils/fetcher';
 import { useParams } from 'react-router-dom';
 import { IUser, IAllUser } from '@typings/db';
@@ -47,6 +48,11 @@ const Profile = () => {
           )}
         </Grid>
         <Grid item xs={12} sm={12} md={3}>
+          {id === undefined || id === myData?.userId || !UserData ? (
+            <UserProfileAchieveCard userData={myData} />
+          ) : (
+            <UserProfileAchieveCard userData={UserData} />
+          )}
           {id === undefined || id === myData?.userId || !UserData ? (
             <UserFriendCard userData={myData} />
           ) : (

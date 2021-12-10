@@ -5,4 +5,8 @@ export const MatchContainer = styled.div`
 	justify-content: center;
 	align-items: center;
 	width: 100%;
+
+	& .progress {
+		color: white;
+	}
 `;

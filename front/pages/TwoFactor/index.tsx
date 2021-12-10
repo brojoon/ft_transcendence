@@ -1,9 +1,6 @@
 import React, { useCallback } from 'react';
 import TextField from '@mui/material/TextField';
 import axios from 'axios';
-import useSWR from 'swr';
-import { IUser } from '@typings/db';
-import fetcher from '@utils/fetcher';
 import { useHistory } from 'react-router-dom';
 import { TwoFactorContainer } from './style';
 
