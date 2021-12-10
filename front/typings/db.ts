@@ -87,3 +87,9 @@ export interface IAchievement {
   star: number,
   time: Date,
 }
+
+export interface IUserMatches {
+  numOfWin: number;
+  numOfLose: number;
+  numOfFight: number;
+}
