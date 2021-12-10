@@ -185,6 +185,11 @@ export class ChannelsController {
     return await this.channelsService.achievementChannelNumber(user.userId);
   }
   
+  @Get("/achievement/numOfChannels/:userId")
+  async userAchievementChannelNumber(@User() user, @Param("userId") userId:string) {
+    return await this.channelsService.achievementChannelNumber(userId);
+  }
+  
   /////////////////////////////////////////////////////////
 
   @Get("/ownerApi/siteOwnerChannelList")

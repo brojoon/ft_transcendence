@@ -272,10 +272,12 @@ export class GameService {
   }
 
 
-  async myGameHistory(userId:string){
+  async userGameHistory(userId:string, targetId:string){
+    if (!await this.usersRepository.findOne({userId}))
+      throw new UnauthorizedException("조회 권한이 없음");
     const arr = await this.historyRepository.find({where:[
-      {winner:userId}, 
-      {loser:userId}
+      {winner:targetId}, 
+      {loser:targetId}
     ], select:[
       "id", "userId1", "userId2", "user1Point", "user2Point", "winner", "loser", "updatedAt",
     ]});
@@ -288,13 +290,13 @@ export class GameService {
     for (var i = 0; i < arr.length; i++){
       ret[i] = new Object();
       ret[i].historyId = arr[i].id;
-      //ret[i].userId = userId;
-      if (arr[i].winner == userId){
+      ret[i].date = arr[i].updatedAt;
+      //ret[i].targetId = targetId;
+      if (arr[i].winner == targetId){
         ret[i].isWinner = true;
         ret[i].opponent = arr[i].loser;
         ret[i].myPoint = arr[i].user1Point > arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
         ret[i].opponentPoint = arr[i].user1Point < arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
-
       }
       else{
         ret[i].isWinner = false;
