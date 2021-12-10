@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, Res, UseInterceptors, UseGuards, HttpCode, UploadedFile } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Param, UseInterceptors, UseGuards, HttpCode, UploadedFile } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
@@ -7,11 +7,9 @@ import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { UserInfoDto } from './dto/userInfo.dto';
 import { UserConnetInfoDto } from './dto/userConnetInfo.dto';
-import { ProfileUrlDto } from './dto/profileUrl.dto';
-import { UsernameDto } from './dto/username.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import multer from 'multer';
-import fs, { copyFileSync } from 'fs';
+import fs from 'fs';
 import path from 'path';
 
 try {
@@ -21,7 +19,6 @@ try {
 }
 
 @UseGuards(JwtAuthGuard)
-//@ApiBearerAuth('ts_token')
 @ApiTags('USERS') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
 @Controller('api/users') // uri시작부분

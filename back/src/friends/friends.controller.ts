@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
 import { FriendsService } from './friends.service';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { User } from 'common/decorators/user.decorator';
@@ -8,7 +8,6 @@ import { FriendListDto } from './dto/friendlist.dto';
 import { BlockListDto } from './dto/blocklist.dto';
 
 @UseGuards(JwtAuthGuard)
-@ApiBearerAuth('ts_token')
 @ApiTags('FRIEND') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
 @Controller('api/friend') // uri시작부분
@@ -73,6 +72,17 @@ export class FriendsController {
     return this.friendsService.friendList(user.userId);
   }
 
+  @ApiOperation({ summary: '친구 리스트(특정 아이디)'})
+  @ApiResponse ({
+    status: 200,
+    description: ' ',
+    type: FriendListDto
+  })
+  @Get('friends/:id')
+  friends(@Param('id') id: string) {
+    return this.friendsService.friendList(id);
+  }
+
   @ApiOperation({ summary: 'Block 리스트'})
   @ApiResponse ({
     status: 200,
@@ -115,4 +125,15 @@ export class FriendsController {
   countFriend(@User() user) {
     return this.friendsService.countFriend(user.userId);
   }
+
+  @ApiOperation({ summary: '[업적API]: 친구 수 조회 (특정아이디)'})
+  @ApiResponse ({
+    status: 200,
+    description: 'return: 친구 숫자',
+  })
+  @Get('countFriends/:id')
+  countFriends(@Param('id') id: string) {
+    return this.friendsService.countFriend(id);
+  }
+
 }

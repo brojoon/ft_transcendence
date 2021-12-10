@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Param, UseGuards, UseInterceptors, HttpCode } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from 'common/decorators/user.decorator';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
@@ -8,7 +8,6 @@ import { DmsService } from './dms.service';
 import { MessagetDto } from './dto/message.dto';
 
 @UseGuards(JwtAuthGuard)
-@ApiBearerAuth('ts_token')
 @ApiTags('DM') // API문서 카테고리
 @UseInterceptors(UndefinedToNullInterceptor) // 마지막 리턴값 undifined일경우 null로 바꿈
 @Controller('api/dms')
@@ -158,5 +157,16 @@ export class DmsController {
   @Get('getDmListNum')
   async getDmListNum(@User() user: UserDto) {
     return this.dmsService.getDmListNum(user.userId);
+  }
+
+  @ApiOperation({ summary: '[업적API]: DM방 수 (특정 아이디)'})
+  @ApiResponse ({
+    status: 200,
+    description: '"return: DM 수"',
+  })
+  @HttpCode(200)
+  @Get('getDmListNumber/:id')
+  async getDmListNumber(@Param('id') id: string) {
+    return this.dmsService.getDmListNum(id);
   }
 }

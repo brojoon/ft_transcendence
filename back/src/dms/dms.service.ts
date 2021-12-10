@@ -284,7 +284,7 @@ export class DmsService {
         .take(20)
         .skip(20 * (page - 1))
         .getMany();
-      return {res}; 
+      return res; 
     } catch (error) {
       if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
         throw new BadRequestException("메세지 조회 실패");
