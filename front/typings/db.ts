@@ -87,3 +87,18 @@ export interface IAchievement {
   star: number,
   time: Date,
 }
+
+export interface IUserMatches {
+  numOfWin: number;
+  numOfLose: number;
+  numOfFight: number;
+}
+
+export interface IUserGameHistory {
+  historyId: number;
+  data: Date,
+  isWinner: boolean;
+  opponent: string;
+  myPoint: number;
+  opponentPoint: number;
+}

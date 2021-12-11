@@ -1,4 +1,3 @@
-
 import styled from '@emotion/styled';
 
 export const ProtectedRoomModalBack = styled.div`

@@ -10,6 +10,7 @@ export const UserStatisticsContainer = styled.div`
 	border: 1px solid rgba(57, 57, 57, 0.7);
 	padding: 5px 10px 15px 10px;
 	margin-top: 15px;
+	font-size: 20px;
 
 	& .statistics-header {
 		font-size: 22px;
@@ -23,7 +24,7 @@ export const UserStatisticsContainer = styled.div`
 	}
 
 	& .statistics-match-icon {
-		font-size: 40px;
+		font-size: 45px;
 
 	}
 
