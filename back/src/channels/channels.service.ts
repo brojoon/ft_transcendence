@@ -175,7 +175,7 @@ export class ChannelsService {
     .select(["m.userId", "m.message", "m.updatedAt"]);
     const [list, count] = await query.skip(skip).take(20)
       .getManyAndCount();
-    return {list, TotalMessageNumber:count};
+    return list;
   }
 
   async userListOnlyId(channelId:number, userId:string) {
