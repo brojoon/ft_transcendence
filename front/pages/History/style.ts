@@ -12,7 +12,7 @@ export const HistoryContainer = styled.div`
 
 	& .wrapper {
 		display: flex;
-		justify-content: space-between;
+		justify-content: space-around;
 		align-items: center;
 		width: 100%;
 	}
@@ -31,14 +31,29 @@ export const HistoryContainer = styled.div`
 	}
 
 
+
+
 `;
 
-export const UserProfileContainer1 = styled.div<{ winner: string }>`
-	color: ${(props) => props.winner};
+export const UserProfileContainer1 = styled.div`
 	margin-bottom: 15px;
 
+	
 	& .profile1-wrapper {
-		margin-left: 25px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 400px;
+		height: 480px;
+		border: 1px solid rgba(57, 57, 57, 0.7);
+		background-color: #1e1e1e;
+		white-space: overflow-wrap;
+
+	}
+
+	& .profile1-wrapper:hover {
+		background: #666666;
 	}
 
 	& .avatar1 {
@@ -47,15 +62,35 @@ export const UserProfileContainer1 = styled.div<{ winner: string }>`
 		margin-bottom: 8px;
 	}
 
+	& .profile1-text {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		color: white;
+	}
+	
+
 
 `;
 
-export const UserProfileContainer2 = styled.div<{ winner: string }>`
-	color: ${(props) => props.winner};
+export const UserProfileContainer2 = styled.div`
 	margin-bottom: 15px;
 
-	& .profile1-wrapper2 {
-		margin-right: 25px;
+	& .profile2-wrapper {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 400px;
+		height: 480px;
+		border: 1px solid rgba(57, 57, 57, 0.7);
+		background-color: #1e1e1e;
+		white-space: overflow-wrap;
+	}
+
+	& .profile2-wrapper:hover {
+		background: #666666;
 	}
 
 	& .avatar2 {
@@ -64,5 +99,28 @@ export const UserProfileContainer2 = styled.div<{ winner: string }>`
 		margin-bottom: 8px;
 	}
 
+	& .profile2-text {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		color: white;
+	}
+	
+`;
 
+export const ProfileOneText = styled.div<{ winner: string }>`
+	color: ${(props) => props.winner};
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+`;
+
+export const ProfileTwoText = styled.div<{ winner: string }>`
+	color: ${(props) => props.winner};
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 `;

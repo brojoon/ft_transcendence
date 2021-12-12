@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { VFC } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -10,12 +10,15 @@ import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
 import { UsersListContainer } from './style';
 
-const UserList = () => {
-  const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
+interface Props {
+  userList: IAllUser[] | undefined;
+}
+
+const UserList: VFC<Props> = ({ userList }) => {
   return (
     <Scrollbars>
       <UsersListContainer>
-        {users?.map((user) => {
+        {userList?.map((user: IAllUser) => {
           return (
             <Link to={`/users/${user.userId}`}>
               <ListItem className="list-item-wrapper" button>

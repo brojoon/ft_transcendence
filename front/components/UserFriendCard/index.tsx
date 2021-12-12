@@ -24,24 +24,30 @@ const UserFriendCard: VFC<Props> = ({ userData }) => {
   return (
     <UserFriendCardContainer>
       <div className="friends-header">Friends</div>
-      <Scrollbars>
-        <div>
-          {userFriendList?.map((friend) => {
-            return allUser?.map((user: IAllUser) => {
-              if (friend.userId2 === user.userId) {
-                return (
-                  <Link to={`/users/${user?.userId}`}>
-                    <ListItem className="list-item-wrapper" button>
-                      <Avatar className="avatar" src={user?.profile} alt="Avatar" />
-                      <ListItemText className="user" primary={user?.userId} />
-                    </ListItem>
-                  </Link>
-                );
-              }
-            });
-          })}
+      {userFriendList?.length ? (
+        <Scrollbars>
+          <div>
+            {userFriendList?.map((friend) => {
+              return allUser?.map((user: IAllUser) => {
+                if (friend.userId2 === user.userId) {
+                  return (
+                    <Link to={`/users/${user?.userId}`}>
+                      <ListItem className="list-item-wrapper" button>
+                        <Avatar className="avatar" src={user?.profile} alt="Avatar" />
+                        <ListItemText className="user" primary={user?.userId} />
+                      </ListItem>
+                    </Link>
+                  );
+                }
+              });
+            })}
+          </div>
+        </Scrollbars>
+      ) : (
+        <div className="no-friend-wrapper">
+          <span>no friend found</span>
         </div>
-      </Scrollbars>
+      )}
     </UserFriendCardContainer>
   );
 };

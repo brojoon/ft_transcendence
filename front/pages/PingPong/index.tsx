@@ -353,7 +353,7 @@ const PingPong = (data: any) => {
     <PingPongContainer>
       {isGameStart && (
         <div className="pixi-container">
-          <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0x000000 }}>
+          <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0x365dff }}>
             <Rectangle x={0} y={player_one_y} width={15} height={100} fill={0xffffff} />
             <Rectangle x={985} y={player_two_y} width={15} height={100} fill={0xffffff} />
             {mapSelect === 1 ? (

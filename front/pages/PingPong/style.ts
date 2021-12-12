@@ -27,11 +27,23 @@ export const GameSettingContainer = styled.div`
 	& .css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
 		color: white;
 	}
+
+	& .css-hfutr2-MuiSvgIcon-root-MuiSelect-icon {
+		color: rgba(255, 255, 255, 0.54);
+	}
+
+	& .css-bpeome-MuiSvgIcon-root-MuiSelect-icon {
+		color: rgba(255, 255, 255, 1);
+	}
+
+	& .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+		border-color: rgba(255, 255, 255, 0.23)
+	}
 `;
 
 export const GameReadyContainer = styled.div`
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: center;
 	margin: 20px;
 
