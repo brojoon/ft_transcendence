@@ -37,7 +37,13 @@ export const GameSettingContainer = styled.div`
 	}
 
 	& .css-1d3z3hw-MuiOutlinedInput-notchedOutline {
-		border-color: rgba(255, 255, 255, 0.23)
+		border-color: rgba(255, 255, 255, 0.5);
+	}
+
+	& .css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root:hover
+		.MuiOutlinedInput-notchedOutline {
+		border-color: rgba(255, 255, 255, 1);
+
 	}
 `;
 
