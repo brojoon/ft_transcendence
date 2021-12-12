@@ -17,6 +17,8 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import FlareIcon from '@mui/icons-material/Flare';
 import { ChannelLeftDrawBarContainer } from './style';
 
+let channelList2: IChannelList[] | undefined;
+
 const ChannelLeftDrawBar = () => {
   const { data: users } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: channelList } = useSWR<IChannelList[]>('/api/channels/myChannelList', fetcher);
@@ -24,6 +26,7 @@ const ChannelLeftDrawBar = () => {
     dedupingInterval: 2000,
   });
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [channelSearchInputValue, setChannelSearchInputValue] = useState('');
 
   const handleListItemClick = useCallback(
     (event: any, index: number) => {
@@ -32,9 +35,33 @@ const ChannelLeftDrawBar = () => {
     [selectedIndex, setSelectedIndex],
   );
 
+  const onChangeChannelSearchInput = useCallback((e) => {
+    setChannelSearchInputValue(e.target.value);
+  }, []);
+
+  if (channelSearchInputValue) {
+    channelList2 = channelList?.filter((channel) => {
+      const regex = new RegExp(channelSearchInputValue, 'gi');
+      return channel.name.match(regex);
+    });
+  }
+
+  const getChannelList = useCallback(
+    (inputValue: string) => {
+      if (!inputValue) return channelList;
+      else return channelList2;
+    },
+    [channelList],
+  );
+
   return (
     <ChannelLeftDrawBarContainer>
-      <input className="search-input" autoComplete="off"></input>
+      <input
+        className="search-input"
+        autoComplete="off"
+        onChange={onChangeChannelSearchInput}
+        value={channelSearchInputValue}
+      ></input>
       <div className="header-wrapper">
         <Link to={`/channels`}>
           <List
@@ -55,7 +82,7 @@ const ChannelLeftDrawBar = () => {
       </div>
       <div className="channel-list-wrapper">
         <Scrollbars>
-          {channelList?.map((channel: any, index) => {
+          {getChannelList(channelSearchInputValue)?.map((channel: any, index) => {
             let channelMode = '';
             if (channel.type === 0) {
               channelMode = 'Public';

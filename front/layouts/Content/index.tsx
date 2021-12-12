@@ -6,7 +6,7 @@ import Game from '@pages/Game';
 import Home from '@pages/Home';
 import Profile from '@pages/Profile';
 import Users from '@pages/Users';
-import { IDmList, IUser } from '@typings/db';
+import { IUserStateList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import React, { useEffect } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
@@ -23,6 +23,7 @@ const Content = () => {
   });
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
+  const { data: allUserStateList } = useSWR<IUserStateList[]>('/api/users/connect-all', fetcher);
 
   const history = useHistory();
 
@@ -30,7 +31,7 @@ const Content = () => {
     history.push('/login/first-step');
   }
 
-  if (!myData) return null;
+  console.log('allUserStateList', allUserStateList);
 
   let socket = getSocket();
   useEffect(() => {
@@ -43,6 +44,22 @@ const Content = () => {
       });
     }
   }, [socket, DMList, ChannelList, myData]);
+
+  useEffect(() => {
+    socket?.on('onGameList', (onGameList: any) => {
+      console.log(onGameList);
+      console.log('onGameList !!!');
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('onlineList', (onlineList: any) => {
+      console.log(onlineList);
+      console.log('onlineList !!!');
+    });
+  }, [socket]);
+
+  if (!myData) return null;
 
   return (
     <Container>

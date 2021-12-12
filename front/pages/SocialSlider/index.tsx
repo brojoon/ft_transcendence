@@ -90,9 +90,7 @@ const SocialSlider = () => {
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        <TabPanel value={value} index={0}>
-          <UsersList />
-        </TabPanel>
+        <TabPanel value={value} index={0}></TabPanel>
         <TabPanel value={value} index={1}>
           <FriendsList />
         </TabPanel>

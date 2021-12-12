@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import UserList from '@components/UsersList';
+import UsersList from '@components/UsersList';
 
 export const UsersContainer = styled.div`
 	height: 100vh;

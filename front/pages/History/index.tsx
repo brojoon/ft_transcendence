@@ -3,12 +3,19 @@ import axios from 'axios';
 import Button from '@mui/material/Button';
 import getCookie from '@utils/cookie';
 import { Link } from 'react-router-dom';
+import ListItem from '@mui/material/ListItem';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import Avatar from '@mui/material/Avatar';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import { IAllUser } from '@typings/db';
-import { HistoryContainer, UserProfileContainer1, UserProfileContainer2 } from './style';
+import {
+  HistoryContainer,
+  UserProfileContainer1,
+  UserProfileContainer2,
+  ProfileOneText,
+  ProfileTwoText,
+} from './style';
 
 const option = {
   headers: {
@@ -61,18 +68,28 @@ const History = (data: any) => {
   return (
     <HistoryContainer>
       <div className="wrapper">
-        <UserProfileContainer1 winner={`${winner === userId1 ? 'white' : 'red'}`}>
-          <div className="profile1-wrapper">
-            <Avatar className="avatar1" src={userId1Profile} alt="Avatar" />[{userId1}] :{' '}
-            {player1Point} Point
-          </div>
+        <UserProfileContainer1>
+          <Link to={`/users/${userId1}`}>
+            <ListItem className="profile1-wrapper" button>
+              <Avatar className="avatar1" src={userId1Profile} alt="Avatar" />
+              <ProfileOneText winner={`${winner === userId1 ? 'white' : 'red'}`}>
+                <span>{userId1}</span>
+                <span>{player1Point} Point</span>
+              </ProfileOneText>
+            </ListItem>
+          </Link>
         </UserProfileContainer1>
         <div>VS</div>
-        <UserProfileContainer2 winner={`${winner === userId2 ? 'white' : 'red'}`}>
-          <div className="profile1-wrapper2">
-            <Avatar className="avatar2" src={userId2Profile} alt="Avatar" />[{userId2}] :{' '}
-            {player2Point} Point
-          </div>
+        <UserProfileContainer2>
+          <Link to={`/users/${userId2}`}>
+            <ListItem className="profile2-wrapper" button>
+              <Avatar className="avatar2" src={userId2Profile} alt="Avatar" />
+              <ProfileTwoText winner={`${winner === userId2 ? 'white' : 'red'}`}>
+                <span>{userId2}</span>
+                <span>{player2Point} Point</span>
+              </ProfileTwoText>
+            </ListItem>
+          </Link>
         </UserProfileContainer2>
       </div>
 

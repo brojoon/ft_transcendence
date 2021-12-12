@@ -1,11 +1,11 @@
-import React, { useCallback, RefObject, VFC } from 'react';
+import React, { useCallback, RefObject, VFC, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
 import { IChatList, IAllUser, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
 import { DMChatListContainer, StickyHeader } from './style';
-import makeSection from '@utils/makeSection';
+import { makeSectionDM } from '@utils/makeSection';
 
 interface Props {
   chatData: IChatList[][] | undefined;
@@ -21,24 +21,29 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
   });
   console.log('chatData', chatData);
 
-  const chatSections = makeSection(chatData ? chatData.flat().reverse() : []);
-  const onScroll = useCallback((values) => {
-    if (values.scrollTop === 0 && !isReachingEnd) {
-      console.log('가장 위');
-      setSize((prevSize) => {
-        console.log(prevSize);
-        return prevSize + 1;
-      }).then(() => {
-        if (scrollbarRef?.current) {
-          console.log('가져오기!');
-          scrollbarRef.current?.scrollTop(
-            scrollbarRef.current?.getScrollHeight() - values.scrollHeight,
-          );
-        }
-      });
-    }
-  }, []);
+  const onScroll = useCallback(
+    (values) => {
+      if (values.scrollTop === 0 && !isReachingEnd) {
+        console.log('가장 위');
+        setSize((prevSize) => {
+          console.log(prevSize);
+          return prevSize + 1;
+        }).then(() => {
+          if (scrollbarRef?.current) {
+            console.log('가져오기!');
+            scrollbarRef.current?.scrollTop(
+              scrollbarRef.current?.getScrollHeight() - values.scrollHeight,
+            );
+          }
+        });
+      }
+    },
+    [setSize, isReachingEnd, scrollbarRef],
+  );
+
+  const chatSections = makeSectionDM(chatData ? chatData.flat().reverse() : []);
   console.log(chatSections);
+
   return (
     <DMChatListContainer>
       <Scrollbars autoHide ref={scrollbarRef} onScrollFrame={onScroll}>

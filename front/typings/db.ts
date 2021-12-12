@@ -102,3 +102,9 @@ export interface IUserGameHistory {
   myPoint: number;
   opponentPoint: number;
 }
+
+export interface IUserStateList {
+  userId: string;
+  state: boolean;
+  updatedAt: Date;
+}

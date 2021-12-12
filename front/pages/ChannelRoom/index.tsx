@@ -1,5 +1,5 @@
 import ChatBox from '@components/ChatBox';
-import { IChannelChatList, IChannelList, IChatList, IMemberList, IUser } from '@typings/db';
+import { IChannelChatList, IChannelList, IMemberList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState, VFC } from 'react';
@@ -49,13 +49,13 @@ const ChannelRoom = () => {
     mutate: mutateChat,
     setSize,
   } = useSWRInfinite<IChannelChatList[]>(
-    (index) => `/api/dms/get20MessageUseDmId/${id}/${index + 1}`,
+    (index) => `/api/channels/20MessageList/${id}/${index * 19}`,
     fetcher,
   );
 
-  // const isEmpty = chatData?.[0]?.length === 0;
-  // const isReachingEnd =
-  //   isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
+  const isEmpty = chatData?.[0]?.length === 0;
+  const isReachingEnd =
+    isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
 
   const scrollbarRef = useRef<Scrollbars>(null);
   const socket = getSocket();
@@ -223,6 +223,12 @@ const ChannelRoom = () => {
     }, 50);
   }, [socket]);
 
+  useEffect(() => {
+    if (chatData?.length === 1) {
+      scrollbarRef.current?.scrollToBottom();
+    }
+  }, [chatData]);
+
   return (
     <>
       <ChannelRoomSettingModal
@@ -234,7 +240,12 @@ const ChannelRoom = () => {
           membersToggle={membersToggle}
           onClickMembersToggle={onClickMembersToggle}
         />
-        <ChannelChatList chatData={chatData} scrollbarRef={scrollbarRef} />
+        <ChannelChatList
+          chatData={chatData}
+          scrollbarRef={scrollbarRef}
+          setSize={setSize}
+          isReachingEnd={isReachingEnd}
+        />
         {!myMute && <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />}
       </ChannelRoomContainer>
       <ChannelMemberDrawBar

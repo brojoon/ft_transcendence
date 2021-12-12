@@ -31,4 +31,11 @@ export const UserFriendCardContainer = styled.div`
 		margin-left: 12px;
 	}
 
+	& .no-friend-wrapper {
+		display: flex;
+		height: 100%;
+		justify-content: center;
+		align-items: center;
+	}
+
 `;

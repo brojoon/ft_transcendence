@@ -12,6 +12,8 @@ import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
 import ListItemButton from '@mui/material/ListItemButton';
 import { DMLeftDrawerContainer, DMListContainer } from './style';
 
+let dmlist2: IDmList[] | undefined;
+
 const DMLeftDrawerBar = () => {
   const { data: dmlist } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
   const { data: users } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
@@ -21,16 +23,47 @@ const DMLeftDrawerBar = () => {
   });
 
   const [selectedIndex, setSelectedIndex] = useState(0);
-
+  const [dmSearchInputValue, setDMSearchInputValue] = useState('');
   const handleListItemClick = useCallback(
     (event: any, index: number) => {
       setSelectedIndex(index);
     },
     [selectedIndex, setSelectedIndex],
   );
+
+  const onChangeDMSearchInput = useCallback((e) => {
+    setDMSearchInputValue(e.target.value);
+    console.log(e.target.value);
+  }, []);
+
+  if (dmSearchInputValue) {
+    dmlist2 = dmlist?.filter((dm) => {
+      const regex = new RegExp(dmSearchInputValue, 'gi');
+      console.log('regex', regex);
+      console.log(dm.userId.match(regex));
+      console.log(dmSearchInputValue);
+      return dm.userId.match(regex);
+    });
+    console.log('dmlist', dmlist2);
+  }
+
+  const getDMList = useCallback(
+    (inputValue: string) => {
+      console.log('getDM', inputValue);
+      if (!inputValue) return dmlist;
+      else return dmlist2;
+    },
+    [dmlist],
+  );
+
   return (
     <DMLeftDrawerContainer>
-      <input className="search-input" autoComplete="off"></input>
+      <input
+        className="search-input"
+        onChange={onChangeDMSearchInput}
+        value={dmSearchInputValue}
+        autoComplete="off"
+      ></input>
       <div className="friend-icon-wrapper">
         <Link to={`/social`}>
           <List className="friend-list-wrapper" component="nav" aria-label="main mailbox folders">
@@ -48,7 +81,7 @@ const DMLeftDrawerBar = () => {
       <DMListContainer>
         <Scrollbars>
           <div>
-            {dmlist?.map((dm: IDmList, index: number) => {
+            {getDMList(dmSearchInputValue)?.map((dm: IDmList, index: number) => {
               let isblock = false;
               blockList?.map((blockedUser) => {
                 if (blockedUser.userId2 === dm.userId) isblock = true;
