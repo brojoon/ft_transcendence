@@ -171,6 +171,7 @@ export class ChannelsService {
     if (!await this.chatmemberRepository.findOne({channelId, userId}))
       throw new ForbiddenException("채팅방에 참여중이지 않은 사용자인데 메시지를 조회하려고 함"); 
     const query = await this.chatcontentRepository.createQueryBuilder('m')
+    .orderBy("m.updatedAt", "DESC")
     .where("m.channelId=:channelId", {channelId})
     .select(["m.userId", "m.message", "m.updatedAt"]);
     const [list, count] = await query.skip(skip).take(20)
