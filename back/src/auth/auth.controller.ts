@@ -1,8 +1,7 @@
-import { Body, Controller, Get, HttpCode, NotFoundException, Param, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, HttpCode, NotFoundException, Param, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'common/decorators/user.decorator';
-import { TwoFactorDto } from 'common/dto/two-factor.dto';
 import { UserDto } from 'common/dto/user.dto';
 import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.interceptor';
 import { Users } from 'src/entities/Users';
@@ -52,10 +51,18 @@ export class AuthController {
       userId: result.userId,
       email: result.email,
     }
-    res.clearCookie('ts_token');
-    const token = await this.authService.login(user);
-    res.cookie('ts_token', token.access_token, { httpOnly: true });
-    res.send(token.access_token);
+    const re: boolean = await this.authService.checktwofactorEnable(id);
+    if (re) {
+      res.cookie('userCookie', user, { httpOnly: true });
+      res.send(null);
+    }
+    else {
+      res.clearCookie('ts_token');
+      res.clearCookie('userCookie');
+      const token = await this.authService.login(user);
+      res.cookie('ts_token', token.access_token, { httpOnly: true });
+      res.send(token.access_token);
+    }
   }
 
   @UseGuards(Intra42AuthGuard)
@@ -80,8 +87,9 @@ export class AuthController {
   @Get('42/callback')
   async login(@Req() req, @Res() res) {
     const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
+    res.clearCookie('userCookie');
     if (result){
-      res.cookie('userCookie', req.user);
+      res.cookie('userCookie', req.user, { httpOnly: true });
       res.status(302).redirect('http://localhost:3090/two-factor')
     }else{
       const token = await this.authService.login(req.user);
@@ -90,7 +98,7 @@ export class AuthController {
     }
   }
 
-  @Post('qrlogin')
+  @Get('qrlogin/:otp')
   @ApiOperation({ summary: 'QR코드 로그인' })
   @ApiResponse ({
     status: 201,
@@ -101,15 +109,18 @@ export class AuthController {
     description: '잘못된 OTP code일 경우 / two-factor기능 off 이용자일 경우',
   })
   @HttpCode(201)
-  async authenticate(@Body() body: TwoFactorDto,  @Res() res) {
-    const result: boolean = await this.authService.checktwofactorEnable(body.userId);
+  async authenticate(@Param("otp") otp: string, @Req() req, @Res() res) {
+    let userCookie = String(decodeURIComponent(req.headers.cookie));
+    let index = userCookie.search("userCookie=");
+    let userString = userCookie.substring(index + 13, userCookie.length);
+    let user = JSON.parse(userString);
+    const result: boolean = await this.authService.checktwofactorEnable(user.userId);
     if (!result)
       throw new UnauthorizedException('checktwofactorEnable valus is fales');
-    const isCodeValid =  await this.authService.isTwoFactorAuthenticationCodeValid(body.TwoFactorAuthcode, body.userId); 
+    const isCodeValid =  await this.authService.isTwoFactorAuthenticationCodeValid(otp, user.userId); 
     if (isCodeValid === false)
       throw new UnauthorizedException('Wrong authentication code');
-    delete body.TwoFactorAuthcode;
-    const token = await this.authService.login(body);
+    const token = await this.authService.login(user);
     res.clearCookie('userCookie');
     res.cookie('ts_token', token.access_token, { httpOnly: true });
     res.send(null);
@@ -128,7 +139,6 @@ export class AuthController {
     res.send(null);
   }
 
-  @ApiBearerAuth('ts_token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'qr코드 불러오기' })
   @ApiResponse ({
@@ -142,7 +152,6 @@ export class AuthController {
     return this.authService.pipeQrCodeStream(response, otpauthUrl);
   }
 
-  @ApiBearerAuth('ts_token')
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: '2차 인증 true시 otp check' })
   @ApiResponse ({
