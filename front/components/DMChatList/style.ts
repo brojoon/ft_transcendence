@@ -24,6 +24,19 @@ export const DMChatListContainer = styled.div`
 	& .chat {
 		margin-top: 0;
 	}
+
+  & .challenge-join-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  & .challenge-join-btn {
+    margin-right: 15px;
+    font-weight: 700;
+
+  }
 `;
 
 export const StickyHeader = styled.div`

@@ -18,9 +18,6 @@ import {
 } from './style';
 
 const option = {
-  headers: {
-    Authorization: `Bearer ${getCookie('ts_token', 1)}`,
-  },
   withCredentials: true,
 };
 
