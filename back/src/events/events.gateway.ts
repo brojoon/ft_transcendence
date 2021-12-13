@@ -13,6 +13,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Connect } from 'src/entities/Connect';
 import { History } from 'src/entities/History';
+import { Dmcontent } from 'src/entities/Dmcontent';
 import initData from 'src/game/gameInit';
 import { gameMap } from 'src/game/gameMap';
 import { Repository } from 'typeorm';
@@ -25,6 +26,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   constructor(
     @InjectRepository(Connect) private connectRepository: Repository<Connect>,
     @InjectRepository(History) private historyRepository: Repository<History>,
+    @InjectRepository(Dmcontent) private dmcontentRepository: Repository<Dmcontent>,
   ) { }
 
   @WebSocketServer() public server: Server;
@@ -34,18 +36,20 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() data: { userId: string; username: string, Dms: number[], channels: number[] },
     @ConnectedSocket() socket: Socket ){
 
-    onlineMap[socket.id] = { userId:data.userId, username:data.username };
+    onlineMap[socket.id] = { userId: data.userId, username: data.username };
     console.log(`login : ${socket.id}, ${onlineMap[socket.id].userId}`);
     try{
       await this.connectRepository.createQueryBuilder()
           .update()
           .set({ state: true })
-          .where('userId = :userId', {userId: onlineMap[socket.id].userId})
+          .where('userId = :userId', {userId: data.userId})
           .execute()
     }catch{
       throw new BadRequestException('접속상태 업뎃 실패');
     }
+    socket.join("all");
     socket.emit('onlineList', Object.values(onlineMap));
+    socket.to("all").emit('onlineList', Object.values(onlineMap));
     socket.join(`${data.userId}`);
     data.Dms.forEach((dm) => {
       socket.join(`dm-${dm}`);
@@ -60,52 +64,78 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async handleConnection(@ConnectedSocket() socket: Socket) { }
 
   async handleDisconnect(@ConnectedSocket() socket: Socket) {
-    console.log(`logout : ${socket.id}, ${onlineMap[socket.id].userId}`);
-    // matching 초기화
-    if (users.playerOne === onlineMap[socket.id].userId)
-      users.playerOne = null;
-    else if (users.playerTwo === onlineMap[socket.id].userId) {
-      users.playerOne = null;
-      users.playerTwo = null;
-    }
-    // onGameList remove
-    if (onGameMap[onlineMap[socket.id].userId] !== undefined) {
-      delete onGameMap[onlineMap[socket.id].userId];
-      socket.emit('onGameList', Object.values(onGameMap));
-    }
-    onGameMap_gameId.forEach(function (value, key, mapObjec){
-      value.forEach(function (item, index, arr) {
-        if (item === onlineMap[socket.id].userId){
-          onGameMap_gameId[key].splice(index, 1);
-          //상태 체크하고 그게임방 player1 player2둘다 없으면 게임 종료
-          //dm쪽 history쪽 둘다 완료 만들기 dm쪽 메세지에 업뎃은 어케 하지?
-          //history쪽 승패는 없이 그대로
-          if (onGameMap_gameId[key].length === 0)
-            delete onGameMap_gameId[key];
-          socket.emit('onGameList_gameId', Object.values(onGameMap));
-        }
-      });
-    });
-    // connectDB update => false
-    try{
-      let connectNum = 0;
-      Object.keys(onlineMap).forEach(function(v){
-        if (onlineMap[v].userId === onlineMap[socket.id].userId)
-          ++connectNum;
-      })
-      if (connectNum === 1) {
-        await this.connectRepository.createQueryBuilder()
-        .update()
-        .set({ state: false })
-        .where('userId = :userId', {userId: onlineMap[socket.id].userId})
-        .execute()
+    if (onlineMap[socket.id] !== undefined) {
+      console.log(`logout : ${socket.id}, ${onlineMap[socket.id].userId}`);
+
+      // matching 초기화
+      if (users.playerOne === onlineMap[socket.id].userId)
+        users.playerOne = null;
+      else if (users.playerTwo === onlineMap[socket.id].userId) {
+        users.playerOne = null;
+        users.playerTwo = null;
       }
-    } catch (error) {
-      throw new BadRequestException('접속상태 업뎃 실패');
-    }
-    delete onlineMap[socket.id];
-    // 접속상태 업데이트
-    socket.emit('onlineList', Object.values(onlineMap));
+      // onGameList remove
+      let gameId;
+      if (onGameMap[onlineMap[socket.id].userId] !== undefined) {
+        gameId = onGameMap[onlineMap[socket.id].userId];
+        delete onGameMap[onlineMap[socket.id].userId];
+        socket.emit('onGameList', onGameMap);
+        socket.to("all").emit('onGameList', onGameMap);
+      }
+      if (onGameMap_gameId[gameId] !== undefined) {
+        // player 나갈 때마다 하나씩 제거
+        onGameMap_gameId[gameId].forEach(function (item, index, arr) {
+          if (item === onlineMap[socket.id].userId){
+            onGameMap_gameId[gameId].splice(index, 1);
+            if (onGameMap_gameId[gameId].length === 0) {
+              delete onGameMap_gameId[gameId]; 
+            }
+          }
+        });
+      }
+
+      // player1, player2 둘다 없으면 history state 2로만들고 dm에 상태도 2로 만듬
+      // 그리고 dm에 신호주기?
+      let history = await this.historyRepository.findOne({id: gameId});
+      if (history.state === 1 && onGameMap_gameId[gameId] !== undefined) {
+        let num = 0;
+        onGameMap_gameId[gameId].forEach(function (item, index, arr) {
+          if (item === history.userId1 || item === history.userId2){
+            num++;
+          }
+        });
+        if (num === 0) {
+          await this.historyRepository.update({id: gameId}, {state: 2})
+          await this.dmcontentRepository.update({historyId: gameId}, {match: 2})
+          // let dm = await this.dmcontentRepository.findOne({historyId: gameId});
+          // this.server.to(`dm-${dm.dmId}`).emit('dm', null); 
+        }
+      } else if (history.state === 1 && onGameMap_gameId[gameId] === undefined) {
+        await this.historyRepository.update({id: gameId}, {state: 2})
+        await this.dmcontentRepository.update({historyId: gameId}, {match: 2})        
+      }
+      
+      // connectDB update => false
+      try{
+        let connectNum = 0;
+        Object.keys(onlineMap).forEach(function(v){
+          if (onlineMap[v] === onlineMap[socket.id].userId)
+            ++connectNum;
+        })
+        if (connectNum === 1) {
+          await this.connectRepository.createQueryBuilder()
+          .update()
+          .set({ state: false })
+          .where('userId = :userId', {userId: onlineMap[socket.id].userId})
+          .execute()
+        }
+      } catch (error) {
+        throw new BadRequestException('접속상태 업뎃 실패');
+      }
+      delete onlineMap[socket.id];
+      // 접속상태 업데이트
+      socket.to("all").emit('onlineList', Object.values(onlineMap));
+    } 
   }
 
   //////////////////////////////////////////////////////////////////////////
@@ -140,34 +170,58 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         check = 1;
     });
     if (check === 0)
-      onGameMap_gameId[data.gameId].push(data.player); 
-
+      onGameMap_gameId[data.gameId].push(data.player);
+    console.log("zzzzzzzzzzzzzzzzzzzz", onGameMap_gameId[2]);
     onGameMap[data.player] = data.gameId;
-    socket.emit('onGameList_gameId', Object.values(onGameMap_gameId));
-    socket.emit('onGameList', Object.values(onGameMap));
+    socket.emit('onGameList', onGameMap);
+    socket.to("all").emit('onGameList', onGameMap);
+    // 프런트에서 접속중일경우 onGame 시도 못하게
   }
 
   @SubscribeMessage('offGame')
   async offGame(
     @MessageBody() data: {gameId: number, player: string},
     @ConnectedSocket() socket: Socket ){
+    // onGameMap_gameId //
     if (onGameMap_gameId[data.gameId] !== undefined) {
+      // player 나갈 때마다 하나씩 제거
       onGameMap_gameId[data.gameId].forEach(function (item, index, arr) {
         if (item === data.player){
           onGameMap_gameId[data.gameId].splice(index, 1);
-          //상태 체크하고 그게임방 player1 player2둘다 없으면 게임 종료
-          //dm쪽 history쪽 둘다 완료 만들기 dm쪽 메세지에 업뎃은 어케 하지?
-          //history쪽 승패는 없이 그대로
           if (onGameMap_gameId[data.gameId].length === 0) {
             delete onGameMap_gameId[data.gameId]; 
           }
-          socket.emit('onGameList_gameId', Object.values(onGameMap_gameId));
         }
       });
+
     }
+    console.log("cccccccccccccccccc", onGameMap_gameId[2]);
+    // player1, player2 둘다 없으면 history state 2로만들고 dm에 상태도 2로 만듬
+    // 그리고 dm에 신호주기?
+    let history = await this.historyRepository.findOne({id: data.gameId});
+    if (history.state === 1 && onGameMap_gameId[data.gameId] !== undefined) {
+      let num = 0;
+      onGameMap_gameId[data.gameId].forEach(function (item, index, arr) {
+        if (item === history.userId1 || item === history.userId2){
+          num++;
+        }
+      });
+      if (num === 0) {
+        await this.historyRepository.update({id: data.gameId}, {state: 2})
+        await this.dmcontentRepository.update({historyId: data.gameId}, {match: 2})
+        // let dm = await this.dmcontentRepository.findOne({historyId: data.gameId});
+        // this.server.to(`dm-${dm.dmId}`).emit('dm', null); 
+      }
+    } else if (history.state === 1 && onGameMap_gameId[data.gameId] === undefined) {
+      await this.historyRepository.update({id: data.gameId}, {state: 2})
+      await this.dmcontentRepository.update({historyId: data.gameId}, {match: 2})        
+    }
+    
+    // onGameMap //
     if (onGameMap[data.player] !== undefined) {
       delete onGameMap[data.player];
-      socket.emit('onGameList', Object.values(onGameMap));
+      socket.emit('onGameList', onGameMap);
+      socket.to("all").emit('onGameList', onGameMap);
     }
   }
 
@@ -317,13 +371,13 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         //   .execute()
 
   // try{
-    //   const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id].userId, playerOneJoin: 1})
-    //   const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id].userId, playerTwoJoin: 1})
+    //   const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id], playerOneJoin: 1})
+    //   const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id], playerTwoJoin: 1})
     //   if (result1) {
     //     await this.historyRepository.createQueryBuilder()
     //       .update()
     //       .set({ playerOneJoin: 0 })
-    //       .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
+    //       .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id], num: 1})
     //       .execute();
     //     if (result1.state != 2 && gameMap[result1.id] != undefined) {
     //       gameMap[result1.id].player_one_ready = 0;
@@ -337,7 +391,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     //     await this.historyRepository.createQueryBuilder()
     //       .update()
     //       .set({ playerTwoJoin: 0 })
-    //       .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id].userId, num: 1})
+    //       .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id], num: 1})
     //       .execute();
     //     if (result2.state != 2 && gameMap[result2.id] != undefined) {
     //       gameMap[result2.id].player_two_ready = 0;
