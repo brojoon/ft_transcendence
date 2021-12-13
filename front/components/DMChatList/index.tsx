@@ -4,8 +4,10 @@ import { IChatList, IAllUser, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
+import Button from '@mui/material/Button';
 import { DMChatListContainer, StickyHeader } from './style';
 import { makeSectionDM } from '@utils/makeSection';
+import { Link } from 'react-router-dom';
 
 interface Props {
   chatData: IChatList[][] | undefined;
@@ -63,10 +65,38 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
                             return <Avatar className="avatar" src={user.profile} alt="Avatar" />;
                         })}
                       </div>
-                      <div>
-                        <div>{chat.userId1}</div>
-                        <p className="chat">{chat.message}</p>
-                      </div>
+                      {chat.match === 0 && (
+                        <div>
+                          <div>{chat.userId1}</div>
+                          <p className="chat">{chat.message}</p>
+                        </div>
+                      )}
+                      {chat.match === 1 && (
+                        <div className="challenge-join-wrapper">
+                          <div>
+                            <div>{chat.userId1}</div>
+                            <p className="chat">{chat.message}</p>
+                          </div>
+                          <Link to={`/game/ping-pong/${chat.historyId}`}>
+                            <Button className="challenge-join-btn" variant="contained">
+                              JOIN
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
+                      {chat.match === 2 && (
+                        <div className="challenge-join-wrapper">
+                          <div>
+                            <div>{chat.userId1}</div>
+                            <p className="chat">{chat.message}</p>
+                          </div>
+                          <Link to={`/game/history/${chat.historyId}`}>
+                            <Button className="challenge-join-btn" variant="contained">
+                              HISTORY
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
                     </div>
                   </>
                 );
