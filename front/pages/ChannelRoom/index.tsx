@@ -16,6 +16,7 @@ import BasicModal from '@components/BasicModal';
 import ChannelInviteModal from '@components/ChannelInviteModal';
 import config from '@utils/config';
 import { ChannelRoomContainer } from './style';
+import { BrandingWatermarkTwoTone } from '@mui/icons-material';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -171,7 +172,7 @@ const ChannelRoom = () => {
     mutateChannelMembers();
     mutateMyChannelList();
     mutateAllChannelList();
-    mutateMyMute(); 
+    mutateMyMute();
     mutateMymuteMmbers();
   }, []);
 
@@ -195,6 +196,21 @@ const ChannelRoom = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (myChannelList) {
+      let isUnauthorized = true;
+      for (let channel of myChannelList) {
+        if (channel.id === parseInt(id)) {
+          isUnauthorized = false;
+          break;
+        }
+      }
+      if (isUnauthorized) {
+        history.push('/home');
+      }
+    }
+  }, [myChannelList]);
 
   useEffect(() => {
     socket?.on('ch', onMessage);

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import { IChannelList2, IAllUser, IUser, IMemberList } from '@typings/db';
@@ -33,7 +33,10 @@ import { AdminPageContainer, AdminPageWrapper } from './style';
 
 const Admin = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: memberList } = useSWR<IMemberList[]>(`/api/channels/userList/${id}`, fetcher);
+  const { data: memberList } = useSWR<IMemberList[]>(
+    `/api/channels/userList/${id === undefined ? -1 : id}`,
+    fetcher,
+  );
   const { data: alluserList, mutate: mutateAlluserList } = useSWR<IAllUser[]>(
     '/api/users/alluser',
     fetcher,
@@ -56,7 +59,7 @@ const Admin = () => {
   );
 
   const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
-    `/api/channels/mutedMembers/${id}`,
+    `/api/channels/mutedMembers/${id === undefined ? -1 : id}`,
     fetcher,
   );
 
@@ -72,6 +75,32 @@ const Admin = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
 
+  console.log('moderator', moderatorList);
+
+  useEffect(() => {
+    if (adminList !== undefined && moderatorList !== undefined && myData !== undefined) {
+      let isUnauthorized = true;
+      for (let admin of adminList) {
+        if (myData?.userId === admin.userId) {
+          isUnauthorized = false;
+        }
+      }
+
+      if (isUnauthorized) {
+        for (let moderator of moderatorList) {
+          if (myData?.userId === moderator.userId) {
+            isUnauthorized = false;
+          }
+        }
+      }
+
+      if (isUnauthorized) {
+        const history = useHistory();
+        history.push('/home');
+      }
+    }
+  }, [adminList, moderatorList, myData]);
+
   const onClickUserPrivilege = useCallback(
     (e, userId) => {
       setUserPrivilegeSelected(userId);
@@ -85,7 +114,6 @@ const Admin = () => {
       e.preventDefault();
       axios.get(`/api/channels/deleteChannel/${id}`, config).then(() => {
         mutateChannelList();
-        mutateMymuteMmbers();
       });
     },
     [id],
@@ -439,11 +467,7 @@ const Admin = () => {
                                     return alluserList?.map((user, index) => {
                                       if (user.userId == member.userId) {
                                         let isMute = false;
-                                        MymuteMmbers?.map((muteMember: IMemberList) => {
-                                          if (muteMember.userId === user.userId) {
-                                            if (muteMember.mute) isMute = true;
-                                          }
-                                        });
+
                                         return (
                                           <>
                                             {selectedIndex === index &&
@@ -466,10 +490,12 @@ const Admin = () => {
                                                 className="tab-pannel-4-text"
                                                 primary={user.userId}
                                               />
-                                              {isMute ? (
+                                              {member.mute ? (
                                                 <VoiceOverOffIcon className="mute-icon" />
                                               ) : (
+                                                
                                                 <RecordVoiceOverIcon />
+
                                               )}
                                             </ListItem>
                                           </>

@@ -10,10 +10,11 @@ const fetcher = (url: string): any => axios.get(url, {
 	// 	Authorization: `Bearer ${getToken()}`,
 	// }
 }).then((response) => response.data).catch((error) => {
+	console.log(error);
 	if (error.response.data.code === 401) {
-		const history = useHistory();
-		history.push('/ft_transcendence/login');
-		// window.location.href = '/ft_transcendence/login';
+		window.location.href = '/login';
+		// const history = useHistory();
+		// history.push('/login');
 	} else {
 		toast.error(error.message, {
 			autoClose: 3000,
@@ -22,6 +23,7 @@ const fetcher = (url: string): any => axios.get(url, {
 			closeOnClick: true,
 			pauseOnHover: true,
 		});
+		window.location.href = '/home';
 	}
 	return false;
 	console.dir(error);

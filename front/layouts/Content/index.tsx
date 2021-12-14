@@ -57,6 +57,10 @@ const Content = () => {
       console.log(onlineList);
       console.log('onlineList !!!');
     });
+
+    return () => {
+      socket.off('onlineList');
+    };
   }, [socket]);
 
   if (!myData) return null;
@@ -65,15 +69,15 @@ const Content = () => {
     <Container>
       <LeftSideBar />
       <Switch>
-        <Route path="/home" component={Home} />
+        <Route exact path="/home" component={Home} />
         <Route path="/social" component={Social} />
         <Route path="/channels" component={Channels} />
-        <Route path="/users/:id" component={Profile} />
-        <Route path="/users" component={Users} />
-        <Route path="/achievements" component={Achievements} />
+        <Route exact path="/users/:id" component={Profile} />
+        <Route exact path="/users" component={Users} />
+        <Route exact path="/achievements" component={Achievements} />
         <Route path="/game" component={Game} />
-        <Route path="/profile/setting" component={ProfileSetting} />
-        <Route path="/profile" component={Profile} />
+        <Route exact path="/profile/setting" component={ProfileSetting} />
+        <Route exact path="/profile" component={Profile} />
       </Switch>
     </Container>
   );

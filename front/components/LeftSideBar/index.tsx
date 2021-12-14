@@ -7,7 +7,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -28,6 +28,8 @@ const LeftSideBar = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
+  const history = useHistory();
+
   const handleListItemClick = (event: any, index: number) => {
     setSelectedIndex(index);
   };
@@ -36,11 +38,11 @@ const LeftSideBar = () => {
     axios
       .get('/api/auth/logout', config)
       .then(() => {
-        mutate();
+        history.push('/login');
       })
       .catch((error) => {
         if (error.response.data.code === 401) {
-          window.location.href = '/login';
+          history.push('/login');
         } else {
           toast.error(error.message, {
             autoClose: 3000,
@@ -159,18 +161,17 @@ const LeftSideBar = () => {
                 </MyFab>
               </Tooltip>
             </Link>
-            <Link to={`/login`}>
-              <Tooltip title="Logout" placement="right" arrow>
-                <MyFab
-                  aria-label="add"
-                  className="sideBarIconLast"
-                  selected={selectedIndex === 6}
-                  onClick={onClickLogOut}
-                >
-                  <LogoutIcon />
-                </MyFab>
-              </Tooltip>
-            </Link>
+
+            <Tooltip title="Logout" placement="right" arrow>
+              <MyFab
+                aria-label="add"
+                className="sideBarIconLast"
+                selected={selectedIndex === 6}
+                onClick={onClickLogOut}
+              >
+                <LogoutIcon />
+              </MyFab>
+            </Tooltip>
           </NavIcons>
         </Scrollbars>
       </Toolbar>
