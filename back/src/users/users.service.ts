@@ -57,15 +57,20 @@ export class UsersService {
   async userInfo(userId: string) {
     try {
       const result = await this.usersRepository.findOne({
-        select: ['userId', 'username', 'email', 'profile'],
+        select: ['userId', 'username', 'email', 'profile', 'ban'],
         where: { userId },  
       });
       if (!result)
         throw new NotFoundException('유저 정보 없음');
+      if (result.ban)
+        throw new ForbiddenException('ban 유저');
+      delete result.ban;
       return(result);      
     } catch (error) {
-      if (error.errno !== undefined || error.response.statusCode !== 404)
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
         throw new BadRequestException("내 정보 조회 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
       else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);    
     }
