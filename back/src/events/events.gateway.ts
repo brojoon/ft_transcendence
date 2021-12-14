@@ -97,24 +97,26 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       // player1, player2 둘다 없으면 history state 2로만들고 dm에 상태도 2로 만듬
       // 그리고 dm에 신호주기?
       let history = await this.historyRepository.findOne({id: gameId});
-      if (history.state === 1 && onGameMap_gameId[gameId] !== undefined) {
-        let num = 0;
-        onGameMap_gameId[gameId].forEach(function (item, index, arr) {
-          if (item === history.userId1 || item === history.userId2){
-            num++;
+      if (history) {
+        if (history.state === 1 && onGameMap_gameId[gameId] !== undefined) {
+          let num = 0;
+          onGameMap_gameId[gameId].forEach(function (item, index, arr) {
+            if (item === history.userId1 || item === history.userId2){
+              num++;
+            }
+          });
+          if (num === 0) {
+            await this.historyRepository.update({id: gameId}, {state: 2})
+            await this.dmcontentRepository.update({historyId: gameId}, {match: 2})
+            // let dm = await this.dmcontentRepository.findOne({historyId: gameId});
+            // this.server.to(`dm-${dm.dmId}`).emit('dm', null); 
           }
-        });
-        if (num === 0) {
+        } else if (history.state === 1 && onGameMap_gameId[gameId] === undefined) {
           await this.historyRepository.update({id: gameId}, {state: 2})
-          await this.dmcontentRepository.update({historyId: gameId}, {match: 2})
-          // let dm = await this.dmcontentRepository.findOne({historyId: gameId});
-          // this.server.to(`dm-${dm.dmId}`).emit('dm', null); 
+          await this.dmcontentRepository.update({historyId: gameId}, {match: 2})        
         }
-      } else if (history.state === 1 && onGameMap_gameId[gameId] === undefined) {
-        await this.historyRepository.update({id: gameId}, {state: 2})
-        await this.dmcontentRepository.update({historyId: gameId}, {match: 2})        
       }
-      
+
       // connectDB update => false
       try{
         let connectNum = 0;
@@ -171,7 +173,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     });
     if (check === 0)
       onGameMap_gameId[data.gameId].push(data.player);
-    console.log("zzzzzzzzzzzzzzzzzzzz", onGameMap_gameId[2]);
     onGameMap[data.player] = data.gameId;
     socket.emit('onGameList', onGameMap);
     socket.to("all").emit('onGameList', onGameMap);
@@ -195,28 +196,26 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       });
 
     }
-    console.log("cccccccccccccccccc", onGameMap_gameId[2]);
     // player1, player2 둘다 없으면 history state 2로만들고 dm에 상태도 2로 만듬
     // 그리고 dm에 신호주기?
     let history = await this.historyRepository.findOne({id: data.gameId});
-    if (history.state === 1 && onGameMap_gameId[data.gameId] !== undefined) {
-      let num = 0;
-      onGameMap_gameId[data.gameId].forEach(function (item, index, arr) {
-        if (item === history.userId1 || item === history.userId2){
-          num++;
+    if (history) {
+      if (history.state === 1 && onGameMap_gameId[data.gameId] !== undefined) {
+        let num = 0;
+        onGameMap_gameId[data.gameId].forEach(function (item, index, arr) {
+          if (item === history.userId1 || item === history.userId2){
+            num++;
+          }
+        });
+        if (num === 0) {
+          await this.historyRepository.update({id: data.gameId}, {state: 2})
+          await this.dmcontentRepository.update({historyId: data.gameId}, {match: 2})
         }
-      });
-      if (num === 0) {
+      } else if (history.state === 1 && onGameMap_gameId[data.gameId] === undefined) {
         await this.historyRepository.update({id: data.gameId}, {state: 2})
-        await this.dmcontentRepository.update({historyId: data.gameId}, {match: 2})
-        // let dm = await this.dmcontentRepository.findOne({historyId: data.gameId});
-        // this.server.to(`dm-${dm.dmId}`).emit('dm', null); 
+        await this.dmcontentRepository.update({historyId: data.gameId}, {match: 2})        
       }
-    } else if (history.state === 1 && onGameMap_gameId[data.gameId] === undefined) {
-      await this.historyRepository.update({id: data.gameId}, {state: 2})
-      await this.dmcontentRepository.update({historyId: data.gameId}, {match: 2})        
     }
-    
     // onGameMap //
     if (onGameMap[data.player] !== undefined) {
       delete onGameMap[data.player];
