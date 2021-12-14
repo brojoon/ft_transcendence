@@ -15,6 +15,8 @@ const fetcher = (url: string): any => axios.get(url, {
 		window.location.href = '/login';
 		// const history = useHistory();
 		// history.push('/login');
+	} else if (error.response.data.data.message === "ban 유저") {
+		window.location.href = '/login';
 	} else {
 		toast.error(error.message, {
 			autoClose: 3000,
