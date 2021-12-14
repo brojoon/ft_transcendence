@@ -7,19 +7,11 @@ import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 
 const LogIn = () => {
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
-
   const history = useHistory();
 
-  if (myData && myData.username !== '') {
-    history.push('/home');
-  }
-
-  if (myData && myData.username === '') {
-    history.push('/login/first-step');
-  }
+  // if (myData && myData.username !== '') {
+  //   history.push('/home');myData
+  // }
 
   const onClickGoogleLogin = useCallback(() => {
     axios.get('/api/', {

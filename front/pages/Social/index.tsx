@@ -12,7 +12,7 @@ const Social = () => {
       <DMLeftDrawer />
       <Switch>
         <Route exact path="/social" component={SocialSlider} />
-        <Route path="/social/dm/:id" component={DirectMessage} />
+        <Route exact path="/social/dm/:id" component={DirectMessage} />
       </Switch>
     </Container>
   );

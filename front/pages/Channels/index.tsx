@@ -153,7 +153,7 @@ const Channel = () => {
             />
           )}
         />
-        <Route path="/channels/:id" render={() => <ChannelRoom />} />
+        <Route exact path="/channels/:id" render={() => <ChannelRoom />} />
       </Switch>
     </Container>
   );

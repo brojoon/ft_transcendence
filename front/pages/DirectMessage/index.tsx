@@ -9,7 +9,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
 import useSWRInfinite from 'swr/infinite';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
 import config from '@utils/config';
 import { DirectMessageContainer } from './style';
@@ -21,6 +21,7 @@ const DirectMessage = () => {
     dedupingInterval: 2000,
   });
   const { data: userId } = useSWR<string>(`/api/dms/findDmUser/${id}`, fetcher);
+  const { data: myDMList } = useSWR<IDmList[]>(`/api/dms/dmlist`, fetcher);
 
   // const { data: chatData, mutate: mutateChat } = useSWR<IChatList[]>(
   //   `/api/dms/getAllMessageUseDmId/${id}`,
@@ -34,6 +35,7 @@ const DirectMessage = () => {
     (index) => `/api/dms/get20MessageUseDmId/${id}/${index + 1}`,
     fetcher,
   );
+  const history = useHistory();
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingEnd =
     isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
@@ -100,6 +102,21 @@ const DirectMessage = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    if (myDMList) {
+      let isUnauthorized = true;
+      for (let item of myDMList) {
+        if (item.id === parseInt(id)) {
+          isUnauthorized = false;
+          break;
+        }
+      }
+      if (isUnauthorized) {
+        history.push('/home');
+      }
+    }
+  }, [myDMList]);
 
   useEffect(() => {
     socket?.on('dm', onMessage);

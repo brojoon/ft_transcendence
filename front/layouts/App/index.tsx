@@ -14,12 +14,12 @@ const App = () => {
   return (
     <Scrollbars>
       <Switch>
-        <Redirect exact path="/" to="/login" />
+        <Redirect exact path="/" to="/home" />
         <Route exact path="/login" component={LogIn} />
         <Route exact path="/login/first-step" component={FirstStep} />
         <Route exact path="/two-factor" component={TwoFactor} />
-        <Route path="/admin/:id" component={Admin} />
-        <Route path="/admin" component={Admin} />
+        <Route exact path="/admin/:id" component={Admin} />
+        <Route exact path="/admin" component={Admin} />
         <Route path="/:content" component={Content} />
       </Switch>
     </Scrollbars>

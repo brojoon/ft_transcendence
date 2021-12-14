@@ -8,9 +8,9 @@ import { Socket } from 'socket.io-client';
 const Game = () => {
   return (
     <Switch>
-      <Route path="/game" exact={true} component={Match} />
-      <Route path="/game/ping-pong/:id" exact={true} component={PingPong} />
-      <Route path="/game/history/:id" exact={true} component={History} />
+      <Route exact path="/game" component={Match} />
+      <Route exact path="/game/ping-pong/:id" component={PingPong} />
+      <Route exact path="/game/history/:id" component={History} />
     </Switch>
   );
 };
