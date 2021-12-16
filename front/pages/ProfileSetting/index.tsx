@@ -64,17 +64,20 @@ const ProfileSetting = () => {
     [mutateMyData, changeNickname],
   );
 
-  const onClickUploadBtn = () => {
+  const onClickUploadBtn = useCallback(() => {
     if (!selectedFile || !selectedFile[0]) return;
     const formData = new FormData();
 
     console.log('selectedFile', selectedFile[0], selectedFile[0]?.name);
     console.log(`${myData?.userId}` + '.jpg');
+    console.log(
+      `${myData?.userId}` + selectedFile[0].name.slice(selectedFile[0]?.name?.indexOf('.')),
+    );
 
     formData.append(
       'image',
       selectedFile[0],
-      `${myData?.userId}` + selectedFile[0].name.slice(selectedFile[0].name.indexOf('.')),
+      `${myData?.userId}` + selectedFile[0].name.slice(selectedFile[0]?.name?.indexOf('.')),
     );
     const config = {
       withCredentials: true,
@@ -92,7 +95,7 @@ const ProfileSetting = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, [myData, selectedFile]);
 
   useEffect(() => {
     preview();

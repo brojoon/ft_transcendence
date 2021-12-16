@@ -13,33 +13,32 @@ export const Container = styled.div`
 	box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
 
 	& .header {
-		display: flex;
 		border-bottom: 1px solid #3a3a3a;
 	}
 
+	& .header-wrapper {
+		display: flex;
+		align-items: center;
+		margin: 12px 15px 20px 20px;
+	}
+
+
 	& .avatar {
-		border: 2px solid red;
-		width: 40px;
-		height: 40px;
-		margin: 17px 15px 20px 20px;
+		margin-top: 5px;
+		width: 50px;
+		height: 50px;
+		
 	}
 
-	& .admin-btn-wrapper {
-		line-height: 70px;
-	}
-
-	& .admin-btn {
-		color:
-		font-weight: 600;
-		margin: 18px 0 0 40px;
-
+	& .user-text {
+		margin-left: 14px;
 	}
 `;
 
 export const AdminBtn = styled(Button) <{ btnColor: string }>`
 	color: ${(props) => props.btnColor};
 	font-weight: 600;
-	margin: 18px 0 0 40px;
+	margin: 0 0 0 40px;
 `;
 
 export const MatchDataContainer = styled.div`

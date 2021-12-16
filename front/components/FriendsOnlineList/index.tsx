@@ -6,24 +6,24 @@ import Avatar from '@mui/material/Avatar';
 import gravatar from 'gravatar';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
-import { IAllUser, IFriendList, IBlockList } from '@typings/db';
+import { IAllUser, IFriendList } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
-import { MuiList, UserAvatar } from './style';
+import { FriendsOnlineListContainer, UserAvatar } from './style';
 import { SocketContext } from '@store/socket';
 
-const BlockList = () => {
+const FriendsOnlineList = () => {
   const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
-  const { data: blockList } = useSWR<IBlockList[]>(`/api/friend/blocklist`, fetcher);
+  const { data: friends } = useSWR<IFriendList[]>(`/api/friend/friendlist`, fetcher);
   const { onlineList, onGameList } = useContext(SocketContext);
   let isState;
 
   return (
     <Scrollbars>
-      <MuiList>
-        {blockList?.map((blockUser: any) => {
+      <FriendsOnlineListContainer aria-label="mailbox folders">
+        {friends?.map((friend: any) => {
           return users?.map((user) => {
-            if (user?.userId === blockUser?.userId2) {
+            if (user?.userId === friend?.userId2) {
               isState = 0;
               onGameList?.map((onGameUser) => {
                 if (onGameUser.userId === user.userId) isState = 2;
@@ -33,9 +33,10 @@ const BlockList = () => {
                   if (onlineUser.userId === user.userId) isState = 1;
                 });
               }
+              if (isState === 0) return;
               return (
                 <Link to={`/users/${user.userId}`}>
-                  <ListItem className="block-list-wrapper" button>
+                  <ListItem className="friend-list-wrapper" button>
                     <UserAvatar
                       isState={
                         isState
@@ -47,16 +48,16 @@ const BlockList = () => {
                       src={user.profile}
                       alt="Avatar"
                     />
-                    <ListItemText className="list-text" primary={user.userId} />
+                    <ListItemText className="text" primary={user.userId} />
                   </ListItem>
                 </Link>
               );
             }
           });
         })}
-      </MuiList>
+      </FriendsOnlineListContainer>
     </Scrollbars>
   );
 };
 
-export default BlockList;
+export default FriendsOnlineList;

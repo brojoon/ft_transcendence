@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import loadable from '@loadable/component';
 import Scrollbars from 'react-custom-scrollbars';
 import getToken from '@utils/getToken';
+import SocketContext from '@store/socket';
 
 const LogIn = loadable(() => import('@pages/LogIn'));
 const TwoFactor = loadable(() => import('@pages/TwoFactor'));
@@ -12,17 +13,19 @@ const Admin = loadable(() => import('@pages/Admin'));
 
 const App = () => {
   return (
-    <Scrollbars>
-      <Switch>
-        <Redirect exact path="/" to="/home" />
-        <Route exact path="/login" component={LogIn} />
-        <Route exact path="/login/first-step" component={FirstStep} />
-        <Route exact path="/two-factor" component={TwoFactor} />
-        <Route exact path="/admin/:id" component={Admin} />
-        <Route exact path="/admin" component={Admin} />
-        <Route path="/:content" component={Content} />
-      </Switch>
-    </Scrollbars>
+    <SocketContext>
+      <Scrollbars>
+        <Switch>
+          <Redirect exact path="/" to="/home" />
+          <Route exact path="/login" component={LogIn} />
+          <Route exact path="/login/first-step" component={FirstStep} />
+          <Route exact path="/two-factor" component={TwoFactor} />
+          <Route exact path="/admin/:id" component={Admin} />
+          <Route exact path="/admin" component={Admin} />
+          <Route path="/:content" component={Content} />
+        </Switch>
+      </Scrollbars>
+    </SocketContext>
   );
 };
 

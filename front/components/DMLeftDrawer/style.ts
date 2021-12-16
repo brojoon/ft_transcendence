@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Avatar from '@mui/material/Avatar';
 
 export const DMLeftDrawerContainer = styled.div`
 	width: 300px;
@@ -72,13 +73,15 @@ export const DMListContainer = styled.div`
 		padding: 8px;
 	}
 
-	& .avatar {
-		border: 2px solid red;
-		margin-left: 0;
-	}
+
 
 	& .user-id {
 		margin-left: 12px;
 		color: white;
 	}
+`;
+
+export const UserAvatar = styled<{ isState: string }>(Avatar)`
+	border: ${(props) => props.isState};
+	margin-left: 0;
 `;

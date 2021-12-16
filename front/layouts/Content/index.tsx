@@ -1,3 +1,4 @@
+import React, { useEffect, useContext } from 'react';
 import LeftSideBar from '@components/LeftSideBar';
 import Achievements from '@pages/Achievements';
 import Channels from '@pages/Channels';
@@ -8,7 +9,6 @@ import Profile from '@pages/Profile';
 import Users from '@pages/Users';
 import { IUserStateList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import React, { useEffect } from 'react';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import useSWR from 'swr';
 import { Container } from './style';
@@ -16,6 +16,7 @@ import { disconnect } from 'process';
 import io from 'socket.io-client';
 import getSocket from '@utils/useSocket';
 import ProfileSetting from '@pages/ProfileSetting';
+import { SocketContext } from '@store/socket';
 
 const Content = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -23,7 +24,7 @@ const Content = () => {
   });
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
-  const { data: allUserStateList } = useSWR<IUserStateList[]>('/api/users/connect-all', fetcher);
+  const { onlineList, setOnlineList, onGameList, setOnGameList } = useContext(SocketContext);
 
   const history = useHistory();
 
@@ -31,9 +32,7 @@ const Content = () => {
     history.push('/login/first-step');
   }
 
-  console.log('allUserStateList', allUserStateList);
-
-  let socket = getSocket();
+  const socket = getSocket();
   useEffect(() => {
     if (DMList && ChannelList && myData) {
       socket.emit('login', {
@@ -46,15 +45,20 @@ const Content = () => {
   }, [socket, DMList, ChannelList, myData]);
 
   useEffect(() => {
-    socket?.on('onGameList', (onGameList: any) => {
-      console.log(onGameList);
+    socket?.on('onGameList', (data: any) => {
+      setOnGameList(data);
+      console.log(data);
       console.log('onGameList !!!');
     });
+    return () => {
+      socket.off('onGameList');
+    };
   }, [socket]);
 
   useEffect(() => {
-    socket?.on('onlineList', (onlineList: any) => {
-      console.log(onlineList);
+    socket?.on('onlineList', (data: any) => {
+      setOnlineList(data);
+      console.log(data);
       console.log('onlineList !!!');
     });
 

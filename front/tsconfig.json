@@ -17,6 +17,8 @@
       "@pages/*": ["pages/*"],
       "@utils/*": ["utils/*"],
       "@typings/*": ["typings/*"]
+      "@store/*": ["store/*"]
+
     }
   }
 }

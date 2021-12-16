@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useContext } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
 import { IChannelList2, IAllUser, IUser, IMemberList } from '@typings/db';
@@ -26,10 +26,12 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import config from '@utils/config';
+import { SocketContext } from '@store/socket';
+import getSocket from '@utils/useSocket';
 
 import AdminPageProfile from '@components/AdminPageProfile';
 import { TabPanel1 } from '@components/TabPanel';
-import { AdminPageContainer, AdminPageWrapper } from './style';
+import { AdminPageContainer, AdminPageWrapper, TabPanelAatar } from './style';
 
 const Admin = () => {
   const { id } = useParams<{ id: string }>();
@@ -74,8 +76,45 @@ const Admin = () => {
   const [userPrivilegeSelected, setUserPrivilegeSelected] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
+  const { onlineList, setOnlineList, onGameList, setOnGameList } = useContext(SocketContext);
+  const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
+  const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
+  let isState;
 
-  console.log('moderator', moderatorList);
+  let socket = getSocket();
+  useEffect(() => {
+    if (DMList && ChannelList && myData) {
+      socket.emit('login', {
+        userId: myData.userId,
+        username: myData.username,
+        Dms: DMList,
+        channels: ChannelList,
+      });
+    }
+  }, [socket, DMList, ChannelList, myData]);
+
+  useEffect(() => {
+    socket?.on('onGameList', (data: any) => {
+      setOnGameList(data);
+      console.log(data);
+      console.log('onGameList !!!');
+    });
+    return () => {
+      socket.off('onGameList');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('onlineList', (data: any) => {
+      setOnlineList(data);
+      console.log(data);
+      console.log('onlineList !!!');
+    });
+
+    return () => {
+      socket.off('onlineList');
+    };
+  }, [socket]);
 
   useEffect(() => {
     if (adminList !== undefined && moderatorList !== undefined && myData !== undefined) {
@@ -324,6 +363,15 @@ const Admin = () => {
             <Scrollbars>
               <List className="tab-panel-2-list" component="nav" aria-label="mailbox folders">
                 {moderatorList?.map((moderator) => {
+                  isState = 0;
+                  onGameList?.map((onGameUser) => {
+                    if (onGameUser.userId === moderator.userId) isState = 2;
+                  });
+                  if (isState === 0) {
+                    onlineList?.map((onlineUser) => {
+                      if (onlineUser.userId === moderator.userId) isState = 1;
+                    });
+                  }
                   return (
                     <ListItem
                       button
@@ -331,7 +379,17 @@ const Admin = () => {
                         onClickUnModerator(e, moderator.userId);
                       }}
                     >
-                      <Avatar className="tab-panel-2-avatar" src={moderator.profile} alt="Avatar" />
+                      <TabPanelAatar
+                        isState={
+                          isState
+                            ? isState === 1
+                              ? '2px solid #1ed14b'
+                              : '2px solid #FFD400'
+                            : '2px solid #d63638'
+                        }
+                        src={moderator.profile}
+                        alt="Avatar"
+                      />
                       <ListItemText className="tab-panel-2-text" primary={moderator.userId} />
                     </ListItem>
                   );
@@ -355,6 +413,15 @@ const Admin = () => {
                   });
 
                   if (visibility) {
+                    isState = 0;
+                    onGameList?.map((onGameUser) => {
+                      if (onGameUser.userId === user.userId) isState = 2;
+                    });
+                    if (isState === 0) {
+                      onlineList?.map((onlineUser) => {
+                        if (onlineUser.userId === user.userId) isState = 1;
+                      });
+                    }
                     return (
                       <ListItem
                         button
@@ -362,7 +429,17 @@ const Admin = () => {
                           onClickUserPrivilege(e, user.userId);
                         }}
                       >
-                        <Avatar className="tab-panel-3-avatar" src={user.profile} alt="Avatar" />
+                        <TabPanelAatar
+                          isState={
+                            isState
+                              ? isState === 1
+                                ? '2px solid #1ed14b'
+                                : '2px solid #FFD400'
+                              : '2px solid #d63638'
+                          }
+                          src={user.profile}
+                          alt="Avatar"
+                        />
                         <ListItemText className="tab-panel-3-text" primary={user.userId} />
                       </ListItem>
                     );
@@ -493,9 +570,7 @@ const Admin = () => {
                                               {member.mute ? (
                                                 <VoiceOverOffIcon className="mute-icon" />
                                               ) : (
-                                                
                                                 <RecordVoiceOverIcon />
-
                                               )}
                                             </ListItem>
                                           </>
@@ -535,7 +610,7 @@ const Admin = () => {
                         onClickUnBanUser(e, banedUser.userId);
                       }}
                     >
-                      <Avatar className="tab-panel-5-avatar" src={banedUser.profile} alt="Avatar" />
+                      <Avatar src={banedUser.profile} alt="Avatar" />
                       <ListItemText className="tab-panel-5-text" primary={banedUser.userId} />
                     </ListItem>
                   );

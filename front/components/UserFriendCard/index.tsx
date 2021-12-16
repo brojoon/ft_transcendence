@@ -1,5 +1,5 @@
-import React, { VFC } from 'react';
-import { UserFriendCardContainer } from './style';
+import React, { VFC, useContext } from 'react';
+import { UserFriendCardContainer, UserAvatar } from './style';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import { IUser } from '@typings/db';
@@ -9,6 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { Link } from 'react-router-dom';
+import { SocketContext } from '@store/socket';
 
 interface Props {
   userData: IUser | undefined | null;
@@ -20,7 +21,8 @@ const UserFriendCard: VFC<Props> = ({ userData }) => {
     fetcher,
   );
   const { data: allUser } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
-  console.log();
+  const { onlineList, onGameList } = useContext(SocketContext);
+  let isState;
   return (
     <UserFriendCardContainer>
       <div className="friends-header">Friends</div>
@@ -30,10 +32,29 @@ const UserFriendCard: VFC<Props> = ({ userData }) => {
             {userFriendList?.map((friend) => {
               return allUser?.map((user: IAllUser) => {
                 if (friend.userId2 === user.userId) {
+                  isState = 0;
+                  onGameList?.map((onGameUser) => {
+                    if (onGameUser.userId === user.userId) isState = 2;
+                  });
+                  if (isState === 0) {
+                    onlineList?.map((onlineUser) => {
+                      if (onlineUser.userId === user.userId) isState = 1;
+                    });
+                  }
                   return (
                     <Link to={`/users/${user?.userId}`}>
                       <ListItem className="list-item-wrapper" button>
-                        <Avatar className="avatar" src={user?.profile} alt="Avatar" />
+                        <UserAvatar
+                          isState={
+                            isState
+                              ? isState === 1
+                                ? '2px solid #1ed14b'
+                                : '2px solid #FFD400'
+                              : '2px solid #d63638'
+                          }
+                          src={user?.profile}
+                          alt="Avatar"
+                        />
                         <ListItemText className="user" primary={user?.userId} />
                       </ListItem>
                     </Link>

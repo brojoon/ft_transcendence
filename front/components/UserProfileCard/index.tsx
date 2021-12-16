@@ -1,4 +1,4 @@
-import React, { useCallback, VFC, useState } from 'react';
+import React, { useCallback, VFC, useState, useContext } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -20,7 +20,8 @@ import axios from 'axios';
 import BasicModal from '@components/BasicModal';
 import { FormatListBulleted } from '@mui/icons-material';
 import config from '@utils/config';
-import { UserProfileCardContainer } from './style';
+import { UserProfileCardContainer, UserAvatar } from './style';
+import { SocketContext } from '@store/socket';
 
 interface Props {
   UserData: IUser;
@@ -45,6 +46,17 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
   const [isRemoveFriendModal, setIsRemoveFriendModal] = useState(false);
   const [isBlockModal, setIsBlockModal] = useState(false);
   const [isRemoveBlockModal, setIsRemoveBlockModal] = useState(false);
+  const { onlineList, onGameList } = useContext(SocketContext);
+  let isState = 0;
+
+  onGameList?.map((onGameUser) => {
+    if (onGameUser.userId === UserData.userId) isState = 2;
+  });
+  if (isState === 0) {
+    onlineList?.map((onlineUser) => {
+      if (onlineUser.userId === UserData.userId) isState = 1;
+    });
+  }
 
   const removeAllModals = useCallback(() => {
     setIsAddFriendModal(false);
@@ -182,7 +194,17 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
 
       <Card className="card-container" variant="outlined">
         <CardContent className="card-content">
-          <Avatar className="card-avatar" src={UserData?.profile} alt="Avatar" />
+          <UserAvatar
+            isState={
+              isState
+                ? isState === 1
+                  ? '3px solid #1ed14b'
+                  : '3px solid #FFD400'
+                : '3px solid #d63638'
+            }
+            src={UserData?.profile}
+            alt="Avatar"
+          />
           <Typography variant="h5" component="div">
             {UserData?.userId}
           </Typography>

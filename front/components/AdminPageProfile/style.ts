@@ -1,9 +1,10 @@
 import styled from '@emotion/styled';
 import Button from '@mui/material/Button';
+
 export const AdminContainer = styled.div`
 	font-size: 20px;
 	width: 300px;
-	height: 360px;
+	height: 230px;
 	font-weight: 600;
 	background-color: #1e1e1e;
 	color: white;
@@ -15,23 +16,28 @@ export const AdminContainer = styled.div`
 	box-shadow:
 		0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%), 0 1px 5px 0 rgb(0 0 0 / 12%);
 
-	& .wrapper {
-		display: flex; 
+	& .header {
 		border-bottom: 1px solid #3a3a3a;
 	}
 
-	& .avatar {
-		border: 2px solid red;
-		width: 40px;
-		height: 40px;
+	& .header-wrapper {
+		display: flex;
+		align-items: center;
 		margin: 17px 15px 20px 20px;
 	}
 
-	& .user-name {
-		line-height: 70px;
+
+	& .avatar {
+		width: 50px;
+		height: 50px;
+		
 	}
 
-	& .game-history-contaiiner {
+	& .user-text {
+		margin-left: 14px;
+	}
+
+	& .game-history-container {
 		border-bottom: 1px solid #3a3a3a;
 	}
 
@@ -54,10 +60,10 @@ export const AdminContainer = styled.div`
 
 `;
 
-export const AdminBtn = styled(Button) <{ BtnColor: string }>`
-	color: ${(props) => props.BtnColor}; 
+export const AdminBtn = styled(Button) <{ btnColor: string }>`
+	color: ${(props) => props.btnColor}; 
 	font-weight: 600;
-	margin: 18px 0 0 40px;
+	margin: 0 0 0 40px;
 `;
 
 export const ButtonGroupContainer = styled.div`
@@ -65,7 +71,7 @@ export const ButtonGroupContainer = styled.div`
 	flex-direction: column;
 
 	& .group-wrapper {
-		borderBottom: 1px solid #3a3a3a;
+		border-bottom: 1px solid #3a3a3a;
 	}
 
 	& .profile-btn {

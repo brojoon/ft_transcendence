@@ -11,6 +11,7 @@ import UsersList from '@components/UsersList';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import FriendsList from '@components/FriendsList';
+import FriendsOnlineList from '@components/FriendsOnlineList';
 import { IFriendList, IAllUser } from '@typings/db';
 import BlockList from '@components/BlockList';
 import { SocialSliderContainer, TabPannelBox } from './style';
@@ -90,7 +91,9 @@ const SocialSlider = () => {
         index={value}
         onChangeIndex={handleChangeIndex}
       >
-        <TabPanel value={value} index={0}></TabPanel>
+        <TabPanel value={value} index={0}>
+          <FriendsOnlineList />
+        </TabPanel>
         <TabPanel value={value} index={1}>
           <FriendsList />
         </TabPanel>

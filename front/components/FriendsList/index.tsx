@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -9,26 +9,49 @@ import fetcher from '@utils/fetcher';
 import { IAllUser, IFriendList } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
-import { FriendListContainer } from './style';
+import { FriendListContainer, UserAvatar } from './style';
+import { SocketContext } from '@store/socket';
 
 const FriendsList = () => {
   const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
   const { data: friends } = useSWR<IFriendList[]>(`/api/friend/friendlist`, fetcher);
+  const { onlineList, onGameList } = useContext(SocketContext);
+  let isState;
 
   return (
     <Scrollbars>
       <FriendListContainer aria-label="mailbox folders">
         {friends?.map((friend: any) => {
           return users?.map((user) => {
-            if (user?.userId === friend?.userId2)
+            if (user?.userId === friend?.userId2) {
+              isState = 0;
+              onGameList?.map((onGameUser) => {
+                if (onGameUser.userId === user.userId) isState = 2;
+              });
+              if (isState === 0) {
+                onlineList?.map((onlineUser) => {
+                  if (onlineUser.userId === user.userId) isState = 1;
+                });
+              }
               return (
                 <Link to={`/users/${user.userId}`}>
                   <ListItem className="friend-list-wrapper" button>
-                    <Avatar className="avatar" src={user.profile} alt="Avatar" />
+                    <UserAvatar
+                      isState={
+                        isState
+                          ? isState === 1
+                            ? '2px solid #1ed14b'
+                            : '2px solid #FFD400'
+                          : '2px solid #d63638'
+                      }
+                      src={user.profile}
+                      alt="Avatar"
+                    />
                     <ListItemText className="text" primary={user.userId} />
                   </ListItem>
                 </Link>
               );
+            }
           });
         })}
       </FriendListContainer>

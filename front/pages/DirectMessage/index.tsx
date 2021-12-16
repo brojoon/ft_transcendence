@@ -59,14 +59,18 @@ const DirectMessage = () => {
           });
           return prevChatData;
         }, false);
-        axios.post(
-          `/api/dms/sendMessage/${userId}/0/0`,
-          {
-            message: chat,
-          },
-          config,
-        );
-        console.log(chat);
+        axios
+          .post(
+            `/api/dms/sendMessage/${userId}/0/0`,
+            {
+              message: chat,
+            },
+            config,
+          )
+          .then(() => {})
+          .catch(() => {
+            mutateChat();
+          });
         setChat('');
         setTimeout(() => {
           scrollbarRef.current?.scrollToBottom();
@@ -86,9 +90,11 @@ const DirectMessage = () => {
     console.log('dm왔다!');
     if (data.userId1 != myData?.userId) {
       mutateChat((prevchatData) => {
-        prevchatData?.unshift(data);
+        prevchatData?.[0].unshift(data);
+        console.log('prevchatData', prevchatData);
+
         return prevchatData;
-      }, true).then(() => {
+      }, false).then(() => {
         if (scrollbarRef.current) {
           if (
             scrollbarRef.current.getScrollHeight() <

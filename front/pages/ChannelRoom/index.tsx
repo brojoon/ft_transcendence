@@ -129,6 +129,7 @@ const ChannelRoom = () => {
           )
           .then(() => {})
           .catch((error) => {
+            mutateChat();
             console.log(error.data);
           });
         console.log(chat);
@@ -178,11 +179,13 @@ const ChannelRoom = () => {
 
   const onMessage = useCallback((data) => {
     console.log('ch왔다!');
+    console.log(data);
     if (data.userId != myData?.userId) {
       mutateChat((prevchatData) => {
-        prevchatData?.unshift(data);
+        prevchatData?.[0].unshift(data);
+        console.log('prevchatData', prevchatData);
         return prevchatData;
-      }, true).then(() => {
+      }, false).then(() => {
         if (scrollbarRef.current) {
           if (
             scrollbarRef.current.getScrollHeight() <

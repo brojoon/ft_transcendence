@@ -5,7 +5,7 @@ import axios from 'axios';
 import getSocket from '@utils/useSocket';
 import getCookie from '@utils/cookie';
 import 'regenerator-runtime';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -76,6 +76,7 @@ const option = {
 };
 
 const PingPong = (data: any) => {
+  const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
     dedupingInterval: 2000,
   });
@@ -102,6 +103,22 @@ const PingPong = (data: any) => {
   const [ballRandom, setBallRandom] = useState(0);
 
   const history = useHistory();
+
+  useEffect(() => {
+    if (myData) {
+      socket.emit('onGame', {
+        gameId: id,
+        player: myData.userId,
+      });
+    }
+    return () => {
+      if (myData)
+        socket.off('offGame', {
+          userId: myData.userId,
+          id: id,
+        });
+    };
+  }, [socket, myData]);
 
   useEffect(() => {
     if (opponent) {
