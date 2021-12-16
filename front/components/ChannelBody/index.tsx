@@ -52,8 +52,9 @@ const ChannelBody = () => {
       )
       .then(() => {
         mutateAllChannelList();
-        mutateMyChannelList();
-        history.push(`/channels/${channelId}`);
+        mutateMyChannelList().then(() => {
+          history.push(`/channels/${channelId}`);
+        });
       })
       .catch((e) => {
         mutateAllChannelList();

@@ -20,6 +20,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import List from '@mui/material/List';
 import Scrollbars from 'react-custom-scrollbars';
 import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
+import getSocket from '@utils/useSocket';
 import config from '@utils/config';
 const LeftSideBar = () => {
   const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -38,6 +39,8 @@ const LeftSideBar = () => {
     axios
       .get('/api/auth/logout', config)
       .then(() => {
+        console.log('disconnect');
+        getSocket().disconnect();
         history.push('/login');
       })
       .catch((error) => {

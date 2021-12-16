@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
 import Avatar from '@mui/material/Avatar';
@@ -10,7 +10,8 @@ import { Link, Redirect } from 'react-router-dom';
 import axios from 'axios';
 import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
 import ListItemButton from '@mui/material/ListItemButton';
-import { DMLeftDrawerContainer, DMListContainer } from './style';
+import { DMLeftDrawerContainer, DMListContainer, UserAvatar } from './style';
+import { SocketContext } from '@store/socket';
 
 let dmlist2: IDmList[] | undefined;
 
@@ -24,6 +25,9 @@ const DMLeftDrawerBar = () => {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [dmSearchInputValue, setDMSearchInputValue] = useState('');
+  const { onlineList, onGameList } = useContext(SocketContext);
+  let isState;
+
   const handleListItemClick = useCallback(
     (event: any, index: number) => {
       setSelectedIndex(index);
@@ -97,9 +101,28 @@ const DMLeftDrawerBar = () => {
                       >
                         {users?.map((user: any) => {
                           if (user.userId === dm.userId) {
+                            isState = 0;
+                            onGameList?.map((onGameUser) => {
+                              if (onGameUser.userId === user.userId) isState = 2;
+                            });
+                            if (isState === 0) {
+                              onlineList?.map((onlineUser) => {
+                                if (onlineUser.userId === user.userId) isState = 1;
+                              });
+                            }
                             return (
                               <>
-                                <Avatar className="avatar" src={user.profile} alt="Avatar" />
+                                <UserAvatar
+                                  isState={
+                                    isState
+                                      ? isState === 1
+                                        ? '2px solid #1ed14b'
+                                        : '2px solid #FFD400'
+                                      : '2px solid #d63638'
+                                  }
+                                  src={user.profile}
+                                  alt="Avatar"
+                                />
                                 <ListItemText className="user-id" primary={dm.userId} />
                               </>
                             );

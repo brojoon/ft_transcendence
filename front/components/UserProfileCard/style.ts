@@ -1,6 +1,7 @@
 
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 
 export const UserProfileCardContainer = styled(Box)`
 	width: 100%;
@@ -18,12 +19,6 @@ export const UserProfileCardContainer = styled(Box)`
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-	}
-
-	& .card-avatar {
-		width: 180px;
-		height: 180px;
-		margin-bottom: 20px;
 	}
 
 	& .card-user-text {
@@ -117,4 +112,11 @@ export const UserProfileCardContainer = styled(Box)`
 		font-weight: bold;
 		margin: 20px 0 0 0;
 	}
+`;
+
+export const UserAvatar = styled<{ isState: string }>(Avatar)`
+	border: ${(props) => props.isState};
+	width: 180px;
+	height: 180px;
+	margin-bottom: 20px;
 `;

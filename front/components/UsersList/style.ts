@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import List from '@mui/material/List';
+import Avatar from '@mui/material/Avatar';
 
 export const UsersListContainer = styled(List)`
 	height: 100%;
@@ -21,4 +22,10 @@ export const UsersListContainer = styled(List)`
 	& .user {
 		margin-left: 12px;
 	}
+`;
+
+export const UserAvatar = styled<{ isState: string }>(Avatar)`
+	border: ${(props) => props.isState};
+	width: 60px;
+	height: 60px;
 `;

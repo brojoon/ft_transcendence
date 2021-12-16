@@ -1,4 +1,4 @@
-import React, { VFC, useState, useCallback } from 'react';
+import React, { VFC, useState, useCallback, useContext } from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
@@ -18,7 +18,8 @@ import ChannelProfile from '@components/ChannelProfile';
 // import ChannelMember from '@components/ChannelMember';
 import VoiceOverOffIcon from '@mui/icons-material/VoiceOverOff';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-import { ModalBackground } from './style';
+import { ModalBackground, UserAvatar } from './style';
+import { SocketContext } from '@store/socket';
 
 interface Props {
   onClickSettingBtn: (e: any) => void;
@@ -61,9 +62,8 @@ const ChannelMemberDrawBar: VFC<Props> = ({
     `/api/channels/mutedMembers/${id}`,
     fetcher,
   );
-
-  console.log(MymuteMmbers);
-
+  const { onlineList, onGameList } = useContext(SocketContext);
+  let isState;
   const history = useHistory();
 
   if (memberList?.length === 0) {
@@ -81,13 +81,34 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                 if (member.auth === 2) {
                   return alluser?.map((user, index) => {
                     if (user.userId == member.userId) {
+                      isState = 0;
+                      {
+                        onGameList?.map((onGameUser) => {
+                          if (onGameUser.userId === user.userId) isState = 2;
+                        });
+                        if (isState === 0) {
+                          onlineList?.map((onlineUser) => {
+                            if (onlineUser.userId === user.userId) isState = 1;
+                          });
+                        }
+                      }
                       return (
                         <>
                           {selectedIndex === index && user.userId !== myData?.userId && (
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
-                            <Avatar className="member-avatar" src={user.profile} alt="Avatar" />
+                            <UserAvatar
+                              isState={
+                                isState
+                                  ? isState === 1
+                                    ? '2px solid #1ed14b'
+                                    : '2px solid #FFD400'
+                                  : '2px solid #d63638'
+                              }
+                              src={user.profile}
+                              alt="Avatar"
+                            />
                             <ListItemText className="member-text" primary={user.userId} />
                             <RecordVoiceOverIcon className="unmute-icon" />
                           </ListItem>
@@ -103,13 +124,34 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                 if (member.auth === 1) {
                   return alluser?.map((user, index) => {
                     if (user.userId == member.userId) {
+                      isState = 0;
+                      {
+                        onGameList?.map((onGameUser) => {
+                          if (onGameUser.userId === user.userId) isState = 2;
+                        });
+                        if (isState === 0) {
+                          onlineList?.map((onlineUser) => {
+                            if (onlineUser.userId === user.userId) isState = 1;
+                          });
+                        }
+                      }
                       return (
                         <>
                           {selectedIndex === index && user.userId !== myData?.userId && (
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
-                            <Avatar className="member-avatar" src={user.profile} alt="Avatar" />
+                            <UserAvatar
+                              isState={
+                                isState
+                                  ? isState === 1
+                                    ? '2px solid #1ed14b'
+                                    : '2px solid #FFD400'
+                                  : '2px solid #d63638'
+                              }
+                              src={user.profile}
+                              alt="Avatar"
+                            />
                             <ListItemText className="member-text" primary={user.userId} />
                             <RecordVoiceOverIcon className="unmute-icon" />
                           </ListItem>
@@ -125,8 +167,18 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                 if (member.auth === 0) {
                   return alluser?.map((user) => {
                     if (user.userId == member.userId) {
+                      isState = 0;
+                      {
+                        onGameList?.map((onGameUser) => {
+                          if (onGameUser.userId === user.userId) isState = 2;
+                        });
+                        if (isState === 0) {
+                          onlineList?.map((onlineUser) => {
+                            if (onlineUser.userId === user.userId) isState = 1;
+                          });
+                        }
+                      }
                       let isMute = false;
-
                       MymuteMmbers?.map((muteMember: IMemberList) => {
                         if (muteMember.userId === user.userId) {
                           if (muteMember.mute) isMute = true;
@@ -138,7 +190,17 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
-                            <Avatar className="member-avatar" src={user.profile} alt="Avatar" />
+                            <UserAvatar
+                              isState={
+                                isState
+                                  ? isState === 1
+                                    ? '2px solid #1ed14b'
+                                    : '2px solid #FFD400'
+                                  : '2px solid #d63638'
+                              }
+                              src={user.profile}
+                              alt="Avatar"
+                            />
                             <ListItemText className="member-text" primary={user.userId} />
                             {isMute ? (
                               <VoiceOverOffIcon className="mute-icon" />

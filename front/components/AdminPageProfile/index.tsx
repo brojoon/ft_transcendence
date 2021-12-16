@@ -98,31 +98,19 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   );
   return (
     <AdminContainer>
-      <div className="wrapper">
-        <div>
+      <div className="header">
+        <div className="header-wrapper">
           <Avatar className="avatar" src={user.profile} alt="Avatar" />
-        </div>
-        <div className="user-name">{user.userId}</div>
-        {userAuth !== 2 && (
-          <div>
+          <div className="user-text">{user.userId}</div>
+          {userAuth !== 2 && (
             <AdminBtn
               onClick={onClickAppointAdmin}
-              BtnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
+              btnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
               variant="text"
             >
               admin
             </AdminBtn>
-          </div>
-        )}
-      </div>
-      <div className="game-history-container">
-        <div className="game-history-wrapper">
-          <EmojiEventsIcon className="emoji" />
-          <div className="history-text">Win Count</div>
-        </div>
-        <div className="game-history-wrapper">
-          <EventBusyIcon className="emoji" />
-          <div className="history-text">Loss Count</div>
+          )}
         </div>
       </div>
       <ButtonGroupContainer>

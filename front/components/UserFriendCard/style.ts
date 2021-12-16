@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import Avatar from '@mui/material/Avatar';
+
 
 export const UserFriendCardContainer = styled.div`
 	display: flex;
@@ -23,10 +25,6 @@ export const UserFriendCardContainer = styled.div`
 		background-color: rgba(74,75,84,0.5);
 	}
 
-	& .avatar {
-		border: 2px solid red;
-	}
-
 	& .user {
 		margin-left: 12px;
 	}
@@ -37,5 +35,10 @@ export const UserFriendCardContainer = styled.div`
 		justify-content: center;
 		align-items: center;
 	}
+
+`;
+
+export const UserAvatar = styled<{ isState: string }>(Avatar)`
+	border: ${(props) => props.isState};
 
 `;

@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
 
 export const AdminPageContainer = styled.div`
 	background-color: white;
@@ -27,10 +28,6 @@ export const AdminPageWrapper = styled(Box)`
 
 	& .tab-panel-2-list {
 		width: 100%;
-	}
-
-	& .tab-panel-2-avatar {
-		border: 2px solid red;
 	}
 
 	& .tab-panel-2-text {
@@ -98,4 +95,9 @@ export const AdminPageWrapper = styled(Box)`
 
 
 
+`;
+
+
+export const TabPanelAatar = styled<{ isState: string }>(Avatar)`
+	border: ${(props) => props.isState};
 `;

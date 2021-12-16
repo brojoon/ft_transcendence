@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+
 
 export const MyProfileCardContainer = styled(Box)`
 	width: 100%;
@@ -20,9 +22,7 @@ export const MyProfileCardContainer = styled(Box)`
 	}
 
 	& .avatar {
-		width: 180px;
-		height: 180px;
-		margin-bottom: 20px;
+
 	}
 
 	& span {
@@ -49,4 +49,11 @@ export const MyProfileCardContainer = styled(Box)`
 		border-color: #597aff;
 		font-weight: bold;
 	}
+`;
+
+export const UserAvatar = styled<{ isState: string }>(Avatar)`
+	border: ${(props) => props.isState};
+	width: 180px;
+	height: 180px;
+	margin-bottom: 20px;
 `;

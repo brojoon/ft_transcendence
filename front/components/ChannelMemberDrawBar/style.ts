@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import Avatar from '@mui/material/Avatar';
 
 export const ModalBackground = styled.div`
 	position: absolute;
@@ -42,12 +43,6 @@ export const Container = styled.div`
 		color: gray;
 	}
 
-	& .member-avatar {
-		border: 2px solid red;
-		width: 38px;
-		height: 38px;
-	}
-
 	& .member-text {
 		margin-left: 12px;
 		color: white;
@@ -69,4 +64,10 @@ export const Container = styled.div`
 	& .mute-icon {
 		color: red;
 	}
+`;
+
+export const UserAvatar = styled<{ isState: string }>(Avatar)`
+	border: ${(props) => props.isState};
+	width: 45px;
+	height: 45px;
 `;

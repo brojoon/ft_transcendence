@@ -100,10 +100,11 @@ const Channel = () => {
             password: '',
             showPassword: false,
           });
-          mutateChannelList();
-          if (mychannelList) {
-            history.push(`/channels/${response.data}`);
-          }
+          mutateChannelList().then(() => {
+            if (mychannelList) {
+              history.push(`/channels/${response.data}`);
+            }
+          });
         })
         .catch((error) => {
           setCreateError(1);
@@ -130,7 +131,6 @@ const Channel = () => {
   return (
     <Container>
       <ChannelLeftDrawBar />
-
       <Switch>
         <Route exact path="/channels" render={() => <ChannelDiscover />} />
         <Route

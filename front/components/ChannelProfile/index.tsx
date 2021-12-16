@@ -122,12 +122,10 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   return (
     <Container>
       <div className="header">
-        <div>
+        <div className="header-wrapper">
           <Avatar className="avatar" src={user.profile} alt="Avatar" />
-        </div>
-        <div className="admin-btn-wrapper">{user.userId}</div>
-        {myAuth === 2 && userAuth !== 2 && (
-          <div>
+          <div className="user-text">{user.userId}</div>
+          {myAuth === 2 && userAuth !== 2 && (
             <AdminBtn
               onClick={onClickAppointAdmin}
               btnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
@@ -135,8 +133,8 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
             >
               admin
             </AdminBtn>
-          </div>
-        )}
+          )}
+        </div>
       </div>
       <MatchDataContainer>
         <div className="count-wrapper">
@@ -149,7 +147,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
         <div className="count-wrapper">
           <EventBusyIcon className="match-icon" />
           <div className="match-text">
-            <span>Loss Count</span>
+            <span>Lose Count</span>
             <span>{loseCount?.number}</span>
           </div>
         </div>
