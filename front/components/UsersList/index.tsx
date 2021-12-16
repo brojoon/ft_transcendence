@@ -23,9 +23,12 @@ const UserList: VFC<Props> = ({ userList }) => {
       <UsersListContainer>
         {userList?.map((user: IAllUser) => {
           isState = 0;
-          onGameList?.map((onGameUser) => {
-            if (onGameUser.userId === user.userId) isState = 2;
-          });
+
+          if (onGameList) {
+            console.log('userList, onddd0', onGameList);
+            console.log('userList, onddd1', onGameList[user?.userId]);
+            onGameList[user?.userId] === undefined ? null : (isState = 2);
+          }
           if (isState === 0) {
             onlineList?.map((onlineUser) => {
               if (onlineUser.userId === user.userId) isState = 1;

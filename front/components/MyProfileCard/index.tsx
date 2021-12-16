@@ -26,11 +26,11 @@ const MyProfileCard = () => {
   const getState = useCallback(() => {
     setIsState(0);
     onGameList?.map((onGameUser) => {
-      if (onGameUser.userId === myData.userId) setIsState(2);
+      if (onGameUser.userId === myData?.userId) setIsState(2);
     });
 
     onlineList?.map((onlineUser) => {
-      if (onlineUser.userId === myData.userId) setIsState(1);
+      if (onlineUser.userId === myData?.userId) setIsState(1);
     });
   }, [onGameList, onlineList, myData]);
 
