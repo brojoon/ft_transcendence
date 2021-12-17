@@ -18,9 +18,7 @@ import getSocket from '@utils/useSocket';
 import config from '@utils/config';
 
 const Channel = () => {
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: mychannelList, mutate: mutateChannelList } = useSWR<IChannelList[]>(
     '/api/channels/myChannelList',
     fetcher,

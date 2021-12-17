@@ -17,9 +17,7 @@ import { SocketContext } from '@store/socket';
 
 const MyProfileCard = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { onlineList, onGameList } = useContext(SocketContext);
   let isState = 0;
   if (onGameList && myData && onGameList[myData.userId]) isState = 2;

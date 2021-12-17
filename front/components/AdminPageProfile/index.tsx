@@ -18,9 +18,7 @@ interface Props {
 
 const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const { id } = useParams<{ id: string }>();
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: channelUserList, mutate: mutateChannelUserList } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id}`,
     fetcher,

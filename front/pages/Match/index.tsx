@@ -19,9 +19,7 @@ const option = {
 };
 
 const Match = () => {
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const [ismatching, setIsMatching] = useState(false);
 
   const history = useHistory();

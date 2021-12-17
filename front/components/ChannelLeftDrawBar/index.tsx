@@ -22,9 +22,7 @@ let channelList2: IChannelList[] | undefined;
 const ChannelLeftDrawBar = () => {
   const { data: users } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: channelList } = useSWR<IChannelList[]>('/api/channels/myChannelList', fetcher);
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [channelSearchInputValue, setChannelSearchInputValue] = useState('');
 

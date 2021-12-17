@@ -23,9 +23,7 @@ import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
 import getSocket from '@utils/useSocket';
 import config from '@utils/config';
 const LeftSideBar = () => {
-  const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
 

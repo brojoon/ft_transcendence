@@ -20,9 +20,7 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef, setSize, isReachi
   const { id } = useParams<{ id: string }>();
   const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: blockList } = useSWR<IBlockList[]>('/api/friend/blocklist', fetcher);
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
 
   const onScroll = useCallback(
     (values) => {

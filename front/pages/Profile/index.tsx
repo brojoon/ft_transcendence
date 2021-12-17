@@ -15,9 +15,7 @@ import { ProfileContainer } from './style';
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const { data: alluser } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   let UserData;
   if (id && id !== myData?.userId) {
     alluser?.map((user) => {

@@ -17,9 +17,7 @@ import { DirectMessageContainer } from './style';
 const DirectMessage = () => {
   const [chat, setChat] = useState('');
   const { id } = useParams<{ id: string }>();
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: userId } = useSWR<string>(`/api/dms/findDmUser/${id}`, fetcher);
   const { data: myDMList } = useSWR<IDmList[]>(`/api/dms/dmlist`, fetcher);
 

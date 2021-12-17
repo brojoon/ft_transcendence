@@ -14,9 +14,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { ProfileSettingContainer, EditNickNameWrapper, NickNameErrorContainer } from './style';
 
 const ProfileSetting = () => {
-  const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher);
   const [selectedFile, setSelectedFile] = useState<any>(null);
   const [changeNickname, setChangeNickname] = useState('');
   const [isNickError, setIsNickError] = useState(0);

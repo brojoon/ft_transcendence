@@ -15,9 +15,7 @@ import config from '@utils/config';
 import { FirstStepContainer, ErrorText } from './style';
 
 const FirstStep = () => {
-  const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher);
   const [isNicknameError, setIsNicknameError] = useState(0);
   const [nickname, setNickname] = useState(myData?.userId);
 

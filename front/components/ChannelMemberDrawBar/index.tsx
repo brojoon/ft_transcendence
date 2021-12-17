@@ -55,9 +55,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
   const { data: isOwner } = useSWR<boolean>(`/api/channels/checkOwner/${id}`, fetcher);
   const { data: isAdmin } = useSWR<boolean>(`/api/channels/checkAdmin/${id}`, fetcher);
 
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
     `/api/channels/mutedMembers/${id}`,
     fetcher,

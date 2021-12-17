@@ -19,9 +19,7 @@ interface Props {
 const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
   const { id } = useParams<{ id: string }>();
   const { data: dmList, mutate: mutateDmList } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
     `/api/channels/mutedMembers/${id}`,
     fetcher,

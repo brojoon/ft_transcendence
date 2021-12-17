@@ -39,9 +39,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
     `/api/friend/checkblock/${id}`,
     fetcher,
   );
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const history = useHistory();
   const [isAddFriendModal, setIsAddFriendModal] = useState(false);
   const [isRemoveFriendModal, setIsRemoveFriendModal] = useState(false);

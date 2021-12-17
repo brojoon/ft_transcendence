@@ -19,9 +19,7 @@ const DMLeftDrawerBar = () => {
   const { data: dmlist } = useSWR<IDmList[]>('/api/dms/dmlist', fetcher);
   const { data: users } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: blockList } = useSWR<IBlockList[]>(`/api/friend/blocklist`, fetcher);
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [dmSearchInputValue, setDMSearchInputValue] = useState('');

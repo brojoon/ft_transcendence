@@ -20,9 +20,7 @@ import { BrandingWatermarkTwoTone } from '@mui/icons-material';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: ChannelMembers, mutate: mutateChannelMembers } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id}`,
     fetcher,

@@ -80,9 +80,7 @@ const option = {
 
 const PingPong = (data: any) => {
   const { id } = useParams<{ id: string }>();
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: allUserList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const gameId = data.match.params.id;
   const [ball_x, setBallX] = useState(500);
