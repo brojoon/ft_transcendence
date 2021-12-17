@@ -1,10 +1,16 @@
 import styled from '@emotion/styled';
 
+export const BackgroundHeight = styled.div`
+	height: 100vh;
+	width: 100%;
+	background-color: #424242;
+`;
+
 export const PingPongContainer = styled.div`
 	background-color: #424242;
 	margin: 0;
 	width: 100%;
-	height: 100vh;
+	height: 100%;
 	color: white;
 
 	& .pixi-container {
@@ -129,5 +135,16 @@ export const GameInitBtnContainer = styled.div<{ width: string }>`
 
 	& .game-text {
 		margin-top: 5px;
+	}
+`;
+
+export const ScrollbarColor = styled.div`
+  ...style;
+  background-color: #787c7f;
+  width: 8px;
+  border-radius: 5px;
+
+	&:hover {
+		background-color: white;
 	}
 `;

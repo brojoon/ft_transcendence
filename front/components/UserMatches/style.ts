@@ -70,6 +70,12 @@ export const UserMatchesListWrapper = styled.div`
 		font-size: 34px;
 		color: #ec443b;
 	}
+
+	& .matches-text {
+		display: flex;
+		justify-content: space-between;
+		width: 63%;
+	}
 `;
 
 export const UserMatchesResult = styled.div<{ textColor: string }>`

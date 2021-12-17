@@ -75,11 +75,11 @@ const ChannelForm: VFC<Props> = ({
           onChange={onChangeName}
         />
       </ChannelFormContainer>
-      <InputCheck textColor={name.length > 20 ? '#dd2c00' : 'hsla(0,0%,100%,.7)'}>
+      <InputCheck textColor={name.length > 10 ? '#dd2c00' : 'hsla(0,0%,100%,.7)'}>
         <NameErrorText visible={channelNameError == 0 ? 'hidden' : 'visible'}>
-          Name length must be between 1 and 20
+          Name length must be between 1 and 10
         </NameErrorText>
-        <span className="name-length"> {name.length} / 20</span>
+        <span className="name-length"> {name.length} / 10</span>
       </InputCheck>
       <ChannelFormContainer variant="standard">
         <InputLabel className="input" id="demo-simple-select-standard-label">

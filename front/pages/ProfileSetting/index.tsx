@@ -44,7 +44,7 @@ const ProfileSetting = () => {
 
   const onKeyDownNickname = useCallback(
     (e) => {
-      if (changeNickname.length > 20) {
+      if (changeNickname.length > 10) {
         setIsNickError(2);
         return;
       }
@@ -172,7 +172,7 @@ const ProfileSetting = () => {
           {isNickError && isNickError === 1 ? (
             <span>This nickname is already in use by another user</span>
           ) : (
-            <span>Nickname length limit is 20 characters</span>
+            <span>Nickname length limit is 10 characters</span>
           )}
         </NickNameErrorContainer>
       </EditNickNameWrapper>

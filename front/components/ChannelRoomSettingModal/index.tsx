@@ -91,7 +91,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
 
   const onSubmitChannelCreate = useCallback(
     (e) => {
-      if (name.length > 20 || name.length < 1) {
+      if (name.length > 10 || name.length < 1) {
         setChannelNameError(1);
         return;
       }
@@ -99,7 +99,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
       console.log('visibility', visibility);
       if (
         visibility == '1' &&
-        (PasswordValues.password.length > 20 || PasswordValues.password.length < 1)
+        (PasswordValues.password.length > 10 || PasswordValues.password.length < 1)
       ) {
         console.log('hell');
         setChannelPasswordError(1);

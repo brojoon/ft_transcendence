@@ -160,7 +160,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       </MatchDataContainer>
       <ButtonGroupsContainer>
         <div className="profile-message-wrapper">
-          <Link to={`/users/${user.username}`}>
+          <Link to={`/users/${user.userId}`}>
             <Button className="profile-btn" variant="text">
               profile
             </Button>

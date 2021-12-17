@@ -31,11 +31,13 @@ const FirstStep = () => {
     [nickname],
   );
 
+  if (myData?.username) history.push('/home');
+
   const onSubmitNickname = useCallback(
     (e) => {
       e.preventDefault();
       if (nickname) {
-        if (nickname?.length < 1 || nickname?.length > 20) {
+        if (nickname?.length < 1 || nickname?.length > 10) {
           setIsNicknameError(1);
           return;
         } else {
@@ -45,8 +47,9 @@ const FirstStep = () => {
               if (res.data === false) {
                 setIsNicknameError(2);
               } else {
-                mutateMyData();
-                history.push('/home');
+                mutateMyData().then(() => {
+                  history.push('/home');
+                });
               }
             })
             .catch(() => {
@@ -86,7 +89,7 @@ const FirstStep = () => {
 
       <ErrorText visible={`${isNicknameError ? 'visible' : 'hidden'}`}>
         {isNicknameError === 0 ? 'hidden' : ''}
-        {isNicknameError ? isNicknameError === 1 && 'Nickname length must be between 1 and 20' : ''}
+        {isNicknameError ? isNicknameError === 1 && 'Nickname length must be between 1 and 10' : ''}
         {isNicknameError ? isNicknameError === 2 && 'This nickname is already using' : ''}
         {isNicknameError ? isNicknameError === 3 && 'Something is wrong with the server' : ''}
       </ErrorText>

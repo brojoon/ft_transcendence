@@ -43,9 +43,6 @@ const DMLeftDrawerBar = () => {
   if (dmSearchInputValue) {
     dmlist2 = dmlist?.filter((dm) => {
       const regex = new RegExp(dmSearchInputValue, 'gi');
-      console.log('regex', regex);
-      console.log(dm.username.match(regex));
-      console.log(dmSearchInputValue);
       return dm.username.match(regex);
     });
     console.log('dmlist', dmlist2);
@@ -83,7 +80,10 @@ const DMLeftDrawerBar = () => {
         </Link>
       </div>
       <DMListContainer>
-        <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>>
+        <Scrollbars
+          autoHide
+          renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
+        >
           <div>
             {getDMList(dmSearchInputValue)?.map((dm: IDmList, index: number) => {
               let isblock = false;

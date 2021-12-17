@@ -81,7 +81,10 @@ const ChannelLeftDrawBar = () => {
         </Link>
       </div>
       <div className="channel-list-wrapper">
-        <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
+        <Scrollbars
+          autoHide
+          renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
+        >
           {getChannelList(channelSearchInputValue)?.map((channel: any, index) => {
             let channelMode = '';
             if (channel.type === 0) {

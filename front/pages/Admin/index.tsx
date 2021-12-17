@@ -74,8 +74,7 @@ const Admin = () => {
   const [unBanUserSelected, setUnBanUserSelected] = useState('');
   const [isUserPrivilegeModal, setIsUserPrivilegeModal] = useState(false);
   const [userPrivilegeSelected, setUserPrivilegeSelected] = useState('');
-  const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
+
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
   const { onlineList, setOnlineList, onGameList, setOnGameList } = useContext(SocketContext);
@@ -147,37 +146,6 @@ const Admin = () => {
       setIsUserPrivilegeModal(true);
     },
     [isUserPrivilegeModal, userPrivilegeSelected],
-  );
-
-  const DeleteClickChannelBtn = useCallback(
-    (e) => {
-      e.preventDefault();
-      axios.get(`/api/channels/deleteChannel/${id}`, config).then(() => {
-        mutateChannelList();
-      });
-    },
-    [id],
-  );
-
-  const onClickChannelDeleteModal = useCallback(
-    (e) => {
-      e.preventDefault();
-      setIsChannelDeleteModal((prev) => !prev);
-    },
-    [isChannelDeleteModal],
-  );
-
-  const onClickMember = useCallback(
-    (e, index) => {
-      e.preventDefault();
-      if (selectedIndex === index) {
-        setSelectedIndex(-1);
-      } else {
-        console.log(index);
-        setSelectedIndex(index);
-      }
-    },
-    [selectedIndex],
   );
 
   const onCloseUserPrivilegeModal = useCallback(
@@ -310,14 +278,6 @@ const Admin = () => {
 
   return (
     <AdminPageContainer>
-      {isChannelDeleteModal && (
-        <BasicModal
-          NoBtn={onClickChannelDeleteModal}
-          YesBtn={DeleteClickChannelBtn}
-          headerContent="Delete Channel"
-          content="This will remove the channel as well as all of its messages"
-        />
-      )}
       {isUnModeratorModal && (
         <BasicModal
           headerContent="Remove from moderator list"
@@ -451,145 +411,9 @@ const Admin = () => {
                 {channelList?.map((channel) => {
                   return (
                     <Link to={`/admin/${channel.id}`}>
-                      <Accordion>
-                        <AccordionSummary
-                          expandIcon={<ExpandMoreIcon />}
-                          aria-controls="panel1a-content"
-                          id="panel1a-header"
-                        >
-                          <Typography>{channel.name}</Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                          <Typography>
-                            <div>
-                              <ListItem className="tab-panel-4-list-item">Owner</ListItem>
-                              {memberList &&
-                                memberList?.map((member) => {
-                                  if (member.auth === 2) {
-                                    return alluserList?.map((user, index) => {
-                                      if (user.userId == member.userId) {
-                                        return (
-                                          <>
-                                            {selectedIndex === index &&
-                                              user.userId !== myData?.userId && (
-                                                <AdminPageProfile
-                                                  user={user}
-                                                  setSelectedIndex={setSelectedIndex}
-                                                />
-                                              )}
-                                            <ListItem
-                                              button
-                                              onClick={(e) => onClickMember(e, index)}
-                                            >
-                                              <Avatar
-                                                className="tab-panel-4-avatar"
-                                                src={user.profile}
-                                                alt="Avatar"
-                                              />
-                                              <ListItemText
-                                                className="tab-pannel-4-text"
-                                                primary={user.userId}
-                                              />
-                                              <RecordVoiceOverIcon />
-                                            </ListItem>
-                                          </>
-                                        );
-                                      }
-                                    });
-                                  }
-                                })}
-                              <ListItem className="tab-panel-4-list-item">Admin</ListItem>
-                              {memberList &&
-                                memberList?.map((member) => {
-                                  if (member.auth === 1) {
-                                    return alluserList?.map((user, index) => {
-                                      if (user.userId == member.userId) {
-                                        return (
-                                          <>
-                                            {selectedIndex === index &&
-                                              user.userId !== myData?.userId && (
-                                                <AdminPageProfile
-                                                  user={user}
-                                                  setSelectedIndex={setSelectedIndex}
-                                                />
-                                              )}
-                                            <ListItem
-                                              button
-                                              onClick={(e) => onClickMember(e, index)}
-                                            >
-                                              <Avatar
-                                                className="tab-panel-4-avatar"
-                                                src={user.profile}
-                                                alt="Avatar"
-                                              />
-                                              <ListItemText
-                                                className="tab-pannel-4-text"
-                                                primary={user.userId}
-                                              />
-                                              <RecordVoiceOverIcon />
-                                            </ListItem>
-                                          </>
-                                        );
-                                      }
-                                    });
-                                  }
-                                })}
-                              <ListItem className="tab-panel-4-list-item">Users</ListItem>
-                              {memberList &&
-                                memberList?.map((member) => {
-                                  if (member.auth === 0) {
-                                    return alluserList?.map((user, index) => {
-                                      if (user.userId == member.userId) {
-                                        let isMute = false;
-
-                                        return (
-                                          <>
-                                            {selectedIndex === index &&
-                                              user.userId !== myData?.userId && (
-                                                <AdminPageProfile
-                                                  user={user}
-                                                  setSelectedIndex={setSelectedIndex}
-                                                />
-                                              )}
-                                            <ListItem
-                                              button
-                                              onClick={(e) => onClickMember(e, index)}
-                                            >
-                                              <Avatar
-                                                className="tab-panel-4-avatar"
-                                                src={user.profile}
-                                                alt="Avatar"
-                                              />
-                                              <ListItemText
-                                                className="tab-pannel-4-text"
-                                                primary={user.userId}
-                                              />
-                                              {member.mute ? (
-                                                <VoiceOverOffIcon className="mute-icon" />
-                                              ) : (
-                                                <RecordVoiceOverIcon />
-                                              )}
-                                            </ListItem>
-                                          </>
-                                        );
-                                      }
-                                    });
-                                  }
-                                })}
-                            </div>
-                            <div className="delete-channel-wrapper">
-                              <Button
-                                className="delete-btn"
-                                variant="contained"
-                                startIcon={<DeleteIcon />}
-                                onClick={onClickChannelDeleteModal}
-                              >
-                                DELETE CHANNEL
-                              </Button>
-                            </div>
-                          </Typography>
-                        </AccordionDetails>
-                      </Accordion>
+                      <ListItem button>
+                        <Typography>{channel.name}</Typography>
+                      </ListItem>
                     </Link>
                   );
                 })}

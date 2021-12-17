@@ -30,7 +30,7 @@ const UserList: VFC<Props> = ({ userList }) => {
             });
           }
           return (
-            <Link to={`/users/${user.username}`}>
+            <Link to={`/users/${user.userId}`}>
               <ListItem className="list-item-wrapper" button>
                 <UserAvatar
                   isState={`${
