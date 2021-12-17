@@ -233,7 +233,7 @@ export class GameService {
   }
 
   async numOfLose(userId:string){
-    const numberOfLose =  await this.historyRepository.count({winner:userId});
+    const numberOfLose =  await this.historyRepository.count({loser:userId});
     const user = await this.usersRepository.findOne({userId});
     const star = user.maxStarOfLose;
     if (Math.floor(numberOfLose / 5) > star && (numberOfLose / 5 <= 5)){
@@ -242,12 +242,11 @@ export class GameService {
       return {number:numberOfLose, star:Math.floor(numberOfLose / 5), time:now};
     }
     return {number:numberOfLose, star, time:user.maxStarOfLoseTime}
-    
   }
 
   async numOfFight(userId:string){
     const numberOfWin =  await this.historyRepository.count({winner:userId});
-    const numberOfLose =  await this.historyRepository.count({winner:userId});
+    const numberOfLose =  await this.historyRepository.count({loser:userId});
     const numberOfFight =  numberOfWin + numberOfLose;
     const user = await this.usersRepository.findOne({userId});
     const star = user.maxStarOfFight;
@@ -271,6 +270,10 @@ export class GameService {
     return ret;
   }
 
+  private async getUsernameByUserid(userId:string):Promise<string>{
+    const obj = await this.usersRepository.findOne({userId});
+    return obj.username;
+  }
 
   async userGameHistory(userId:string, targetId:string){
     if (!await this.usersRepository.findOne({userId}))
@@ -294,13 +297,13 @@ export class GameService {
       //ret[i].targetId = targetId;
       if (arr[i].winner == targetId){
         ret[i].isWinner = true;
-        ret[i].opponent = arr[i].loser;
+        ret[i].opponent = await this.getUsernameByUserid(arr[i].loser);
         ret[i].myPoint = arr[i].user1Point > arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
         ret[i].opponentPoint = arr[i].user1Point < arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
       }
       else{
         ret[i].isWinner = false;
-        ret[i].opponent = arr[i].winner;
+        ret[i].opponent = await this.getUsernameByUserid(arr[i].winner);
         ret[i].myPoint = arr[i].user1Point < arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
         ret[i].opponentPoint = arr[i].user1Point > arr[i].user2Point ? arr[i].user1Point : arr[i].user2Point;
       }
