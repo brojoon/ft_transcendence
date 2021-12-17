@@ -4,6 +4,7 @@ import loadable from '@loadable/component';
 import Scrollbars from 'react-custom-scrollbars';
 import getToken from '@utils/getToken';
 import SocketContext from '@store/socket';
+import { ScrollbarColor } from './style';
 
 const LogIn = loadable(() => import('@pages/LogIn'));
 const TwoFactor = loadable(() => import('@pages/TwoFactor'));
@@ -14,7 +15,10 @@ const Admin = loadable(() => import('@pages/Admin'));
 const App = () => {
   return (
     <SocketContext>
-      <Scrollbars>
+      <Scrollbars
+        autoHide
+        renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
+      >
         <Switch>
           <Redirect exact path="/" to="/home" />
           <Route exact path="/login" component={LogIn} />

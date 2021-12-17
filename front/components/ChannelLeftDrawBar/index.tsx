@@ -15,7 +15,7 @@ import AddIcon from '@mui/icons-material/Add';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import FlareIcon from '@mui/icons-material/Flare';
-import { ChannelLeftDrawBarContainer } from './style';
+import { ChannelLeftDrawBarContainer, ScrollbarColor } from './style';
 
 let channelList2: IChannelList[] | undefined;
 
@@ -81,7 +81,7 @@ const ChannelLeftDrawBar = () => {
         </Link>
       </div>
       <div className="channel-list-wrapper">
-        <Scrollbars>
+        <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
           {getChannelList(channelSearchInputValue)?.map((channel: any, index) => {
             let channelMode = '';
             if (channel.type === 0) {

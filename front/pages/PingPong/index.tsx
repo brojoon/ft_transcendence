@@ -82,8 +82,8 @@ const PingPong = (data: any) => {
   });
   const { data: allUserList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const gameId = data.match.params.id;
-  const [ball_x, setBallX] = useState(495);
-  const [ball_y, setBallY] = useState(245);
+  const [ball_x, setBallX] = useState(500);
+  const [ball_y, setBallY] = useState(250);
   const [player_one_y, setPlayOneY] = useState(200);
   const [player_two_y, setPlayTwoY] = useState(200);
   const [player1Ready, setPlay1Ready] = useState(0);
@@ -95,6 +95,7 @@ const PingPong = (data: any) => {
   const [isGameStart, setIsGameStart] = useState(false);
 
   const [opponent, setOpponent] = useState('');
+  const [opponentName, setOpponentName] = useState('');
   const [opponentProfile, setOpponentProfile] = useState('');
 
   const [gameSpeed, setGameSpeed] = useState(2);
@@ -112,11 +113,13 @@ const PingPong = (data: any) => {
       });
     }
     return () => {
-      if (myData)
-        socket.off('offGame', {
-          userId: myData.userId,
-          id: id,
+      console.log('offGame');
+      if (myData) {
+        socket.emit('offGame', {
+          gameId: id,
+          player: myData.userId,
         });
+      }
     };
   }, [socket, myData]);
 
@@ -125,6 +128,7 @@ const PingPong = (data: any) => {
       allUserList?.map((user) => {
         if (user.userId === opponent) {
           setOpponentProfile(user.profile);
+          setOpponentName(user.username);
         }
       });
     }
@@ -452,7 +456,7 @@ const PingPong = (data: any) => {
               />
             </div>
             <div className="player-one-text">
-              {player === 'playerOne' ? myData?.userId + '(나)' : opponent + '(상대편)'}
+              {player === 'playerOne' ? myData?.username + ' (나)' : opponentName + ' (상대편)'}
             </div>
             <div>
               {player === 'playerOne' ? (
@@ -488,7 +492,7 @@ const PingPong = (data: any) => {
               />
             </div>
             <div className="player-two-text">
-              {player === 'playerTwo' ? myData?.userId + '(나)' : opponent + '(상대편)'}
+              {player === 'playerTwo' ? myData?.username + ' (나)' : opponentName + ' (상대편)'}
             </div>
             <div>
               {player === 'playerTwo' ? (
@@ -518,7 +522,7 @@ const PingPong = (data: any) => {
       <UserPointContainer>
         {isGameStart && (
           <div className="point-wrapper">
-            {(player === 'playerOne' ? myData?.userId : opponent) + ' Point'}
+            {(player === 'playerOne' ? myData?.username : opponentName) + ' Point'}
             <EventNoteIcon className="point-icon" /> {': [ ' + user1Point + ' ] '}
           </div>
         )}
@@ -539,7 +543,7 @@ const PingPong = (data: any) => {
         </GameInitBtnContainer>
         {isGameStart && (
           <div className="point-wrapper">
-            {(player === 'playerTwo' ? myData?.userId : opponent) + ' Point'}
+            {(player === 'playerTwo' ? myData?.username : opponentName) + ' Point'}
             <EventNoteIcon className="point-icon" /> {': [ ' + user2Point + ' ] '}
           </div>
         )}

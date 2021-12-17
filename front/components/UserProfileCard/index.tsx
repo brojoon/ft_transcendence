@@ -48,12 +48,9 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
   const [isRemoveBlockModal, setIsRemoveBlockModal] = useState(false);
   const { onlineList, onGameList } = useContext(SocketContext);
   let isState = 0;
-
-  onGameList?.map((onGameUser) => {
-    if (onGameUser.userId === UserData.userId) isState = 2;
-  });
-  if (isState === 0) {
-    onlineList?.map((onlineUser) => {
+  if (onGameList && onGameList[UserData?.userId]) isState = 2;
+  if (isState === 0 && onlineList && UserData) {
+    onlineList.map((onlineUser) => {
       if (onlineUser.userId === UserData.userId) isState = 1;
     });
   }
@@ -195,20 +192,20 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       <Card className="card-container" variant="outlined">
         <CardContent className="card-content">
           <UserAvatar
-            isState={
+            isState={`${
               isState
                 ? isState === 1
-                  ? '3px solid #1ed14b'
-                  : '3px solid #FFD400'
-                : '3px solid #d63638'
-            }
+                  ? '2px solid #1ed14b'
+                  : '2px solid #FFD400'
+                : '2px solid #d63638'
+            }`}
             src={UserData?.profile}
             alt="Avatar"
           />
           <Typography variant="h5" component="div">
-            {UserData?.userId}
+            {UserData?.username}
           </Typography>
-          <span className="card-user-text">{UserData?.username}</span>
+          {/* <span className="card-user-text">{UserData?.username}</span> */}
         </CardContent>
         <CardActions className="card-action">
           {isBlock ? (

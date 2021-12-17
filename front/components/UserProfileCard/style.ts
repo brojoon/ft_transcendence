@@ -114,7 +114,7 @@ export const UserProfileCardContainer = styled(Box)`
 	}
 `;
 
-export const UserAvatar = styled<{ isState: string }>(Avatar)`
+export const UserAvatar = styled(Avatar) <{ isState: string }>`
 	border: ${(props) => props.isState};
 	width: 180px;
 	height: 180px;

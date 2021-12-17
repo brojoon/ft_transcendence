@@ -98,6 +98,6 @@ export const AdminPageWrapper = styled(Box)`
 `;
 
 
-export const TabPanelAatar = styled<{ isState: string }>(Avatar)`
+export const TabPanelAatar = styled(Avatar) <{ isState: string }>`
 	border: ${(props) => props.isState};
 `;

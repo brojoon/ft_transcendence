@@ -21,37 +21,26 @@ const MyProfileCard = () => {
     dedupingInterval: 2000,
   });
   const { onlineList, onGameList } = useContext(SocketContext);
-  const [isState, setIsState] = useState(0);
-
-  const getState = useCallback(() => {
-    setIsState(0);
-    onGameList?.map((onGameUser) => {
-      if (onGameUser.userId === myData?.userId) setIsState(2);
+  let isState = 0;
+  if (onGameList && myData && onGameList[myData.userId]) isState = 2;
+  if (isState === 0 && onlineList && myData) {
+    onlineList.map((onlineUser) => {
+      if (onlineUser.userId === myData.userId) isState = 1;
     });
-
-    onlineList?.map((onlineUser) => {
-      if (onlineUser.userId === myData?.userId) setIsState(1);
-    });
-  }, [onGameList, onlineList, myData]);
-
-  useEffect(() => {
-    if (myData && onGameList !== undefined && onlineList !== undefined) {
-      getState();
-    }
-  }, [myData, onGameList, onlineList]);
+  }
 
   return (
     <MyProfileCardContainer>
       <Card className="card" variant="outlined">
         <CardContent className="card-content">
           <UserAvatar
-            isState={
+            isState={`${
               isState
                 ? isState === 1
                   ? '2px solid #1ed14b'
                   : '2px solid #FFD400'
                 : '2px solid #d63638'
-            }
+            }`}
             src={myData?.profile}
             alt="Avatar"
           />

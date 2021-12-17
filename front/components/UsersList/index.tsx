@@ -8,7 +8,7 @@ import fetcher from '@utils/fetcher';
 import { IAllUser } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
-import { UsersListContainer, UserAvatar } from './style';
+import { UsersListContainer, UserAvatar, ScrollbarColor } from './style';
 import { SocketContext } from '@store/socket';
 
 interface Props {
@@ -19,36 +19,31 @@ const UserList: VFC<Props> = ({ userList }) => {
   const { onlineList, onGameList } = useContext(SocketContext);
   let isState;
   return (
-    <Scrollbars>
+    <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
       <UsersListContainer>
         {userList?.map((user: IAllUser) => {
           isState = 0;
-
-          if (onGameList) {
-            console.log('userList, onddd0', onGameList);
-            console.log('userList, onddd1', onGameList[user?.userId]);
-            onGameList[user?.userId] === undefined ? null : (isState = 2);
-          }
+          if (onGameList && onGameList[user.userId]) isState = 2;
           if (isState === 0) {
             onlineList?.map((onlineUser) => {
               if (onlineUser.userId === user.userId) isState = 1;
             });
           }
           return (
-            <Link to={`/users/${user.userId}`}>
+            <Link to={`/users/${user.username}`}>
               <ListItem className="list-item-wrapper" button>
                 <UserAvatar
-                  isState={
+                  isState={`${
                     isState
                       ? isState === 1
                         ? '2px solid #1ed14b'
                         : '2px solid #FFD400'
                       : '2px solid #d63638'
-                  }
+                  }`}
                   src={user.profile}
                   alt="Avatar"
                 />
-                <ListItemText className="user" primary={user.userId} />
+                <ListItemText className="user" primary={user.username} />
               </ListItem>
             </Link>
           );

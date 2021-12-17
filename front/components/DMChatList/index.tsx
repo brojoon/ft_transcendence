@@ -5,7 +5,7 @@ import fetcher from '@utils/fetcher';
 import Scrollbars from 'react-custom-scrollbars';
 import useSWR from 'swr';
 import Button from '@mui/material/Button';
-import { DMChatListContainer, StickyHeader } from './style';
+import { DMChatListContainer, StickyHeader, ScrollbarColor } from './style';
 import { makeSectionDM } from '@utils/makeSection';
 import { Link } from 'react-router-dom';
 
@@ -44,11 +44,16 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
   );
 
   const chatSections = makeSectionDM(chatData ? chatData.flat().reverse() : []);
+  let username;
   console.log(chatSections);
 
   return (
     <DMChatListContainer>
-      <Scrollbars autoHide ref={scrollbarRef} onScrollFrame={onScroll}>
+      <Scrollbars
+        ref={scrollbarRef}
+        onScrollFrame={onScroll}
+        renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
+      >
         {Object.entries(chatSections).map(([date, chats]) => {
           return (
             <>
@@ -56,25 +61,28 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
                 <button>{date}</button>
               </StickyHeader>
               {chats?.map((chat) => {
+                username = '';
                 return (
                   <>
                     <div className="chatList-wrapper">
                       <div className="chatList-profile-wrapper">
                         {alluser?.map((user) => {
-                          if (user.userId === chat.userId1)
+                          if (user.userId === chat.userId1) {
+                            username = user.username;
                             return <Avatar className="avatar" src={user.profile} alt="Avatar" />;
+                          }
                         })}
                       </div>
                       {chat.match === 0 && (
                         <div>
-                          <div>{chat.userId1}</div>
+                          <div>{username}</div>
                           <p className="chat">{chat.message}</p>
                         </div>
                       )}
                       {chat.match === 1 && (
                         <div className="challenge-join-wrapper">
                           <div>
-                            <div>{chat.userId1}</div>
+                            <div>{username}</div>
                             <p className="chat">{chat.message}</p>
                           </div>
                           <Link to={`/game/ping-pong/${chat.historyId}`}>
@@ -87,7 +95,7 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
                       {chat.match === 2 && (
                         <div className="challenge-join-wrapper">
                           <div>
-                            <div>{chat.userId1}</div>
+                            <div>{username}</div>
                             <p className="chat">{chat.message}</p>
                           </div>
                           <Link to={`/game/history/${chat.historyId}`}>

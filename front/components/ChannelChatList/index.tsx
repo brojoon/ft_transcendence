@@ -6,7 +6,7 @@ import React, { RefObject, VFC, useCallback } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useParams } from 'react-router';
 import useSWR from 'swr';
-import { ChannelChatListContainer, StickyHeader } from './style';
+import { ChannelChatListContainer, StickyHeader, ScrollbarColor } from './style';
 import { makeSectionChannel } from '@utils/makeSection';
 
 interface Props {
@@ -45,9 +45,15 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef, setSize, isReachi
   );
 
   const chatSections = makeSectionChannel(chatData ? chatData.flat().reverse() : []);
+  let username = '';
+
   return (
     <ChannelChatListContainer>
-      <Scrollbars autoHide ref={scrollbarRef} onScrollFrame={onScroll}>
+      <Scrollbars
+        ref={scrollbarRef}
+        onScrollFrame={onScroll}
+        renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
+      >
         {Object.entries(chatSections).map(([date, chats]) => {
           return (
             <>
@@ -64,14 +70,16 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef, setSize, isReachi
                     <div className="chat-container">
                       <div className="profile-container ">
                         {alluser?.map((user) => {
-                          if (user.userId === chat.userId)
+                          if (user.userId === chat.userId) {
+                            username = user.username;
                             return (
                               <Avatar className="chat-avatar" src={user.profile} alt="Avatar" />
                             );
+                          }
                         })}
                       </div>
                       <div>
-                        <div>{chat.userId}</div>
+                        <div>{username}</div>
                         <p className="chat-text">{chat.message}</p>
                       </div>
                     </div>

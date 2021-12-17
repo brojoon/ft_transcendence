@@ -27,9 +27,9 @@ export default function Users() {
     searchedUserList = allUserList?.filter((user) => {
       const regex = new RegExp(userSearchInputValue, 'gi');
       console.log('regex', regex);
-      console.log(user.userId.match(regex));
+      console.log(user.username.match(regex));
       console.log(userSearchInputValue);
-      return user.userId.match(regex);
+      return user.username.match(regex);
     });
     console.log('searchedUserList', searchedUserList);
   }

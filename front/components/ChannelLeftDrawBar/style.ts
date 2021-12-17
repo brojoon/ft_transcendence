@@ -98,3 +98,14 @@ export const ChannelLeftDrawBarContainer = styled.div`
 		background-color: #666666;
 	}
 `;
+
+export const ScrollbarColor = styled.div`
+  ...style;
+  background-color: #787c7f;
+  width: 8px;
+  border-radius: 5px;
+
+	&:hover {
+		background-color: white;
+	}
+`;
