@@ -32,8 +32,14 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
     fetcher,
   );
 
-  const { data: winCount } = useSWR<IAchievement>(`/api/game/achievement/numOfWin`, fetcher);
-  const { data: loseCount } = useSWR<IAchievement>(`/api/game/achievement/numOfLose`, fetcher);
+  const { data: winCount } = useSWR<IAchievement>(
+    `/api/game/achievement/numOfWin/${user.userId}`,
+    fetcher,
+  );
+  const { data: loseCount } = useSWR<IAchievement>(
+    `/api/game/achievement/numOfLose/${user.userId}`,
+    fetcher,
+  );
 
   let isBlcok = false;
 
@@ -124,7 +130,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       <div className="header">
         <div className="header-wrapper">
           <Avatar className="avatar" src={user.profile} alt="Avatar" />
-          <div className="user-text">{user.userId}</div>
+          <div className="user-text">{user.username}</div>
           {myAuth === 2 && userAuth !== 2 && (
             <AdminBtn
               onClick={onClickAppointAdmin}
@@ -141,7 +147,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
           <EmojiEventsIcon className="match-icon" />
           <div className="match-text">
             <span>Win Count</span>
-            <span>{loseCount?.number}</span>
+            <span>{winCount?.number}</span>
           </div>
         </div>
         <div className="count-wrapper">
@@ -154,7 +160,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       </MatchDataContainer>
       <ButtonGroupsContainer>
         <div className="profile-message-wrapper">
-          <Link to={`/users/${user.userId}`}>
+          <Link to={`/users/${user.username}`}>
             <Button className="profile-btn" variant="text">
               profile
             </Button>

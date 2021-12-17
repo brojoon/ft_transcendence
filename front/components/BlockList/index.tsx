@@ -9,7 +9,7 @@ import fetcher from '@utils/fetcher';
 import { IAllUser, IFriendList, IBlockList } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
-import { MuiList, UserAvatar } from './style';
+import { MuiList, UserAvatar, ScrollbarColor } from './style';
 import { SocketContext } from '@store/socket';
 
 const BlockList = () => {
@@ -19,35 +19,33 @@ const BlockList = () => {
   let isState;
 
   return (
-    <Scrollbars>
+    <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
       <MuiList>
         {blockList?.map((blockUser: any) => {
           return users?.map((user) => {
             if (user?.userId === blockUser?.userId2) {
               isState = 0;
-              onGameList?.map((onGameUser) => {
-                if (onGameUser.userId === user.userId) isState = 2;
-              });
+              if (onGameList && onGameList[user.userId]) isState = 2;
               if (isState === 0) {
                 onlineList?.map((onlineUser) => {
                   if (onlineUser.userId === user.userId) isState = 1;
                 });
               }
               return (
-                <Link to={`/users/${user.userId}`}>
+                <Link to={`/users/${user.username}`}>
                   <ListItem className="block-list-wrapper" button>
                     <UserAvatar
-                      isState={
+                      isState={`${
                         isState
                           ? isState === 1
                             ? '2px solid #1ed14b'
                             : '2px solid #FFD400'
                           : '2px solid #d63638'
-                      }
+                      }`}
                       src={user.profile}
                       alt="Avatar"
                     />
-                    <ListItemText className="list-text" primary={user.userId} />
+                    <ListItemText className="list-text" primary={user.username} />
                   </ListItem>
                 </Link>
               );

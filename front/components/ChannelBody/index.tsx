@@ -16,7 +16,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import axios from 'axios';
 import ProtectedRoomModal from '@components/ProtectedRoomModal';
 import config from '@utils/config';
-import { ChannelBodyContainer } from './style';
+import { ChannelBodyContainer, ScrollbarColor } from './style';
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -78,7 +78,7 @@ const ChannelBody = () => {
   );
   return (
     <ChannelBodyContainer sx={{ flexGrow: 1 }}>
-      <Scrollbars>
+      <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
         <Grid className="grid-container" container spacing={3}>
           {channelPasswordModal ? (
             <ProtectedRoomModal

@@ -24,8 +24,19 @@ export const UsersListContainer = styled(List)`
 	}
 `;
 
-export const UserAvatar = styled<{ isState: string }>(Avatar)`
+export const UserAvatar = styled(Avatar) <{ isState: string }>`
 	border: ${(props) => props.isState};
 	width: 60px;
 	height: 60px;
+`;
+
+export const ScrollbarColor = styled.div`
+  ...style;
+  background-color: #787c7f;
+  width: 8px;
+  border-radius: 5px;
+
+	&:hover {
+		background-color: white;
+	}
 `;

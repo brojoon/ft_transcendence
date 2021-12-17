@@ -76,12 +76,13 @@ const Admin = () => {
   const [userPrivilegeSelected, setUserPrivilegeSelected] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [isChannelDeleteModal, setIsChannelDeleteModal] = useState(false);
-  const { onlineList, setOnlineList, onGameList, setOnGameList } = useContext(SocketContext);
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
+  const { onlineList, setOnlineList, onGameList, setOnGameList } = useContext(SocketContext);
   let isState;
 
-  let socket = getSocket();
+  const socket = getSocket();
+
   useEffect(() => {
     if (DMList && ChannelList && myData) {
       socket.emit('login', {
@@ -364,9 +365,7 @@ const Admin = () => {
               <List className="tab-panel-2-list" component="nav" aria-label="mailbox folders">
                 {moderatorList?.map((moderator) => {
                   isState = 0;
-                  onGameList?.map((onGameUser) => {
-                    if (onGameUser.userId === moderator.userId) isState = 2;
-                  });
+                  if (onGameList && onGameList[moderator.userId]) isState = 2;
                   if (isState === 0) {
                     onlineList?.map((onlineUser) => {
                       if (onlineUser.userId === moderator.userId) isState = 1;
@@ -380,13 +379,13 @@ const Admin = () => {
                       }}
                     >
                       <TabPanelAatar
-                        isState={
+                        isState={`${
                           isState
                             ? isState === 1
                               ? '2px solid #1ed14b'
                               : '2px solid #FFD400'
                             : '2px solid #d63638'
-                        }
+                        }`}
                         src={moderator.profile}
                         alt="Avatar"
                       />
@@ -414,9 +413,7 @@ const Admin = () => {
 
                   if (visibility) {
                     isState = 0;
-                    onGameList?.map((onGameUser) => {
-                      if (onGameUser.userId === user.userId) isState = 2;
-                    });
+                    if (onGameList && onGameList[user.userId]) isState = 2;
                     if (isState === 0) {
                       onlineList?.map((onlineUser) => {
                         if (onlineUser.userId === user.userId) isState = 1;
@@ -430,13 +427,13 @@ const Admin = () => {
                         }}
                       >
                         <TabPanelAatar
-                          isState={
+                          isState={`${
                             isState
                               ? isState === 1
                                 ? '2px solid #1ed14b'
                                 : '2px solid #FFD400'
                               : '2px solid #d63638'
-                          }
+                          }`}
                           src={user.profile}
                           alt="Avatar"
                         />

@@ -9,7 +9,7 @@ import fetcher from '@utils/fetcher';
 import { IAllUser, IFriendList } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
-import { FriendsOnlineListContainer, UserAvatar } from './style';
+import { FriendsOnlineListContainer, UserAvatar, ScrollbarColor } from './style';
 import { SocketContext } from '@store/socket';
 
 const FriendsOnlineList = () => {
@@ -19,15 +19,14 @@ const FriendsOnlineList = () => {
   let isState;
 
   return (
-    <Scrollbars>
+    <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
       <FriendsOnlineListContainer aria-label="mailbox folders">
         {friends?.map((friend: any) => {
           return users?.map((user) => {
             if (user?.userId === friend?.userId2) {
               isState = 0;
-              onGameList?.map((onGameUser) => {
-                if (onGameUser.userId === user.userId) isState = 2;
-              });
+              if (onGameList && onGameList[user.userId]) isState = 2;
+
               if (isState === 0) {
                 onlineList?.map((onlineUser) => {
                   if (onlineUser.userId === user.userId) isState = 1;
@@ -35,20 +34,20 @@ const FriendsOnlineList = () => {
               }
               if (isState === 0) return;
               return (
-                <Link to={`/users/${user.userId}`}>
+                <Link to={`/users/${user.username}`}>
                   <ListItem className="friend-list-wrapper" button>
                     <UserAvatar
-                      isState={
+                      isState={`${
                         isState
                           ? isState === 1
                             ? '2px solid #1ed14b'
                             : '2px solid #FFD400'
                           : '2px solid #d63638'
-                      }
+                      }`}
                       src={user.profile}
                       alt="Avatar"
                     />
-                    <ListItemText className="text" primary={user.userId} />
+                    <ListItemText className="text" primary={user.username} />
                   </ListItem>
                 </Link>
               );

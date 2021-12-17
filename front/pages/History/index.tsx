@@ -28,6 +28,9 @@ const History = (data: any) => {
   const [player1Point, setPlayer1Point] = useState(0);
   const [player2Point, setPlayer2Point] = useState(0);
   const [winner, setWinner] = useState(`${data.match.params.winner}`);
+  const [userId1Nickname, setUserId1Nickname] = useState('');
+  const [userId2Nickname, setUserId2Nickname] = useState('');
+  const [winnerNickname, setWinnerNickname] = useState('');
   const [userId1Profile, setUserId1Profile] = useState('');
   const [userId2Profile, setUserId2Profile] = useState('');
   const { data: allUserList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
@@ -37,12 +40,20 @@ const History = (data: any) => {
       allUserList?.map((user) => {
         if (user.userId === userId1) {
           setUserId1Profile(user.profile);
+          setUserId1Nickname(user.username);
+          if (winner === userId1) {
+            setWinnerNickname(user.username);
+          }
         } else if (user.userId === userId2) {
           setUserId2Profile(user.profile);
+          setUserId2Nickname(user.username);
+          if (winner === userId2) {
+            setWinnerNickname(user.username);
+          }
         }
       });
     }
-  }, [userId1, userId2]);
+  }, [userId1, userId2, winner]);
 
   useEffect(() => {
     async function getGameInfo() {
@@ -66,11 +77,11 @@ const History = (data: any) => {
     <HistoryContainer>
       <div className="wrapper">
         <UserProfileContainer1>
-          <Link to={`/users/${userId1}`}>
+          <Link to={`/users/${userId1Nickname}`}>
             <ListItem className="profile1-wrapper" button>
               <Avatar className="avatar1" src={userId1Profile} alt="Avatar" />
               <ProfileOneText winner={`${winner === userId1 ? 'white' : 'red'}`}>
-                <span>{userId1}</span>
+                <span>{userId1Nickname}</span>
                 <span>{player1Point} Point</span>
               </ProfileOneText>
             </ListItem>
@@ -78,11 +89,11 @@ const History = (data: any) => {
         </UserProfileContainer1>
         <div>VS</div>
         <UserProfileContainer2>
-          <Link to={`/users/${userId2}`}>
+          <Link to={`/users/${userId2Nickname}`}>
             <ListItem className="profile2-wrapper" button>
               <Avatar className="avatar2" src={userId2Profile} alt="Avatar" />
               <ProfileTwoText winner={`${winner === userId2 ? 'white' : 'red'}`}>
-                <span>{userId2}</span>
+                <span>{userId2Nickname}</span>
                 <span>{player2Point} Point</span>
               </ProfileTwoText>
             </ListItem>
@@ -92,7 +103,7 @@ const History = (data: any) => {
 
       <div className="result-wrapper">
         <EmojiEventsIcon className="result-icon" />
-        <div className="">승리자 : {winner}</div>
+        <div className="">승리자 : {winnerNickname ? winnerNickname : '무승부'}</div>
       </div>
       <div>
         <Link to="/game">

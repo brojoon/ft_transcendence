@@ -1,5 +1,5 @@
 import React, { VFC } from 'react';
-import { UserProfileAchieveCardContainer } from './style';
+import { UserProfileAchieveCardContainer, ScrollbarColor } from './style';
 import { IAchievement } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
@@ -58,7 +58,7 @@ const UserProfileAchieveCard: VFC<Props> = ({ userData }) => {
   return (
     <UserProfileAchieveCardContainer>
       <div className="achievements-header">Achievements</div>
-      <Scrollbars>
+      <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
         <div className="achievements-achievement">
           <Achievement
             Icon={ChatBubbleIcon}

@@ -44,8 +44,8 @@ export const UserProfileContainer1 = styled.div`
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		width: 360px;
-		height: 480px;
+		width: 350px;
+		height: 410px;
 		border: 1px solid rgba(57, 57, 57, 0.7);
 		background-color: #1e1e1e;
 		white-space: overflow-wrap;
@@ -82,8 +82,8 @@ export const UserProfileContainer2 = styled.div`
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		width: 360px;
-		height: 480px;
+		width: 350px;
+		height: 410px;
 		border: 1px solid rgba(57, 57, 57, 0.7);
 		background-color: #1e1e1e;
 		white-space: overflow-wrap;
