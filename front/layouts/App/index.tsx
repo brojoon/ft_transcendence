@@ -11,6 +11,7 @@ const TwoFactor = loadable(() => import('@pages/TwoFactor'));
 const FirstStep = loadable(() => import('@pages/FirstStep'));
 const Content = loadable(() => import('@layouts/Content'));
 const Admin = loadable(() => import('@pages/Admin'));
+const AdminChannel = loadable(() => import('@pages/AdminChannel'));
 
 const App = () => {
   return (
@@ -24,7 +25,7 @@ const App = () => {
           <Route exact path="/login" component={LogIn} />
           <Route exact path="/login/first-step" component={FirstStep} />
           <Route exact path="/two-factor" component={TwoFactor} />
-          <Route exact path="/admin/:id" component={Admin} />
+          <Route exact path="/admin/:id" component={AdminChannel} />
           <Route exact path="/admin" component={Admin} />
           <Route path="/:content" component={Content} />
         </Switch>

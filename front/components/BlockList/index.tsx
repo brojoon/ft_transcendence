@@ -32,7 +32,7 @@ const BlockList = () => {
                 });
               }
               return (
-                <Link to={`/users/${user.username}`}>
+                <Link to={`/users/${user.userId}`}>
                   <ListItem className="block-list-wrapper" button>
                     <UserAvatar
                       isState={`${

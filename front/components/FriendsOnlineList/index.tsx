@@ -34,7 +34,7 @@ const FriendsOnlineList = () => {
               }
               if (isState === 0) return;
               return (
-                <Link to={`/users/${user.username}`}>
+                <Link to={`/users/${user.userId}`}>
                   <ListItem className="friend-list-wrapper" button>
                     <UserAvatar
                       isState={`${

@@ -18,12 +18,15 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import { Translate } from '@mui/icons-material';
+import Scrollbars from 'react-custom-scrollbars';
 import {
   PingPongContainer,
   GameSettingContainer,
   GameReadyContainer,
   UserPointContainer,
   GameInitBtnContainer,
+  BackgroundHeight,
+  ScrollbarColor,
 } from './style';
 
 const socket = getSocket();
@@ -371,184 +374,194 @@ const PingPong = (data: any) => {
   };
 
   return (
-    <PingPongContainer>
-      {isGameStart && (
-        <div className="pixi-container">
-          <Stage width={1000} height={500} options={{ antialias: true, backgroundColor: 0x365dff }}>
-            <Rectangle x={0} y={player_one_y} width={15} height={100} fill={0xffffff} />
-            <Rectangle x={985} y={player_two_y} width={15} height={100} fill={0xffffff} />
-            {mapSelect === 1 ? (
-              <Rectangle x={350} y={100} width={300} height={50} fill={0x263238} />
-            ) : null}
-            {mapSelect === 1 ? (
-              <Rectangle x={350} y={350} width={300} height={50} fill={0x263238} />
-            ) : null}
-            <Circle x={ball_x} y={ball_y} radius={10} fill={0xffffff} />
-          </Stage>
-        </div>
-      )}
-      {!isGameStart && (
-        <GameSettingContainer>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">게임판수</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={gameCount}
-              label="게임판수"
-              onChange={onChangeGameCount}
-            >
-              <MenuItem value={3}>3</MenuItem>
-              <MenuItem value={5}>5</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">맵선택</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={mapSelect}
-              label="맵선택"
-              onChange={onChangeMapSelect}
-            >
-              <MenuItem value={0}>Normal</MenuItem>
-              <MenuItem value={1}>obstacle</MenuItem>
-            </Select>
-          </FormControl>
-
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Speed</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={gameSpeed}
-              label="Speed"
-              onChange={onChangeSpeed}
-            >
-              <MenuItem value={2}>1단계</MenuItem>
-              <MenuItem value={3}>2단계</MenuItem>
-              <MenuItem value={4}>3단계</MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">ballRandom</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={ballRandom}
-              label="ballRandom"
-              onChange={onChangeBallRandom}
-            >
-              <MenuItem value={0}>Normal</MenuItem>
-              <MenuItem value={1}>Random</MenuItem>
-            </Select>
-          </FormControl>
-        </GameSettingContainer>
-      )}
-      {!isGameStart && (
-        <GameReadyContainer>
-          <div className="player-one-container">
-            <div>
-              <Avatar
-                className="player-one-avatar"
-                src={player === 'playerOne' ? myData?.profile : opponentProfile}
-                alt="Avatar"
-              />
+    <BackgroundHeight className="bg">
+      <Scrollbars
+        autoHide
+        renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
+      >
+        <PingPongContainer>
+          {isGameStart && (
+            <div className="pixi-container">
+              <Stage
+                width={1000}
+                height={500}
+                options={{ antialias: true, backgroundColor: 0x365dff }}
+              >
+                <Rectangle x={0} y={player_one_y} width={15} height={100} fill={0xffffff} />
+                <Rectangle x={985} y={player_two_y} width={15} height={100} fill={0xffffff} />
+                {mapSelect === 1 ? (
+                  <Rectangle x={350} y={100} width={300} height={50} fill={0x263238} />
+                ) : null}
+                {mapSelect === 1 ? (
+                  <Rectangle x={350} y={350} width={300} height={50} fill={0x263238} />
+                ) : null}
+                <Circle x={ball_x} y={ball_y} radius={10} fill={0xffffff} />
+              </Stage>
             </div>
-            <div className="player-one-text">
-              {player === 'playerOne' ? myData?.username + ' (나)' : opponentName + ' (상대편)'}
-            </div>
-            <div>
-              {player === 'playerOne' ? (
-                player1Ready === 0 ? (
-                  <Button variant="contained" onClick={readyPlayer1}>
-                    ready
-                  </Button>
-                ) : (
-                  <Button variant="contained" disabled>
-                    완료
-                  </Button>
-                )
-              ) : player1Ready === 0 ? (
-                <Button variant="contained" disabled>
-                  준비중..
-                </Button>
-              ) : (
-                <Button variant="contained" disabled>
-                  완료
-                </Button>
-              )}
-            </div>
-          </div>
-          <div className="versus">
-            <div>VS</div>
-          </div>
-          <div className="player-two-container">
-            <div>
-              <Avatar
-                className="player-two-avatar"
-                src={player === 'playerTwo' ? myData?.profile : opponentProfile}
-                alt="Avatar"
-              />
-            </div>
-            <div className="player-two-text">
-              {player === 'playerTwo' ? myData?.username + ' (나)' : opponentName + ' (상대편)'}
-            </div>
-            <div>
-              {player === 'playerTwo' ? (
-                player2Ready === 0 ? (
-                  <Button variant="contained" onClick={readyPlayer2}>
-                    ready
-                  </Button>
-                ) : (
-                  <Button variant="contained" disabled>
-                    완료
-                  </Button>
-                )
-              ) : player2Ready === 0 ? (
-                <Button variant="contained" disabled>
-                  준비중..
-                </Button>
-              ) : (
-                <Button variant="contained" disabled>
-                  완료
-                </Button>
-              )}
-            </div>
-          </div>
-        </GameReadyContainer>
-      )}
-
-      <UserPointContainer>
-        {isGameStart && (
-          <div className="point-wrapper">
-            {(player === 'playerOne' ? myData?.username : opponentName) + ' Point'}
-            <EventNoteIcon className="point-icon" /> {': [ ' + user1Point + ' ] '}
-          </div>
-        )}
-
-        <GameInitBtnContainer width={`${isGameStart ? '' : '100%'}`}>
-          {player1Ready && player2Ready ? (
-            <Button className="game-btn" variant="contained" onClick={changeGameSet}>
-              게임시작
-            </Button>
-          ) : (
-            <Button className="game-btn" variant="contained" disabled>
-              게임시작
-            </Button>
           )}
-          <div className="game-text"> (모두 레디 시 시작됨) [key : t] </div>
-          <div>(up: w / down: s)</div>
-          {player === '' && <div>관전중...</div>}
-        </GameInitBtnContainer>
-        {isGameStart && (
-          <div className="point-wrapper">
-            {(player === 'playerTwo' ? myData?.username : opponentName) + ' Point'}
-            <EventNoteIcon className="point-icon" /> {': [ ' + user2Point + ' ] '}
-          </div>
-        )}
-      </UserPointContainer>
-    </PingPongContainer>
+          {!isGameStart && (
+            <GameSettingContainer>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">게임판수</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={gameCount}
+                  label="게임판수"
+                  onChange={onChangeGameCount}
+                >
+                  <MenuItem value={3}>3</MenuItem>
+                  <MenuItem value={5}>5</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">맵선택</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={mapSelect}
+                  label="맵선택"
+                  onChange={onChangeMapSelect}
+                >
+                  <MenuItem value={0}>Normal</MenuItem>
+                  <MenuItem value={1}>obstacle</MenuItem>
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">Speed</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={gameSpeed}
+                  label="Speed"
+                  onChange={onChangeSpeed}
+                >
+                  <MenuItem value={2}>1단계</MenuItem>
+                  <MenuItem value={3}>2단계</MenuItem>
+                  <MenuItem value={4}>3단계</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label">ballRandom</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={ballRandom}
+                  label="ballRandom"
+                  onChange={onChangeBallRandom}
+                >
+                  <MenuItem value={0}>Normal</MenuItem>
+                  <MenuItem value={1}>Random</MenuItem>
+                </Select>
+              </FormControl>
+            </GameSettingContainer>
+          )}
+          {!isGameStart && (
+            <GameReadyContainer>
+              <div className="player-one-container">
+                <div>
+                  <Avatar
+                    className="player-one-avatar"
+                    src={player === 'playerOne' ? myData?.profile : opponentProfile}
+                    alt="Avatar"
+                  />
+                </div>
+                <div className="player-one-text">
+                  {player === 'playerOne' ? myData?.username + ' (나)' : opponentName + ' (상대편)'}
+                </div>
+                <div>
+                  {player === 'playerOne' ? (
+                    player1Ready === 0 ? (
+                      <Button variant="contained" onClick={readyPlayer1}>
+                        ready
+                      </Button>
+                    ) : (
+                      <Button variant="contained" disabled>
+                        완료
+                      </Button>
+                    )
+                  ) : player1Ready === 0 ? (
+                    <Button variant="contained" disabled>
+                      준비중..
+                    </Button>
+                  ) : (
+                    <Button variant="contained" disabled>
+                      완료
+                    </Button>
+                  )}
+                </div>
+              </div>
+              <div className="versus">
+                <div>VS</div>
+              </div>
+              <div className="player-two-container">
+                <div>
+                  <Avatar
+                    className="player-two-avatar"
+                    src={player === 'playerTwo' ? myData?.profile : opponentProfile}
+                    alt="Avatar"
+                  />
+                </div>
+                <div className="player-two-text">
+                  {player === 'playerTwo' ? myData?.username + ' (나)' : opponentName + ' (상대편)'}
+                </div>
+                <div>
+                  {player === 'playerTwo' ? (
+                    player2Ready === 0 ? (
+                      <Button variant="contained" onClick={readyPlayer2}>
+                        ready
+                      </Button>
+                    ) : (
+                      <Button variant="contained" disabled>
+                        완료
+                      </Button>
+                    )
+                  ) : player2Ready === 0 ? (
+                    <Button variant="contained" disabled>
+                      준비중..
+                    </Button>
+                  ) : (
+                    <Button variant="contained" disabled>
+                      완료
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </GameReadyContainer>
+          )}
+
+          <UserPointContainer>
+            {isGameStart && (
+              <div className="point-wrapper">
+                {(player === 'playerOne' ? myData?.username : opponentName) + ' Point'}
+                <EventNoteIcon className="point-icon" /> {': [ ' + user1Point + ' ] '}
+              </div>
+            )}
+            {isGameStart && (
+              <div className="point-wrapper">
+                {(player === 'playerTwo' ? myData?.username : opponentName) + ' Point'}
+                <EventNoteIcon className="point-icon" /> {': [ ' + user2Point + ' ] '}
+              </div>
+            )}
+          </UserPointContainer>
+          <GameInitBtnContainer width={`${isGameStart ? '' : '100%'}`}>
+            {player === '' ? null : player1Ready && player2Ready ? (
+              <Button className="game-btn" variant="contained" onClick={changeGameSet}>
+                게임시작
+              </Button>
+            ) : (
+              <Button className="game-btn" variant="contained" disabled>
+                게임시작
+              </Button>
+            )}
+            <div className="game-text"> (모두 레디 시 시작됨) [key : t] </div>
+            <div>(up: w / down: s)</div>
+            {player === '' && <div>관전중...</div>}
+          </GameInitBtnContainer>
+        </PingPongContainer>
+      </Scrollbars>
+    </BackgroundHeight>
   );
 };
 

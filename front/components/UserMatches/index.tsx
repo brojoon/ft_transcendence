@@ -47,12 +47,14 @@ const UserMatches: VFC<Props> = ({ userData }) => {
             <Link to={`/game/history/${history?.historyId}`}>
               <List className="list-item-wrapper">
                 <Avatar className="avatar" src={userData?.profile} alt="Avatar" />
-                <UserMatchesResult textColor={history?.isWinner ? '#ffe937' : '#ec443b'}>
-                  {history?.isWinner ? 'Won' : 'Lost'}
-                  <span className="opponent-text"> against {history?.opponent}</span>
-                </UserMatchesResult>
-                {index}
-                <span className="">{history?.myPoint + ' - ' + history?.opponentPoint}</span>
+                <div className="matches-text">
+                  <UserMatchesResult textColor={history?.isWinner ? '#ffe937' : '#ec443b'}>
+                    {history?.isWinner ? 'Won' : 'Lost'}
+                    <span className="opponent-text"> against {history?.opponent}</span>
+                  </UserMatchesResult>
+                  <span className="">{history?.myPoint + ' - ' + history?.opponentPoint}</span>
+                </div>
+
                 {history?.isWinner ? (
                   <SentimentVerySatisfiedIcon className="user-matches-icon-win" />
                 ) : (

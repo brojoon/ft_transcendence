@@ -70,3 +70,141 @@ export const TabPanel1 = () => {
     </Scrollbars>
   );
 };
+
+// export const TabPanel4 = () => {
+//   <List className="tab-panel-4-list" component="nav" aria-label="mailbox folders">
+//     {channelList?.map((channel) => {
+//       return (
+//         <Link to={`/admin/${channel.id}`}>
+//           <Accordion>
+//             <AccordionSummary
+//               expandIcon={<ExpandMoreIcon />}
+//               aria-controls="panel1a-content"
+//               id="panel1a-header"
+//             >
+//               <Typography>{channel.name}</Typography>
+//             </AccordionSummary>
+//             <AccordionDetails>
+//               <Typography>
+//                 <div>
+//                   <ListItem className="tab-panel-4-list-item">Owner</ListItem>
+//                   {memberList &&
+//                     memberList?.map((member) => {
+//                       if (member.auth === 2) {
+//                         return alluserList?.map((user, index) => {
+//                           if (user.userId == member.userId) {
+//                             return (
+//                               <>
+//                                 {selectedIndex === index && user.userId !== myData?.userId && (
+//                                   <AdminPageProfile
+//                                     user={user}
+//                                     setSelectedIndex={setSelectedIndex}
+//                                   />
+//                                 )}
+//                                 <ListItem button onClick={(e) => onClickMember(e, index)}>
+//                                   <Avatar
+//                                     className="tab-panel-4-avatar"
+//                                     src={user.profile}
+//                                     alt="Avatar"
+//                                   />
+//                                   <ListItemText
+//                                     className="tab-pannel-4-text"
+//                                     primary={user.userId}
+//                                   />
+//                                   <RecordVoiceOverIcon />
+//                                 </ListItem>
+//                               </>
+//                             );
+//                           }
+//                         });
+//                       }
+//                     })}
+//                   <ListItem className="tab-panel-4-list-item">Admin</ListItem>
+//                   {memberList &&
+//                     memberList?.map((member) => {
+//                       if (member.auth === 1) {
+//                         return alluserList?.map((user, index) => {
+//                           if (user.userId == member.userId) {
+//                             return (
+//                               <>
+//                                 {selectedIndex === index && user.userId !== myData?.userId && (
+//                                   <AdminPageProfile
+//                                     user={user}
+//                                     setSelectedIndex={setSelectedIndex}
+//                                   />
+//                                 )}
+//                                 <ListItem button onClick={(e) => onClickMember(e, index)}>
+//                                   <Avatar
+//                                     className="tab-panel-4-avatar"
+//                                     src={user.profile}
+//                                     alt="Avatar"
+//                                   />
+//                                   <ListItemText
+//                                     className="tab-pannel-4-text"
+//                                     primary={user.userId}
+//                                   />
+//                                   <RecordVoiceOverIcon />
+//                                 </ListItem>
+//                               </>
+//                             );
+//                           }
+//                         });
+//                       }
+//                     })}
+//                   <ListItem className="tab-panel-4-list-item">Users</ListItem>
+//                   {memberList &&
+//                     memberList?.map((member) => {
+//                       if (member.auth === 0) {
+//                         return alluserList?.map((user, index) => {
+//                           if (user.userId == member.userId) {
+//                             let isMute = false;
+
+//                             return (
+//                               <>
+//                                 {selectedIndex === index && user.userId !== myData?.userId && (
+//                                   <AdminPageProfile
+//                                     user={user}
+//                                     setSelectedIndex={setSelectedIndex}
+//                                   />
+//                                 )}
+//                                 <ListItem button onClick={(e) => onClickMember(e, index)}>
+//                                   <Avatar
+//                                     className="tab-panel-4-avatar"
+//                                     src={user.profile}
+//                                     alt="Avatar"
+//                                   />
+//                                   <ListItemText
+//                                     className="tab-pannel-4-text"
+//                                     primary={user.userId}
+//                                   />
+//                                   {member.mute ? (
+//                                     <VoiceOverOffIcon className="mute-icon" />
+//                                   ) : (
+//                                     <RecordVoiceOverIcon />
+//                                   )}
+//                                 </ListItem>
+//                               </>
+//                             );
+//                           }
+//                         });
+//                       }
+//                     })}
+//                 </div>
+//                 <div className="delete-channel-wrapper">
+//                   <Button
+//                     className="delete-btn"
+//                     variant="contained"
+//                     startIcon={<DeleteIcon />}
+//                     onClick={onClickChannelDeleteModal}
+//                   >
+//                     DELETE CHANNEL
+//                   </Button>
+//                 </div>
+//               </Typography>
+//             </AccordionDetails>
+//           </Accordion>
+//         </Link>
+//       );
+//     })}
+//   </List>;
+// };

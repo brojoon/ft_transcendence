@@ -73,7 +73,7 @@ const Channel = () => {
   const onSubmitChannelCreate = useCallback(
     (e) => {
       e.preventDefault();
-      if (name.length > 20 || name.length < 1) {
+      if (name.length > 10 || name.length < 1) {
         setChannelNameError(1);
         return;
       }

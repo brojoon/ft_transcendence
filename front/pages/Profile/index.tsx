@@ -19,9 +19,9 @@ const Profile = () => {
     dedupingInterval: 2000,
   });
   let UserData;
-  if (id && id !== myData?.username) {
+  if (id && id !== myData?.userId) {
     alluser?.map((user) => {
-      if (user.username === id) UserData = user;
+      if (user.userId === id) UserData = user;
     });
   }
 
@@ -29,31 +29,31 @@ const Profile = () => {
     <ProfileContainer>
       <Grid container spacing={3}>
         <Grid item xs={12} sm={12} md={3}>
-          {id === undefined || id === myData?.username || !UserData ? (
+          {id === undefined || id === myData?.userId || !UserData ? (
             <MyProfileCard />
           ) : (
             <UserProfileCard UserData={UserData} />
           )}
-          {id === undefined || id === myData?.username || !UserData ? (
+          {id === undefined || id === myData?.userId || !UserData ? (
             <UserStatistics userData={myData} />
           ) : (
             <UserStatistics userData={UserData} />
           )}
         </Grid>
         <Grid item xs={12} sm={12} md={6}>
-          {id === undefined || id === myData?.username || !UserData ? (
+          {id === undefined || id === myData?.userId || !UserData ? (
             <UserMatches userData={myData} />
           ) : (
             <UserMatches userData={UserData} />
           )}
         </Grid>
         <Grid item xs={12} sm={12} md={3}>
-          {id === undefined || id === myData?.username || !UserData ? (
+          {id === undefined || id === myData?.userId || !UserData ? (
             <UserProfileAchieveCard userData={myData} />
           ) : (
             <UserProfileAchieveCard userData={UserData} />
           )}
-          {id === undefined || id === myData?.username || !UserData ? (
+          {id === undefined || id === myData?.userId || !UserData ? (
             <UserFriendCard userData={myData} />
           ) : (
             <UserFriendCard userData={UserData} />

@@ -22,6 +22,7 @@ import { FormatListBulleted } from '@mui/icons-material';
 import config from '@utils/config';
 import { UserProfileCardContainer, UserAvatar } from './style';
 import { SocketContext } from '@store/socket';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 interface Props {
   UserData: IUser;
@@ -54,6 +55,20 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       if (onlineUser.userId === UserData.userId) isState = 1;
     });
   }
+
+  const onClickChallengeBtn = useCallback((e) => {
+    e.preventDefault();
+    axios
+      .post(`/api/dms/sendMessage/${UserData.userId}/1/0`, { message: '' }, config)
+      .then((res) => {
+        history.push(`/game/ping-pong/${res.data}`);
+      });
+  }, []);
+
+  const onClickWatchBtn = useCallback((e) => {
+    e.preventDefault();
+    if (onGameList) history.push(`/game/ping-pong/${onGameList[UserData.userId]}`);
+  }, []);
 
   const removeAllModals = useCallback(() => {
     setIsAddFriendModal(false);
@@ -203,9 +218,9 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
             alt="Avatar"
           />
           <Typography variant="h5" component="div">
-            {UserData?.username}
+            {UserData?.userId}
           </Typography>
-          {/* <span className="card-user-text">{UserData?.username}</span> */}
+          <span className="card-user-text">{UserData?.username}</span>
         </CardContent>
         <CardActions className="card-action">
           {isBlock ? (
@@ -213,8 +228,13 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
               BLOCKED&nbsp;
               <GamepadIcon />
             </Button>
+          ) : isState === 2 ? (
+            <Button onClick={onClickWatchBtn} variant="contained" className="watch-btn">
+              WATCH&nbsp;
+              <VisibilityIcon />
+            </Button>
           ) : (
-            <Button variant="contained" className="challenge-btn">
+            <Button onClick={onClickChallengeBtn} variant="contained" className="challenge-btn">
               CHALLENGE&nbsp;
               <GamepadIcon />
             </Button>

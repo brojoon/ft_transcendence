@@ -41,7 +41,7 @@ const UserFriendCard: VFC<Props> = ({ userData }) => {
                     });
                   }
                   return (
-                    <Link to={`/users/${user?.username}`}>
+                    <Link to={`/users/${user?.userId}`}>
                       <ListItem className="list-item-wrapper" button>
                         <UserAvatar
                           isState={`${

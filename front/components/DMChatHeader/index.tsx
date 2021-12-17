@@ -43,7 +43,7 @@ const DMChatHeader = () => {
                 return (
                   <div className="user-profile-wrapper">
                     <Avatar className="avatar" src={user.profile} alt="Avatar" />
-                    <span>{user.userId}</span>
+                    <span>{user.username}</span>
                   </div>
                 );
             })}

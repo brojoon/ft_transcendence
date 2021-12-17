@@ -40,6 +40,14 @@ export const UserProfileCardContainer = styled(Box)`
 		font-weight: bold;
 	}
 
+	& .watch-btn {
+		width: 100%;
+		height: 35px;
+		background-color: #FFD400;
+		border-color: #FFD400;
+		font-weight: bold;
+	}
+
 	& .challenge-btn {
 		width: 100%;
 		height: 35px;
