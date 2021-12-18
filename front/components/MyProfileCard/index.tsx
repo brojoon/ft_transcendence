@@ -1,23 +1,24 @@
-import React, { useContext, useCallback, useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
+import React, { useContext, useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Avatar from '@mui/material/Avatar';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import SettingsIcon from '@mui/icons-material/Settings';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import { Link, useParams } from 'react-router-dom';
 import { IUser } from '@typings/db';
 import { MyProfileCardContainer, UserAvatar } from './style';
 import { SocketContext } from '@store/socket';
+import axios from 'axios';
 
 const MyProfileCard = () => {
   const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { onlineList, onGameList } = useContext(SocketContext);
+  const [isAdmin, setIsAdmin] = useState(0);
   let isState = 0;
   if (onGameList && myData && onGameList[myData.userId]) isState = 2;
   if (isState === 0 && onlineList && myData) {
@@ -25,6 +26,19 @@ const MyProfileCard = () => {
       if (onlineUser.userId === myData.userId) isState = 1;
     });
   }
+
+  useEffect(() => {
+    axios
+      .get('/api/users/listAdmin', {
+        withCredentials: true,
+      })
+      .then(() => {
+        setIsAdmin(1);
+      })
+      .catch(() => {
+        setIsAdmin(0);
+      });
+  }, [myData]);
 
   return (
     <MyProfileCardContainer>
@@ -54,6 +68,16 @@ const MyProfileCard = () => {
             </Button>
           </Link>
         </CardActions>
+        {isAdmin ? (
+          <CardActions className="card-actions">
+            <Link to="/admin" className="setting-link">
+              <Button className="admin-btn" variant="contained">
+                ADMIN&nbsp;
+                <ManageAccountsIcon />
+              </Button>
+            </Link>
+          </CardActions>
+        ) : null}
       </Card>
     </MyProfileCardContainer>
   );

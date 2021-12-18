@@ -35,7 +35,6 @@ const DMLeftDrawerBar = () => {
 
   const onChangeDMSearchInput = useCallback((e) => {
     setDMSearchInputValue(e.target.value);
-    console.log(e.target.value);
   }, []);
 
   if (dmSearchInputValue) {
@@ -43,12 +42,10 @@ const DMLeftDrawerBar = () => {
       const regex = new RegExp(dmSearchInputValue, 'gi');
       return dm.username.match(regex);
     });
-    console.log('dmlist', dmlist2);
   }
 
   const getDMList = useCallback(
     (inputValue: string) => {
-      console.log('getDM', inputValue);
       if (!inputValue) return dmlist;
       else return dmlist2;
     },

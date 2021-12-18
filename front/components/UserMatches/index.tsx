@@ -16,7 +16,7 @@ interface Props {
 }
 
 const UserMatches: VFC<Props> = ({ userData }) => {
-  const { data: userGameHistory, mutate: mutateUserGameHistory } = useSWR<IUserGameHistory[]>(
+  const { data: userGameHistory } = useSWR<IUserGameHistory[]>(
     `/api/game/history/userGameHistory/${userData?.userId}`,
     fetcher,
   );
@@ -24,12 +24,10 @@ const UserMatches: VFC<Props> = ({ userData }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleChangePage = (e: any, newPage: any) => {
-    console.log('setpage', newPage);
     setPage(newPage);
   };
 
   const handleChangeRowsPerPage = (e: any) => {
-    console.log('setRowsPerPage', e.target.value);
     setRowsPerPage(parseInt(e.target.value, 10));
     setPage(0);
   };

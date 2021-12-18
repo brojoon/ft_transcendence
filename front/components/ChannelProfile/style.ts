@@ -19,7 +19,12 @@ export const Container = styled.div`
 	& .header-wrapper {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		margin: 12px 15px 20px 20px;
+	}
+
+	& .user-text {
+		margin-left: 14px;
 	}
 
 
@@ -30,9 +35,8 @@ export const Container = styled.div`
 		
 	}
 
-	& .user-text {
-		margin-left: 14px;
-	}
+
+
 `;
 
 export const AdminBtn = styled(Button) <{ btnColor: string }>`

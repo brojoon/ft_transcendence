@@ -15,7 +15,6 @@ import BasicModal from '@components/BasicModal';
 import axios from 'axios';
 import { Container } from './style';
 import ChannelProfile from '@components/ChannelProfile';
-// import ChannelMember from '@components/ChannelMember';
 import VoiceOverOffIcon from '@mui/icons-material/VoiceOverOff';
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import { ModalBackground, UserAvatar, ScrollbarColor } from './style';
