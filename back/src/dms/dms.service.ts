@@ -157,6 +157,8 @@ export class DmsService {
       if (match === 1){
         send.message = "대국신청";
         send.historyId = await this.getHistoryId(userId1, userId2);
+        let user = await this.usersRepository.findOne({userId:userId2});
+        this.eventsGateway.server.to(`${userId2}`).emit('notice', {gameId:send.historyId, username:user.username}); 
       } else {
         send.message = message;
         send.historyId = historyId;
@@ -187,6 +189,8 @@ export class DmsService {
       if (match === 1){
         send.message = "대국신청";
         send.historyId = await this.getHistoryId(userId1, userId2);
+        let user = await this.usersRepository.findOne({userId:userId2});
+        this.eventsGateway.server.to(`${userId2}`).emit('notice', {gameId:send.historyId, username:user.username});
       } else {
         send.message = message;
         send.historyId = historyId;
