@@ -1,11 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
 import ChannelLeftDrawBar from '@components/ChannelLeftDrawBar';
 import { Container } from './style';
-import ChatHeader from '@components/ChannelHeader';
-import ChannelBody from '@components/ChannelBody';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import ChannelCreate from '@pages/ChannelCreate';
 import ChannelDiscover from '@pages/ChannelDiscover';
@@ -110,21 +105,6 @@ const Channel = () => {
     },
     [name, visibility, mychannelList, PasswordValues],
   );
-
-  // const channelRevalidate = useCallback(() => {
-  //   console.log('channel revalidated!!!');
-  //   mutateChannelList();
-  //   mutateMyChannelList();
-  //   mutateAllChannelList();
-  // }, []);
-
-  // useEffect(() => {
-  //   socket2?.on('channelDelete', channelRevalidate);
-
-  //   return () => {
-  //     socket2?.off('channelDelete', channelRevalidate);
-  //   };
-  // }, [socket2, channelRevalidate]);
 
   return (
     <Container>

@@ -16,7 +16,6 @@ import BasicModal from '@components/BasicModal';
 import ChannelInviteModal from '@components/ChannelInviteModal';
 import config from '@utils/config';
 import { ChannelRoomContainer } from './style';
-import { BrandingWatermarkTwoTone } from '@mui/icons-material';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -89,7 +88,6 @@ const ChannelRoom = () => {
   const onClickMembersToggle = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(membersToggle);
       setSelectedIndex(-1);
       setMembersToggle((prev) => !prev);
     },
@@ -99,7 +97,6 @@ const ChannelRoom = () => {
   const onClickSettingBtn = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(settingToggle);
       setSettingToggle((prev) => !prev);
     },
     [settingToggle, setSettingToggle],

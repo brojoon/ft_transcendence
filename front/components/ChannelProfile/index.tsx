@@ -129,15 +129,17 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
         <div className="header-wrapper">
           <Avatar className="avatar" src={user.profile} alt="Avatar" />
           <div className="user-text">{user.username}</div>
-          {myAuth === 2 && userAuth !== 2 && (
-            <AdminBtn
-              onClick={onClickAppointAdmin}
-              btnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
-              variant="text"
-            >
-              admin
-            </AdminBtn>
-          )}
+          <div className="admin-btn">
+            {myAuth === 2 && userAuth !== 2 && (
+              <AdminBtn
+                onClick={onClickAppointAdmin}
+                btnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
+                variant="text"
+              >
+                admin
+              </AdminBtn>
+            )}
+          </div>
         </div>
       </div>
       <MatchDataContainer>

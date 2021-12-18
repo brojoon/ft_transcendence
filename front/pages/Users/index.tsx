@@ -3,7 +3,6 @@ import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
 import UsersList from '@components/UsersList';
 import useSWR from 'swr';
@@ -20,23 +19,17 @@ export default function Users() {
 
   const onChangeUserSearchInput = useCallback((e) => {
     setUserSearchInputValue(e.target.value);
-    console.log(e.target.value);
   }, []);
 
   if (userSearchInputValue) {
     searchedUserList = allUserList?.filter((user) => {
       const regex = new RegExp(userSearchInputValue, 'gi');
-      console.log('regex', regex);
-      console.log(user.username.match(regex));
-      console.log(userSearchInputValue);
       return user.username.match(regex);
     });
-    console.log('searchedUserList', searchedUserList);
   }
 
   const getUserList = useCallback(
     (inputValue: string) => {
-      console.log('getUserList', inputValue);
       if (!inputValue) return allUserList;
       else return searchedUserList;
     },

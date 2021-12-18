@@ -33,12 +33,14 @@ const DirectMessage = () => {
     (index) => `/api/dms/get20MessageUseDmId/${id}/${index + 1}`,
     fetcher,
   );
+
   const history = useHistory();
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingEnd =
     isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
   const scrollbarRef = useRef<Scrollbars>(null);
   const socket = getSocket();
+
   const onSubmitChat = useCallback(
     (e) => {
       e.preventDefault();

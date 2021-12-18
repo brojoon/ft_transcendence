@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 import Match from '@pages/Match';
 import PingPong from '@pages/PingPong';
 import History from '@pages/History';
-import { Socket } from 'socket.io-client';
 
 const Game = () => {
   return (

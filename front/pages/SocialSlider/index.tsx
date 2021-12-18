@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { useTheme } from '@mui/material/styles';
@@ -6,8 +6,6 @@ import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import UsersList from '@components/UsersList';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import FriendsList from '@components/FriendsList';
@@ -52,22 +50,16 @@ function a11yProps(index: number) {
 }
 
 const SocialSlider = () => {
-  const { data: usersList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
-  const { data: dmList, mutate: mutateFriendList } = useSWR<IFriendList[]>(
-    '/api/friend/friendlist',
-    fetcher,
-  );
-
   const theme = useTheme();
   const [value, setValue] = useState(0);
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = useCallback((event: any, newValue: any) => {
     setValue(newValue);
-  };
+  }, []);
 
-  const handleChangeIndex = (index: any) => {
+  const handleChangeIndex = useCallback((index: any) => {
     setValue(index);
-  };
+  }, []);
 
   return (
     <SocialSliderContainer>

@@ -15,30 +15,16 @@ import Scrollbars from 'react-custom-scrollbars';
 import BasicModal from '@components/BasicModal';
 import axios from 'axios';
 import UserRightModal from '@components/UserRightModal';
-import Accordion from '@mui/material/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
-import VoiceOverOffIcon from '@mui/icons-material/VoiceOverOff';
 import { useParams, useHistory, Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
 import config from '@utils/config';
 import { SocketContext } from '@store/socket';
 import getSocket from '@utils/useSocket';
 
-import AdminPageProfile from '@components/AdminPageProfile';
 import { TabPanel1 } from '@components/TabPanel';
 import { AdminPageContainer, AdminPageWrapper, TabPanelAatar } from './style';
 
 const Admin = () => {
-  const { id } = useParams<{ id: string }>();
-  const { data: memberList } = useSWR<IMemberList[]>(
-    `/api/channels/userList/${id === undefined ? -1 : id}`,
-    fetcher,
-  );
   const { data: alluserList, mutate: mutateAlluserList } = useSWR<IAllUser[]>(
     '/api/users/alluser',
     fetcher,
@@ -60,10 +46,10 @@ const Admin = () => {
     fetcher,
   );
 
-  const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
-    `/api/channels/mutedMembers/${id === undefined ? -1 : id}`,
-    fetcher,
-  );
+  const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
+  const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
+  const { onlineList, setOnlineList, onGameList, setOnGameList } = useContext(SocketContext);
+  let isState;
 
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
 
@@ -74,11 +60,6 @@ const Admin = () => {
   const [unBanUserSelected, setUnBanUserSelected] = useState('');
   const [isUserPrivilegeModal, setIsUserPrivilegeModal] = useState(false);
   const [userPrivilegeSelected, setUserPrivilegeSelected] = useState('');
-
-  const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
-  const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
-  const { onlineList, setOnlineList, onGameList, setOnGameList } = useContext(SocketContext);
-  let isState;
 
   const socket = getSocket();
 
@@ -193,9 +174,9 @@ const Admin = () => {
     [isUnBanUserModal],
   );
 
-  const handleChange = (event: any, newValue: string) => {
+  const handleChange = useCallback((event: any, newValue: string) => {
     setValue(newValue);
-  };
+  }, []);
 
   const onSubmitModerator = useCallback(
     (e) => {

@@ -22,6 +22,7 @@ export const AdminChannelContainer = styled.div`
 
 	& .tab-panel-4-list {
 		width: 100%;
+
 	}
 
 	& .tab-panel-4-list-item {
@@ -55,5 +56,8 @@ export const AdminChannelContainer = styled.div`
 		font-weight: 600;
 	}
 
+`;
 
+export const TabPanelAatar = styled(Avatar) <{ isState: string }>`
+	border: ${(props) => props.isState};
 `;

@@ -2,9 +2,9 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 import loadable from '@loadable/component';
 import Scrollbars from 'react-custom-scrollbars';
-import getToken from '@utils/getToken';
 import SocketContext from '@store/socket';
 import { ScrollbarColor } from './style';
+import { ToastContainer } from 'react-toastify';
 
 const LogIn = loadable(() => import('@pages/LogIn'));
 const TwoFactor = loadable(() => import('@pages/TwoFactor'));
@@ -16,6 +16,7 @@ const AdminChannel = loadable(() => import('@pages/AdminChannel'));
 const App = () => {
   return (
     <SocketContext>
+      <ToastContainer />
       <Scrollbars
         autoHide
         renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}

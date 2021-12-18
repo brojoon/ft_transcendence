@@ -1,7 +1,6 @@
 import Avatar from '@mui/material/Avatar';
 import { IAllUser, IUser, IChannelChatList, IBlockList } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import { BlockList } from 'net';
 import React, { RefObject, VFC, useCallback } from 'react';
 import Scrollbars from 'react-custom-scrollbars';
 import { useParams } from 'react-router';

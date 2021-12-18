@@ -19,7 +19,6 @@ interface Props {
 const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize }) => {
   const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
-  console.log('chatData', chatData);
 
   const onScroll = useCallback(
     (values) => {

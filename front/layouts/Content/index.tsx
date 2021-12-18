@@ -7,13 +7,11 @@ import Game from '@pages/Game';
 import Home from '@pages/Home';
 import Profile from '@pages/Profile';
 import Users from '@pages/Users';
-import { IUserStateList, IUser } from '@typings/db';
+import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import { Route, Switch, useHistory } from 'react-router-dom';
 import useSWR from 'swr';
 import { Container } from './style';
-import { disconnect } from 'process';
-import io from 'socket.io-client';
 import getSocket from '@utils/useSocket';
 import ProfileSetting from '@pages/ProfileSetting';
 import { SocketContext } from '@store/socket';
@@ -24,7 +22,7 @@ const Content = () => {
   });
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
-  const { onlineList, setOnlineList, onGameList, setOnGameList } = useContext(SocketContext);
+  const { setOnlineList, setOnGameList } = useContext(SocketContext);
 
   const history = useHistory();
 

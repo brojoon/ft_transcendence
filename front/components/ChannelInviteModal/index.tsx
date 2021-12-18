@@ -2,14 +2,13 @@ import React, { VFC, useCallback, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import InputAdornment from '@mui/material/InputAdornment';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import TextField from '@mui/material/TextField';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import useSWR from 'swr';
-import { IMemberList } from '@typings/db';
+import { IMemberList, IAllUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import config from '@utils/config';
 import { ChannelInviteModalBackground, ChannelInviteModalContainer } from './style';
@@ -21,6 +20,7 @@ interface Props {
 
 const ChannelInviteModal: VFC<Props> = ({ setChannelInviteModal, onClickModalClose }) => {
   const { id } = useParams<{ id: string }>();
+  const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: memberList, mutate: memberListMutate } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id}`,
     fetcher,
@@ -30,8 +30,16 @@ const ChannelInviteModal: VFC<Props> = ({ setChannelInviteModal, onClickModalClo
   const onClickInviteBtn = useCallback(
     (e) => {
       e.preventDefault();
+      let userId;
+      alluser?.map((user) => {
+        if (user.username === inviteValue) userId = user.userId;
+      });
+      if (!userId) {
+        setInviteError(true);
+        return;
+      }
       axios
-        .get(`/api/channels/invite/${id}/${inviteValue}`, config)
+        .get(`/api/channels/invite/${id}/${userId}`, config)
         .then(() => {
           memberListMutate();
           setInviteValue('');
@@ -68,11 +76,7 @@ const ChannelInviteModal: VFC<Props> = ({ setChannelInviteModal, onClickModalClo
               label="user"
               InputProps={{
                 startAdornment: (
-                  <InputAdornment
-                    className="color-white"
-                    position="start"
-                    onChange={onChangeInviteInput}
-                  >
+                  <InputAdornment className="color-white" position="start">
                     <PersonRoundedIcon />
                   </InputAdornment>
                 ),

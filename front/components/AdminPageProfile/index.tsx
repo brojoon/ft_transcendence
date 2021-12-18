@@ -1,6 +1,4 @@
 import React, { VFC, useCallback } from 'react';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import EventBusyIcon from '@mui/icons-material/EventBusy';
 import { IAllUser, IMemberList, IUser } from '@typings/db';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';

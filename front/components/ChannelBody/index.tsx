@@ -1,6 +1,5 @@
 import React, { VFC, useCallback, useState } from 'react';
 import { styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -18,15 +17,6 @@ import ProtectedRoomModal from '@components/ProtectedRoomModal';
 import config from '@utils/config';
 import { ChannelBodyContainer, ScrollbarColor } from './style';
 
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  color: 'white',
-  height: '100px',
-  backgroundColor: '#1e1e1e',
-  fontSize: '14px',
-}));
-
 const ChannelBody = () => {
   const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
     `/api/channels/allChannelList`,
@@ -41,7 +31,6 @@ const ChannelBody = () => {
   const history = useHistory();
   const onClickPublicRoom = useCallback((channelId, e) => {
     e.preventDefault();
-    console.log(e);
     axios
       .post(
         `/api/channels/join/${channelId}`,
@@ -65,7 +54,6 @@ const ChannelBody = () => {
   const onClickProtectedRoom = useCallback(
     (roomNumber, e) => {
       e.preventDefault();
-      console.log('onClickProtectedRoom');
       setChannelPasswordModal(true);
       setChannelPasswordRoomNumber(roomNumber);
     },
