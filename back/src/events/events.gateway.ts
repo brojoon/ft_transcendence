@@ -38,15 +38,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
     onlineMap[socket.id] = { userId: data.userId, username: data.username };
     console.log(`login : ${socket.id}, ${onlineMap[socket.id].userId}`);
-    try{
-      await this.connectRepository.createQueryBuilder()
-          .update()
-          .set({ state: true })
-          .where('userId = :userId', {userId: data.userId})
-          .execute()
-    }catch{
-      throw new BadRequestException('접속상태 업뎃 실패');
-    }
     socket.join("all");
     socket.emit('onlineList', Object.values(onlineMap));
     socket.to("all").emit('onlineList', Object.values(onlineMap));
@@ -117,24 +108,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           await this.dmcontentRepository.update({historyId: gameId}, {match: 2})        
         }
       }
-
-      // connectDB update => false
-      try{
-        let connectNum = 0;
-        Object.keys(onlineMap).forEach(function(v){
-          if (onlineMap[v] === onlineMap[socket.id].userId)
-            ++connectNum;
-        })
-        if (connectNum === 1) {
-          await this.connectRepository.createQueryBuilder()
-          .update()
-          .set({ state: false })
-          .where('userId = :userId', {userId: onlineMap[socket.id].userId})
-          .execute()
-        }
-      } catch (error) {
-        throw new BadRequestException('접속상태 업뎃 실패');
-      }
       delete onlineMap[socket.id];
       // 접속상태 업데이트
       socket.to("all").emit('onlineList', Object.values(onlineMap));
@@ -195,7 +168,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           }
         }
       });
-
     }
     // player1, player2 둘다 없으면 history state 2로만들고 dm에 상태도 2로 만듬
     // 그리고 dm에 신호주기?
@@ -404,3 +376,31 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     // } catch (error) {
     //   throw new BadRequestException('레디 0 실패');
     // }
+
+    // try{
+    //   await this.connectRepository.createQueryBuilder()
+    //       .update()
+    //       .set({ state: true })
+    //       .where('userId = :userId', {userId: data.userId})
+    //       .execute()
+    // }catch{
+    //   throw new BadRequestException('접속상태 업뎃 실패');
+    // }
+
+      // // connectDB update => false
+      // try{
+      //   let connectNum = 0;
+      //   Object.keys(onlineMap).forEach(function(v){
+      //     if (onlineMap[v] === onlineMap[socket.id].userId)
+      //       ++connectNum;
+      //   })
+      //   if (connectNum === 1) {
+      //     await this.connectRepository.createQueryBuilder()
+      //     .update()
+      //     .set({ state: false })
+      //     .where('userId = :userId', {userId: onlineMap[socket.id].userId})
+      //     .execute()
+      //   }
+      // } catch (error) {
+      //   throw new BadRequestException('접속상태 업뎃 실패');
+      // }
