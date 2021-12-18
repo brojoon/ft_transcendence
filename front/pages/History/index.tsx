@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from '@mui/material/Button';
-import getCookie from '@utils/cookie';
 import { Link } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';

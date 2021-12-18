@@ -3,7 +3,6 @@ import { Stage, PixiComponent } from '@inlet/react-pixi';
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import getSocket from '@utils/useSocket';
-import getCookie from '@utils/cookie';
 import 'regenerator-runtime';
 import { useHistory, useParams } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
@@ -72,9 +71,9 @@ const Circle = PixiComponent<CircleProps, PIXI.Graphics>('Circle', {
 });
 // axio 옵션
 const option = {
-  headers: {
-    Authorization: `Bearer ${getCookie('ts_token', 1)}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${getCookie('ts_token', 1)}`,
+  // },
   withCredentials: true,
 };
 

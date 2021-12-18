@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
 import getSocket from '@utils/useSocket';
-import getCookie from '@utils/cookie';
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
@@ -12,9 +11,9 @@ import useSWR from 'swr';
 import { MatchContainer } from './style';
 
 const option = {
-  headers: {
-    Authorization: `Bearer ${getCookie('ts_token', 1)}`,
-  },
+  // headers: {
+  //   Authorization: `Bearer ${getCookie('ts_token', 1)}`,
+  // },
   withCredentials: true,
 };
 

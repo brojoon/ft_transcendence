@@ -6,7 +6,6 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
-import gravatar from 'gravatar';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import SettingsIcon from '@mui/icons-material/Settings';
