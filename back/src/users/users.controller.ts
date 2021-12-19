@@ -306,4 +306,14 @@ export class UsersController {
     return  this.usersService.listBan(user.userId);
   }
 
+  @ApiOperation({ summary: 'admin or moderator인지 확인'})
+  @ApiResponse ({
+    status: 200,
+    description: '[return : ture]',
+  })
+  @HttpCode(200)
+  @Get('checkAdminOrModerator')
+  async checkAdminOrModerator(@User() user){
+    return  this.usersService.checkAdminOrModerator(user.userId);
+  }
 }

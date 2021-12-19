@@ -314,6 +314,19 @@ export class UsersService {
     }
   }
 
+  async checkAdminOrModerator(userId: string) {
+    try {
+      if (!(await this.checkAdmin(userId)) && !(await this.checkModerator(userId)))
+        return (false);
+      return (true);       
+    } catch (error) {
+      if (error.errno !== undefined || error.response.statusCode !== 404)
+        throw new BadRequestException("listModerator 실패");
+      else if (error.response.statusCode === 404)
+        throw new NotFoundException(error.response.message);    
+    }
+  }
+
   async listAdmin(userId: string) {
     try {
       if (!(await this.checkAdmin(userId)) && !(await this.checkModerator(userId)))
