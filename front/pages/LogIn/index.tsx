@@ -11,9 +11,7 @@ const LogIn = () => {
   // }
 
   const onClickGoogleLogin = useCallback(() => {
-    axios.get('/api/', {
-      withCredentials: true,
-    });
+    window.location.href = '/api/auth/google';
   }, []);
 
   const onClick42Login = useCallback(() => {
