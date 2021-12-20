@@ -122,14 +122,18 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @ConnectedSocket() socket: Socket ){
     if (data.player !=="" && gameMap[data.gameId] === undefined) {
       gameMap[data.gameId] = initData;
+      gameMap[data.gameId].game_start = 0;
     }
-    gameMap[data.gameId].player_one_ready = data.player1Ready;
-    gameMap[data.gameId].player_two_ready = data.player2Ready;
-    socket.join(`game-${data.gameId}`);
-    this.server.to(`game-${data.gameId}`).emit('ready', {
-      player1: gameMap[data.gameId].player_one_ready,
-      player2: gameMap[data.gameId].player_two_ready, 
-    });
+    console.log("ready!!!!!!!!!!!!!!!!!!!!!!", gameMap[data.gameId].game_start, gameMap[data.gameId].player_one_ready, gameMap[data.gameId].player_two_ready)
+    if (gameMap[data.gameId].game_start === 0) {
+      gameMap[data.gameId].player_one_ready = data.player1Ready;
+      gameMap[data.gameId].player_two_ready = data.player2Ready;
+      socket.join(`game-${data.gameId}`);
+      this.server.to(`game-${data.gameId}`).emit('ready', {
+        player1: gameMap[data.gameId].player_one_ready,
+        player2: gameMap[data.gameId].player_two_ready, 
+      });
+    }
   }
 
   @SubscribeMessage('onGame')
@@ -200,9 +204,18 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   @SubscribeMessage('gameCheck')
   async gameCheck(
     @MessageBody() data: {gameId: number}){
-    this.server.to(`game-${data.gameId}`).emit('gameStart', {
-      gameStart: gameMap[data.gameId].game_start
-    });      
+    if (gameMap[data.gameId] === undefined) {
+      this.server.to(`game-${data.gameId}`).emit('gameStart', {
+        gameStart: 0       
+      });
+      console.log("gameStart : ", 0)
+    }
+    else {
+      this.server.to(`game-${data.gameId}`).emit('gameStart', {
+        gameStart: gameMap[data.gameId].game_start       
+      });
+      console.log("gameStart : ", gameMap[data.gameId].game_start)
+    }
   }
 
   @SubscribeMessage('matching')
@@ -210,9 +223,16 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() data: {userId: string, gameId: number},
     @ConnectedSocket() socket: Socket ){
     socket.join('match');
-    if (users.playerOne === null && data.gameId === 0) {
+    console.log("match!!!!!!!!!!!!!!!", data.gameId, data.userId);
+    console.log("match!!!!!!!!!!!!!!!", users.playerOne);
+    console.log("match!!!!!!!!!!!!!!!", users.playerTwo);
+
+    if ((users.playerOne === null && data.gameId === 0) || 
+      (users.playerOne !== null && users.playerTwo !== null  && data.gameId === 0)) {
       users.playerOne = data.userId;
       users.playerOne_socet = socket;
+      users.playerTwo = null;
+      users.playerTwo_socet = null;
     } else if (users.playerTwo === null && users.playerOne !== data.userId && data.gameId === 0) {
       users.playerTwo = data.userId;
       users.playerTwo_socet = socket;
@@ -235,6 +255,18 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       users.playerTwo = null;
       users.playerOne_socet = null;
       users.playerTwo_socet = null;
+    }
+  }
+
+  @SubscribeMessage('outMatching')
+  async outMatching(
+    @MessageBody() data: {userId: string},
+    @ConnectedSocket() socket: Socket ){
+      
+    if (users.playerOne === data.userId && users.playerTwo === null) {
+      users.playerOne = null;
+      users.playerOne_socet = null;
+      socket.leave('match')
     }
   }
 
@@ -275,18 +307,20 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       check: string
     }){
     try {
-      if (data.check === undefined) {
-        gameMap[data.gameId].length = data.speed;
-        gameMap[data.gameId].game_set = data.set;
-        gameMap[data.gameId].game_map = data.map;
-        gameMap[data.gameId].random_map = data.random;   
-      }
-      this.server.to(`game-${data.gameId}`).emit('gameSet', {
-        length: gameMap[data.gameId].length,
-        game_set: gameMap[data.gameId].game_set, 
-        game_map: gameMap[data.gameId].game_map, 
-        random_map: gameMap[data.gameId].random_map,
-      });     
+      if (gameMap[data.gameId] !== undefined) {
+        if (data.check === undefined) {
+          gameMap[data.gameId].length = data.speed;
+          gameMap[data.gameId].game_set = data.set;
+          gameMap[data.gameId].game_map = data.map;
+          gameMap[data.gameId].random_map = data.random;   
+        }
+        this.server.to(`game-${data.gameId}`).emit('gameSet', {
+          length: gameMap[data.gameId].length,
+          game_set: gameMap[data.gameId].game_set, 
+          game_map: gameMap[data.gameId].game_map, 
+          random_map: gameMap[data.gameId].random_map,
+        });  
+      }   
     } catch (error) {
       throw new BadRequestException("changeGameSet 실패")
     }
