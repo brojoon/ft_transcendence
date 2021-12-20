@@ -18,10 +18,17 @@ interface Props {
   player1Ready: number;
   player2Ready: number;
   mapSelect: number;
+  player: string;
   setMapSelect: (e: any) => void;
 }
 
-const GameSetting: VFC<Props> = ({ player1Ready, player2Ready, mapSelect, setMapSelect }) => {
+const GameSetting: VFC<Props> = ({
+  player1Ready,
+  player2Ready,
+  player,
+  mapSelect,
+  setMapSelect,
+}) => {
   const { id } = useParams<{ id: string }>();
   const [gameSpeed, setGameSpeed] = useState(2);
   const [gameCount, setGameCount] = useState(3);
@@ -29,7 +36,7 @@ const GameSetting: VFC<Props> = ({ player1Ready, player2Ready, mapSelect, setMap
 
   const onChangeSpeed = useCallback(
     (e: any) => {
-      if (player1Ready || player2Ready) return;
+      if (player1Ready || player2Ready || !player) return;
       socket.emit('changeGameSet', {
         gameId: id,
         speed: e.target.value,
@@ -38,69 +45,74 @@ const GameSetting: VFC<Props> = ({ player1Ready, player2Ready, mapSelect, setMap
         random: ballRandom,
       });
     },
-    [player1Ready, player2Ready],
+    [player1Ready, player2Ready, gameCount, ballRandom, mapSelect, player],
   );
 
   const onChangeMapSelect = useCallback(
     (e: any) => {
-      if (player1Ready || player2Ready) return;
-      socket.emit('changeGameSet', {
-        gameId: id,
-        speed: gameSpeed,
-        set: gameCount,
-        map: e.target.value,
-        random: ballRandom,
-      });
+      if (player1Ready || player2Ready || !player) return;
+      if (id) {
+        socket.emit('changeGameSet', {
+          gameId: id,
+          speed: gameSpeed,
+          set: gameCount,
+          map: e.target.value,
+          random: ballRandom,
+        });
+      }
     },
-    [player1Ready, player2Ready],
+    [player1Ready, player2Ready, gameCount, ballRandom, gameSpeed, id, player],
   );
 
   const onChangeGameCount = useCallback(
     (e: any) => {
-      if (player1Ready || player2Ready) return;
-      socket.emit('changeGameSet', {
-        gameId: id,
-        speed: gameSpeed,
-        set: e.target.value,
-        map: mapSelect,
-        random: ballRandom,
-      });
+      if (player1Ready || player2Ready || !player) return;
+      if (id) {
+        socket.emit('changeGameSet', {
+          gameId: id,
+          speed: gameSpeed,
+          set: e.target.value,
+          map: mapSelect,
+          random: ballRandom,
+        });
+      }
     },
-    [player1Ready, player2Ready],
+
+    [player1Ready, player2Ready, ballRandom, mapSelect, gameSpeed, id, player],
   );
 
   const onChangeBallRandom = useCallback(
     (e: any) => {
-      if (player1Ready || player2Ready) return;
-      socket.emit('changeGameSet', {
-        gameId: id,
-        speed: gameSpeed,
-        set: gameCount,
-        map: mapSelect,
-        random: e.target.value,
-      });
+      if (player1Ready || player2Ready || !player) return;
+      if (id) {
+        socket.emit('changeGameSet', {
+          gameId: id,
+          speed: gameSpeed,
+          set: gameCount,
+          map: mapSelect,
+          random: e.target.value,
+        });
+      }
     },
-    [player1Ready, player2Ready],
+    [player1Ready, player2Ready, gameCount, mapSelect, gameSpeed, id, player],
   );
 
   useEffect(() => {
-    socket.emit('gameCheck', {
-      gameId: id,
-    });
-  }, []);
-
-  useEffect(() => {
-    socket.emit('changeGameSet', {
-      gameId: id,
-      speed: gameSpeed,
-      set: gameCount,
-      map: mapSelect,
-      random: ballRandom,
-    });
-  }, []);
+    if (player1Ready || player2Ready || !player)
+      if (id) {
+        socket.emit('changeGameSet', {
+          gameId: id,
+          speed: gameSpeed,
+          set: gameCount,
+          map: mapSelect,
+          random: ballRandom,
+        });
+      }
+  }, [gameSpeed, gameCount, mapSelect, ballRandom, id, player]);
 
   useEffect(() => {
     socket.on('gameSet', (set: any) => {
+      console.log('set', set);
       setGameSpeed(set.length);
       setGameCount(set.game_set);
       setMapSelect(set.game_map);

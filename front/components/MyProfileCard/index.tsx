@@ -33,7 +33,7 @@ const MyProfileCard = () => {
         withCredentials: true,
       })
       .then(() => {
-        setIsAdmin(1);
+        setIsAdmin(0);
       })
       .catch(() => {
         setIsAdmin(0);
@@ -77,7 +77,14 @@ const MyProfileCard = () => {
               </Button>
             </Link>
           </CardActions>
-        ) : null}
+        ) : (
+          <CardActions className="card-actions">
+            <Button className="admin-block-btn" variant="contained" disabled>
+              ADMIN&nbsp;
+              <ManageAccountsIcon />
+            </Button>
+          </CardActions>
+        )}
       </Card>
     </MyProfileCardContainer>
   );

@@ -3,8 +3,6 @@ import axios from 'axios';
 import getSocket from '@utils/useSocket';
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
@@ -19,14 +17,14 @@ const option = {
 
 const Match = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
-  const [ismatching, setIsMatching] = useState(false);
 
   const history = useHistory();
   const socket = getSocket();
 
-  const onClickMatch = useCallback(() => {
-    setIsMatching(true);
-    socket.emit('matching', { userId: myData?.userId, gameId: 0 });
+  useEffect(() => {
+    if (myData) {
+      socket.emit('matching', { userId: myData?.userId, gameId: 0 });
+    }
   }, [myData, socket]);
 
   useEffect(() => {
@@ -53,29 +51,8 @@ const Match = () => {
 
   return (
     <MatchContainer>
-      {ismatching ? (
-        <Box
-          sx={{ display: 'flex' }}
-          style={{
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            background: '#121212',
-            color: 'white',
-            width: '100%',
-            height: '100vh',
-          }}
-        >
-          <CircularProgress className="progress" />
-          <h1>Waiting for opponent...</h1>
-        </Box>
-      ) : (
-        <div style={{ height: '100vh', alignItems: 'center', display: 'flex' }}>
-          <Button variant="contained" onClick={onClickMatch}>
-            MATCH
-          </Button>
-        </div>
-      )}
+      <CircularProgress className="progress" />
+      <h1>Waiting for opponent...</h1>
     </MatchContainer>
   );
 };

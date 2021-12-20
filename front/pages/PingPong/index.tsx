@@ -3,10 +3,6 @@ import axios from 'axios';
 import getSocket from '@utils/useSocket';
 import 'regenerator-runtime';
 import { useHistory, useParams } from 'react-router-dom';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
 import useInput from '@hooks/useInput';
 import { IUser, IAllUser } from '@typings/db';
 import useSWR from 'swr';
@@ -19,7 +15,6 @@ import GamePixiContainer from '@components/GamePixiContainer';
 import GameSetting from '@components/GameSetting';
 import {
   PingPongContainer,
-  GameSettingContainer,
   GameReadyContainer,
   UserPointContainer,
   GameInitBtnContainer,
@@ -41,25 +36,49 @@ const PingPong = (data: any) => {
   const [player2Ready, setPlay2Ready] = useState(0);
   const [user1Point, setUser1Point] = useState(0);
   const [user2Point, setUser2Point] = useState(0);
-  const [userId, setUserId] = useState('');
   const [player, setPlayer] = useState('');
   const [isGameStart, setIsGameStart] = useState(false);
   const [opponent, setOpponent] = useState('');
   const [opponentName, setOpponentName] = useState('');
   const [opponentProfile, setOpponentProfile] = useState('');
-  // const [gameSpeed, setGameSpeed] = useState(2);
-  // const [gameCount, setGameCount] = useState(3);
   const [mapSelect, setMapSelect] = useState(0);
-  // const [ballRandom, setBallRandom] = useState(0);
-
+  const [watchUserId1, setWatchUserId1] = useState('');
+  const [watchUserId2, setWatchUserId2] = useState('');
+  const [watchUserId1Profile, setWatchUserId1Profile] = useState('');
+  const [watchUserId2Profile, setWatchUserId2Profile] = useState('');
+  const [watchUserId1Name, setWatchUserId1Name] = useState('');
+  const [watchUserId2Name, setWatchUserId2Name] = useState('');
   const history = useHistory();
 
   useEffect(() => {
-    if (myData) {
+    socket.on('gameStart', (isGameStart: any) => {
+      console.log('gameStart', isGameStart);
+      if (isGameStart.gameStart === 1) {
+        setIsGameStart(true);
+        setPlay1Ready(1);
+        setPlay2Ready(1);
+      }
+      return () => {
+        socket.off('gameStart');
+      };
+    });
+  }, [socket]);
+
+  useEffect(() => {
+    if (id) {
+      socket.emit('gameCheck', {
+        gameId: id,
+      });
+    }
+  }, [id, socket]);
+
+  useEffect(() => {
+    if (myData && id) {
       socket.emit('onGame', {
         gameId: id,
         player: myData.userId,
       });
+      console.log('새로고침?', myData.userId);
     }
     return () => {
       console.log('offGame');
@@ -70,122 +89,48 @@ const PingPong = (data: any) => {
         });
       }
     };
-  }, [socket, myData]);
+  }, [socket, myData, id]);
 
   useEffect(() => {
-    if (opponent) {
+    if (myData) {
       allUserList?.map((user) => {
         if (user.userId === opponent) {
           setOpponentProfile(user.profile);
           setOpponentName(user.username);
+        } else if (user.userId === watchUserId1) {
+          setWatchUserId1Profile(user.profile);
+          setWatchUserId1Name(user.username);
+        } else if (user.userId === watchUserId2) {
+          setWatchUserId2Profile(user.profile);
+          setWatchUserId2Name(user.username);
         }
       });
     }
-  }, [opponent]);
-
-  // useEffect(() => {
-  //   socket.emit('gameCheck', {
-  //     gameId: gameId,
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   socket.emit('changeGameSet', {
-  //     gameId: gameId,
-  //     speed: gameSpeed,
-  //     set: gameCount,
-  //     map: mapSelect,
-  //     random: ballRandom,
-  //   });
-  // }, []);
-
-  // const onChangeSpeed = useCallback(
-  //   (e: any) => {
-  //     if (player1Ready || player2Ready) return;
-  //     socket.emit('changeGameSet', {
-  //       gameId: gameId,
-  //       speed: e.target.value,
-  //       set: gameCount,
-  //       map: mapSelect,
-  //       random: ballRandom,
-  //     });
-  //   },
-  //   [player1Ready, player2Ready],
-  // );
-
-  // const onChangeMapSelect = useCallback(
-  //   (e: any) => {
-  //     if (player1Ready || player2Ready) return;
-  //     socket.emit('changeGameSet', {
-  //       gameId: gameId,
-  //       speed: gameSpeed,
-  //       set: gameCount,
-  //       map: e.target.value,
-  //       random: ballRandom,
-  //     });
-  //   },
-  //   [player1Ready, player2Ready],
-  // );
-
-  // const onChangeGameCount = useCallback(
-  //   (e: any) => {
-  //     if (player1Ready || player2Ready) return;
-  //     socket.emit('changeGameSet', {
-  //       gameId: gameId,
-  //       speed: gameSpeed,
-  //       set: e.target.value,
-  //       map: mapSelect,
-  //       random: ballRandom,
-  //     });
-  //   },
-  //   [player1Ready, player2Ready],
-  // );
-
-  // const onChangeBallRandom = useCallback(
-  //   (e: any) => {
-  //     if (player1Ready || player2Ready) return;
-  //     socket.emit('changeGameSet', {
-  //       gameId: gameId,
-  //       speed: gameSpeed,
-  //       set: gameCount,
-  //       map: mapSelect,
-  //       random: e.target.value,
-  //     });
-  //   },
-  //   [player1Ready, player2Ready],
-  // );
+  }, [myData, opponent, allUserList, watchUserId1, watchUserId2]);
 
   // 내정보 받아오고 => 게임 기록 가져오고 => 내정보와 userId 매칭후 player one인지 two인지 확인
   // playerOne인 경우 게임 리셋하고 게임포인트 집어 넣기
   useEffect(() => {
     async function getGameInfo() {
-      let temUserId = '';
-      // 내정보 받기
-      await axios.get(`http://localhost:3095/api/users`, option).then((res: any) => {
-        temUserId = res.data.userId;
-        socket.emit('login', { userId: temUserId, Dms: [], channels: [] });
-      });
-      // history와 비교 (진행상태 확인 =>  완료된 게임이면 결과 창으로 바로 이동)
       await axios
         .get(`http://localhost:3095/api/game/history/${gameId}`, option)
         .then((res: any) => {
           if (res.data.state === 2) history.push(`/game/history/${gameId}`);
-          setUserId(temUserId);
-          if (temUserId === res.data.userId1) {
+          if (myData?.userId === res.data.userId1) {
             setPlayer('playerOne');
             setOpponent(res.data.userId2);
             setPlay2Ready(res.data.playerTwoJoin);
+
             socket.emit('game', {
               gameId: gameId,
               player: 'playerOne',
               player1Ready: 0,
               player2Ready: res.data.playerTwoJoin,
             });
-          } else if (temUserId === res.data.userId2) {
+          } else if (myData?.userId === res.data.userId2) {
             setPlayer('playerTwo');
             setPlay1Ready(res.data.playerOneJoin);
             setOpponent(res.data.userId1);
-
             socket.emit('game', {
               gameId: gameId,
               player: 'playerTwo',
@@ -200,6 +145,9 @@ const PingPong = (data: any) => {
               player2Ready: res.data.playerTwoJoin,
             });
           }
+          console.log('res.data', res.data);
+          setWatchUserId1(res.data.userId1);
+          setWatchUserId2(res.data.userId2);
           socket.emit('changeGameSet', { gameId: gameId, check: 'check' });
           socket.emit('gamePoint', {
             gameId: gameId,
@@ -212,45 +160,36 @@ const PingPong = (data: any) => {
   }, [gameId, myData]);
 
   useEffect(() => {
-    socket.on('gameStart', (gameStart: any) => {
-      console.log('gameStart', gameStart);
-      setIsGameStart(true);
-      return () => {
-        socket.off('gameStart');
-      };
-    });
-  }, []);
-
-  useEffect(() => {
     socket.on('point', (point: any) => {
       setUser1Point(point.player1);
       setUser2Point(point.player2);
     });
+    return () => {
+      socket.off('point');
+    };
   }, []);
 
   useEffect(() => {
     socket.on('end', () => {
       history.push(`/game/history/${gameId}`);
     });
+    return () => {
+      socket.off('end');
+    };
   }, [gameId]);
 
   useEffect(() => {
     socket.on('ready', (ready: any) => {
+      console.log('ready', ready);
       setPlay1Ready(ready.player1);
       setPlay2Ready(ready.player2);
     });
+    return () => {
+      socket.off('ready');
+    };
   }, []);
 
-  // useEffect(() => {
-  //   socket.on('gameSet', (set: any) => {
-  //     setGameSpeed(set.length);
-  //     setGameCount(set.game_set);
-  //     setMapSelect(set.game_map);
-  //     setBallRandom(set.random_map);
-  //   });
-  // }, []);
-
-  const readyPlayer1 = () => {
+  const readyPlayer1 = useCallback(() => {
     if (player === 'playerOne' && player1Ready === 0) {
       socket.emit('gameReady', {
         gameId: gameId,
@@ -258,8 +197,8 @@ const PingPong = (data: any) => {
         userId: myData?.userId,
       });
     }
-  };
-  const readyPlayer2 = () => {
+  }, [socket, gameId, myData, player, player1Ready]);
+  const readyPlayer2 = useCallback(() => {
     if (player === 'playerTwo' && player2Ready === 0) {
       socket.emit('gameReady', {
         gameId: gameId,
@@ -267,11 +206,11 @@ const PingPong = (data: any) => {
         userId: myData?.userId,
       });
     }
-  };
+  }, [socket, gameId, myData, player, player2Ready]);
 
-  const changeGameSet = async () => {
-    if (player !== '') await axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
-  };
+  const changeGameSet = useCallback(() => {
+    if (player !== '') axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
+  }, [gameId, player, option]);
 
   return (
     <BackgroundHeight className="bg">
@@ -285,6 +224,7 @@ const PingPong = (data: any) => {
             <GameSetting
               player1Ready={player1Ready}
               player2Ready={player2Ready}
+              player={player}
               mapSelect={mapSelect}
               setMapSelect={setMapSelect}
             />
@@ -293,14 +233,14 @@ const PingPong = (data: any) => {
             <GameReadyContainer>
               <div className="player-one-container">
                 <div>
-                  <Avatar
-                    className="player-one-avatar"
-                    src={player === 'playerOne' ? myData?.profile : opponentProfile}
-                    alt="Avatar"
-                  />
+                  <Avatar className="player-one-avatar" src={watchUserId1Profile} alt="Avatar" />
                 </div>
                 <div className="player-one-text">
-                  {player === 'playerOne' ? myData?.username + ' (나)' : opponentName + ' (상대편)'}
+                  {player === 'playerOne'
+                    ? myData?.username + ' (나)'
+                    : player !== ''
+                    ? opponentName + ' (상대편)'
+                    : watchUserId1Name}
                 </div>
                 <div>
                   {player === 'playerOne' ? (
@@ -329,14 +269,14 @@ const PingPong = (data: any) => {
               </div>
               <div className="player-two-container">
                 <div>
-                  <Avatar
-                    className="player-two-avatar"
-                    src={player === 'playerTwo' ? myData?.profile : opponentProfile}
-                    alt="Avatar"
-                  />
+                  <Avatar className="player-two-avatar" src={watchUserId2Profile} alt="Avatar" />
                 </div>
                 <div className="player-two-text">
-                  {player === 'playerTwo' ? myData?.username + ' (나)' : opponentName + ' (상대편)'}
+                  {player === 'playerTwo'
+                    ? myData?.username + ' (나)'
+                    : player !== ''
+                    ? opponentName + ' (상대편)'
+                    : watchUserId2Name}
                 </div>
                 <div>
                   {player === 'playerTwo' ? (
@@ -366,19 +306,19 @@ const PingPong = (data: any) => {
           <UserPointContainer>
             {isGameStart && (
               <div className="point-wrapper">
-                {(player === 'playerOne' ? myData?.username : opponentName) + ' Point'}
+                {opponentName ? opponentName + ' Point' : watchUserId1Name + ' Point'}
                 <EventNoteIcon className="point-icon" /> {': [ ' + user1Point + ' ] '}
               </div>
             )}
             {isGameStart && (
               <div className="point-wrapper">
-                {(player === 'playerTwo' ? myData?.username : opponentName) + ' Point'}
+                {opponentName ? opponentName + ' Point' : watchUserId2Name + ' Point'}
                 <EventNoteIcon className="point-icon" /> {': [ ' + user2Point + ' ] '}
               </div>
             )}
           </UserPointContainer>
           <GameInitBtnContainer width={`${isGameStart ? '' : '100%'}`}>
-            {player === '' ? null : player1Ready && player2Ready ? (
+            {player === '' ? null : (player1Ready && player2Ready) || isGameStart ? (
               <Button className="game-btn" variant="contained" onClick={changeGameSet}>
                 게임시작
               </Button>
@@ -387,9 +327,10 @@ const PingPong = (data: any) => {
                 게임시작
               </Button>
             )}
-            <div className="game-text"> (모두 레디 시 시작됨) [key : t] </div>
-            <div>(up: w / down: s)</div>
-            {player === '' && <div>관전중...</div>}
+            {player === '' ? null : (
+              <div className="game-text"> (모두 레디 시 시작됨) [key : t] </div>
+            )}
+            {player === '' ? <h2>관전중...</h2> : <div>(up: w / down: s)</div>}
           </GameInitBtnContainer>
         </PingPongContainer>
       </Scrollbars>

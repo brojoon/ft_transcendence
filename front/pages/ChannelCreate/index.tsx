@@ -5,33 +5,23 @@ import { ChannelCreateContainer } from './style';
 import { NumberLiteralType } from 'typescript';
 
 interface Props {
-  onSubmitChannelCreate: (e: any) => void;
-  onChangeVisibility: (e: any) => void;
-  onChangeName: (e: any) => void;
-  handleClickShowPassword: (e: any) => void;
-  handleChange: any;
+  onSubmitChannelCreate: () => void;
+  setVisibility: (e: any) => void;
+  setName: (e: any) => void;
   name: string;
-  visibility: string;
-  PasswordValues: { password: string; showPassword: boolean };
   setPasswordValues: any;
   createError: number;
-  channelNameError: number;
-  channelPasswordError: number;
+  setCreateError: (e: any) => void;
 }
 
 const ChannelCreate: VFC<Props> = ({
   onSubmitChannelCreate,
-  onChangeVisibility,
-  onChangeName,
-  handleClickShowPassword,
-  handleChange,
-  PasswordValues,
+  setVisibility,
+  setName,
   setPasswordValues,
   name,
-  visibility,
   createError,
-  channelNameError,
-  channelPasswordError,
+  setCreateError,
 }) => {
   return (
     <ChannelCreateContainer>
@@ -39,19 +29,14 @@ const ChannelCreate: VFC<Props> = ({
       <div className="wrapper">
         <div className="channel-form-wrapper">
           <ChannelForm
-            onSubmitChannelCreate={onSubmitChannelCreate}
-            onChangeVisibility={onChangeVisibility}
-            onChangeName={onChangeName}
-            name={name}
-            visibility={visibility}
             value="CREATE"
-            handleClickShowPassword={handleClickShowPassword}
-            handleChange={handleChange}
-            PasswordValues={PasswordValues}
+            onSubmitChannelCreate={onSubmitChannelCreate}
+            name={name}
+            setVisibility={setVisibility}
+            setName={setName}
             setPasswordValues={setPasswordValues}
             createError={createError}
-            channelNameError={channelNameError}
-            channelPasswordError={channelPasswordError}
+            setCreateError={setCreateError}
           />
         </div>
       </div>

@@ -92,10 +92,10 @@ const ProtectedRoomModal: VFC<Props> = ({
             showPassword: false,
           });
           setChannelPasswordModal(false);
-          mutateChannelList();
           mutateAllChannelList();
-
-          history.push(`/channels/${channelPasswordRoomNumber}`);
+          mutateChannelList().then(() => {
+            history.push(`/channels/${channelPasswordRoomNumber}`);
+          });
           setChannelPasswordRoomNumber('');
         })
         .catch((error) => {

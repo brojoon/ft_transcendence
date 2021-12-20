@@ -63,6 +63,14 @@ export const MyProfileCardContainer = styled(Box)`
 		border-color: #FFAA00;
 
 	}
+
+	& .admin-block-btn {
+		width: 100%;
+		height: 35px;
+		background-color: #393939 !important;
+		border-color: #393939 !important;
+		font-weight: bold;
+	}
 `;
 
 export const UserAvatar = styled(Avatar) <{ isState: string }>`
