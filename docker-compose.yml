@@ -5,34 +5,34 @@ services:
     container_name: postgresql
     restart: always
     ports:
-        - "5432:5432"
+      - "5432:5432"
     networks:
       - database
     env_file: .env
     environment:
-        POSTGRES_USER: "${POSTGRES_USER}"
-        POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
-        POSTGRES_DB: "${POSTGRES_DB}"
-        TZ: "Asia/Seoul"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      TZ: "Asia/Seoul"
     volumes:
-      - postgresql:/var/lib/postgresql/data
-      #- ./postgresql:/var/lib/postgresql/data
+      # - postgresql:/var/lib/postgresql/data
+      - ./postgresql:/var/lib/postgresql/data
       #- ./db.sql:/docker-entrypoint-initdb.d/db.sql
-  back:
-    build:
-      context: ./back
-      dockerfile: Dockerfile
-    container_name: back
-    restart: always
-    ports:
-      - 3095:3095
-    depends_on:
-      - postgresql
-    networks:
-      - database
-      - frontApp
-    #volumes:
-      #- ./back:/usr/src/app
+  # back:
+  #   build:
+  #     context: ./back
+  #     dockerfile: Dockerfile
+  #   container_name: back
+  #   restart: always
+  #   ports:
+  #     - 3095:3095
+  #   depends_on:
+  #     - postgresql
+  #   networks:
+  #     - database
+  #     - frontApp
+  #volumes:
+  #- ./back:/usr/src/app
 
   # front:
   #   build:
