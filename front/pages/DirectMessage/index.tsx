@@ -41,50 +41,41 @@ const DirectMessage = () => {
   const scrollbarRef = useRef<Scrollbars>(null);
   const socket = getSocket();
 
-  const onSubmitChat = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (chat?.trim() && chatData) {
-        mutateChat((prevChatData) => {
-          prevChatData?.[0].unshift({
-            id: prevChatData[0][0].id + 1,
-            dmId: parseInt(id),
-            userId1: myData?.userId,
-            userId2: userId,
+  const onSubmitChat = useCallback(() => {
+    if (chat?.trim() && chatData) {
+      mutateChat((prevChatData) => {
+        prevChatData?.[0].unshift({
+          id: prevChatData[0][0].id + 1,
+          dmId: parseInt(id),
+          userId1: myData?.userId,
+          userId2: userId,
+          message: chat,
+          match: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          historyId: 0,
+        });
+        return prevChatData;
+      }, false);
+      axios
+        .post(
+          `/api/dms/sendMessage/${userId}/0/0`,
+          {
             message: chat,
-            match: 0,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-            historyId: 0,
-          });
-          return prevChatData;
-        }, false);
-        axios
-          .post(
-            `/api/dms/sendMessage/${userId}/0/0`,
-            {
-              message: chat,
-            },
-            config,
-          )
-          .then(() => {})
-          .catch(() => {
-            mutateChat();
-          });
-        setChat('');
-        setTimeout(() => {
-          scrollbarRef.current?.scrollToBottom();
-        }, 50);
-      }
-    },
-    [chat],
-  );
-  const onChangeChat = useCallback(
-    (e) => {
-      setChat(e.target.value);
-    },
-    [chat],
-  );
+          },
+          config,
+        )
+        .then(() => {})
+        .catch(() => {
+          mutateChat();
+        });
+      setChat('');
+      setTimeout(() => {
+        scrollbarRef.current?.scrollToBottom();
+      }, 50);
+    }
+  }, [chat]);
+
   const onMessage = useCallback((data) => {
     console.log(data);
     console.log('dm왔다!');
@@ -146,7 +137,7 @@ const DirectMessage = () => {
         isReachingEnd={isReachingEnd}
         setSize={setSize}
       />
-      <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />
+      <ChatBox chat={chat} setChat={setChat} onSubmitChat={onSubmitChat} />
     </DirectMessageContainer>
   );
 };

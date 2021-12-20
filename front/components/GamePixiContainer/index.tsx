@@ -72,19 +72,19 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player }) => {
       setBallX(gameInfo.ball_x);
       setBallY(gameInfo.ball_y);
     });
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     socket.on('player_one', (playerInfo: any) => {
       setPlayOneY(playerInfo.player_one_y);
     });
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     socket.on('player_two', (playerInfo: any) => {
       setPlayTwoY(playerInfo.player_two_y);
     });
-  }, []);
+  }, [socket]);
 
   useEffect(() => {
     const keyDownHandler = (e: any) => {

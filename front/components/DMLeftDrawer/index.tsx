@@ -37,7 +37,7 @@ const DMLeftDrawerBar = () => {
     setDMSearchInputValue(e.target.value);
   }, []);
 
-  if (dmSearchInputValue) {
+  if (dmSearchInputValue && dmSearchInputValue.indexOf('\\') === -1) {
     dmlist2 = dmlist?.filter((dm) => {
       const regex = new RegExp(dmSearchInputValue, 'gi');
       return dm.username.match(regex);

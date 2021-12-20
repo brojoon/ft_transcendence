@@ -37,7 +37,7 @@ const ChannelLeftDrawBar = () => {
     setChannelSearchInputValue(e.target.value);
   }, []);
 
-  if (channelSearchInputValue) {
+  if (channelSearchInputValue && channelSearchInputValue.indexOf('\\') === -1) {
     channelList2 = channelList?.filter((channel) => {
       const regex = new RegExp(channelSearchInputValue, 'gi');
       return channel.name.match(regex);

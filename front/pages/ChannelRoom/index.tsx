@@ -102,47 +102,36 @@ const ChannelRoom = () => {
     [settingToggle, setSettingToggle],
   );
 
-  const onSubmitChat = useCallback(
-    (e) => {
-      e.preventDefault();
-      if (chat?.trim() && chatData) {
-        mutateChat((prevChatData) => {
-          prevChatData?.[0].unshift({
-            userId: myData?.userId,
-            message: chat,
-            updatedAt: new Date(),
-          });
-          return prevChatData;
-        }, false);
-        axios
-          .post(
-            `/api/channels/send/${id}`,
-            {
-              msg: chat,
-            },
-            config,
-          )
-          .then(() => {})
-          .catch((error) => {
-            mutateChat();
-            console.log(error.data);
-          });
-        console.log(chat);
-        setChat('');
-        setTimeout(() => {
-          scrollbarRef.current?.scrollToBottom();
-        }, 50);
-      }
-    },
-    [chat],
-  );
-  const onChangeChat = useCallback(
-    (e) => {
-      setChat(e.target.value);
-    },
-    [chat],
-  );
-
+  const onSubmitChat = useCallback(() => {
+    if (chat?.trim() && chatData) {
+      mutateChat((prevChatData) => {
+        prevChatData?.[0].unshift({
+          userId: myData?.userId,
+          message: chat,
+          updatedAt: new Date(),
+        });
+        return prevChatData;
+      }, false);
+      axios
+        .post(
+          `/api/channels/send/${id}`,
+          {
+            msg: chat,
+          },
+          config,
+        )
+        .then(() => {})
+        .catch((error) => {
+          mutateChat();
+          console.log(error.data);
+        });
+      console.log(chat);
+      setChat('');
+      setTimeout(() => {
+        scrollbarRef.current?.scrollToBottom();
+      }, 50);
+    }
+  }, [chat]);
   const onClickChannelLeaveModal = useCallback(
     (e) => {
       e.preventDefault();
@@ -260,7 +249,7 @@ const ChannelRoom = () => {
           setSize={setSize}
           isReachingEnd={isReachingEnd}
         />
-        {!myMute && <ChatBox chat={chat} onChangeChat={onChangeChat} onSubmitChat={onSubmitChat} />}
+        {!myMute && <ChatBox chat={chat} setChat={setChat} onSubmitChat={onSubmitChat} />}
       </ChannelRoomContainer>
       <ChannelMemberDrawBar
         onClickMembersToggle={onClickMembersToggle}
