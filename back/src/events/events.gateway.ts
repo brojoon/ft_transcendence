@@ -124,11 +124,10 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
       gameMap[data.gameId] = initData;
       gameMap[data.gameId].game_start = 0;
     }
-    console.log("ready!!!!!!!!!!!!!!!!!!!!!!", gameMap[data.gameId].game_start, gameMap[data.gameId].player_one_ready, gameMap[data.gameId].player_two_ready)
+    socket.join(`game-${data.gameId}`);
     if (gameMap[data.gameId].game_start === 0) {
       gameMap[data.gameId].player_one_ready = data.player1Ready;
       gameMap[data.gameId].player_two_ready = data.player2Ready;
-      socket.join(`game-${data.gameId}`);
       this.server.to(`game-${data.gameId}`).emit('ready', {
         player1: gameMap[data.gameId].player_one_ready,
         player2: gameMap[data.gameId].player_two_ready, 
@@ -203,18 +202,19 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('gameCheck')
   async gameCheck(
-    @MessageBody() data: {gameId: number}){
+    @MessageBody() data: {gameId: number},
+    @ConnectedSocket() socket: Socket){
+    socket.join(`game-${data.gameId}`);
     if (gameMap[data.gameId] === undefined) {
+      
       this.server.to(`game-${data.gameId}`).emit('gameStart', {
         gameStart: 0       
       });
-      console.log("gameStart : ", 0)
     }
     else {
       this.server.to(`game-${data.gameId}`).emit('gameStart', {
         gameStart: gameMap[data.gameId].game_start       
       });
-      console.log("gameStart : ", gameMap[data.gameId].game_start)
     }
   }
 
@@ -223,9 +223,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() data: {userId: string, gameId: number},
     @ConnectedSocket() socket: Socket ){
     socket.join('match');
-    console.log("match!!!!!!!!!!!!!!!", data.gameId, data.userId);
-    console.log("match!!!!!!!!!!!!!!!", users.playerOne);
-    console.log("match!!!!!!!!!!!!!!!", users.playerTwo);
 
     if ((users.playerOne === null && data.gameId === 0) || 
       (users.playerOne !== null && users.playerTwo !== null  && data.gameId === 0)) {
