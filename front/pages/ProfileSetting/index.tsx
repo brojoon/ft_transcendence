@@ -7,28 +7,16 @@ import fetcher from '@utils/fetcher';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-
 import axios from 'axios';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { ProfileSettingContainer, EditNickNameWrapper, NickNameErrorContainer } from './style';
+import { ProfileSettingContainer } from './style';
+import NickNameChangeField from '@components/NickNameChangeField';
 
 const ProfileSetting = () => {
   const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher);
   const [selectedFile, setSelectedFile] = useState<any>(null);
-  const [changeNickname, setChangeNickname] = useState('');
-  const [isNickError, setIsNickError] = useState(0);
   const [imgUrl, setImgUrl] = useState('');
-
-  const onChangeNickname = useCallback(
-    (e) => {
-      e.preventDefault();
-      console.log(e.target.keycode);
-      setChangeNickname(e.target.value);
-      setIsNickError(0);
-    },
-    [changeNickname],
-  );
 
   const onChangeFile = (event: any) => {
     console.log('onChangeFile', event.target.files);
@@ -39,28 +27,6 @@ const ProfileSetting = () => {
     setImgUrl('');
     setSelectedFile(null);
   };
-
-  const onKeyDownNickname = useCallback(
-    (e) => {
-      if (changeNickname.length > 10) {
-        setIsNickError(2);
-        return;
-      }
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        axios
-          .get(`/api/users/update-username/${changeNickname}`, {
-            withCredentials: true,
-          })
-          .then(() => {
-            mutateMyData();
-            setChangeNickname('');
-          })
-          .catch(() => {});
-      }
-    },
-    [mutateMyData, changeNickname],
-  );
 
   const onClickUploadBtn = useCallback(() => {
     if (!selectedFile || !selectedFile[0]) return;
@@ -155,25 +121,7 @@ const ProfileSetting = () => {
           </div>
         </div>
       </div>
-      <EditNickNameWrapper>
-        <span className="nick-input-label">Edit nickname</span>
-        <TextField
-          value={changeNickname}
-          onChange={onChangeNickname}
-          onKeyPress={onKeyDownNickname}
-          fullWidth
-          label="nickname"
-          id="fullWidth"
-          autoComplete="off"
-        />
-        <NickNameErrorContainer visibility={isNickError === 0 ? 'hidden' : 'visiblle'}>
-          {isNickError && isNickError === 1 ? (
-            <span>This nickname is already in use by another user</span>
-          ) : (
-            <span>Nickname length limit is 10 characters</span>
-          )}
-        </NickNameErrorContainer>
-      </EditNickNameWrapper>
+      <NickNameChangeField />
     </ProfileSettingContainer>
   );
 };
