@@ -1,4 +1,5 @@
 import { Controller, Get, HttpCode, NotFoundException, Param, Post, Req, Res, UnauthorizedException, UseGuards, UseInterceptors } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'common/decorators/user.decorator';
@@ -163,6 +164,35 @@ export class AuthController {
   async otpCodeCheck(@User() user: UserDto,  @Param('otp') optCode: string) {
     const isCodeValid =  await this.authService.isTwoFactorAuthenticationCodeValid(optCode, user.userId); 
     return isCodeValid;
+  }
+
+  @UseGuards(AuthGuard('google'))
+  @Get('google')
+  async googleAuthor(){}
+
+  @UseGuards(AuthGuard('google'))
+  @Get('google/redirect')
+  async googleRedirect(@User() user:UserDto, @Req() req, @Res() res){
+    // console.log("===================================시작");
+    // console.log(req.user);
+    // const test = await this.usersRepository.find({oauthId:req.oauthId});
+    // if (test)
+    //   console.log("oauthId가 중복아님");
+    // else
+    //   console.log("oauthId가 중복아님")
+    // console.log("===================================끝");
+    const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
+    res.clearCookie('userCookie');
+    if (result){
+      res.cookie('userCookie', req.user, { httpOnly: true });
+      res.status(302).redirect('http://localhost:3090/two-factor')
+    }else{
+      const token = await this.authService.login(req.user);
+      res.cookie('ts_token', token.access_token, { httpOnly: true });
+      res.status(302).redirect('http://localhost:3090/home')//url 수정필요
+    }
+    
+    
   }
 }
 

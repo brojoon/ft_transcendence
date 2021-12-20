@@ -39,7 +39,7 @@ export class Users {
     example: '54612484714',
     required: true
   })
-	@Column({ unique: true })
+	@Column({ unique: true , type: "decimal"})//
 	oauthId: number;
 
   @IsEmail()
