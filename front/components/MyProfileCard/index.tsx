@@ -17,8 +17,8 @@ import axios from 'axios';
 const MyProfileCard = () => {
   const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
+  const { data: isAdmin } = useSWR<boolean>('/api/users/checkAdminOrModerator', fetcher);
   const { onlineList, onGameList } = useContext(SocketContext);
-  const [isAdmin, setIsAdmin] = useState(0);
   let isState = 0;
   if (onGameList && myData && onGameList[myData.userId]) isState = 2;
   if (isState === 0 && onlineList && myData) {
@@ -26,19 +26,6 @@ const MyProfileCard = () => {
       if (onlineUser.userId === myData.userId) isState = 1;
     });
   }
-
-  useEffect(() => {
-    axios
-      .get('/api/users/listAdmin', {
-        withCredentials: true,
-      })
-      .then(() => {
-        setIsAdmin(0);
-      })
-      .catch(() => {
-        setIsAdmin(0);
-      });
-  }, [myData]);
 
   return (
     <MyProfileCardContainer>

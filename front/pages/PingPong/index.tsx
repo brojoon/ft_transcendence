@@ -66,6 +66,7 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     if (id) {
+      console.log('gameCheck');
       socket.emit('gameCheck', {
         gameId: id,
       });
