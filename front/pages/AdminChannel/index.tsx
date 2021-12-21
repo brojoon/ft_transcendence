@@ -154,13 +154,13 @@ const AdminChannel = () => {
                           });
                         }
                         return (
-                          <>
+                          <div key={user.userId}>
                             {selectedIndex === index && user.userId !== myData?.userId && (
                               <AdminPageProfile user={user} setSelectedIndex={setSelectedIndex} />
                             )}
                             <ListItem button onClick={(e) => onClickMember(e, index)}>
                               <TabPanelAatar
-                                isState={`${
+                                isstate={`${
                                   isState
                                     ? isState === 1
                                       ? '2px solid #1ed14b'
@@ -173,7 +173,7 @@ const AdminChannel = () => {
                               <ListItemText className="tab-pannel-4-text" primary={user.userId} />
                               <RecordVoiceOverIcon />
                             </ListItem>
-                          </>
+                          </div>
                         );
                       }
                     });
@@ -193,13 +193,13 @@ const AdminChannel = () => {
                           });
                         }
                         return (
-                          <>
+                          <div key={user.userId}>
                             {selectedIndex === index && user.userId !== myData?.userId && (
                               <AdminPageProfile user={user} setSelectedIndex={setSelectedIndex} />
                             )}
                             <ListItem button onClick={(e) => onClickMember(e, index)}>
                               <TabPanelAatar
-                                isState={`${
+                                isstate={`${
                                   isState
                                     ? isState === 1
                                       ? '2px solid #1ed14b'
@@ -212,7 +212,7 @@ const AdminChannel = () => {
                               <ListItemText className="tab-pannel-4-text" primary={user.userId} />
                               <RecordVoiceOverIcon />
                             </ListItem>
-                          </>
+                          </div>
                         );
                       }
                     });
@@ -233,13 +233,13 @@ const AdminChannel = () => {
                         }
                         let isMute = false;
                         return (
-                          <>
+                          <div key={user.userId}>
                             {selectedIndex === index && user.userId !== myData?.userId && (
                               <AdminPageProfile user={user} setSelectedIndex={setSelectedIndex} />
                             )}
                             <ListItem button onClick={(e) => onClickMember(e, index)}>
                               <TabPanelAatar
-                                isState={`${
+                                isstate={`${
                                   isState
                                     ? isState === 1
                                       ? '2px solid #1ed14b'
@@ -256,7 +256,7 @@ const AdminChannel = () => {
                                 <RecordVoiceOverIcon />
                               )}
                             </ListItem>
-                          </>
+                          </div>
                         );
                       }
                     });

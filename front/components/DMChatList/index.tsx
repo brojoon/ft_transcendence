@@ -53,60 +53,65 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
       >
         {Object.entries(chatSections).map(([date, chats]) => {
           return (
-            <>
+            <div key={date}>
               <StickyHeader>
                 <button>{date}</button>
               </StickyHeader>
-              {chats?.map((chat) => {
+              {chats?.map((chat, index) => {
                 username = '';
                 return (
-                  <>
-                    <div className="chatList-wrapper">
-                      <div className="chatList-profile-wrapper">
-                        {alluser?.map((user) => {
-                          if (user.userId === chat.userId1) {
-                            username = user.username;
-                            return <Avatar className="avatar" src={user.profile} alt="Avatar" />;
-                          }
-                        })}
+                  <div className="chatList-wrapper" key={chat.message + index}>
+                    <div className="chatList-profile-wrapper">
+                      {alluser?.map((user) => {
+                        if (user.userId === chat.userId1) {
+                          username = user.username;
+                          return (
+                            <Avatar
+                              className="avatar"
+                              src={user.profile}
+                              alt="Avatar"
+                              key={chat.message + index}
+                            />
+                          );
+                        }
+                      })}
+                    </div>
+                    {chat.match === 0 && (
+                      <div>
+                        <div>{username}</div>
+                        <p className="chat">{chat.message}</p>
                       </div>
-                      {chat.match === 0 && (
+                    )}
+                    {chat.match === 1 && (
+                      <div className="challenge-join-wrapper">
                         <div>
                           <div>{username}</div>
                           <p className="chat">{chat.message}</p>
                         </div>
-                      )}
-                      {chat.match === 1 && (
-                        <div className="challenge-join-wrapper">
-                          <div>
-                            <div>{username}</div>
-                            <p className="chat">{chat.message}</p>
-                          </div>
-                          <Link to={`/game/ping-pong/${chat.historyId}`}>
-                            <Button className="challenge-join-btn" variant="contained">
-                              JOIN
-                            </Button>
-                          </Link>
+                        <Link to={`/game/ping-pong/${chat.historyId}`}>
+                          <Button className="challenge-join-btn" variant="contained">
+                            JOIN
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                    {chat.match === 2 && (
+                      <div className="challenge-join-wrapper">
+                        <div>
+                          <div>{username}</div>
+                          <p className="chat">{chat.message}</p>
                         </div>
-                      )}
-                      {chat.match === 2 && (
-                        <div className="challenge-join-wrapper">
-                          <div>
-                            <div>{username}</div>
-                            <p className="chat">{chat.message}</p>
-                          </div>
-                          <Link to={`/game/history/${chat.historyId}`}>
-                            <Button className="challenge-join-btn" variant="contained">
-                              HISTORY
-                            </Button>
-                          </Link>
-                        </div>
-                      )}
-                    </div>
-                  </>
+                        <Link to={`/game/history/${chat.historyId}`}>
+                          <Button className="challenge-join-btn" variant="contained">
+                            HISTORY
+                          </Button>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 );
               })}
-            </>
+            </div>
           );
         })}
       </Scrollbars>

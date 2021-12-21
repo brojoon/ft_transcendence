@@ -87,13 +87,13 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                       }
 
                       return (
-                        <>
+                        <div key={user.userId}>
                           {selectedIndex === index && user.userId !== myData?.userId && (
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
                             <UserAvatar
-                              isState={`${
+                              isstate={`${
                                 isState
                                   ? isState === 1
                                     ? '2px solid #1ed14b'
@@ -106,7 +106,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                             <ListItemText className="member-text" primary={user.username} />
                             <RecordVoiceOverIcon className="unmute-icon" />
                           </ListItem>
-                        </>
+                        </div>
                       );
                     }
                   });
@@ -126,13 +126,13 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                         });
                       }
                       return (
-                        <>
+                        <div key={user.userId}>
                           {selectedIndex === index && user.userId !== myData?.userId && (
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
                             <UserAvatar
-                              isState={`${
+                              isstate={`${
                                 isState
                                   ? isState === 1
                                     ? '2px solid #1ed14b'
@@ -145,7 +145,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                             <ListItemText className="member-text" primary={user.username} />
                             <RecordVoiceOverIcon className="unmute-icon" />
                           </ListItem>
-                        </>
+                        </div>
                       );
                     }
                   });
@@ -171,13 +171,13 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                         }
                       });
                       return (
-                        <>
+                        <div key={user.userId}>
                           {selectedIndex === index && user.userId !== myData?.userId && (
                             <ChannelProfile user={user} setSelectedIndex={setSelectedIndex} />
                           )}
                           <ListItem button onClick={(e) => onClickMember(e, index)}>
                             <UserAvatar
-                              isState={`${
+                              isstate={`${
                                 isState
                                   ? isState === 1
                                     ? '2px solid #1ed14b'
@@ -194,7 +194,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                               <RecordVoiceOverIcon className="unmute-icon" />
                             )}
                           </ListItem>
-                        </>
+                        </div>
                       );
                     }
                   });

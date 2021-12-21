@@ -29,10 +29,10 @@ const BlockList = () => {
                 });
               }
               return (
-                <Link to={`/users/${user.userId}`}>
+                <Link to={`/users/${user.userId}`} key={blockUser.userId2}>
                   <ListItem className="block-list-wrapper" button>
                     <UserAvatar
-                      isState={`${
+                      isstate={`${
                         isState
                           ? isState === 1
                             ? '2px solid #1ed14b'

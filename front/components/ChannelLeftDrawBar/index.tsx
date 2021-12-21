@@ -1,19 +1,14 @@
 import React, { useCallback, useState } from 'react';
-import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
-import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
 import { IUser, IAllUser, IDmList, IChannelList } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Button from '@mui/material/Button';
-import axios from 'axios';
+
 import ListItemButton from '@mui/material/ListItemButton';
-import AddIcon from '@mui/icons-material/Add';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import AddBoxIcon from '@mui/icons-material/AddBox';
 import FlareIcon from '@mui/icons-material/Flare';
 import { ChannelLeftDrawBarContainer, ScrollbarColor } from './style';
 
@@ -93,7 +88,7 @@ const ChannelLeftDrawBar = () => {
               channelMode = 'Private';
             }
             return (
-              <Link to={`/channels/${channel.id}`}>
+              <Link to={`/channels/${channel.id}`} key={channel.id}>
                 <List className="channel-list" component="nav" aria-label="main mailbox folders">
                   <ListItemButton
                     className="channel-list-btn"

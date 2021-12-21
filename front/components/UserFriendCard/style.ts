@@ -38,8 +38,8 @@ export const UserFriendCardContainer = styled.div`
 
 `;
 
-export const UserAvatar = styled(Avatar) < { isState: string }>`
-	border: ${(props) => props.isState};
+export const UserAvatar = styled(Avatar) < { isstate: string }>`
+	border: ${(props) => props.isstate};
 
 `;
 

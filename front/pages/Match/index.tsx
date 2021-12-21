@@ -25,6 +25,14 @@ const Match = () => {
     if (myData) {
       socket.emit('matching', { userId: myData?.userId, gameId: 0 });
     }
+
+    return () => {
+      if (myData) {
+        socket.emit('outMatching', {
+          userId: myData?.userId,
+        });
+      }
+    };
   }, [myData, socket]);
 
   useEffect(() => {

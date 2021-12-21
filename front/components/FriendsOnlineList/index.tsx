@@ -33,10 +33,10 @@ const FriendsOnlineList = () => {
               }
               if (isState === 0) return;
               return (
-                <Link to={`/users/${user.userId}`}>
+                <Link to={`/users/${user.userId}`} key={user.userId}>
                   <ListItem className="friend-list-wrapper" button>
                     <UserAvatar
-                      isState={`${
+                      isstate={`${
                         isState
                           ? isState === 1
                             ? '2px solid #1ed14b'

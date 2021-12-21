@@ -26,7 +26,7 @@ const ChannelChatHeader: VFC<Props> = ({ onClickMembersToggle, membersToggle }) 
     <Box>
       <AppBar position="static" sx={{ bgcolor: '#272727' }}>
         <MyToolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6" component="span" sx={{ flexGrow: 1 }}>
             {allChannelList?.map((channel: IChannelList) => {
               if (channel.id === parseInt(id)) {
                 return channel.name;

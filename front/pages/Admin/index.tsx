@@ -318,9 +318,10 @@ const Admin = () => {
                       onClick={(e) => {
                         onClickUnModerator(e, moderator.userId);
                       }}
+                      key={moderator.userId}
                     >
                       <TabPanelAatar
-                        isState={`${
+                        isstate={`${
                           isState
                             ? isState === 1
                               ? '2px solid #1ed14b'
@@ -366,9 +367,10 @@ const Admin = () => {
                         onClick={(e) => {
                           onClickUserPrivilege(e, user.userId);
                         }}
+                        key={user.userId}
                       >
                         <TabPanelAatar
-                          isState={`${
+                          isstate={`${
                             isState
                               ? isState === 1
                                 ? '2px solid #1ed14b'
@@ -391,7 +393,7 @@ const Admin = () => {
               <List className="tab-panel-4-list" component="nav" aria-label="mailbox folders">
                 {channelList?.map((channel) => {
                   return (
-                    <Link to={`/admin/${channel.id}`}>
+                    <Link to={`/admin/${channel.id}`} key={channel.id}>
                       <ListItem button>
                         <Typography>{channel.name}</Typography>
                       </ListItem>
@@ -411,6 +413,7 @@ const Admin = () => {
                       onClick={(e) => {
                         onClickUnBanUser(e, banedUser.userId);
                       }}
+                      key={banedUser.userId}
                     >
                       <Avatar src={banedUser.profile} alt="Avatar" />
                       <ListItemText className="tab-panel-5-text" primary={banedUser.userId} />

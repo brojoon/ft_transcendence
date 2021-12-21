@@ -53,14 +53,12 @@ export const MyProfileCardContainer = styled(Box)`
 	& .admin-btn {
 		width: 100%;
 		height: 35px;
-		background-color: #FFD400;
-		border-color: #FFD400;
+		background-color: rgba(255, 212, 0, 0.9);
 		font-weight: bold;
 	}
 
 	& .admin-btn:hover {
-		background-color: #FFAA00;
-		border-color: #FFAA00;
+		background-color: rgba(255, 212, 0, 1);
 
 	}
 
@@ -73,8 +71,8 @@ export const MyProfileCardContainer = styled(Box)`
 	}
 `;
 
-export const UserAvatar = styled(Avatar) <{ isState: string }>`
-	border: ${(props) => props.isState};
+export const UserAvatar = styled(Avatar) <{ isstate: string }>`
+	border: ${(props) => props.isstate};
 	width: 180px;
 	height: 180px;
 	margin-bottom: 20px;

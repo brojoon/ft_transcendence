@@ -87,7 +87,7 @@ const DMLeftDrawerBar = () => {
               });
               if (!isblock) {
                 return (
-                  <Link to={`/social/dm/${dm.id}`}>
+                  <Link to={`/social/dm/${dm.id}`} key={dm.id}>
                     <List className="list" component="nav" aria-label="main mailbox folders">
                       <ListItemButton
                         className="list-item-button"
@@ -104,9 +104,9 @@ const DMLeftDrawerBar = () => {
                               });
                             }
                             return (
-                              <>
+                              <div className="user-avatar-id-wrapper" key={dm.id}>
                                 <UserAvatar
-                                  isState={`${
+                                  isstate={`${
                                     isState
                                       ? isState === 1
                                         ? '2px solid #1ed14b'
@@ -117,7 +117,7 @@ const DMLeftDrawerBar = () => {
                                   alt="Avatar"
                                 />
                                 <ListItemText className="user-id" primary={user.username} />
-                              </>
+                              </div>
                             );
                           }
                         })}
