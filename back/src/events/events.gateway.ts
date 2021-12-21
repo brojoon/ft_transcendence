@@ -121,8 +121,28 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @MessageBody() data: {gameId: number, player: string, player1Ready: number, player2Ready: number},
     @ConnectedSocket() socket: Socket ){
     if (data.player !=="" && gameMap[data.gameId] === undefined) {
-      gameMap[data.gameId] = initData;
-      gameMap[data.gameId].game_start = 0;
+      // gameMap[data.gameId] = initData;
+      gameMap[data.gameId] = {
+        interval: null,
+        player_one_point: 0,
+        player_two_point: 0,
+        player_one_ready: 0,
+        player_two_ready: 0,
+        game_map: 0,
+        game_count:0,
+        game_set: 5,
+        random_map:0,
+        game_state: 0,
+        game_start: 0,
+        complete_game_set: 0,
+        length: 3,
+        bar_seed: 30,
+        ball_x: 500,
+        ball_y: 250,
+        player_one_y: 200,
+        player_two_y: 200,
+        interval_time: 15
+      }
     }
     socket.join(`game-${data.gameId}`);
     if (gameMap[data.gameId].game_start === 0) {
@@ -327,8 +347,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async playerOneUP(@MessageBody() data: { game: number }) {
     if (gameMap[data.game].player_one_y > -50){
       gameMap[data.game].player_one_y -= gameMap[data.game].bar_seed;
-      const playerInfo = { player_one_y: gameMap[data.game].player_one_y };
-      this.server.to(`game-${data.game}`).emit('player_one', playerInfo);
+      this.server.to(`game-${data.game}`).emit('player_one', { player_one_y: parseInt(gameMap[data.game].player_one_y)});
     }  
   }
 
@@ -336,8 +355,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async playerOneDown(@MessageBody() data: { game: number }) {
     if (gameMap[data.game].player_one_y < 450){
       gameMap[data.game].player_one_y += gameMap[data.game].bar_seed;
-      const playerInfo = { player_one_y: gameMap[data.game].player_one_y };
-      this.server.to(`game-${data.game}`).emit('player_one', playerInfo);
+      this.server.to(`game-${data.game}`).emit('player_one', { player_one_y: parseInt(gameMap[data.game].player_one_y) });
     }
   }
 
@@ -345,8 +363,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async playerTwoUP(@MessageBody() data: { game: number }) {
     if (gameMap[data.game].player_two_y > -50){
       gameMap[data.game].player_two_y -= gameMap[data.game].bar_seed;
-      const playerInfo = { player_two_y: gameMap[data.game].player_two_y };
-      this.server.to(`game-${data.game}`).emit('player_two', playerInfo);
+      this.server.to(`game-${data.game}`).emit('player_two', { player_two_y: parseInt(gameMap[data.game].player_two_y) });
     }
   }
   
@@ -354,8 +371,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   async playerTwoDown(@MessageBody() data: { game: number }) {
     if (gameMap[data.game].player_two_y < 450){
       gameMap[data.game].player_two_y += gameMap[data.game].bar_seed;
-      const playerInfo = { player_two_y: gameMap[data.game].player_two_y };
-      this.server.to(`game-${data.game}`).emit('player_two', playerInfo);
+      this.server.to(`game-${data.game}`).emit('player_two', { player_two_y: parseInt(gameMap[data.game].player_two_y) });
     }
   }
 }

@@ -213,10 +213,10 @@ export class DmsService {
     try {
       await this.checkHaveUser(userId1, userId2);
       const result = await this.dmcontentRepository
-        .createQueryBuilder()
-        .where('userId1 = :userId1 AND userId2 = :userId2', { userId1, userId2 })
-        .orWhere('userId1 = :userId2 AND userId2 = :userId1', { userId2, userId1 })
-        .orderBy('createdAt', 'DESC')
+        .createQueryBuilder('d')
+        .where('d.userId1 = :userId1 AND d.userId2 = :userId2', { userId1, userId2 })
+        .orWhere('d.userId1 = :userId2 AND d.userId2 = :userId1', { userId2, userId1 })
+        .orderBy('d.createdAt', 'DESC')
         .getMany();
       return (result);
     } catch (error) {
@@ -235,9 +235,9 @@ export class DmsService {
       if (result.userId1 !== userId && result.userId2 !== userId)
         throw new ForbiddenException('내가 속한 DM방이 아닙니다');
       const res = await this.dmcontentRepository
-        .createQueryBuilder()
-        .where('dmId = :dmId', { dmId })
-        .orderBy('createdAt', 'DESC')
+        .createQueryBuilder('d')
+        .where('d.dmId = :dmId', { dmId })
+        .orderBy('d.createdAt', 'DESC')
         .getMany();
       return (res);  
     } catch (error) {
@@ -256,10 +256,10 @@ export class DmsService {
         throw {errno: "범위오류"};
       await this.checkHaveUser(userId1, userId2);
       const result = await this.dmcontentRepository
-        .createQueryBuilder()
-        .where('userId1 = :userId1 AND userId2 = :userId2', { userId1, userId2 })
-        .orWhere('userId1 = :userId2 AND userId2 = :userId1', { userId2, userId1 })
-        .orderBy('createdAt', 'DESC')
+        .createQueryBuilder('d')
+        .where('d.userId1 = :userId1 AND d.userId2 = :userId2', { userId1, userId2 })
+        .orWhere('d.userId1 = :userId2 AND d.userId2 = :userId1', { userId2, userId1 })
+        .orderBy('d.createdAt', 'DESC')
         .take(20)
         .skip(20 * (page - 1))
         .getMany();
@@ -282,9 +282,9 @@ export class DmsService {
       if (result.userId1 !== userId && result.userId2 !== userId)
         throw new ForbiddenException('내가 속한 DM방이 아닙니다');
       const res = await this.dmcontentRepository
-        .createQueryBuilder()
-        .where('dmId = :dmId', { dmId })
-        .orderBy('createdAt', 'DESC')
+        .createQueryBuilder('d')
+        .where('d.dmId = :dmId', { dmId })
+        .orderBy('d.createdAt', 'DESC')
         .take(20)
         .skip(20 * (page - 1))
         .getMany();

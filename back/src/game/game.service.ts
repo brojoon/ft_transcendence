@@ -48,7 +48,7 @@ export class GameService {
 
     gameMap[gameId].ball_x += gameMap[gameId].dir_x * gameMap[gameId].length;
     gameMap[gameId].ball_y += gameMap[gameId].dir_y * gameMap[gameId].length;
-    this.emit(gameId, 0);
+    this.emit_info(gameId, 0);
     const x = gameMap[gameId].ball_x + gameMap[gameId].dir_x * gameMap[gameId].length;
     const y = gameMap[gameId].ball_y + gameMap[gameId].dir_y * gameMap[gameId].length;
     if (y >= 495 || y <= 5) {
@@ -93,13 +93,9 @@ export class GameService {
         player2: gameMap[gameId].player_two_point, 
       });
       history = await this.historyRepository.findOne({id:gameId});
-      // const count = gameMap[gameId].player_one_point + gameMap[gameId].player_two_point;
-      // console.log("count:", count, "gameMap[gameId].game_set:", gameMap[gameId].game_set);
-      // console.log("db:", history.user1Point, history.user2Point);
-      // console.log("map:", gameMap[gameId].player_one_point, gameMap[gameId].player_two_point);
       this.reset(gameId);
-      this.emit(gameId, 0);
-      this.emit(gameId, 1);
+      this.emit_info(gameId, 0);
+      this.emit_info(gameId, 1);
       const deadline = ((gameMap[gameId].game_set - 3) / 2) + 2;
       if (deadline <= gameMap[gameId].player_one_point || deadline <= gameMap[gameId].player_two_point){
         await this.dmcontentRepository.update({historyId:gameId}, {match:2});
@@ -131,21 +127,22 @@ export class GameService {
     gameMap[gameId].player_two_y = 200;
   }
 
-  emit(gameId: number, num: number){
+  emit_info(gameId: number, num: number){
     if (num === 0 ){
-      const gameInfo = {
+      this.eventsGateway.server.to(`game-${gameId}`).emit("gameInfo",  {
         ball_x: gameMap[gameId].ball_x, 
         ball_y: gameMap[gameId].ball_y,
-      }
-      this.eventsGateway.server.to(`game-${gameId}`).emit("gameInfo", gameInfo);
+      });
     }
-    else {
-      const playerInfo = {
+    else {  
+      this.eventsGateway.server.to(`game-${gameId}`).emit('player_one', {
         player_one_y: gameMap[gameId].player_one_y, 
         player_two_y: gameMap[gameId].player_two_y,
-      }      
-      this.eventsGateway.server.to(`game-${gameId}`).emit('player_one', playerInfo);
-      this.eventsGateway.server.to(`game-${gameId}`).emit('player_two', playerInfo);
+      });
+      this.eventsGateway.server.to(`game-${gameId}`).emit('player_two', {
+        player_one_y: gameMap[gameId].player_one_y, 
+        player_two_y: gameMap[gameId].player_two_y,
+      });
     }
   }
 
