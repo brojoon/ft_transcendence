@@ -89,7 +89,7 @@ const ChannelBody = () => {
               return null;
             } else if (Channel.type === 0) {
               return (
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={6} key={Channel.id}>
                   <Card
                     className="card"
                     onClick={(e) => {
@@ -117,7 +117,7 @@ const ChannelBody = () => {
               );
             } else if (Channel.type === 1) {
               return (
-                <Grid item xs={12} sm={12} md={6}>
+                <Grid item xs={12} sm={12} md={6} key={Channel.id}>
                   <Card
                     className="card"
                     onClick={(e) => {

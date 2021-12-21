@@ -32,7 +32,7 @@ const MyProfileCard = () => {
       <Card className="card" variant="outlined">
         <CardContent className="card-content">
           <UserAvatar
-            isState={`${
+            isstate={`${
               isState
                 ? isState === 1
                   ? '2px solid #1ed14b'

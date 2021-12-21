@@ -25,7 +25,7 @@ const LogIn = () => {
           GooGle
         </LoginButton>
         <LoginButton onClick={onClick42Login} variant="contained" size="large">
-          42 OAuth
+          42
         </LoginButton>
       </div>
     </Container>

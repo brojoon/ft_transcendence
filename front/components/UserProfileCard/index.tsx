@@ -154,8 +154,9 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       axios
         .get(`/api/dms/create/${UserData.userId}`, config)
         .then((res) => {
-          mutateDmList();
-          history.push(`/social/dm/${res.data}`);
+          mutateDmList().then(() => {
+            history.push(`/social/dm/${res.data}`);
+          });
         })
         .catch(() => {});
     },
@@ -200,7 +201,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       <Card className="card-container" variant="outlined">
         <CardContent className="card-content">
           <UserAvatar
-            isState={`${
+            isstate={`${
               isState
                 ? isState === 1
                   ? '2px solid #1ed14b'

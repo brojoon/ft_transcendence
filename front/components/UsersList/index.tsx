@@ -26,10 +26,10 @@ const UserList: VFC<Props> = ({ userList }) => {
             });
           }
           return (
-            <Link to={`/users/${user.userId}`}>
+            <Link to={`/users/${user.userId}`} key={user.userId}>
               <ListItem className="list-item-wrapper" button>
                 <UserAvatar
-                  isState={`${
+                  isstate={`${
                     isState
                       ? isState === 1
                         ? '2px solid #1ed14b'

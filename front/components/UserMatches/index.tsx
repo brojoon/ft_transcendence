@@ -41,8 +41,8 @@ const UserMatches: VFC<Props> = ({ userData }) => {
           if (index < rowsPerPage * page) return;
         }
         return (
-          <UserMatchesListWrapper>
-            <Link to={`/game/history/${history?.historyId}`}>
+          <UserMatchesListWrapper key={history.historyId}>
+            <Link to={`/game/history/${history.historyId}`}>
               <List className="list-item-wrapper">
                 <Avatar className="avatar" src={userData?.profile} alt="Avatar" />
                 <div className="matches-text">

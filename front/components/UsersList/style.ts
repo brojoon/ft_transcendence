@@ -24,8 +24,8 @@ export const UsersListContainer = styled(List)`
 	}
 `;
 
-export const UserAvatar = styled(Avatar) <{ isState: string }>`
-	border: ${(props) => props.isState};
+export const UserAvatar = styled(Avatar) <{ isstate: string }>`
+	border: ${(props) => props.isstate};
 	width: 60px;
 	height: 60px;
 `;

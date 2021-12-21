@@ -73,16 +73,23 @@ export const DMListContainer = styled.div`
 		padding: 8px;
 	}
 
+	& .user-avatar-id-wrapper {
+		display: flex;
+
+		align-items: center;
+	}
 
 
 	& .user-id {
 		margin-left: 12px;
 		color: white;
 	}
+
+
 `;
 
-export const UserAvatar = styled(Avatar) <{ isState: string }>`
-	border: ${(props) => props.isState};
+export const UserAvatar = styled(Avatar) <{ isstate: string }>`
+	border: ${(props) => props.isstate};
 	margin-left: 0;
 `;
 

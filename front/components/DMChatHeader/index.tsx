@@ -37,11 +37,11 @@ const DMChatHeader = () => {
     <DMChatHeaderContainer>
       <AppBar className="wrapper">
         <Toolbar>
-          <Typography variant="h6" component="div" className="user-profile-container">
+          <Typography variant="h6" component="span" className="user-profile-container">
             {alluser?.map((user) => {
               if (user.userId === userId)
                 return (
-                  <div className="user-profile-wrapper">
+                  <div className="user-profile-wrapper" key={userId}>
                     <Avatar className="avatar" src={user.profile} alt="Avatar" />
                     <span>{user.username}</span>
                   </div>

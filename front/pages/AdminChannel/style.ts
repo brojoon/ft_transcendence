@@ -58,6 +58,6 @@ export const AdminChannelContainer = styled.div`
 
 `;
 
-export const TabPanelAatar = styled(Avatar) <{ isState: string }>`
-	border: ${(props) => props.isState};
+export const TabPanelAatar = styled(Avatar) <{ isstate: string }>`
+	border: ${(props) => props.isstate};
 `;

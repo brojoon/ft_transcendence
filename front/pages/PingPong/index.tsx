@@ -98,10 +98,12 @@ const PingPong = (data: any) => {
         if (user.userId === opponent) {
           setOpponentProfile(user.profile);
           setOpponentName(user.username);
-        } else if (user.userId === watchUserId1) {
+        }
+        if (user.userId === watchUserId1) {
           setWatchUserId1Profile(user.profile);
           setWatchUserId1Name(user.username);
-        } else if (user.userId === watchUserId2) {
+        }
+        if (user.userId === watchUserId2) {
           setWatchUserId2Profile(user.profile);
           setWatchUserId2Name(user.username);
         }
@@ -307,13 +309,13 @@ const PingPong = (data: any) => {
           <UserPointContainer>
             {isGameStart && (
               <div className="point-wrapper">
-                {opponentName ? opponentName + ' Point' : watchUserId1Name + ' Point'}
+                {watchUserId1Name + ' Point'}
                 <EventNoteIcon className="point-icon" /> {': [ ' + user1Point + ' ] '}
               </div>
             )}
             {isGameStart && (
               <div className="point-wrapper">
-                {opponentName ? opponentName + ' Point' : watchUserId2Name + ' Point'}
+                {watchUserId2Name + ' Point'}
                 <EventNoteIcon className="point-icon" /> {': [ ' + user2Point + ' ] '}
               </div>
             )}
