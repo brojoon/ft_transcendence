@@ -1,7 +1,6 @@
 import React, { VFC, useState, useCallback, useContext } from 'react';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import Avatar from '@mui/material/Avatar';
 import Scrollbars from 'react-custom-scrollbars';
 import { useParams, useHistory } from 'react-router-dom';
 import { IAllUser, IMemberList, IUser, IChannelList } from '@typings/db';
@@ -11,8 +10,6 @@ import Button from '@mui/material/Button';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
-import BasicModal from '@components/BasicModal';
-import axios from 'axios';
 import { Container } from './style';
 import ChannelProfile from '@components/ChannelProfile';
 import VoiceOverOffIcon from '@mui/icons-material/VoiceOverOff';

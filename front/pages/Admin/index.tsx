@@ -97,30 +97,6 @@ const Admin = () => {
     };
   }, [socket]);
 
-  useEffect(() => {
-    if (adminList !== undefined && moderatorList !== undefined && myData !== undefined) {
-      let isUnauthorized = true;
-      for (let admin of adminList) {
-        if (myData?.userId === admin.userId) {
-          isUnauthorized = false;
-        }
-      }
-
-      if (isUnauthorized) {
-        for (let moderator of moderatorList) {
-          if (myData?.userId === moderator.userId) {
-            isUnauthorized = false;
-          }
-        }
-      }
-
-      if (isUnauthorized) {
-        const history = useHistory();
-        history.push('/home');
-      }
-    }
-  }, [adminList, moderatorList, myData]);
-
   const onClickUserPrivilege = useCallback(
     (e, userId) => {
       setUserPrivilegeSelected(userId);
@@ -253,10 +229,12 @@ const Admin = () => {
           })
           .catch(() => {});
       }
+      moderatorList;
     },
     [unBanUserSelected],
   );
-
+  console.log('adminList', adminList);
+  if (!adminList) return null;
   return (
     <AdminPageContainer>
       {isUnModeratorModal && (

@@ -65,6 +65,7 @@ const UserMatches: VFC<Props> = ({ userData }) => {
       })}
       <div className="profile-pagination-wrapper">
         <TablePagination
+          className="profile-pagination"
           component="div"
           count={userGameHistory ? userGameHistory?.length : 0}
           page={page}

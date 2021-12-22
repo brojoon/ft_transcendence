@@ -8,6 +8,7 @@ import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import config from '@utils/config';
 import { AdminContainer, AdminBtn, ButtonGroupContainer } from './style';
+import { toast } from 'react-toastify';
 
 interface Props {
   user: IAllUser;
@@ -41,7 +42,16 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
         setSelectedIndex(-1);
         mutateChannelUserList();
       })
-      .catch(() => {});
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, []);
 
   const onClickKickBtn = useCallback((e) => {
@@ -52,7 +62,16 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
         setSelectedIndex(-1);
         mutateChannelUserList();
       })
-      .catch(() => {});
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, []);
 
   const onClickBanBtn = useCallback((e) => {
@@ -63,7 +82,16 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
         setSelectedIndex(-1);
         mutateChannelUserList();
       })
-      .catch(() => {});
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, []);
 
   const onClickAppointAdmin = useCallback(
@@ -76,7 +104,16 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
             setSelectedIndex(-1);
             mutateChannelUserList();
           })
-          .catch(() => {});
+          .catch((error) => {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          });
       } else if (userAuth === 1) {
         axios
           .get(
@@ -87,7 +124,16 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
             setSelectedIndex(-1);
             mutateChannelUserList();
           })
-          .catch(() => {});
+          .catch((error) => {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          });
       }
     },
     [myAuth, userAuth],
@@ -101,7 +147,7 @@ const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
           {userAuth !== 2 && (
             <AdminBtn
               onClick={onClickAppointAdmin}
-              btnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
+              btncolor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
               variant="text"
             >
               admin

@@ -17,6 +17,7 @@ export const DMChatHeaderContainer = styled(Box)`
 		display: flex;
 		flex-direction: row;
 		align-items: center;
+		white-space: nowrap;
 	}
 
 	& .avatar {

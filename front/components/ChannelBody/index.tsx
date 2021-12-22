@@ -16,6 +16,7 @@ import axios from 'axios';
 import ProtectedRoomModal from '@components/ProtectedRoomModal';
 import config from '@utils/config';
 import { ChannelBodyContainer, ScrollbarColor } from './style';
+import { toast } from 'react-toastify';
 
 const ChannelBody = () => {
   const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
@@ -45,9 +46,26 @@ const ChannelBody = () => {
           history.push(`/channels/${channelId}`);
         });
       })
-      .catch((e) => {
-        mutateAllChannelList();
-        mutateMyChannelList();
+      .catch((error) => {
+        if (error.response.data.code === 403) {
+          toast.error('This room is not accessible', {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        } else {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        }
       });
   }, []);
 

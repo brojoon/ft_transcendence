@@ -46,17 +46,18 @@ const LeftSideBar = () => {
           history.push('/login');
         } else {
           toast.error(error.message, {
-            autoClose: 3000,
+            autoClose: 4000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
+            theme: 'colored',
           });
         }
         console.dir(error);
         console.log(error.code);
       });
-  }, [document.cookie]);
+  }, []);
   return (
     <LeftSideBarContainer>
       <Toolbar>

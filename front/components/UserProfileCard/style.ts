@@ -42,7 +42,7 @@ export const UserProfileCardContainer = styled(Box)`
 	& .watch-btn {
 		width: 100%;
 		height: 35px;
-		background-color: rgba(255, 212, 0, 0.8);
+		background-color: rgba(255, 212, 0, 0.9);
 		font-weight: bold;
 	}
 

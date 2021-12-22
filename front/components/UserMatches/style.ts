@@ -23,6 +23,9 @@ export const UserMatchesContainer = styled.div`
 	& .profile-pagination-wrapper {
 		color: white;
 	}
+	& .profile-pagination {
+		overflow: hidden;
+	}
 
 	& .css-1mf6u8l-MuiSvgIcon-root-MuiSelect-icon {
 		color: white;

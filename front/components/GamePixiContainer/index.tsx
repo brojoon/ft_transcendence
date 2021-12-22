@@ -67,23 +67,36 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player }) => {
   const [player_one_y, setPlayOneY] = useState(200);
   const [player_two_y, setPlayTwoY] = useState(200);
 
+  const fetchDataFunc = async () => {
+    await axios.get(`http://localhost:3095/api/game/start/${id}`, option);
+  };
+
   useEffect(() => {
     socket.on('gameInfo', (gameInfo: any) => {
       setBallX(gameInfo.ball_x);
       setBallY(gameInfo.ball_y);
     });
+    return () => {
+      socket.off('gameInfo');
+    };
   }, [socket]);
 
   useEffect(() => {
     socket.on('player_one', (playerInfo: any) => {
       setPlayOneY(playerInfo.player_one_y);
     });
+    return () => {
+      socket.off('player_one');
+    };
   }, [socket]);
 
   useEffect(() => {
     socket.on('player_two', (playerInfo: any) => {
       setPlayTwoY(playerInfo.player_two_y);
     });
+    return () => {
+      socket.off('player_two');
+    };
   }, [socket]);
 
   useEffect(() => {
@@ -98,7 +111,7 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player }) => {
       } else if (e.keyCode === 76 && player !== '') {
         socket.emit('player_two_down', { game: id });
       } else if (e.keyCode === 84 && player !== '') {
-        axios.get(`http://localhost:3095/api/game/start/${id}`, option);
+        fetchDataFunc();
       }
       // if (e.keyCode === 87 && player === "playerOne"){
       //   socket.emit('player_one_up', {game: gameId});

@@ -12,7 +12,7 @@ import { IMemberList, IAllUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import config from '@utils/config';
 import { ChannelInviteModalBackground, ChannelInviteModalContainer } from './style';
-
+import { toast } from 'react-toastify';
 interface Props {
   onClickModalClose: (e: any) => void;
   setChannelInviteModal: (e: any) => void;
@@ -45,8 +45,15 @@ const ChannelInviteModal: VFC<Props> = ({ setChannelInviteModal, onClickModalClo
           setInviteValue('');
           setChannelInviteModal(false);
         })
-        .catch(() => {
-          setInviteError(true);
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
         });
     },
     [inviteValue, setInviteValue],

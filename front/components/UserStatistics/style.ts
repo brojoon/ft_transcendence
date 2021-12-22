@@ -5,12 +5,13 @@ export const UserStatisticsContainer = styled.div`
 	flex-direction: column;
 	color:white;
 	width: 100%;
-	height: 200px;
+	height: 270px;
 	background-color: #1e1e1e;
 	border: 1px solid rgba(57, 57, 57, 0.7);
 	padding: 5px 10px 15px 10px;
 	margin-top: 15px;
 	font-size: 20px;
+	white-space: nowrap;
 
 	& .statistics-header {
 		font-size: 22px;

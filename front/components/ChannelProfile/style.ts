@@ -39,8 +39,8 @@ export const Container = styled.div`
 
 `;
 
-export const AdminBtn = styled(Button) <{ btnColor: string }>`
-	color: ${(props) => props.btnColor};
+export const AdminBtn = styled(Button) <{ btncolor: string }>`
+	color: ${(props) => props.btncolor};
 	font-weight: 600;
 	margin: 0 0 0 40px;
 `;

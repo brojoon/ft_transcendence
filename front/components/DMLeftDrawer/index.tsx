@@ -1,13 +1,11 @@
 import React, { useCallback, useState, useContext } from 'react';
 import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
-import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
 import { IUser, IAllUser, IDmList, IBlockList } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
-import { Link, Redirect } from 'react-router-dom';
-import axios from 'axios';
+import { Link } from 'react-router-dom';
 import EmojiPeopleRoundedIcon from '@mui/icons-material/EmojiPeopleRounded';
 import ListItemButton from '@mui/material/ListItemButton';
 import { DMLeftDrawerContainer, DMListContainer, UserAvatar, ScrollbarColor } from './style';

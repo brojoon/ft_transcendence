@@ -11,22 +11,30 @@ const fetcher = (url: string): any => axios.get(url, {
 	// }
 }).then((response) => response.data).catch((error) => {
 	console.log(error, '에러뜸!!');
+	toast.error(error.message, {
+		autoClose: 4000,
+		position: toast.POSITION.TOP_RIGHT,
+		hideProgressBar: false,
+		closeOnClick: true,
+		pauseOnHover: true,
+		theme: "colored"
+	});
 	if (error.response.data.code === 401) {
-		window.location.href = '/login';
+		setTimeout(() => {
+			window.location.href = '/login';
+		}, 4000);
+
 		// const history = useHistory();
 		// history.push('/login');
 	} else if (error.response.data.data.message === "ban 유저") {
-		window.location.href = '/login';
+		setTimeout(() => {
+			window.location.href = '/login';
+		}, 4000);
 	} else {
 		console.log('toast!!');
-		toast.error(error.message, {
-			autoClose: 4000,
-			position: toast.POSITION.TOP_RIGHT,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-		});
-		window.location.href = '/home';
+		setTimeout(() => {
+			window.location.href = '/home';
+		}, 4000);
 	}
 	return false;
 	console.dir(error);
