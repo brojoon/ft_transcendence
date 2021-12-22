@@ -13,6 +13,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import ChannelForm from '@components/ChannelForm';
 import config from '@utils/config';
+import { toast } from 'react-toastify';
 
 interface Props {
   settingToggle: boolean;
@@ -58,6 +59,14 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
       axios
         .get(`/api/channels/updateChannelName/${id}/${name}`, config)
         .then(() => {
+          toast.success('Successfully renamed a channel', {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
           MutateAllChannelList();
           channelListMutate();
           setName('');
@@ -86,6 +95,14 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
                 config,
               )
               .then(() => {
+                toast.success('Successfully changed channel password', {
+                  autoClose: 4000,
+                  position: toast.POSITION.TOP_RIGHT,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  theme: 'colored',
+                });
                 MutateAllChannelList();
                 channelListMutate();
                 setName('');
@@ -121,13 +138,28 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
       axios
         .get(`/api/channels/deleteChannel/${id}`, config)
         .then(() => {
+          history.push('/channels');
           channelListMutate();
           MutateAllChannelList();
-          muatememberList();
-          history.push('/channels');
+          toast.success('Successfully deleted the channel', {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
         })
-        .then(() => {})
-        .catch(() => {});
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        });
     },
     [id],
   );

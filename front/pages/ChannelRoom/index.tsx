@@ -157,7 +157,7 @@ const ChannelRoom = () => {
     mutateChannelMembers();
     mutateMyChannelList();
     mutateAllChannelList();
-    mutateMyMute();
+    // mutateMyMute();
     mutateMymuteMmbers();
   }, []);
 

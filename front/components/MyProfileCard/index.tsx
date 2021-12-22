@@ -12,7 +12,6 @@ import { Link, useParams } from 'react-router-dom';
 import { IUser } from '@typings/db';
 import { MyProfileCardContainer, UserAvatar } from './style';
 import { SocketContext } from '@store/socket';
-import axios from 'axios';
 
 const MyProfileCard = () => {
   const { id } = useParams<{ id: string }>();

@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, VFC } from 'react';
-import axios from 'axios';
 import getSocket from '@utils/useSocket';
 import 'regenerator-runtime';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -108,7 +107,7 @@ const GameSetting: VFC<Props> = ({
           random: ballRandom,
         });
       }
-  }, [gameSpeed, gameCount, mapSelect, ballRandom, id, player]);
+  }, [gameSpeed, gameCount, mapSelect, ballRandom, id, player, player1Ready, player2Ready]);
 
   useEffect(() => {
     socket.on('gameSet', (set: any) => {

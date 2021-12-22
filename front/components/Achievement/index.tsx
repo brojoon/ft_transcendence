@@ -16,18 +16,18 @@ dayjs.locale('ko');
 
 const Achievement: VFC<Props> = ({ Icon, curValue, maxCount, header, condition }) => {
   const [progress, setProgress] = useState(0);
-
-  setTimeout(() => {
-    if (curValue?.number) {
-      if (maxCount <= curValue?.number && curValue?.star >= maxCount / 5) {
-        return;
-      } else if (progress < curValue?.number) {
-        setProgress((prev) => prev + 1);
-      } else if (progress > curValue?.number) {
-        setProgress((prev) => prev - 1);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (curValue?.number) {
+        if (maxCount <= curValue?.number && curValue?.star >= maxCount / 5) {
+          return;
+        } else if (progress < curValue?.number) {
+          setProgress((prev) => prev + 1);
+        }
       }
-    }
-  }, 40);
+    }, 40);
+    return () => clearTimeout(timeout);
+  }, [progress, curValue, maxCount]);
   return (
     <Container>
       <div className="achieve-header">

@@ -15,6 +15,7 @@ import axios from 'axios';
 import config from '@utils/config';
 import { useHistory } from 'react-router-dom';
 import { DMChatHeaderContainer } from './style';
+import { toast } from 'react-toastify';
 
 const DMChatHeader = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,9 +27,21 @@ const DMChatHeader = () => {
   const onClickChallengeBtn = useCallback(
     (e) => {
       e.preventDefault();
-      axios.post(`/api/dms/sendMessage/${userId}/1/0`, { message: '' }, config).then((res) => {
-        history.push(`/game/ping-pong/${res.data}`);
-      });
+      axios
+        .post(`/api/dms/sendMessage/${userId}/1/0`, { message: '' }, config)
+        .then((res) => {
+          history.push(`/game/ping-pong/${res.data}`);
+        })
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        });
     },
     [userId, alluser],
   );

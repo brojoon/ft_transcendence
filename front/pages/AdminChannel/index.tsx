@@ -123,6 +123,7 @@ const AdminChannel = () => {
     };
   }, [socket]);
 
+  if (!adminList) return null;
   return (
     <AdminChannelContainer>
       {isChannelDeleteModal && (
@@ -138,7 +139,7 @@ const AdminChannel = () => {
           <span className="header-span">Administrator</span>
         </div>
         <List className="tab-panel-4-list" component="nav" aria-label="mailbox folders">
-          <Typography>
+          <Typography component="span">
             <div>
               <ListItem className="tab-panel-4-list-item">Owner</ListItem>
               {memberList &&

@@ -7,6 +7,7 @@ export const DMLeftDrawerContainer = styled.div`
 	padding: 30px 15px;
 	background-color: #363636;
 	border-right: 1px solid #4f4f4f;
+	overflow: hidden;
 
 	& .search-input {
 		width: 100%;

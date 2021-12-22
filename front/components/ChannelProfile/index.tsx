@@ -10,6 +10,7 @@ import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import config from '@utils/config';
 import { Container, AdminBtn, MatchDataContainer, ButtonGroupsContainer } from './style';
+import { toast } from 'react-toastify';
 
 interface Props {
   user: IAllUser;
@@ -58,11 +59,17 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
     axios
       .get(`/api/channels/muteUser/${id}/${user.userId}/20`, config)
       .then((res) => {
-        mutateMymuteMmbers();
         setSelectedIndex(-1);
       })
-      .catch(() => {
-        mutateMymuteMmbers();
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
       });
   }, []);
 
@@ -73,7 +80,16 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       .then((res) => {
         setSelectedIndex(-1);
       })
-      .catch(() => {});
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, []);
 
   const onClickBanBtn = useCallback((e) => {
@@ -83,7 +99,16 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       .then((res) => {
         setSelectedIndex(-1);
       })
-      .catch(() => {});
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, []);
 
   const onClickMessageBtn = useCallback(
@@ -92,10 +117,20 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
       axios
         .get(`/api/dms/create/${user.userId}`, config)
         .then((res) => {
-          mutateDmList();
-          history.push(`/social/dm/${res.data}`);
+          mutateDmList().then(() => {
+            history.push(`/social/dm/${res.data}`);
+          });
         })
-        .catch(() => {});
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        });
     },
     [user, mutateDmList, dmList],
   );
@@ -108,17 +143,35 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
           .get(`/api/channels/giveAdmin/${id}/${user.userId}`, config)
           .then(() => {
             setSelectedIndex(-1);
-            mutateChannelUserList();
+            // mutateChannelUserList();
           })
-          .catch(() => {});
+          .catch((error) => {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          });
       } else if (userAuth === 1) {
         axios
           .get(`/api/channels/removeAdmin/${id}/${user.userId}`, config)
           .then(() => {
             setSelectedIndex(-1);
-            mutateChannelUserList();
+            // mutateChannelUserList();
           })
-          .catch(() => {});
+          .catch((error) => {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          });
       }
     },
     [myAuth],
@@ -133,7 +186,7 @@ const ChannelProfile: VFC<Props> = ({ user, setSelectedIndex }) => {
             {myAuth === 2 && userAuth !== 2 && (
               <AdminBtn
                 onClick={onClickAppointAdmin}
-                btnColor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
+                btncolor={`${userAuth === 1 ? '#f33c36' : '#002BC'}`}
                 variant="text"
               >
                 admin

@@ -36,31 +36,32 @@ export const TabPanel1 = () => {
   return (
     <Scrollbars>
       <List sx={{ width: '100%' }} component="nav" aria-label="mailbox folders">
-        {adminList?.map((admin) => {
-          isState = 0;
-          if (onGameList && onGameList[admin.userId]) isState = 2;
-          if (isState === 0) {
-            onlineList?.map((onlineUser) => {
-              if (onlineUser.userId === admin.userId) isState = 1;
-            });
-          }
-          return (
-            <ListItem button key={admin.userId}>
-              <UserAvatar
-                isstate={`${
-                  isState
-                    ? isState === 1
-                      ? '2px solid #1ed14b'
-                      : '2px solid #FFD400'
-                    : '2px solid #d63638'
-                }`}
-                src={admin.profile}
-                alt="Avatar"
-              />
-              <ListItemText primary={admin.userId} style={{ marginLeft: '12px' }} />
-            </ListItem>
-          );
-        })}
+        {adminList &&
+          adminList?.map((admin) => {
+            isState = 0;
+            if (onGameList && onGameList[admin.userId]) isState = 2;
+            if (isState === 0) {
+              onlineList?.map((onlineUser) => {
+                if (onlineUser.userId === admin.userId) isState = 1;
+              });
+            }
+            return (
+              <ListItem button key={admin.userId}>
+                <UserAvatar
+                  isstate={`${
+                    isState
+                      ? isState === 1
+                        ? '2px solid #1ed14b'
+                        : '2px solid #FFD400'
+                      : '2px solid #d63638'
+                  }`}
+                  src={admin.profile}
+                  alt="Avatar"
+                />
+                <ListItemText primary={admin.userId} style={{ marginLeft: '12px' }} />
+              </ListItem>
+            );
+          })}
       </List>
     </Scrollbars>
   );

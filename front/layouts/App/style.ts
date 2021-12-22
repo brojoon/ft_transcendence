@@ -9,4 +9,8 @@ export const ScrollbarColor = styled.div`
 	&:hover {
 		background-color: white;
 	}
+
+  & .Toastify__toast-theme--ligh {
+		background-color: red;
+  }
 `;
