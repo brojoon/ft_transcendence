@@ -17,35 +17,35 @@ services:
     volumes:
       # - postgresql:/var/lib/postgresql/data
       - ./postgresql:/var/lib/postgresql/data
-      #- ./db.sql:/docker-entrypoint-initdb.d/db.sql
-  # back:
-  #   build:
-  #     context: ./back
-  #     dockerfile: Dockerfile
-  #   container_name: back
-  #   restart: always
-  #   ports:
-  #     - 3095:3095
-  #   depends_on:
-  #     - postgresql
-  #   networks:
-  #     - database
-  #     - frontApp
-  #volumes:
-  #- ./back:/usr/src/app
+      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: back
+    restart: always
+    ports:
+      - 3095:3095
+    depends_on:
+      - postgresql
+    networks:
+      - database
+      - frontApp
+    # volumes:
+    #   - ./back:/usr/src/app
 
-  # front:
-  #   build:
-  #     context: ./test
-  #     dockerfile: Dockerfile
-  #   container_name: front
-  #   restart: always
-  #   ports:
-  #     - 3000:3000
-  #   depends_on:
-  #     - back
-  #   networks:
-  #     - frontApp
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: front
+    restart: always
+    ports:
+      - 3090:3090
+    depends_on:
+      - back
+    networks:
+      - frontApp
 
 volumes:
   postgresql:
