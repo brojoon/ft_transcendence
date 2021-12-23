@@ -1,5 +1,6 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Block } from 'src/entities/Block';
 import { Dm } from 'src/entities/Dm';
 import { Dmcontent } from 'src/entities/Dmcontent';
 import { History } from 'src/entities/History';
@@ -14,6 +15,7 @@ export class DmsService {
     @InjectRepository(Dm) private dmRepository: Repository<Dm>,
     @InjectRepository(Dmcontent) private dmcontentRepository: Repository<Dmcontent>,
     @InjectRepository(History) private historyRepository: Repository<History>,
+    @InjectRepository(Block) private blockRepository: Repository<Block>,
     private eventsGateway:EventsGateway
   ) { }
 
@@ -146,9 +148,24 @@ export class DmsService {
     }
   }
 
+  async checkBlock1(userId1: string, userId2: string) {
+    try {
+      const  user =  await this.blockRepository.findOne({ where: { userId1, userId2 } });
+      if (user)
+        return (true);
+      else
+        return (false);      
+    } catch (error) {
+      throw new BadRequestException('BLOCK 확인 실패');
+    }
+  }
+
   async sendMessage(userId1:string, userId2:string, message:string, match:number, historyId:number) {
     try {
       await this.checkHaveUser(userId1, userId2);
+      if (await this.checkBlock1(userId1, userId2) || await this.checkBlock1(userId2, userId1)) {
+        throw new ForbiddenException('Block 상태');    
+      }
       const dmId =  await this.createAndGetDm(userId1, userId2);
       const send = new Dmcontent();
       send.dmId = dmId;
@@ -157,8 +174,15 @@ export class DmsService {
       if (match === 1){
         send.message = "대국신청";
         send.historyId = await this.getHistoryId(userId1, userId2);
+        let user1 = await this.usersRepository.findOne({userId:userId1});
+        let user2 = await this.usersRepository.findOne({userId:userId2});
+        this.eventsGateway.server.to(`${userId1}`).emit('notice', {match: match, gameId:send.historyId, username:user1.username});
+        this.eventsGateway.server.to(`${userId2}`).emit('notice', {match: match, gameId:send.historyId, username:user2.username}); 
+      } else if (match === 3) {
+        send.message = "대국신청";
+        send.historyId = await this.getHistoryId(userId1, userId2);
         let user = await this.usersRepository.findOne({userId:userId2});
-        this.eventsGateway.server.to(`${userId2}`).emit('notice', {gameId:send.historyId, username:user.username}); 
+        this.eventsGateway.server.to(`${userId2}`).emit('notice', {match: match, gameId:send.historyId, username:user.username}); 
       } else {
         send.message = message;
         send.historyId = historyId;
@@ -169,8 +193,10 @@ export class DmsService {
       this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data); 
       return (dm.historyId);
     } catch (error) {
-      if (error.errno !== undefined || error.response.statusCode !== 404)
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
         throw new BadRequestException("메세지 전송 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
       else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
     }
@@ -182,6 +208,9 @@ export class DmsService {
       if (!result)
         throw new NotFoundException('유저 정보 없음');
       const userId2 = await this.findDmUser(dmId, userId1);
+      if (await this.checkBlock1(userId1, userId2) || await this.checkBlock1(userId2, userId1)) {
+        throw new ForbiddenException('Block 상태');    
+      }
       const send = new Dmcontent();
       send.dmId = dmId;
       send.userId1 = userId1;
@@ -202,8 +231,10 @@ export class DmsService {
       this.eventsGateway.server.to(`dm-${dm.dmId}`).emit('dm', data);
       return (dm.historyId);
     } catch (error) {
-      if (error.errno !== undefined || error.response.statusCode !== 404)
+      if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
         throw new BadRequestException("메세지 전송 실패");
+      else if (error.response.statusCode === 403)
+        throw new ForbiddenException(error.response.message);
       else if (error.response.statusCode === 404)
         throw new NotFoundException(error.response.message);
     }
