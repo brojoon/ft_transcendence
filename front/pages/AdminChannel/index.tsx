@@ -19,15 +19,16 @@ import { SocketContext } from '@store/socket';
 import { AdminChannelContainer, TabPanelAatar } from './style';
 import getSocket from '@utils/useSocket';
 import AdminPageProfile from '@components/AdminPageProfile';
+import { toast } from 'react-toastify';
 
 const AdminChannel = () => {
   const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
 
-  const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
-    `/api/channels/mutedMembers/${id}`,
-    fetcher,
-  );
+  // const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
+  //   `/api/channels/mutedMembers/${id}`,
+  //   fetcher,
+  // );
   const { data: memberList } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id === undefined ? -1 : id}`,
     fetcher,
@@ -57,11 +58,23 @@ const AdminChannel = () => {
   const DeleteClickChannelBtn = useCallback(
     (e) => {
       e.preventDefault();
-      axios.get(`/api/channels/ownerApi/siteOwnerChannelDelete/${id}`, config).then(() => {
-        mutateChannelList().then(() => {
-          history.push('/admin');
+      axios
+        .get(`/api/channels/ownerApi/siteOwnerChannelDelete/${id}`, config)
+        .then(() => {
+          mutateChannelList().then(() => {
+            history.push('/admin');
+          });
+        })
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
         });
-      });
     },
     [id],
   );

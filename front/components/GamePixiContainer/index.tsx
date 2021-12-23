@@ -6,6 +6,7 @@ import getSocket from '@utils/useSocket';
 import 'regenerator-runtime';
 import { useParams } from 'react-router-dom';
 import { PixiContainer } from './style';
+import { toast } from 'react-toastify';
 
 const socket = getSocket();
 
@@ -68,7 +69,16 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player }) => {
   const [player_two_y, setPlayTwoY] = useState(200);
 
   const fetchDataFunc = async () => {
-    await axios.get(`http://localhost:3095/api/game/start/${id}`, option);
+    await axios.get(`/api/game/start/${id}`, option).catch((error) => {
+      toast.error(error.message, {
+        autoClose: 4000,
+        position: toast.POSITION.TOP_RIGHT,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: 'colored',
+      });
+    });
   };
 
   useEffect(() => {
@@ -102,15 +112,20 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player }) => {
   useEffect(() => {
     const keyDownHandler = (e: any) => {
       // 잠시 이걸 이용
+      console.log('player', player);
       if (e.keyCode === 87 && player !== '') {
-        socket.emit('player_one_up', { game: id });
+        if (player === 'playerOne') socket.emit('player_one_up', { game: id });
+        else if (player === 'playerTwo') socket.emit('player_two_up', { game: id });
       } else if (e.keyCode === 83 && player !== '') {
-        socket.emit('player_one_down', { game: id });
-      } else if (e.keyCode === 79 && player !== '') {
-        socket.emit('player_two_up', { game: id });
-      } else if (e.keyCode === 76 && player !== '') {
-        socket.emit('player_two_down', { game: id });
-      } else if (e.keyCode === 84 && player !== '') {
+        if (player === 'playerOne') socket.emit('player_one_down', { game: id });
+        else if (player === 'playerTwo') socket.emit('player_two_down', { game: id });
+      }
+      // if (e.keyCode === 79 && player !== '') {
+
+      // } else if (e.keyCode === 76 && player !== '') {
+
+      // }
+      else if (e.keyCode === 84 && player !== '') {
         fetchDataFunc();
       }
       // if (e.keyCode === 87 && player === "playerOne"){

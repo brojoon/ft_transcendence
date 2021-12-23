@@ -13,6 +13,7 @@ import { useParams, useHistory } from 'react-router-dom';
 import getSocket from '@utils/useSocket';
 import config from '@utils/config';
 import { DirectMessageContainer } from './style';
+import { toast } from 'react-toastify';
 
 const DirectMessage = () => {
   const [chat, setChat] = useState('');
@@ -65,8 +66,15 @@ const DirectMessage = () => {
           },
           config,
         )
-        .then(() => {})
-        .catch(() => {
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
           mutateChat();
         });
       setChat('');

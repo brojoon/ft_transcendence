@@ -5,6 +5,8 @@ import Scrollbars from 'react-custom-scrollbars';
 import SocketContext from '@store/socket';
 import { ScrollbarColor } from './style';
 import { ToastContainer } from 'react-toastify';
+import axios from 'axios';
+import 'regenerator-runtime';
 
 const LogIn = loadable(() => import('@pages/LogIn'));
 const TwoFactor = loadable(() => import('@pages/TwoFactor'));
@@ -14,6 +16,24 @@ const Admin = loadable(() => import('@pages/Admin'));
 const AdminChannel = loadable(() => import('@pages/AdminChannel'));
 
 const App = () => {
+  // let isLogin = undefined;
+
+  // async function firstRequest() {
+  //   await axios
+  //     .get('/api/users', {
+  //       withCredentials: true,
+  //     })
+  //     .then(() => {
+  //       console.log('hi');
+  //       isLogin = true;
+  //     })
+  //     .catch(() => {
+  //       isLogin = false;
+  //     });
+  // }
+
+  // firstRequest();
+  // console.log(isLogin);
   return (
     <SocketContext>
       <ToastContainer />
@@ -22,7 +42,7 @@ const App = () => {
         renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
       >
         <Switch>
-          <Redirect exact path="/" to="/home" />
+          <Redirect exact path="/" to="/login" />
           <Route exact path="/login" component={LogIn} />
           <Route exact path="/login/first-step" component={FirstStep} />
           <Route exact path="/two-factor" component={TwoFactor} />

@@ -1,8 +1,13 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Match from '@pages/Match';
-import PingPong from '@pages/PingPong';
-import History from '@pages/History';
+// import Match from '@pages/Match';
+// import PingPong from '@pages/PingPong';
+// import History from '@pages/History';
+import loadable from '@loadable/component';
+
+const Match = loadable(() => import('@pages/Match'));
+const History = loadable(() => import('@pages/History'));
+const PingPong = loadable(() => import('@pages/PingPong'));
 
 const Game = () => {
   return (

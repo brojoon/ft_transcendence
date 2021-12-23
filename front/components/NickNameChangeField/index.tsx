@@ -3,7 +3,7 @@ import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import TextField from '@mui/material/TextField';
-
+import { toast } from 'react-toastify';
 import axios from 'axios';
 import { EditNickNameWrapper, NickNameErrorContainer } from './style';
 
@@ -36,12 +36,28 @@ const NickNameChangeField = () => {
             if (res.data === false) {
               setIsNickError(1);
               return;
+            } else {
+              toast.success('Successfully changed your nickname', {
+                autoClose: 4000,
+                position: toast.POSITION.TOP_RIGHT,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: 'colored',
+              });
+              mutateMyData();
+              setChangeNickname('');
             }
-            mutateMyData();
-            setChangeNickname('');
           })
-          .catch(() => {
-            setIsNickError(1);
+          .catch((error) => {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
           });
       }
     },

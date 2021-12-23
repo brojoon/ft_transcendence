@@ -40,22 +40,14 @@ const ChannelMemberDrawBar: VFC<Props> = ({
   const { id } = useParams<{ id: string }>();
   const { data: memberList } = useSWR<IMemberList[]>(`/api/channels/userList/${id}`, fetcher);
   const { data: alluser } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
-  const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
-    `/api/channels/allChannelList`,
-    fetcher,
-  );
-  const { data: myChannelList, mutate: mutateMyChannelList } = useSWR<IChannelList[]>(
-    `/api/channels/myChannelList`,
-    fetcher,
-  );
   const { data: isOwner } = useSWR<boolean>(`/api/channels/checkOwner/${id}`, fetcher);
   const { data: isAdmin } = useSWR<boolean>(`/api/channels/checkAdmin/${id}`, fetcher);
 
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
-  const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
-    `/api/channels/mutedMembers/${id}`,
-    fetcher,
-  );
+  // const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
+  //   `/api/channels/mutedMembers/${id}`,
+  //   fetcher,
+  // );
   const { onlineList, onGameList } = useContext(SocketContext);
   let isState;
   const history = useHistory();
@@ -161,12 +153,12 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                           if (onlineUser.userId === user.userId) isState = 1;
                         });
                       }
-                      let isMute = false;
-                      MymuteMmbers?.map((muteMember: IMemberList) => {
-                        if (muteMember.userId === user.userId) {
-                          if (muteMember.mute) isMute = true;
-                        }
-                      });
+                      // let isMute = false;
+                      // MymuteMmbers?.map((muteMember: IMemberList) => {
+                      //   if (muteMember.userId === user.userId) {
+                      //     if (muteMember.mute) isMute = true;
+                      //   }
+                      // });
                       return (
                         <div key={user.userId}>
                           {selectedIndex === index && user.userId !== myData?.userId && (
@@ -185,7 +177,7 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                               alt="Avatar"
                             />
                             <ListItemText className="member-text" primary={user.username} />
-                            {isMute ? (
+                            {member.mute ? (
                               <VoiceOverOffIcon className="mute-icon" />
                             ) : (
                               <RecordVoiceOverIcon className="unmute-icon" />
