@@ -26,7 +26,8 @@ export class GameService {
     return await this.historyRepository.findOne({id:gameId});
   }
 
-  async gameStart(gameId: number){ 
+  async gameStart(gameId: number){
+    console.log("gameId!!!!", gameId)
     if (gameMap[gameId].game_state === 0 && gameMap[gameId].player_one_ready === 1 && gameMap[gameId].player_two_ready === 1){
       ////histoey초기화 시켜주기(다른데서 초기화가 이미 돼서 옴)
       this.reset(gameId);

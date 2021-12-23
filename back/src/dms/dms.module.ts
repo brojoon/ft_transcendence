@@ -7,10 +7,11 @@ import { Dmcontent } from 'src/entities/Dmcontent';
 import { Dm } from 'src/entities/Dm';
 import { EventsModule } from 'src/events/events.module';
 import { History } from 'src/entities/History';
+import { Block } from 'src/entities/Block';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Users, Dm, Dmcontent, History]),
+    TypeOrmModule.forFeature([Users, Dm, Dmcontent, History, Block]),
     EventsModule
   ],
   controllers: [DmsController],
