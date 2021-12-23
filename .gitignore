@@ -37,4 +37,5 @@
 /node_modules
 #./back/ormconfig.ts
 #ormconfig.ts
+
 /postgresql
