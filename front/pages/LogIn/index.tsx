@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Redirect, useHistory } from 'react-router-dom';
 import { Container, LoginButton } from './style';
-import axios from 'axios';
+// import axios from 'axios';
 
 const LogIn = () => {
   const history = useHistory();

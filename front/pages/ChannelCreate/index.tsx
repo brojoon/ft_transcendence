@@ -2,7 +2,6 @@ import React, { useState, useCallback, VFC, useEffect } from 'react';
 import ChannelHeader from '@components/ChannelHeader';
 import ChannelForm from '@components/ChannelForm';
 import { ChannelCreateContainer } from './style';
-import { NumberLiteralType } from 'typescript';
 
 interface Props {
   onSubmitChannelCreate: () => void;

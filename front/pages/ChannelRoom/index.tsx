@@ -16,6 +16,7 @@ import BasicModal from '@components/BasicModal';
 import ChannelInviteModal from '@components/ChannelInviteModal';
 import config from '@utils/config';
 import { ChannelRoomContainer } from './style';
+import { toast } from 'react-toastify';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -120,10 +121,16 @@ const ChannelRoom = () => {
           },
           config,
         )
-        .then(() => {})
         .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
           mutateChat();
-          console.log(error.data);
         });
       console.log(chat);
       setChat('');
@@ -142,12 +149,24 @@ const ChannelRoom = () => {
   const onClickChannelLeaveMdoalYes = useCallback(
     (e) => {
       e.preventDefault();
-      axios.get(`/api/channels/getout/${id}`, config).then(() => {
-        mutateAllChannelList();
-        mutateMyChannelList();
-        setChannelLeaveModal(false);
-        history.push('/channels');
-      });
+      axios
+        .get(`/api/channels/getout/${id}`, config)
+        .then(() => {
+          mutateAllChannelList();
+          mutateMyChannelList();
+          setChannelLeaveModal(false);
+          history.push('/channels');
+        })
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        });
     },
     [channelLeaveModal],
   );

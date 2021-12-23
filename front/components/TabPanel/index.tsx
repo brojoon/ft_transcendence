@@ -1,27 +1,11 @@
 import React, { useContext } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
-import { IChannelList2, IAllUser, IUser, IMemberList } from '@typings/db';
-import Box from '@mui/material/Box';
-import Tab from '@mui/material/Tab';
-import TabContext from '@mui/lab/TabContext';
-import TabList from '@mui/lab/TabList';
-import Avatar from '@mui/material/Avatar';
-import TabPanel from '@mui/lab/TabPanel';
+import { IAllUser } from '@typings/db';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Scrollbars from 'react-custom-scrollbars';
-import BasicModal from '@components/BasicModal';
-import axios from 'axios';
-import UserRightModal from '@components/UserRightModal';
-import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useParams, useHistory, Link } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
-import config from '@utils/config';
-import AdminPageProfile from '@components/AdminPageProfile';
 import { UserAvatar } from './style';
 import { SocketContext } from '@store/socket';
 

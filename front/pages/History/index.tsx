@@ -7,6 +7,7 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import Avatar from '@mui/material/Avatar';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
+import { toast } from 'react-toastify';
 import { IAllUser } from '@typings/db';
 import {
   HistoryContainer,
@@ -57,7 +58,7 @@ const History = (data: any) => {
   useEffect(() => {
     async function getGameInfo() {
       await axios
-        .get(`http://localhost:3095/api/game/history/${gameId}`, option)
+        .get(`/api/game/history/${gameId}`, option)
         .then((res: any) => {
           setUserId1(res.data.userId1);
           setUserId2(res.data.userId2);
@@ -67,7 +68,16 @@ const History = (data: any) => {
           // if (res.data.winner === null)
           //   window.location.href = `http://localhost:3000/history/${gameId}`;
         })
-        .catch(() => {});
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        });
     }
     if (userId1 === '') getGameInfo();
   }, [gameId, userId1]);

@@ -13,6 +13,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import config from '@utils/config';
 import { FirstStepContainer, ErrorText } from './style';
+import { toast } from 'react-toastify';
 
 const FirstStep = () => {
   const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher);
@@ -45,9 +46,17 @@ const FirstStep = () => {
               if (res.data === false) {
                 setIsNicknameError(2);
               } else {
-                mutateMyData().then(() => {
-                  history.push('/home');
+                toast.success('Successfully registered', {
+                  autoClose: 2000,
+                  position: toast.POSITION.TOP_RIGHT,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  theme: 'colored',
                 });
+                setTimeout(() => {
+                  mutateMyData();
+                }, 2000);
               }
             })
             .catch(() => {

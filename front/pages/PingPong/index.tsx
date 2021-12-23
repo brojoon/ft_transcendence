@@ -13,6 +13,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import Scrollbars from 'react-custom-scrollbars';
 import GamePixiContainer from '@components/GamePixiContainer';
 import GameSetting from '@components/GameSetting';
+import { toast } from 'react-toastify';
 import {
   PingPongContainer,
   GameReadyContainer,
@@ -116,7 +117,7 @@ const PingPong = (data: any) => {
   useEffect(() => {
     async function getGameInfo() {
       await axios
-        .get(`http://localhost:3095/api/game/history/${gameId}`, option)
+        .get(`/api/game/history/${gameId}`, option)
         .then((res: any) => {
           if (res.data.state === 2) history.push(`/game/history/${gameId}`);
           if (myData?.userId === res.data.userId1) {
@@ -157,6 +158,19 @@ const PingPong = (data: any) => {
             user1Point: res.data.user1Point,
             user2Point: res.data.user2Point,
           });
+        })
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+          setTimeout(() => {
+            history.push('/home');
+          }, 4000);
         });
     }
     if (myData?.userId) getGameInfo();
@@ -212,7 +226,17 @@ const PingPong = (data: any) => {
   }, [socket, gameId, myData, player, player2Ready]);
 
   const changeGameSet = useCallback(() => {
-    if (player !== '') axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
+    if (player !== '')
+      axios.get(`/api/game/start/${gameId}`, option).catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, [gameId, player, option]);
 
   return (

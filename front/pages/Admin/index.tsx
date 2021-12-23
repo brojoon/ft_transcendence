@@ -20,6 +20,7 @@ import { useParams, useHistory, Link } from 'react-router-dom';
 import config from '@utils/config';
 import { SocketContext } from '@store/socket';
 import getSocket from '@utils/useSocket';
+import { toast } from 'react-toastify';
 
 import { TabPanel1 } from '@components/TabPanel';
 import { AdminPageContainer, AdminPageWrapper, TabPanelAatar } from './style';
@@ -172,7 +173,16 @@ const Admin = () => {
               setIsUserPrivilegeModal(false);
               setUserPrivilegeSelected('');
             })
-            .catch(() => {});
+            .catch((error) => {
+              toast.error(error.message, {
+                autoClose: 4000,
+                position: toast.POSITION.TOP_RIGHT,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                theme: 'colored',
+              });
+            });
         }
       }
     },
@@ -191,7 +201,16 @@ const Admin = () => {
             setIsUnModeratorModal(false);
             setUnModeratorSelected('');
           })
-          .catch(() => {});
+          .catch((error) => {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          });
       }
     },
     [unModeratorSelected],
@@ -209,7 +228,16 @@ const Admin = () => {
             setIsUserPrivilegeModal(false);
             setUserPrivilegeSelected('');
           })
-          .catch(() => {});
+          .catch((error) => {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          });
       }
     },
     [userPrivilegeSelected],
@@ -227,9 +255,17 @@ const Admin = () => {
             setIsUnBanUserModal(false);
             setUnBanUserSelected('');
           })
-          .catch(() => {});
+          .catch((error) => {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          });
       }
-      moderatorList;
     },
     [unBanUserSelected],
   );
