@@ -6,11 +6,8 @@ import AppBar from '@mui/material/AppBar';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
-import fetcher from '@utils/fetcher';
-import useSWR from 'swr';
 import FriendsList from '@components/FriendsList';
 import FriendsOnlineList from '@components/FriendsOnlineList';
-import { IFriendList, IAllUser } from '@typings/db';
 import BlockList from '@components/BlockList';
 import { SocialSliderContainer, TabPannelBox } from './style';
 

@@ -25,11 +25,21 @@ import { IAchievement } from '@typings/db';
 import { AchievementsContainer } from './style';
 
 const Achievements = () => {
-  const { data: friendCount } = useSWR<IAchievement>(`/api/friend/countFriend`, fetcher);
-  const { data: DmListCount } = useSWR<IAchievement>(`/api/dms/getDmListNum`, fetcher);
-  const { data: matchCount } = useSWR<IAchievement>(`/api/game/achievement/numOfFight`, fetcher);
-  const { data: winCount } = useSWR<IAchievement>(`/api/game/achievement/numOfWin`, fetcher);
-  const { data: loseCount } = useSWR<IAchievement>(`/api/game/achievement/numOfLose`, fetcher);
+  const { data: friendCount } = useSWR<IAchievement>(`/api/friend/countFriend`, fetcher, {
+    dedupingInterval: 10000,
+  });
+  const { data: DmListCount } = useSWR<IAchievement>(`/api/dms/getDmListNum`, fetcher, {
+    dedupingInterval: 10000,
+  });
+  const { data: matchCount } = useSWR<IAchievement>(`/api/game/achievement/numOfFight`, fetcher, {
+    dedupingInterval: 10000,
+  });
+  const { data: winCount } = useSWR<IAchievement>(`/api/game/achievement/numOfWin`, fetcher, {
+    dedupingInterval: 10000,
+  });
+  const { data: loseCount } = useSWR<IAchievement>(`/api/game/achievement/numOfLose`, fetcher, {
+    dedupingInterval: 10000,
+  });
   const { data: channelCount } = useSWR<IAchievement>(
     `/api/channels/achievement/numOfChannels`,
     fetcher,

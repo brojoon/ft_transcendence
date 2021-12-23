@@ -33,26 +33,44 @@ const UserProfileAchieveCard: VFC<Props> = ({ userData }) => {
   const { data: friendCount } = useSWR<IAchievement>(
     `/api/friend/countFriends/${userData?.userId}`,
     fetcher,
+    {
+      dedupingInterval: 10000,
+    },
   );
   const { data: DmListCount } = useSWR<IAchievement>(
     `/api/dms/getDmListNumber/${userData?.userId}`,
     fetcher,
+    {
+      dedupingInterval: 10000,
+    },
   );
   const { data: matchCount } = useSWR<IAchievement>(
     `/api/game/achievement/numOfFight/${userData?.userId}`,
     fetcher,
+    {
+      dedupingInterval: 10000,
+    },
   );
   const { data: winCount } = useSWR<IAchievement>(
     `/api/game/achievement/numOfWin/${userData?.userId}`,
     fetcher,
+    {
+      dedupingInterval: 10000,
+    },
   );
   const { data: loseCount } = useSWR<IAchievement>(
     `/api/game/achievement/numOfLose/${userData?.userId}`,
     fetcher,
+    {
+      dedupingInterval: 10000,
+    },
   );
   const { data: channelCount } = useSWR<IAchievement>(
     `/api/channels/achievement/numOfChannels/${userData?.userId}`,
     fetcher,
+    {
+      dedupingInterval: 10000,
+    },
   );
   return (
     <UserProfileAchieveCardContainer>
