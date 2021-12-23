@@ -3,7 +3,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
-import { IAllUser, IFriendList, IBlockList } from '@typings/db';
+import { IAllUser, IBlockList } from '@typings/db';
 import Scrollbars from 'react-custom-scrollbars';
 import { Link } from 'react-router-dom';
 import { MuiList, UserAvatar, ScrollbarColor } from './style';

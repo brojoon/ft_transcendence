@@ -25,10 +25,10 @@ const AdminChannel = () => {
   const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
 
-  const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
-    `/api/channels/mutedMembers/${id}`,
-    fetcher,
-  );
+  // const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
+  //   `/api/channels/mutedMembers/${id}`,
+  //   fetcher,
+  // );
   const { data: memberList } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id === undefined ? -1 : id}`,
     fetcher,

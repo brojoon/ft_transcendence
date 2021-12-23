@@ -8,17 +8,10 @@ import { toast } from 'react-toastify';
 const TwoFactor = () => {
   const history = useHistory();
   const onSubmitForm = useCallback((e) => {
-    console.log(e.target.value);
-    let token = document.cookie.slice(document.cookie.indexOf('userCookie') + 15);
-    token = unescape(token.indexOf(' ') === -1 ? token : token.slice(0, token.indexOf(' ')));
-    const obj = JSON.parse(token.slice(0, token.length));
-    if (obj) {
+    if (e.target.value) {
       axios
-        .post(`/api/auth/qrlogin`, {
-          userId: obj.userId,
-          email: obj.email,
-          oauthId: parseInt(obj.oauthId),
-          TwoFactorAuthcode: e.target.value,
+        .get(`/api/auth/qrlogin/${e.target.value}`, {
+          withCredentials: true,
         })
         .then(() => {
           console.log('tow-factor성공');

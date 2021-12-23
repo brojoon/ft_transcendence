@@ -38,10 +38,10 @@ const ChannelRoom = () => {
     fetcher,
   );
 
-  const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
-    `/api/channels/mutedMembers/${id}`,
-    fetcher,
-  );
+  // const { data: MymuteMmbers, mutate: mutateMymuteMmbers } = useSWR<IMemberList[]>(
+  //   `/api/channels/mutedMembers/${id}`,
+  //   fetcher,
+  // );
 
   const {
     data: chatData,
@@ -171,15 +171,6 @@ const ChannelRoom = () => {
     [channelLeaveModal],
   );
 
-  const channelRevalidate = useCallback(() => {
-    console.log('channel revalidated!!!');
-    mutateChannelMembers();
-    mutateMyChannelList();
-    mutateAllChannelList();
-    // mutateMyMute();
-    mutateMymuteMmbers();
-  }, []);
-
   const onMessage = useCallback((data) => {
     console.log('ch왔다!');
     console.log(data);
@@ -218,26 +209,77 @@ const ChannelRoom = () => {
     }
   }, [myChannelList]);
 
+  // const channelRevalidate = useCallback(() => {
+  //   console.log('channel revalidated!!!');
+  //   mutateChannelMembers();
+  //   mutateMyChannelList();
+  //   mutateAllChannelList();
+  //   mutateMyMute();
+  //   mutateMymuteMmbers();
+  // }, []);
+
+  useEffect(() => {
+    socket?.on('join', mutateChannelMembers);
+    return () => {
+      socket?.off('join');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('leave', mutateChannelMembers);
+    return () => {
+      socket?.off('leave');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('channelType', mutateMyChannelList);
+    return () => {
+      socket?.off('channelType');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('channelDelete', () => {
+      console.log('channelDelete!!');
+      mutateMyChannelList();
+      history.push('/channels');
+    });
+    return () => {
+      socket?.off('channelDelete');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('admin', mutateChannelMembers);
+    return () => {
+      socket?.off('admin');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('ban', mutateChannelMembers);
+    return () => {
+      socket?.off('ban');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('mute', () => {
+      mutateChannelMembers();
+      mutateMyMute();
+    });
+    return () => {
+      socket?.off('mute');
+    };
+  }, [socket]);
+
   useEffect(() => {
     socket?.on('ch', onMessage);
-    socket?.on('join', channelRevalidate);
-    socket?.on('leave', channelRevalidate);
-    socket?.on('channelType', channelRevalidate);
-    socket?.on('channelDelete', channelRevalidate);
-    socket?.on('admin', channelRevalidate);
-    socket?.on('ban', channelRevalidate);
-    socket?.on('mute', channelRevalidate);
     return () => {
       socket?.off('ch', onMessage);
-      socket?.off('join', channelRevalidate);
-      socket?.off('leave', channelRevalidate);
-      socket?.off('channelType', channelRevalidate);
-      socket?.off('channelDelete', channelRevalidate);
-      socket?.off('admin', channelRevalidate);
-      socket?.off('ban', channelRevalidate);
-      socket?.off('mute', channelRevalidate);
     };
-  }, [socket, onMessage, channelRevalidate]);
+  }, [socket, onMessage]);
 
   useEffect(() => {
     setTimeout(() => {

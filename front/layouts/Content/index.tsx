@@ -28,9 +28,7 @@ const Game = loadable(() => import('@pages/Game'));
 const ProfileSetting = loadable(() => import('@pages/ProfileSetting'));
 
 const Content = () => {
-  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
-    dedupingInterval: 2000,
-  });
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
   const { data: allUser } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);

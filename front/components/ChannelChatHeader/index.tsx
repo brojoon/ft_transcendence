@@ -17,10 +17,6 @@ interface Props {
 
 const ChannelChatHeader: VFC<Props> = ({ onClickMembersToggle, membersToggle }) => {
   const { id } = useParams<{ id: string }>();
-  const { data: channelMemberList } = useSWR<IMemberList[]>(
-    `/api/channels/userList/${id}`,
-    fetcher,
-  );
   const { data: allChannelList } = useSWR<IChannelList[]>('/api/channels/allChannelList', fetcher);
   return (
     <Box>
