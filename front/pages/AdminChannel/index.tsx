@@ -19,6 +19,7 @@ import { SocketContext } from '@store/socket';
 import { AdminChannelContainer, TabPanelAatar } from './style';
 import getSocket from '@utils/useSocket';
 import AdminPageProfile from '@components/AdminPageProfile';
+import { toast } from 'react-toastify';
 
 const AdminChannel = () => {
   const { id } = useParams<{ id: string }>();
@@ -57,11 +58,23 @@ const AdminChannel = () => {
   const DeleteClickChannelBtn = useCallback(
     (e) => {
       e.preventDefault();
-      axios.get(`/api/channels/ownerApi/siteOwnerChannelDelete/${id}`, config).then(() => {
-        mutateChannelList().then(() => {
-          history.push('/admin');
+      axios
+        .get(`/api/channels/ownerApi/siteOwnerChannelDelete/${id}`, config)
+        .then(() => {
+          mutateChannelList().then(() => {
+            history.push('/admin');
+          });
+        })
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
         });
-      });
     },
     [id],
   );

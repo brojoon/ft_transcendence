@@ -3,7 +3,6 @@ import { MyFab, NavIcons, StyledBadge, Toolbar, LeftSideBarContainer } from './s
 import ForumIcon from '@mui/icons-material/Forum';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import ConnectWithoutContactIcon from '@mui/icons-material/ConnectWithoutContact';
-import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Avatar from '@mui/material/Avatar';
@@ -16,8 +15,6 @@ import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import Tooltip from '@mui/material/Tooltip';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
-import ListItemButton from '@mui/material/ListItemButton';
-import List from '@mui/material/List';
 import Scrollbars from 'react-custom-scrollbars';
 import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
 import getSocket from '@utils/useSocket';

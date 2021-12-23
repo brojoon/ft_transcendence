@@ -7,6 +7,7 @@ import { IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import { MatchContainer } from './style';
+import { toast } from 'react-toastify';
 
 const option = {
   // headers: {
@@ -35,19 +36,35 @@ const Match = () => {
     };
   }, [myData, socket]);
 
+  const Matching = useCallback(
+    async (matched: any) => {
+      await axios
+        .post(`/api/dms/sendMessage/${matched.playerTwo}/1/0`, { message: '' }, option)
+        .then((res) => {
+          socket.emit('matching', { userId: myData?.userId, gameId: res.data });
+          history.push(`/game/ping-pong/${res.data}`);
+        })
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+          setTimeout(() => {
+            history.push('/home');
+          }, 4000);
+        });
+    },
+    [myData, socket],
+  );
+
   useEffect(() => {
     socket.on('matched', (matched: any) => {
       if (myData?.userId === matched.playerOne && matched.gameId === 0) {
-        axios
-          .post(
-            `http://localhost:3095/api/dms/sendMessage/${matched.playerTwo}/1/0`,
-            { message: '' },
-            option,
-          )
-          .then((res) => {
-            socket.emit('matching', { userId: myData?.userId, gameId: res.data });
-            history.push(`/game/ping-pong/${res.data}`);
-          });
+        Matching(matched);
       } else if (myData?.userId === matched.playerTwo && matched.gameId !== 0) {
         history.push(`/game/ping-pong/${matched.gameId}`);
       }
@@ -55,7 +72,7 @@ const Match = () => {
     return () => {
       socket.off('matched');
     };
-  }, [socket, myData]);
+  }, [socket, myData, Matching]);
 
   return (
     <MatchContainer>

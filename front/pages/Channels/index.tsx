@@ -2,15 +2,20 @@ import React, { useState, useCallback, useEffect } from 'react';
 import ChannelLeftDrawBar from '@components/ChannelLeftDrawBar';
 import { Container } from './style';
 import { Route, Switch, useHistory } from 'react-router-dom';
-import ChannelCreate from '@pages/ChannelCreate';
-import ChannelDiscover from '@pages/ChannelDiscover';
-import ChannelRoom from '@pages/ChannelRoom';
+// import ChannelCreate from '@pages/ChannelCreate';
+// import ChannelDiscover from '@pages/ChannelDiscover';
+// import ChannelRoom from '@pages/ChannelRoom';
 import useSWR from 'swr';
 import { IChannelList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
-import getSocket from '@utils/useSocket';
 import config from '@utils/config';
+import { toast } from 'react-toastify';
+import loadable from '@loadable/component';
+
+const ChannelDiscover = loadable(() => import('@pages/ChannelDiscover'));
+const ChannelRoom = loadable(() => import('@pages/ChannelRoom'));
+const ChannelCreate = loadable(() => import('@pages/ChannelCreate'));
 
 const Channel = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
@@ -44,6 +49,14 @@ const Channel = () => {
           password: '',
           showPassword: false,
         });
+        toast.success('Successfully created a channel', {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
         mutateChannelList().then(() => {
           if (mychannelList) {
             history.push(`/channels/${response.data}`);
@@ -65,7 +78,7 @@ const Channel = () => {
     <Container>
       <ChannelLeftDrawBar />
       <Switch>
-        <Route exact path="/channels" render={() => <ChannelDiscover />} />
+        <Route exact path="/channels" component={ChannelDiscover} />
         <Route
           exact
           path="/channels/create"
@@ -81,7 +94,7 @@ const Channel = () => {
             />
           )}
         />
-        <Route exact path="/channels/:id" render={() => <ChannelRoom />} />
+        <Route exact path="/channels/:id" component={ChannelRoom} />
       </Switch>
     </Container>
   );

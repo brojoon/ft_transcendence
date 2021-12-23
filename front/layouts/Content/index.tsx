@@ -1,20 +1,31 @@
 import React, { useEffect, useContext } from 'react';
 import LeftSideBar from '@components/LeftSideBar';
-import Achievements from '@pages/Achievements';
-import Channels from '@pages/Channels';
-import Social from '@pages/Social';
-import Game from '@pages/Game';
-import Home from '@pages/Home';
-import Profile from '@pages/Profile';
-import Users from '@pages/Users';
-import { IUser } from '@typings/db';
+import loadable from '@loadable/component';
+// import Achievements from '@pages/Achievements';
+// import Channels from '@pages/Channels';
+// import Social from '@pages/Social';
+// import Game from '@pages/Game';
+// import Home from '@pages/Home';
+// import Profile from '@pages/Profile';
+// import Users from '@pages/Users';
+// import ProfileSetting from '@pages/ProfileSetting';
+import { IUser, IAllUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory, Link } from 'react-router-dom';
 import useSWR from 'swr';
 import { Container } from './style';
 import getSocket from '@utils/useSocket';
-import ProfileSetting from '@pages/ProfileSetting';
 import { SocketContext } from '@store/socket';
+import { toast } from 'react-toastify';
+
+const Home = loadable(() => import('@pages/Home'));
+const Social = loadable(() => import('@pages/Social'));
+const Channels = loadable(() => import('@pages/Channels'));
+const Profile = loadable(() => import('@pages/Profile'));
+const Users = loadable(() => import('@pages/Users'));
+const Achievements = loadable(() => import('@pages/Achievements'));
+const Game = loadable(() => import('@pages/Game'));
+const ProfileSetting = loadable(() => import('@pages/ProfileSetting'));
 
 const Content = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher, {
@@ -22,6 +33,8 @@ const Content = () => {
   });
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);
   const { data: ChannelList } = useSWR<number[]>('/api/channels/myChannelListOnlyId', fetcher);
+  const { data: allUser } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
+
   const { setOnlineList, setOnGameList } = useContext(SocketContext);
 
   const history = useHistory();
@@ -64,6 +77,23 @@ const Content = () => {
       socket.off('onlineList');
     };
   }, [socket]);
+
+  useEffect(() => {
+    socket?.on('notice', (data: any) => {
+      toast.info(`${data.username}가 게임을 신청 했습니다 DM을 확인해주세요..!`, {
+        autoClose: 6000,
+        position: toast.POSITION.TOP_RIGHT,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        theme: 'dark',
+      });
+    });
+
+    return () => {
+      socket.off('notice');
+    };
+  }, [socket, allUser]);
 
   if (!myData) return null;
 

@@ -15,6 +15,7 @@ import { IChannelList } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import config from '@utils/config';
 import { ProtectedRoomModalBack, ProtectedRoomModalContainer } from './style';
+import { toast } from 'react-toastify';
 
 interface Props {
   channelPasswordModal: boolean;
@@ -99,8 +100,18 @@ const ProtectedRoomModal: VFC<Props> = ({
           setChannelPasswordRoomNumber('');
         })
         .catch((error) => {
-          console.log(error);
-          setPasswordError(true);
+          if (error.response.data.data.message === '아이디 혹은 비밀번호가 틀림')
+            setPasswordError(true);
+          else {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          }
         });
     },
     [PasswordValues, channelPasswordModal, channelPasswordRoomNumber, passwordError],
@@ -143,7 +154,7 @@ const ProtectedRoomModal: VFC<Props> = ({
             JOIN
           </Button>
         </div>
-        {passwordError && <span className="password-error-text">passwordError</span>}
+        {passwordError && <span className="password-error-text">Password is wrong</span>}
       </ProtectedRoomModalContainer>
     </>
   );

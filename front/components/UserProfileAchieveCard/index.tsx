@@ -6,7 +6,6 @@ import useSWR from 'swr';
 import { IUser } from '@typings/db';
 import Achievement from '@components/Achievement';
 import Scrollbars from 'react-custom-scrollbars';
-
 import StarIcon from '@mui/icons-material/Star';
 import BusinessIcon from '@mui/icons-material/Business';
 import SendIcon from '@mui/icons-material/Send';

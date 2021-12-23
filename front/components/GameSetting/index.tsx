@@ -36,15 +36,17 @@ const GameSetting: VFC<Props> = ({
   const onChangeSpeed = useCallback(
     (e: any) => {
       if (player1Ready || player2Ready || !player) return;
-      socket.emit('changeGameSet', {
-        gameId: id,
-        speed: e.target.value,
-        set: gameCount,
-        map: mapSelect,
-        random: ballRandom,
-      });
+      if (id) {
+        socket.emit('changeGameSet', {
+          gameId: id,
+          speed: e.target.value,
+          set: gameCount,
+          map: mapSelect,
+          random: ballRandom,
+        });
+      }
     },
-    [player1Ready, player2Ready, gameCount, ballRandom, mapSelect, player],
+    [player1Ready, player2Ready, gameCount, ballRandom, mapSelect, player, id],
   );
 
   const onChangeMapSelect = useCallback(
@@ -96,18 +98,18 @@ const GameSetting: VFC<Props> = ({
     [player1Ready, player2Ready, gameCount, mapSelect, gameSpeed, id, player],
   );
 
-  useEffect(() => {
-    if (player1Ready || player2Ready || !player)
-      if (id) {
-        socket.emit('changeGameSet', {
-          gameId: id,
-          speed: gameSpeed,
-          set: gameCount,
-          map: mapSelect,
-          random: ballRandom,
-        });
-      }
-  }, [gameSpeed, gameCount, mapSelect, ballRandom, id, player, player1Ready, player2Ready]);
+  // useEffect(() => {
+  //   if (player1Ready || player2Ready || !player)
+  //     if (id) {
+  //       socket.emit('changeGameSet', {
+  //         gameId: id,
+  //         speed: gameSpeed,
+  //         set: gameCount,
+  //         map: mapSelect,
+  //         random: ballRandom,
+  //       });
+  //     }
+  // }, [gameSpeed, gameCount, mapSelect, ballRandom, id, player, player1Ready, player2Ready]);
 
   useEffect(() => {
     socket.on('gameSet', (set: any) => {

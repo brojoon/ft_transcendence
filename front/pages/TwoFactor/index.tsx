@@ -3,6 +3,7 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { TwoFactorContainer } from './style';
+import { toast } from 'react-toastify';
 
 const TwoFactor = () => {
   const history = useHistory();
@@ -21,9 +22,28 @@ const TwoFactor = () => {
         })
         .then(() => {
           console.log('tow-factor성공');
-          history.push('/home');
+          toast.success('Successfully authenticated', {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+          setTimeout(() => {
+            history.push('/home');
+          }, 4000);
         })
-        .catch(console.error);
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        });
     }
   }, []);
 
@@ -46,6 +66,7 @@ const TwoFactor = () => {
           label="OTP"
           variant="outlined"
           onKeyPress={onKeydownOTP}
+          autoComplete="off"
         />
       </form>
     </TwoFactorContainer>

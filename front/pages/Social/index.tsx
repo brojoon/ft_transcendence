@@ -1,10 +1,13 @@
 import React from 'react';
-
+import loadable from '@loadable/component';
 import DMLeftDrawer from '@components/DMLeftDrawer';
 import { Container } from './style';
 import { Route, Switch } from 'react-router-dom';
-import DirectMessage from '@pages/DirectMessage';
-import SocialSlider from '@pages/SocialSlider';
+// import DirectMessage from '@pages/DirectMessage';
+// import SocialSlider from '@pages/SocialSlider';
+
+const SocialSlider = loadable(() => import('@pages/SocialSlider'));
+const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
 const Social = () => {
   return (

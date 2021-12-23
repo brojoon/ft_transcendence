@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { ProfileSettingContainer } from './style';
 import NickNameChangeField from '@components/NickNameChangeField';
+import { toast } from 'react-toastify';
 
 const ProfileSetting = () => {
   const { data: myData, mutate: mutateMyData } = useSWR<IUser | null>('/api/users', fetcher);
@@ -53,11 +54,26 @@ const ProfileSetting = () => {
     axios
       .post('/api/users/upload', formData, config)
       .then((res) => {
+        toast.success('Successfully changed your profile picture', {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
         mutateMyData();
         console.log('upload!!');
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
       });
   }, [myData, selectedFile]);
 

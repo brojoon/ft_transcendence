@@ -18,6 +18,7 @@ import config from '@utils/config';
 import { UserProfileCardContainer, UserAvatar } from './style';
 import { SocketContext } from '@store/socket';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import { toast } from 'react-toastify';
 
 interface Props {
   UserData: IUser;
@@ -55,6 +56,16 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       .post(`/api/dms/sendMessage/${UserData.userId}/1/0`, { message: '' }, config)
       .then((res) => {
         history.push(`/game/ping-pong/${res.data}`);
+      })
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
       });
   }, []);
 
@@ -110,7 +121,27 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         mutateisFriend();
         removeAllModals();
       })
-      .catch(() => {});
+      .catch((error) => {
+        if (error.response.data.data.message === 'Block 상태') {
+          toast.error(`You were blocked by ${UserData.userId}`, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        } else {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        }
+      });
   }, []);
 
   const onClickRemoveFriendBtn = useCallback((e) => {
@@ -121,7 +152,16 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         mutateisFriend();
         removeAllModals();
       })
-      .catch(() => {});
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, []);
 
   const onClickAddBlockBtn = useCallback((e) => {
@@ -133,7 +173,16 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         mutateIsBlock();
         removeAllModals();
       })
-      .catch(() => {});
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, []);
 
   const onClickRemoveBlockBtn = useCallback((e) => {
@@ -145,7 +194,16 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         mutateIsBlock();
         removeAllModals();
       })
-      .catch(() => {});
+      .catch((error) => {
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      });
   }, []);
 
   const onClickMessageBtn = useCallback(
@@ -158,7 +216,16 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
             history.push(`/social/dm/${res.data}`);
           });
         })
-        .catch(() => {});
+        .catch((error) => {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        });
     },
     [UserData, mutateDmList, dmList],
   );
