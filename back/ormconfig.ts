@@ -10,11 +10,12 @@ import { Dmcontent } from 'src/entities/Dmcontent';
 import { Friend } from 'src/entities/Friend';
 import { History } from 'src/entities/History';
 import { Users } from 'src/entities/Users';
+import { Blockmember } from 'src/entities/Blockmember';
 
 dotenv.config();
 const config: TypeOrmModuleOptions = {
   type: 'postgres',
-  host: process.env.NODE_ENV === 'production' ?  process.env.DB_HOST_PROD : process.env.DB_HOST,
+  host: process.env.NODE_ENV === 'production' ? process.env.DB_HOST_PROD : process.env.DB_HOST,
   port: +process.env.DB_PORT,
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
@@ -37,7 +38,8 @@ const config: TypeOrmModuleOptions = {
     Dmcontent,
     Friend,
     History,
-    Users
+    Users,
+    Blockmember,
   ],
   migrations: [__dirname + '/src/migrations/*.ts'],
   cli: { migrationsDir: 'src/migrations' },
@@ -47,7 +49,7 @@ const config: TypeOrmModuleOptions = {
   logging: true,
   keepConnectionAlive: true,
   retryAttempts: 2,
-  dropSchema: true,
+  // dropSchema: true,
 };
 
 export = config;
