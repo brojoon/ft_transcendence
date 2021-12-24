@@ -42,16 +42,6 @@ const Content = () => {
   }
 
   const socket = getSocket();
-  useEffect(() => {
-    if (DMList && ChannelList && myData) {
-      socket.emit('login', {
-        userId: myData.userId,
-        username: myData.username,
-        Dms: DMList,
-        channels: ChannelList,
-      });
-    }
-  }, [socket, DMList, ChannelList, myData]);
 
   useEffect(() => {
     socket?.on('onGameList', (data: any) => {
@@ -77,15 +67,38 @@ const Content = () => {
   }, [socket]);
 
   useEffect(() => {
-    socket?.on('notice', (data: any) => {
-      toast.info(`${data.username}가 게임을 신청 했습니다 DM을 확인해주세요..!`, {
-        autoClose: 6000,
-        position: toast.POSITION.TOP_RIGHT,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        theme: 'dark',
+    if (DMList && ChannelList && myData) {
+      socket.emit('login', {
+        userId: myData.userId,
+        username: myData.username,
+        Dms: DMList,
+        channels: ChannelList,
       });
+    }
+  }, [socket, DMList, ChannelList, myData]);
+
+  useEffect(() => {
+    socket?.on('notice', (data: any) => {
+      console.log('notice', data);
+      if (data.match === 3) {
+        toast.info(`${data.username}가 게임을 신청 했습니다 DM을 확인해주세요..!`, {
+          autoClose: 7000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'dark',
+        });
+      } else if (data.match === 1) {
+        toast.info(`${data.username}과의 매치가 성사 되었습니다..!`, {
+          autoClose: 3000,
+          position: toast.POSITION.TOP_CENTER,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'dark',
+        });
+      }
     });
 
     return () => {

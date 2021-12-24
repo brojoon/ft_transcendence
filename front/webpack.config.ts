@@ -83,7 +83,10 @@ const config: Configuration = {
     static: { directory: path.resolve(__dirname) },
     proxy: {
       '/api/': {
-        target: 'tcp://back:3095',
+        // target: 'tcp://back:3095',
+        //docker-compose 용
+        target: 'http://localhost:3095',
+        //dev용
         changeOrigin: true,
         ws: true,
       },

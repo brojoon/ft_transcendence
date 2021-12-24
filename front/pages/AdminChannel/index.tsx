@@ -169,7 +169,7 @@ const AdminChannel = () => {
                         }
                         return (
                           <div key={user.userId}>
-                            {selectedIndex === index && user.userId !== myData?.userId && (
+                            {selectedIndex === index && (
                               <AdminPageProfile user={user} setSelectedIndex={setSelectedIndex} />
                             )}
                             <ListItem button onClick={(e) => onClickMember(e, index)}>
@@ -208,7 +208,7 @@ const AdminChannel = () => {
                         }
                         return (
                           <div key={user.userId}>
-                            {selectedIndex === index && user.userId !== myData?.userId && (
+                            {selectedIndex === index && (
                               <AdminPageProfile user={user} setSelectedIndex={setSelectedIndex} />
                             )}
                             <ListItem button onClick={(e) => onClickMember(e, index)}>
@@ -248,7 +248,7 @@ const AdminChannel = () => {
                         let isMute = false;
                         return (
                           <div key={user.userId}>
-                            {selectedIndex === index && user.userId !== myData?.userId && (
+                            {selectedIndex === index && (
                               <AdminPageProfile user={user} setSelectedIndex={setSelectedIndex} />
                             )}
                             <ListItem button onClick={(e) => onClickMember(e, index)}>

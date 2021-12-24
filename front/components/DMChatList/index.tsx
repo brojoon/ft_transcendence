@@ -82,7 +82,7 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
                         <p className="chat">{chat.message}</p>
                       </div>
                     )}
-                    {chat.match === 1 && (
+                    {(chat.match === 1 || chat.match === 3) && (
                       <div className="challenge-join-wrapper">
                         <div>
                           <div>{username}</div>

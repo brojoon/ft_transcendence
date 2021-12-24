@@ -50,30 +50,6 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
     });
   }
 
-  const onClickChallengeBtn = useCallback((e) => {
-    e.preventDefault();
-    axios
-      .post(`/api/dms/sendMessage/${UserData.userId}/1/0`, { message: '' }, config)
-      .then((res) => {
-        history.push(`/game/ping-pong/${res.data}`);
-      })
-      .catch((error) => {
-        toast.error(error.message, {
-          autoClose: 4000,
-          position: toast.POSITION.TOP_RIGHT,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          theme: 'colored',
-        });
-      });
-  }, []);
-
-  const onClickWatchBtn = useCallback((e) => {
-    e.preventDefault();
-    if (onGameList) history.push(`/game/ping-pong/${onGameList[UserData.userId]}`);
-  }, []);
-
   const removeAllModals = useCallback(() => {
     setIsAddFriendModal(false);
     setIsBlockModal(false);
@@ -113,6 +89,45 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
     [isRemoveBlockModal, setIsRemoveBlockModal],
   );
 
+  const onClickChallengeBtn = useCallback((e) => {
+    e.preventDefault();
+    axios
+      .post(`/api/dms/sendMessage/${UserData.userId}/3/0`, { message: '' }, config)
+      .then((res) => {
+        history.push(`/game/ping-pong/${res.data}`);
+      })
+      .catch((error) => {
+        console.log(error.response.data.data.message);
+        if (error.response.data.data.message === 'Block 상태') {
+          toast.error(`You were blocked by ${UserData.username}`, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        } else {
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
+        }
+      });
+  }, []);
+
+  const onClickWatchBtn = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (onGameList) history.push(`/game/ping-pong/${onGameList[UserData.userId]}`);
+    },
+    [onGameList],
+  );
+
   const onClickAddFriendBtn = useCallback((e) => {
     e.preventDefault();
     axios
@@ -123,7 +138,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       })
       .catch((error) => {
         if (error.response.data.data.message === 'Block 상태') {
-          toast.error(`You were blocked by ${UserData.userId}`, {
+          toast.error(`You were blocked by ${UserData.username}`, {
             autoClose: 4000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,

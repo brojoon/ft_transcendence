@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import Avatar from '@mui/material/Avatar';
@@ -22,7 +22,7 @@ const option = {
 };
 
 const History = (data: any) => {
-  const gameId = data.match.params.id;
+  const { id } = useParams<{ id: string }>();
   const [userId1, setUserId1] = useState('');
   const [userId2, setUserId2] = useState('');
   const [player1Point, setPlayer1Point] = useState(0);
@@ -58,7 +58,7 @@ const History = (data: any) => {
   useEffect(() => {
     async function getGameInfo() {
       await axios
-        .get(`/api/game/history/${gameId}`, option)
+        .get(`/api/game/history/${id}`, option)
         .then((res: any) => {
           setUserId1(res.data.userId1);
           setUserId2(res.data.userId2);
@@ -80,7 +80,7 @@ const History = (data: any) => {
         });
     }
     if (userId1 === '') getGameInfo();
-  }, [gameId, userId1]);
+  }, [id, userId1]);
 
   return (
     <HistoryContainer>

@@ -233,7 +233,10 @@ const ChannelRoom = () => {
   }, [socket]);
 
   useEffect(() => {
-    socket?.on('channelType', mutateMyChannelList);
+    socket?.on('channelType', () => {
+      mutateMyChannelList();
+      console.log('channelType');
+    });
     return () => {
       socket?.off('channelType');
     };
