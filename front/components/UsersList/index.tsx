@@ -18,6 +18,7 @@ const UserList: VFC<Props> = ({ userList }) => {
     <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
       <UsersListContainer>
         {userList?.map((user: IAllUser) => {
+          if (!user.username) return;
           isState = 0;
           if (onGameList && onGameList[user.userId]) isState = 2;
           if (isState === 0) {

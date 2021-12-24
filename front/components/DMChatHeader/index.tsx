@@ -26,7 +26,7 @@ const DMChatHeader = () => {
     (e) => {
       e.preventDefault();
       axios
-        .post(`/api/dms/sendMessage/${userId}/1/0`, { message: '' }, config)
+        .post(`/api/dms/sendMessage/${userId}/3/0`, { message: '' }, config)
         .then((res) => {
           history.push(`/game/ping-pong/${res.data}`);
         })

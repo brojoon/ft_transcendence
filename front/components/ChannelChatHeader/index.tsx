@@ -17,13 +17,16 @@ interface Props {
 
 const ChannelChatHeader: VFC<Props> = ({ onClickMembersToggle, membersToggle }) => {
   const { id } = useParams<{ id: string }>();
-  const { data: allChannelList } = useSWR<IChannelList[]>('/api/channels/allChannelList', fetcher);
+  const { data: myChannelList, mutate: mutateMyChannelList } = useSWR<IChannelList[]>(
+    `/api/channels/myChannelList`,
+    fetcher,
+  );
   return (
     <Box>
       <AppBar position="static" sx={{ bgcolor: '#272727' }}>
         <MyToolbar>
           <Typography variant="h6" component="span" sx={{ flexGrow: 1 }}>
-            {allChannelList?.map((channel: IChannelList) => {
+            {myChannelList?.map((channel: IChannelList) => {
               if (channel.id === parseInt(id)) {
                 return channel.name;
               }

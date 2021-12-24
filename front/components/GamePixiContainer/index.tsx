@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, VFC } from 'react';
 import axios from 'axios';
 import getSocket from '@utils/useSocket';
 import 'regenerator-runtime';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { PixiContainer } from './style';
 import { toast } from 'react-toastify';
 
@@ -59,17 +59,20 @@ const option = {
 interface Props {
   mapSelect: number;
   player: string;
+  setGameStartBtn: (e: any) => void;
 }
 
-const GamePixiContainer: VFC<Props> = ({ mapSelect, player }) => {
+const GamePixiContainer: VFC<Props> = ({ mapSelect, player, setGameStartBtn }) => {
   const { id } = useParams<{ id: string }>();
   const [ball_x, setBallX] = useState(500);
   const [ball_y, setBallY] = useState(250);
   const [player_one_y, setPlayOneY] = useState(200);
   const [player_two_y, setPlayTwoY] = useState(200);
+  const history = useHistory();
 
   const fetchDataFunc = async () => {
     await axios.get(`/api/game/start/${id}`, option).catch((error) => {
+      history.push('./home');
       toast.error(error.message, {
         autoClose: 4000,
         position: toast.POSITION.TOP_RIGHT,
@@ -82,9 +85,15 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player }) => {
   };
 
   useEffect(() => {
+    setGameStartBtn(true);
+  }, []);
+
+  useEffect(() => {
     socket.on('gameInfo', (gameInfo: any) => {
       setBallX(gameInfo.ball_x);
       setBallY(gameInfo.ball_y);
+      if (gameInfo.ball_x === 500 && gameInfo.ball_y === 250) setGameStartBtn(true);
+      else setGameStartBtn(false);
     });
     return () => {
       socket.off('gameInfo');

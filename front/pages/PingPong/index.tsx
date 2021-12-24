@@ -32,7 +32,6 @@ const PingPong = (data: any) => {
   const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: allUserList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
-  const gameId = data.match.params.id;
   const [player1Ready, setPlay1Ready] = useState(0);
   const [player2Ready, setPlay2Ready] = useState(0);
   const [user1Point, setUser1Point] = useState(0);
@@ -49,6 +48,7 @@ const PingPong = (data: any) => {
   const [watchUserId2Profile, setWatchUserId2Profile] = useState('');
   const [watchUserId1Name, setWatchUserId1Name] = useState('');
   const [watchUserId2Name, setWatchUserId2Name] = useState('');
+  const [gameStartBtn, setGameStartBtn] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
@@ -117,16 +117,16 @@ const PingPong = (data: any) => {
   useEffect(() => {
     async function getGameInfo() {
       await axios
-        .get(`/api/game/history/${gameId}`, option)
+        .get(`/api/game/history/${id}`, option)
         .then((res: any) => {
-          if (res.data.state === 2) history.push(`/game/history/${gameId}`);
+          if (res.data.state === 2) history.push(`/game/history/${id}`);
           if (myData?.userId === res.data.userId1) {
             setPlayer('playerOne');
             setOpponent(res.data.userId2);
             setPlay2Ready(res.data.playerTwoJoin);
 
             socket.emit('game', {
-              gameId: gameId,
+              gameId: id,
               player: 'playerOne',
               player1Ready: 0,
               player2Ready: res.data.playerTwoJoin,
@@ -136,14 +136,14 @@ const PingPong = (data: any) => {
             setPlay1Ready(res.data.playerOneJoin);
             setOpponent(res.data.userId1);
             socket.emit('game', {
-              gameId: gameId,
+              gameId: id,
               player: 'playerTwo',
               player1Ready: res.data.playerOneJoin,
               player2Ready: 0,
             });
           } else {
             socket.emit('game', {
-              gameId: gameId,
+              gameId: id,
               player: '',
               player1Ready: res.data.playerOneJoin,
               player2Ready: res.data.playerTwoJoin,
@@ -152,9 +152,9 @@ const PingPong = (data: any) => {
           console.log('res.data', res.data);
           setWatchUserId1(res.data.userId1);
           setWatchUserId2(res.data.userId2);
-          socket.emit('changeGameSet', { gameId: gameId, check: 'check' });
+          socket.emit('changeGameSet', { gameId: id, check: 'check' });
           socket.emit('gamePoint', {
-            gameId: gameId,
+            gameId: id,
             user1Point: res.data.user1Point,
             user2Point: res.data.user2Point,
           });
@@ -174,7 +174,7 @@ const PingPong = (data: any) => {
         });
     }
     if (myData?.userId) getGameInfo();
-  }, [gameId, myData]);
+  }, [id, myData]);
 
   useEffect(() => {
     socket.on('point', (point: any) => {
@@ -188,18 +188,20 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     socket.on('end', () => {
-      history.push(`/game/history/${gameId}`);
+      history.push(`/game/history/${id}`);
     });
     return () => {
       socket.off('end');
     };
-  }, [gameId]);
+  }, [id]);
 
   useEffect(() => {
     socket.on('ready', (ready: any) => {
       console.log('ready', ready);
       setPlay1Ready(ready.player1);
       setPlay2Ready(ready.player2);
+
+      if (ready.player1 === 1 && ready.player2 === 1) setGameStartBtn(true);
     });
     return () => {
       socket.off('ready');
@@ -209,35 +211,37 @@ const PingPong = (data: any) => {
   const readyPlayer1 = useCallback(() => {
     if (player === 'playerOne' && player1Ready === 0) {
       socket.emit('gameReady', {
-        gameId: gameId,
+        gameId: id,
         player: 1,
         userId: myData?.userId,
       });
     }
-  }, [socket, gameId, myData, player, player1Ready]);
+  }, [socket, id, myData, player, player1Ready]);
   const readyPlayer2 = useCallback(() => {
     if (player === 'playerTwo' && player2Ready === 0) {
       socket.emit('gameReady', {
-        gameId: gameId,
+        gameId: id,
         player: 2,
         userId: myData?.userId,
       });
     }
-  }, [socket, gameId, myData, player, player2Ready]);
+  }, [socket, id, myData, player, player2Ready]);
 
   const changeGameSet = useCallback(() => {
     if (player !== '')
-      axios.get(`/api/game/start/${gameId}`, option).catch((error) => {
-        toast.error(error.message, {
-          autoClose: 4000,
-          position: toast.POSITION.TOP_RIGHT,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          theme: 'colored',
+      axios
+        .get(`/api/game/start/${id}`, option).catch((error) => {
+          history.push('./home');
+          toast.error(error.message, {
+            autoClose: 4000,
+            position: toast.POSITION.TOP_RIGHT,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            theme: 'colored',
+          });
         });
-      });
-  }, [gameId, player, option]);
+  }, [id, player, option]);
 
   return (
     <BackgroundHeight className="bg">
@@ -246,7 +250,13 @@ const PingPong = (data: any) => {
         renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
       >
         <PingPongContainer>
-          {isGameStart && <GamePixiContainer mapSelect={mapSelect} player={player} />}
+          {isGameStart && (
+            <GamePixiContainer
+              mapSelect={mapSelect}
+              player={player}
+              setGameStartBtn={setGameStartBtn}
+            />
+          )}
           {!isGameStart && (
             <GameSetting
               player1Ready={player1Ready}
@@ -345,7 +355,7 @@ const PingPong = (data: any) => {
             )}
           </UserPointContainer>
           <GameInitBtnContainer width={`${isGameStart ? '' : '100%'}`}>
-            {player === '' ? null : (player1Ready && player2Ready) || isGameStart ? (
+            {player === '' ? null : gameStartBtn ? (
               <Button className="game-btn" variant="contained" onClick={changeGameSet}>
                 게임시작
               </Button>
