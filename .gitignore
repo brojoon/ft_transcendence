@@ -34,6 +34,10 @@
 #.vscode
 *.vscode
 
+#env
+.env
+./back/.env
+
 /node_modules
 #./back/ormconfig.ts
 #ormconfig.ts

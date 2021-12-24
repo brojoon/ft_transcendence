@@ -176,12 +176,12 @@ export class DmsService {
         send.historyId = await this.getHistoryId(userId1, userId2);
         let user1 = await this.usersRepository.findOne({userId:userId1});
         let user2 = await this.usersRepository.findOne({userId:userId2});
-        this.eventsGateway.server.to(`${userId1}`).emit('notice', {match: match, gameId:send.historyId, username:user1.username});
-        this.eventsGateway.server.to(`${userId2}`).emit('notice', {match: match, gameId:send.historyId, username:user2.username}); 
+        this.eventsGateway.server.to(`${userId1}`).emit('notice', {match: match, gameId:send.historyId, username:user2.username});
+        this.eventsGateway.server.to(`${userId2}`).emit('notice', {match: match, gameId:send.historyId, username:user1.username}); 
       } else if (match === 3) {
         send.message = "대국신청";
         send.historyId = await this.getHistoryId(userId1, userId2);
-        let user = await this.usersRepository.findOne({userId:userId2});
+        let user = await this.usersRepository.findOne({userId:userId1});
         this.eventsGateway.server.to(`${userId2}`).emit('notice', {match: match, gameId:send.historyId, username:user.username}); 
       } else {
         send.message = message;

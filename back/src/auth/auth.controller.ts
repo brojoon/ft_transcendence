@@ -192,7 +192,7 @@ export class AuthController {
       res.status(302).redirect('http://localhost:3090/home')//url 수정필요
     }
     
-    
+
   }
 }
 
