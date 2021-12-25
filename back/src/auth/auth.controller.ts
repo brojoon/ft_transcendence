@@ -193,6 +193,8 @@ export class AuthController {
       console.log("token.access_token = ", token.access_token);
       console.log("=================================================끝");
       res.cookie('ts_token', token.access_token, { httpOnly: true });
+      console.log("res.cookie = ", res.cookie);
+      console.log("res.cookie = ", res.cookies);
       res.status(302).redirect('http://34.82.79.134:8080/home')//url 수정필요
     }
     
