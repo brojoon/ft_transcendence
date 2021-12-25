@@ -6,7 +6,7 @@ let socket: any = undefined;
 const getSocket = (() => {
 
 	if (!socket) {
-		socket = io.connect('http://localhost:3095');
+		socket = io.connect('tcp://back:3095');
 	}
 
 	return socket;

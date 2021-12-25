@@ -146,7 +146,7 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player, setGameStartBtn }) =
       // } else if (e.keyCode === 76 && player === "playerTwo") {
       //   socket.emit('player_two_down', {game: gameId});
       // } else if (e.keyCode === 87 && player !== "") {
-      //   axios.get(`http://localhost:3095/api/game/start/${gameId}`, option);
+      //   axios.get(`http://34.82.79.134:8081/api/game/start/${gameId}`, option);
       // }
     };
     document.addEventListener('keydown', keyDownHandler, false);

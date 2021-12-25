@@ -91,11 +91,11 @@ export class AuthController {
     res.clearCookie('userCookie');
     if (result){
       res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect('http://localhost:3090/two-factor')
+      res.status(302).redirect('http://34.82.79.134:8080/two-factor')
     }else{
       const token = await this.authService.login(req.user);
       res.cookie('ts_token', token.access_token, { httpOnly: true });
-      res.status(302).redirect('http://localhost:3090/home')
+      res.status(302).redirect('http://34.82.79.134:8080/home')
     }
   }
 
@@ -185,11 +185,11 @@ export class AuthController {
     res.clearCookie('userCookie');
     if (result){
       res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect('http://localhost:3090/two-factor')
+      res.status(302).redirect('http://34.82.79.134:8080/two-factor')
     }else{
       const token = await this.authService.login(req.user);
       res.cookie('ts_token', token.access_token, { httpOnly: true });
-      res.status(302).redirect('http://localhost:3090/home')//url 수정필요
+      res.status(302).redirect('http://34.82.79.134:8080/home')//url 수정필요
     }
     
 

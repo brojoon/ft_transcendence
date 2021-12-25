@@ -25,7 +25,7 @@ services:
     container_name: back
     restart: always
     ports:
-      - 3095:3095
+      - 8081:8081
     depends_on:
       - postgresql
     networks:
@@ -41,7 +41,7 @@ services:
     container_name: front
     restart: always
     ports:
-      - 3090:3090
+      - 8080:8080
     depends_on:
       - back
     networks:

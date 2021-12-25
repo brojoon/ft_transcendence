@@ -52,7 +52,7 @@ async function bootstrap() {
 	// passport초기화
 	app.use(passport.initialize());
 	// 서버 리슨 포트
-	const port = process.env.PORT || 3095;
+	const port = process.env.PORT || 8081;
 	await app.listen(port);
 	// HOT RELOADING
 	if (module.hot) {
