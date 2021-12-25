@@ -15,9 +15,9 @@ services:
       POSTGRES_DB: "${POSTGRES_DB}"
       TZ: "Asia/Seoul"
     volumes:
-      # - postgresql:/var/lib/postgresql/data
-      - ./postgresql:/var/lib/postgresql/data
-      - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+      - postgresql:/var/lib/postgresql/data
+      # - ./postgresql:/var/lib/postgresql/data
+      # - ./db.sql:/docker-entrypoint-initdb.d/db.sql
   back:
     build:
       context: ./back
