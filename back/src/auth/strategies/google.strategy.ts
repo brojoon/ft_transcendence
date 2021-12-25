@@ -17,7 +17,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     callbackURL: 'http://42transcendence.ml/api/auth/google/redirect',
-      //scope: ['email', 'profile'],//구글설정에서는 scope 따로 정해주지 않긴한데..
+      scope: ['email', 'profile'],//구글설정에서는 scope 따로 정해주지 않긴한데..
     });
   }
 
