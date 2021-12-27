@@ -203,8 +203,38 @@ export class AuthController {
       console.log("res.cookie = ", res.cookies);
       res.status(302).redirect('http://34.82.79.134:8080/home')//url 수정필요
     }
-    
+  }
+  @UseGuards(AuthGuard('kakao'))
+  @Get('kakao')
+  async kakaoAuthor(){}
 
+  @UseGuards(AuthGuard('kakao'))
+  @Get('kakao/redirect')
+  async kakaoRedirect(@User() user:UserDto, @Req() req, @Res() res){
+    // console.log("===================================시작");
+    // console.log(req.user);
+    // const test = await this.usersRepository.find({oauthId:req.oauthId});
+    // if (test)
+    //   console.log("oauthId가 중복아님");
+    // else
+    //   console.log("oauthId가 중복아님")
+    // console.log("===================================끝");
+    const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
+    res.clearCookie('userCookie');
+    if (result){
+      res.cookie('userCookie', req.user, { httpOnly: true });
+      res.status(302).redirect('http://34.82.79.134:8080/two-factor')
+    }else{
+      console.log("=================================================시작");
+      console.log("req.user = ", req.user);
+      const token = await this.authService.login(req.user);
+      console.log("token.access_token = ", token.access_token);
+      console.log("=================================================끝");
+      res.cookie('ts_token', token.access_token, { httpOnly: true });
+      console.log("res.cookie = ", res.cookie);
+      console.log("res.cookie = ", res.cookies);
+      res.status(302).redirect('http://34.82.79.134:8080/home')//url 수정필요
+    }
   }
 }
 
