@@ -91,7 +91,7 @@ export class AuthController {
     res.clearCookie('userCookie');
     if (result){
       res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect('http://34.82.79.134:8080/two-factor')
+      res.status(302).redirect('http://34.82.79.134:8082/two-factor')
     }else{
       console.log("=================================================시작");
       console.log("req.user = ", req.user);
@@ -101,7 +101,7 @@ export class AuthController {
       res.cookie('ts_token', token.access_token, { httpOnly: true });
       console.log("res.cookie = ", res.cookie);
       console.log("res.cookie = ", res.cookies);
-      res.status(302).redirect('http://34.82.79.134:8080/home')//url 수정필요
+      res.status(302).redirect('http://34.82.79.134:8082/home')//url 수정필요
     }
   }
 
@@ -191,7 +191,7 @@ export class AuthController {
     res.clearCookie('userCookie');
     if (result){
       res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect('http://34.82.79.134:8080/two-factor')
+      res.status(302).redirect('http://34.82.79.134:8082/two-factor')
     }else{
       console.log("=================================================시작");
       console.log("req.user = ", req.user);
@@ -201,7 +201,7 @@ export class AuthController {
       res.cookie('ts_token', token.access_token, { httpOnly: true });
       console.log("res.cookie = ", res.cookie);
       console.log("res.cookie = ", res.cookies);
-      res.status(302).redirect('http://34.82.79.134:8080/home')//url 수정필요
+      res.status(302).redirect('http://34.82.79.134:8082/home')//url 수정필요
     }
   }
   @UseGuards(AuthGuard('kakao'))
@@ -223,7 +223,7 @@ export class AuthController {
     res.clearCookie('userCookie');
     if (result){
       res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect('http://34.82.79.134:8080/two-factor')
+      res.status(302).redirect('http://34.82.79.134:8082/two-factor')
     }else{
       console.log("=================================================시작");
       console.log("req.user = ", req.user);
@@ -233,7 +233,7 @@ export class AuthController {
       res.cookie('ts_token', token.access_token, { httpOnly: true });
       console.log("res.cookie = ", res.cookie);
       console.log("res.cookie = ", res.cookies);
-      res.status(302).redirect('http://34.82.79.134:8080/home')//url 수정필요
+      res.status(302).redirect('http://34.82.79.134:8082/home')//url 수정필요
     }
   }
 }
