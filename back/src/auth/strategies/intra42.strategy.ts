@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-//import { Strategy } from 'passport-oauth2';
 import { Strategy } from 'passport-42';
 import { AuthService } from '../auth.service';
 import { jwtConstants } from '../constants';
@@ -12,7 +11,7 @@ export class Intra42Strategy extends PassportStrategy(Strategy, '42') {
     super({
         clientID: jwtConstants.CLIENT_ID,
         clientSecret: jwtConstants.CLIENT_SECRET,
-        callbackURL: 'http://34.82.79.134:8081/api/auth/42/callback',
+        callbackURL: jwtConstants.CALLBACK_URL,
         scope: 'public',
     });
   }

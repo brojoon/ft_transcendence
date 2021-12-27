@@ -8,6 +8,7 @@ import { UndefinedToNullInterceptor } from 'common/interceptors/undefinedToNull.
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
 import { AuthService } from './auth.service';
+import { jwtConstants } from './constants';
 import { Intra42AuthGuard } from './guards/intra42-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
@@ -91,17 +92,11 @@ export class AuthController {
     res.clearCookie('userCookie');
     if (result){
       res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect('http://34.82.79.134:8082/two-factor')
+      res.status(302).redirect(jwtConstants.TWO_FACTOR)
     }else{
-      console.log("=================================================시작");
-      console.log("req.user = ", req.user);
       const token = await this.authService.login(req.user);
-      console.log("token.access_token = ", token.access_token);
-      console.log("=================================================끝");
       res.cookie('ts_token', token.access_token, { httpOnly: true });
-      console.log("res.cookie = ", res.cookie);
-      console.log("res.cookie = ", res.cookies);
-      res.status(302).redirect('http://34.82.79.134:8082/home')//url 수정필요
+      res.status(302).redirect(jwtConstants.HOME)
     }
   }
 
@@ -179,29 +174,15 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   @Get('google/redirect')
   async googleRedirect(@User() user:UserDto, @Req() req, @Res() res){
-    // console.log("===================================시작");
-    // console.log(req.user);
-    // const test = await this.usersRepository.find({oauthId:req.oauthId});
-    // if (test)
-    //   console.log("oauthId가 중복아님");
-    // else
-    //   console.log("oauthId가 중복아님")
-    // console.log("===================================끝");
     const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
     res.clearCookie('userCookie');
     if (result){
       res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect('http://34.82.79.134:8082/two-factor')
+      res.status(302).redirect(jwtConstants.TWO_FACTOR)
     }else{
-      console.log("=================================================시작");
-      console.log("req.user = ", req.user);
       const token = await this.authService.login(req.user);
-      console.log("token.access_token = ", token.access_token);
-      console.log("=================================================끝");
       res.cookie('ts_token', token.access_token, { httpOnly: true });
-      console.log("res.cookie = ", res.cookie);
-      console.log("res.cookie = ", res.cookies);
-      res.status(302).redirect('http://34.82.79.134:8082/home')//url 수정필요
+      res.status(302).redirect(jwtConstants.HOME)
     }
   }
   @UseGuards(AuthGuard('kakao'))
@@ -211,29 +192,15 @@ export class AuthController {
   @UseGuards(AuthGuard('kakao'))
   @Get('kakao/redirect')
   async kakaoRedirect(@User() user:UserDto, @Req() req, @Res() res){
-    // console.log("===================================시작");
-    // console.log(req.user);
-    // const test = await this.usersRepository.find({oauthId:req.oauthId});
-    // if (test)
-    //   console.log("oauthId가 중복아님");
-    // else
-    //   console.log("oauthId가 중복아님")
-    // console.log("===================================끝");
     const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
     res.clearCookie('userCookie');
     if (result){
       res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect('http://34.82.79.134:8082/two-factor')
+      res.status(302).redirect(jwtConstants.TWO_FACTOR)
     }else{
-      console.log("=================================================시작");
-      console.log("req.user = ", req.user);
       const token = await this.authService.login(req.user);
-      console.log("token.access_token = ", token.access_token);
-      console.log("=================================================끝");
       res.cookie('ts_token', token.access_token, { httpOnly: true });
-      console.log("res.cookie = ", res.cookie);
-      console.log("res.cookie = ", res.cookies);
-      res.status(302).redirect('http://34.82.79.134:8082/home')//url 수정필요
+      res.status(302).redirect(jwtConstants.HOME)
     }
   }
 }
