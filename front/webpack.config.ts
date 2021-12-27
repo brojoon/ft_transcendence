@@ -78,7 +78,7 @@ const config: Configuration = {
   },
   devServer: {
     historyApiFallback: true,
-    port: 8080,
+    port: 8082,
     devMiddleware: { publicPath: '/dist/' },
     static: { directory: path.resolve(__dirname) },
     proxy: {

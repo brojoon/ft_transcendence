@@ -11,7 +11,7 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 8080
+EXPOSE 8082
 
 
 RUN chmod 777 docker-entrypoint.sh
