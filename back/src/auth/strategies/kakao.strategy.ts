@@ -7,13 +7,14 @@ import { config } from 'dotenv';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserDto } from 'common/dto/user.dto';
 import { jwtConstants } from '../constants';
+import { AuthService } from '../auth.service';
 
 config();
 
 @Injectable()
 export class KakaoStrategy extends PassportStrategy(Strategy) {
 
-  constructor() {
+  constructor(private readonly authService: AuthService) {
     super({
         clientID : "d95ea8012bf88a97af2828e546712f74",
         clientSecret: "", // clientSecret을 사용하지 않는다면 넘기지 말거나 빈 스트링을 넘길 것
