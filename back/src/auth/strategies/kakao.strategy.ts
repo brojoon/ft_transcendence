@@ -4,7 +4,9 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-kakao';
 import { config } from 'dotenv';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { UserDto } from 'common/dto/user.dto';
+import { jwtConstants } from '../constants';
 
 config();
 
@@ -31,21 +33,22 @@ export class KakaoStrategy extends PassportStrategy(Strategy) {
     let email = profile._json.kakao_account.email;
     email = email ? email : "";
     const profile_photos = null;
-    // const userId = userName;
-    // const email = profile.emails[0].value;
-    // const profile_photos = profile.photos[0].value;
-    const ret = {oauthId, userName, userId, email, profile_photos};
-    return ret;
-
-    const {name, emails, photos} = profile
-    const user = {
-      email: emails[0].value,
-      firstName: name.givenName,
-      lastName: name.familyName,
-      picture: photos[0].value,
-      accessToken
+    const info: UserDto = { 
+        oauthId:+id, 
+        username:userName,
+        userId:userId,
+        email,
+        profile:profile_photos
+      };
+      if (!info) 
+        throw new UnauthorizedException();
+      const user: UserDto = await this.authService.validateUser(String(info.oauthId), jwtConstants.PASSWORD);
+      if (user)
+        return user;
+      const result = await this.authService.Join(info.oauthId, info.username, info.userId, info.email, info.profile);
+      if (result)
+        return info;
+      else
+        console.log("(google strategy validation 함수에서) result값이 false");
     }
-    //return user;
-    // done(null, user);
-  }
 }
