@@ -78,14 +78,14 @@ const config: Configuration = {
   },
   devServer: {
     historyApiFallback: true,
-    port: 3090,
+    port: 8082,
     devMiddleware: { publicPath: '/dist/' },
     static: { directory: path.resolve(__dirname) },
     proxy: {
       '/api/': {
-        // target: 'tcp://back:3095',
+        target: 'tcp://back:8081',
         //docker-compose 용
-        target: 'http://localhost:3095',
+        // target: 'http://34.82.79.134:8081',
         //dev용
         changeOrigin: true,
         ws: true,

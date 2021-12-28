@@ -226,7 +226,6 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     @ConnectedSocket() socket: Socket){
     socket.join(`game-${data.gameId}`);
     if (gameMap[data.gameId] === undefined) {
-      
       this.server.to(`game-${data.gameId}`).emit('gameStart', {
         gameStart: 0       
       });
@@ -289,26 +288,30 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('gamePoint')
   async gamePoint(@MessageBody() data: {gameId: number, user1Point: number, user2Point: number}){
-    gameMap[data.gameId].player_one_point = data.user1Point;
-    gameMap[data.gameId].player_two_point = data.user2Point;
-    this.server.to(`game-${data.gameId}`).emit('point', {
-      player1: data.user1Point,
-      player2: data.user2Point, 
-    });
+    if (gameMap[data.gameId] !== undefined) {
+      gameMap[data.gameId].player_one_point = data.user1Point;
+      gameMap[data.gameId].player_two_point = data.user2Point;
+      this.server.to(`game-${data.gameId}`).emit('point', {
+        player1: data.user1Point,
+        player2: data.user2Point, 
+      });
+    }
   }
 
   @SubscribeMessage('gameReady')  //userId 필요 없음
   async gameReady(@MessageBody() data: {gameId: number, player: number, userId: string}){
     try {
-      if (data.player === 1) {
-        gameMap[data.gameId].player_one_ready = 1;
-      } else if (data.player === 2) {
-        gameMap[data.gameId].player_two_ready = 1;
+      if (gameMap[data.gameId] !== undefined) {
+        if (data.player === 1) {
+          gameMap[data.gameId].player_one_ready = 1;
+        } else if (data.player === 2) {
+          gameMap[data.gameId].player_two_ready = 1;
+        }
+        this.server.to(`game-${data.gameId}`).emit('ready', {
+          player1: gameMap[data.gameId].player_one_ready,
+          player2: gameMap[data.gameId].player_two_ready, 
+        }); 
       }
-      this.server.to(`game-${data.gameId}`).emit('ready', {
-        player1: gameMap[data.gameId].player_one_ready,
-        player2: gameMap[data.gameId].player_two_ready, 
-      });      
     } catch (error) {
       throw new BadRequestException("Ready 정보 업데이트 실패");
     }
@@ -345,7 +348,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('player_one_up')
   async playerOneUP(@MessageBody() data: { game: number }) {
-    if (gameMap[data.game].player_one_y > -50){
+    if (gameMap[data.game] !== undefined && gameMap[data.game].player_one_y > -50){
       gameMap[data.game].player_one_y -= gameMap[data.game].bar_seed;
       this.server.to(`game-${data.game}`).emit('player_one', { player_one_y: parseInt(gameMap[data.game].player_one_y)});
     }  
@@ -353,7 +356,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('player_one_down')
   async playerOneDown(@MessageBody() data: { game: number }) {
-    if (gameMap[data.game].player_one_y < 450){
+    if (gameMap[data.game] !== undefined && gameMap[data.game].player_one_y < 450){
       gameMap[data.game].player_one_y += gameMap[data.game].bar_seed;
       this.server.to(`game-${data.game}`).emit('player_one', { player_one_y: parseInt(gameMap[data.game].player_one_y) });
     }
@@ -361,7 +364,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
 
   @SubscribeMessage('player_two_up')
   async playerTwoUP(@MessageBody() data: { game: number }) {
-    if (gameMap[data.game].player_two_y > -50){
+    if (gameMap[data.game] !== undefined && gameMap[data.game].player_two_y > -50){
       gameMap[data.game].player_two_y -= gameMap[data.game].bar_seed;
       this.server.to(`game-${data.game}`).emit('player_two', { player_two_y: parseInt(gameMap[data.game].player_two_y) });
     }
@@ -369,85 +372,9 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
   
   @SubscribeMessage('player_two_down')
   async playerTwoDown(@MessageBody() data: { game: number }) {
-    if (gameMap[data.game].player_two_y < 450){
+    if (gameMap[data.game] !== undefined && gameMap[data.game].player_two_y < 450){
       gameMap[data.game].player_two_y += gameMap[data.game].bar_seed;
       this.server.to(`game-${data.game}`).emit('player_two', { player_two_y: parseInt(gameMap[data.game].player_two_y) });
     }
   }
 }
-
-
-
-        // await this.historyRepository.createQueryBuilder()
-        //   .update()
-        //   .set({ playerOneJoin: 1 })
-        //   .where('id = :id AND userId1 = :userId', {id: data.gameId, userId: data.userId})
-        //   .execute()
-        // await this.historyRepository.createQueryBuilder()
-        //   .update()
-        //   .set({ playerTwoJoin: 1 })
-        //   .where('id = :id AND userId2 = :userId', {id: data.gameId, userId: data.userId})
-        //   .execute()
-
-  // try{
-    //   const result1 = await this.historyRepository.findOne({userId1: onlineMap[socket.id], playerOneJoin: 1})
-    //   const result2 = await this.historyRepository.findOne({userId2: onlineMap[socket.id], playerTwoJoin: 1})
-    //   if (result1) {
-    //     await this.historyRepository.createQueryBuilder()
-    //       .update()
-    //       .set({ playerOneJoin: 0 })
-    //       .where('userId1 = :userId AND playerOneJoin = :num', {userId: onlineMap[socket.id], num: 1})
-    //       .execute();
-    //     if (result1.state != 2 && gameMap[result1.id] != undefined) {
-    //       gameMap[result1.id].player_one_ready = 0;
-    //       this.server.to(`game-${result1.id}`).emit('ready', {
-    //         player1: gameMap[result1.id].player_one_ready,
-    //         player2: gameMap[result1.id].player_two_ready
-    //       });
-    //     }
-    //   }
-    //   if (result2) {
-    //     await this.historyRepository.createQueryBuilder()
-    //       .update()
-    //       .set({ playerTwoJoin: 0 })
-    //       .where('userId2 = :userId AND playerTwoJoin = :num', {userId: onlineMap[socket.id], num: 1})
-    //       .execute();
-    //     if (result2.state != 2 && gameMap[result2.id] != undefined) {
-    //       gameMap[result2.id].player_two_ready = 0;
-    //       this.server.to(`game-${result2.id}`).emit('ready', {
-    //         player1: gameMap[result2.id].player_one_ready,
-    //         player2: gameMap[result2.id].player_two_ready 
-    //       });
-    //     }
-    //   }   
-    // } catch (error) {
-    //   throw new BadRequestException('레디 0 실패');
-    // }
-
-    // try{
-    //   await this.connectRepository.createQueryBuilder()
-    //       .update()
-    //       .set({ state: true })
-    //       .where('userId = :userId', {userId: data.userId})
-    //       .execute()
-    // }catch{
-    //   throw new BadRequestException('접속상태 업뎃 실패');
-    // }
-
-      // // connectDB update => false
-      // try{
-      //   let connectNum = 0;
-      //   Object.keys(onlineMap).forEach(function(v){
-      //     if (onlineMap[v] === onlineMap[socket.id].userId)
-      //       ++connectNum;
-      //   })
-      //   if (connectNum === 1) {
-      //     await this.connectRepository.createQueryBuilder()
-      //     .update()
-      //     .set({ state: false })
-      //     .where('userId = :userId', {userId: onlineMap[socket.id].userId})
-      //     .execute()
-      //   }
-      // } catch (error) {
-      //   throw new BadRequestException('접속상태 업뎃 실패');
-      // }

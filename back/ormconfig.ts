@@ -45,7 +45,7 @@ const config: TypeOrmModuleOptions = {
   cli: { migrationsDir: 'src/migrations' },
   autoLoadEntities: true,
   // start:dev일땐 false / start:setdb일댄 true
-  synchronize: process.env.NODE_ENV === 'test',
+  synchronize: true,
   logging: true,
   keepConnectionAlive: true,
   retryAttempts: 2,

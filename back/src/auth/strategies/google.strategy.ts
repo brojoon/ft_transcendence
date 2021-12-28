@@ -1,31 +1,23 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
-import { config } from 'dotenv';
-
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { UserDto } from 'common/dto/user.dto';
 import { jwtConstants } from '../constants';
-
-config();
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
 
   constructor(private readonly authService: AuthService) {
     super({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-    callbackURL: 'http://localhost:3095/api/auth/google/redirect',
+      clientID: jwtConstants.GOOGLE_CLIENT_ID,
+      clientSecret: jwtConstants.GOOGLE_SECRET,
+      callbackURL: jwtConstants.GOOGLE_CALLBACK_URL,
       scope: ['email', 'profile'],//구글설정에서는 scope 따로 정해주지 않긴한데..
     });
   }
 
   async validate (accessToken: string, refreshToken: string, profile: any, done: VerifyCallback): Promise<any> {
-    // console.log("발리데이션 함수 호출");
-    // console.log("=================================");
-    // console.log(profile);
-    // console.log("=================================");
     const {id} = profile;
     const oauthId = id;
     const userName = profile.name.givenName;
@@ -50,5 +42,4 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     else
       console.log("(google strategy validation 함수에서) result값이 false")
   }
-
 }
