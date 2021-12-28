@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect, useContext } from 'react';
 import useSWR from 'swr';
 import fetcher from '@utils/fetcher';
-import { IChannelList2, IAllUser, IUser, IMemberList } from '@typings/db';
+import { IChannelList2, IAllUser, IUser, State } from '@typings/db';
 import Box from '@mui/material/Box';
 import Tab from '@mui/material/Tab';
 import TabContext from '@mui/lab/TabContext';
@@ -78,8 +78,6 @@ const Admin = () => {
   useEffect(() => {
     socket?.on('onGameList', (data: any) => {
       setOnGameList(data);
-      console.log(data);
-      console.log('onGameList !!!');
     });
     return () => {
       socket.off('onGameList');
@@ -89,8 +87,6 @@ const Admin = () => {
   useEffect(() => {
     socket?.on('onlineList', (data: any) => {
       setOnlineList(data);
-      console.log(data);
-      console.log('onlineList !!!');
     });
 
     return () => {
@@ -269,7 +265,6 @@ const Admin = () => {
     },
     [unBanUserSelected],
   );
-  console.log('adminList', adminList);
   if (!adminList) return null;
   return (
     <AdminPageContainer>

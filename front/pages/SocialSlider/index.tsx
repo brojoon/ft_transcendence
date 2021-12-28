@@ -9,7 +9,9 @@ import Typography from '@mui/material/Typography';
 import FriendsList from '@components/FriendsList';
 import FriendsOnlineList from '@components/FriendsOnlineList';
 import BlockList from '@components/BlockList';
+import DMLeftDrawer from '@components/DMLeftDrawer';
 import { SocialSliderContainer, TabPannelBox } from './style';
+import { useMediaQuery } from 'react-responsive';
 
 function TabPanel(props: any) {
   const { children, value, index, ...other } = props;
@@ -49,6 +51,7 @@ function a11yProps(index: number) {
 const SocialSlider = () => {
   const theme = useTheme();
   const [value, setValue] = useState(0);
+  const isMobile = useMediaQuery({ maxWidth: 700 });
 
   const handleChange = useCallback((event: any, newValue: any) => {
     setValue(newValue);
@@ -59,38 +62,43 @@ const SocialSlider = () => {
   }, []);
 
   return (
-    <SocialSliderContainer>
-      <AppBar position="static" className="app-bar">
-        <Tabs
-          value={value}
-          onChange={handleChange}
-          indicatorColor="secondary"
-          textColor="inherit"
-          variant="fullWidth"
-          aria-label="full width tabs example"
-        >
-          <Tab label="🌐 ONLINE" {...a11yProps(0)}></Tab>
-          <Tab label="👥 FRIENDS" {...a11yProps(1)} />
-          <Tab label="🚨 BLOCKED" {...a11yProps(2)} />
-        </Tabs>
-      </AppBar>
-      <SwipeableViews
-        className="swipeable-views "
-        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
-        <TabPanel value={value} index={0}>
-          <FriendsOnlineList />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <FriendsList />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <BlockList />
-        </TabPanel>
-      </SwipeableViews>
-    </SocialSliderContainer>
+    <>
+      <DMLeftDrawer />
+      {isMobile ? null : (
+        <SocialSliderContainer>
+          <AppBar position="static" className="app-bar">
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor="secondary"
+              textColor="inherit"
+              variant="fullWidth"
+              aria-label="full width tabs example"
+            >
+              <Tab label="🌐 ONLINE" {...a11yProps(0)}></Tab>
+              <Tab label="👥 FRIENDS" {...a11yProps(1)} />
+              <Tab label="🚨 BLOCKED" {...a11yProps(2)} />
+            </Tabs>
+          </AppBar>
+          <SwipeableViews
+            className="swipeable-views "
+            axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+            index={value}
+            onChangeIndex={handleChangeIndex}
+          >
+            <TabPanel value={value} index={0}>
+              <FriendsOnlineList />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <FriendsList />
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              <BlockList />
+            </TabPanel>
+          </SwipeableViews>
+        </SocialSliderContainer>
+      )}
+    </>
   );
 };
 

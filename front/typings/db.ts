@@ -108,3 +108,8 @@ export interface IUserStateList {
   state: boolean;
   updatedAt: Date;
 }
+
+export interface State {
+  userId: string;
+  username: string;
+}

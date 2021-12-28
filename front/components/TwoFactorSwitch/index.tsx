@@ -25,7 +25,6 @@ const TwoFactorSwitch = () => {
 
   const onSubmitOTPvalue = useCallback(
     (e) => {
-      console.log(OTPvalue);
       if (e.key === 'Enter') {
         axios
           .get(`/api/auth/otpCodeCheck/${OTPvalue}`, config)
@@ -85,13 +84,11 @@ const TwoFactorSwitch = () => {
   const onChangeOTPinput = useCallback(
     (e) => {
       setOTPvalue(e.target.value);
-      console.log(OTPvalue);
     },
     [OTPvalue],
   );
 
   const handleChange = useCallback((event: any) => {
-    console.log(checked);
     if (event.target.checked === false) {
       axios
         .get('/api/users/turn-off', config)

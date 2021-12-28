@@ -1,10 +1,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import ChannelLeftDrawBar from '@components/ChannelLeftDrawBar';
 import { Container } from './style';
 import { Route, Switch, useHistory } from 'react-router-dom';
-// import ChannelCreate from '@pages/ChannelCreate';
-// import ChannelDiscover from '@pages/ChannelDiscover';
-// import ChannelRoom from '@pages/ChannelRoom';
+import Grid from '@mui/material/Grid';
 import useSWR from 'swr';
 import { IChannelList, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
@@ -76,7 +73,6 @@ const Channel = () => {
 
   return (
     <Container>
-      <ChannelLeftDrawBar />
       <Switch>
         <Route exact path="/channels" component={ChannelDiscover} />
         <Route

@@ -1,5 +1,7 @@
 import { IChatList, IChannelChatList } from '@typings/db';
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import dayjs from 'dayjs';
+dayjs.extend(customParseFormat);
 
 const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 

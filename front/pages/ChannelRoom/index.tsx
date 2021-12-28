@@ -17,6 +17,8 @@ import ChannelInviteModal from '@components/ChannelInviteModal';
 import config from '@utils/config';
 import { ChannelRoomContainer } from './style';
 import { toast } from 'react-toastify';
+import ChannelLeftDrawBar from '@components/ChannelLeftDrawBar';
+import { useMediaQuery } from 'react-responsive';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -65,6 +67,8 @@ const ChannelRoom = () => {
   const [channelLeaveModal, setChannelLeaveModal] = useState(false);
   const [channelInviteModal, setChannelInviteModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [messageRevalidate, setMessageRevalidate] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 700 });
 
   const onClickMember = useCallback(
     (e, index) => {
@@ -132,7 +136,6 @@ const ChannelRoom = () => {
           });
           mutateChat();
         });
-      console.log(chat);
       setChat('');
       setTimeout(() => {
         scrollbarRef.current?.scrollToBottom();
@@ -171,28 +174,34 @@ const ChannelRoom = () => {
     [channelLeaveModal],
   );
 
-  const onMessage = useCallback((data) => {
-    console.log('ch왔다!');
-    console.log(data);
-    if (data.userId != myData?.userId) {
-      mutateChat((prevchatData) => {
-        prevchatData?.[0].unshift(data);
-        console.log('prevchatData', prevchatData);
-        return prevchatData;
-      }, false).then(() => {
-        if (scrollbarRef.current) {
-          if (
-            scrollbarRef.current.getScrollHeight() <
-            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
-          ) {
-            setTimeout(() => {
-              scrollbarRef.current?.scrollToBottom();
-            }, 50);
+  const onMessage = useCallback(
+    (data) => {
+      if (data.userId != myData?.userId) {
+        mutateChat((prevchatData) => {
+          prevchatData?.[0].unshift({
+            userId: data.userId,
+            message: data.msg,
+            updatedAt: data.createdAt,
+          });
+
+          return prevchatData;
+        }, false).then(() => {
+          setMessageRevalidate((prev) => !prev);
+          if (scrollbarRef.current) {
+            if (
+              scrollbarRef.current.getScrollHeight() <
+              scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+            ) {
+              setTimeout(() => {
+                scrollbarRef.current?.scrollToBottom();
+              }, 50);
+            }
           }
-        }
-      });
-    }
-  }, []);
+        });
+      }
+    },
+    [myData, scrollbarRef],
+  );
 
   useEffect(() => {
     if (myChannelList) {
@@ -208,15 +217,6 @@ const ChannelRoom = () => {
       }
     }
   }, [myChannelList]);
-
-  // const channelRevalidate = useCallback(() => {
-  //   console.log('channel revalidated!!!');
-  //   mutateChannelMembers();
-  //   mutateMyChannelList();
-  //   mutateAllChannelList();
-  //   mutateMyMute();
-  //   mutateMymuteMmbers();
-  // }, []);
 
   useEffect(() => {
     socket?.on('join', mutateChannelMembers);
@@ -235,7 +235,6 @@ const ChannelRoom = () => {
   useEffect(() => {
     socket?.on('channelType', () => {
       mutateMyChannelList();
-      console.log('channelType');
     });
     return () => {
       socket?.off('channelType');
@@ -244,7 +243,6 @@ const ChannelRoom = () => {
 
   useEffect(() => {
     socket?.on('channelDelete', () => {
-      console.log('channelDelete!!');
       mutateMyChannelList();
       history.push('/channels');
     });
@@ -298,47 +296,50 @@ const ChannelRoom = () => {
 
   return (
     <>
-      <ChannelRoomSettingModal
-        settingToggle={settingToggle}
-        onClickSettingBtn={onClickSettingBtn}
-      />
-      <ChannelRoomContainer>
-        <ChannelChatHeader
-          membersToggle={membersToggle}
+      {isMobile ? null : <ChannelLeftDrawBar />}
+      <>
+        <ChannelRoomSettingModal
+          settingToggle={settingToggle}
+          onClickSettingBtn={onClickSettingBtn}
+        />
+        <ChannelRoomContainer>
+          <ChannelChatHeader
+            membersToggle={membersToggle}
+            onClickMembersToggle={onClickMembersToggle}
+          />
+          <ChannelChatList
+            chatData={chatData}
+            scrollbarRef={scrollbarRef}
+            setSize={setSize}
+            isReachingEnd={isReachingEnd}
+          />
+          {!myMute && <ChatBox chat={chat} setChat={setChat} onSubmitChat={onSubmitChat} />}
+        </ChannelRoomContainer>
+        <ChannelMemberDrawBar
           onClickMembersToggle={onClickMembersToggle}
+          onClickSettingBtn={onClickSettingBtn}
+          onClickChannelLeaveModal={onClickChannelLeaveModal}
+          onClickChannelInviteModal={onClickChannelInviteModal}
+          onClickMember={onClickMember}
+          selectedIndex={selectedIndex}
+          membersToggle={membersToggle}
+          setSelectedIndex={setSelectedIndex}
         />
-        <ChannelChatList
-          chatData={chatData}
-          scrollbarRef={scrollbarRef}
-          setSize={setSize}
-          isReachingEnd={isReachingEnd}
-        />
-        {!myMute && <ChatBox chat={chat} setChat={setChat} onSubmitChat={onSubmitChat} />}
-      </ChannelRoomContainer>
-      <ChannelMemberDrawBar
-        onClickMembersToggle={onClickMembersToggle}
-        onClickSettingBtn={onClickSettingBtn}
-        onClickChannelLeaveModal={onClickChannelLeaveModal}
-        onClickChannelInviteModal={onClickChannelInviteModal}
-        onClickMember={onClickMember}
-        selectedIndex={selectedIndex}
-        membersToggle={membersToggle}
-        setSelectedIndex={setSelectedIndex}
-      />
-      {channelInviteModal && (
-        <ChannelInviteModal
-          onClickModalClose={onClickChannelInviteModal}
-          setChannelInviteModal={setChannelInviteModal}
-        />
-      )}
-      {channelLeaveModal && (
-        <BasicModal
-          headerContent="Leave Channel"
-          content={`Are you really leaving this channel?`}
-          NoBtn={onClickChannelLeaveModal}
-          YesBtn={onClickChannelLeaveMdoalYes}
-        />
-      )}
+        {channelInviteModal && (
+          <ChannelInviteModal
+            onClickModalClose={onClickChannelInviteModal}
+            setChannelInviteModal={setChannelInviteModal}
+          />
+        )}
+        {channelLeaveModal && (
+          <BasicModal
+            headerContent="Leave Channel"
+            content={`Are you really leaving this channel?`}
+            NoBtn={onClickChannelLeaveModal}
+            YesBtn={onClickChannelLeaveMdoalYes}
+          />
+        )}
+      </>
     </>
   );
 };
