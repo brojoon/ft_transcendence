@@ -2,6 +2,8 @@ import React, { useState, useCallback, VFC, useEffect } from 'react';
 import ChannelHeader from '@components/ChannelHeader';
 import ChannelForm from '@components/ChannelForm';
 import { ChannelCreateContainer } from './style';
+import ChannelLeftDrawBar from '@components/ChannelLeftDrawBar';
+import { useMediaQuery } from 'react-responsive';
 
 interface Props {
   onSubmitChannelCreate: () => void;
@@ -22,24 +24,29 @@ const ChannelCreate: VFC<Props> = ({
   createError,
   setCreateError,
 }) => {
+  const isMobile = useMediaQuery({ maxWidth: 650 });
   return (
-    <ChannelCreateContainer>
-      <ChannelHeader content={'Create a Channel'} />
-      <div className="wrapper">
-        <div className="channel-form-wrapper">
-          <ChannelForm
-            value="CREATE"
-            onSubmitChannelCreate={onSubmitChannelCreate}
-            name={name}
-            setVisibility={setVisibility}
-            setName={setName}
-            setPasswordValues={setPasswordValues}
-            createError={createError}
-            setCreateError={setCreateError}
-          />
+    <>
+      {isMobile ? null : <ChannelLeftDrawBar />}
+
+      <ChannelCreateContainer>
+        <ChannelHeader content={'Create a Channel'} />
+        <div className="wrapper">
+          <div className="channel-form-wrapper">
+            <ChannelForm
+              value="CREATE"
+              onSubmitChannelCreate={onSubmitChannelCreate}
+              name={name}
+              setVisibility={setVisibility}
+              setName={setName}
+              setPasswordValues={setPasswordValues}
+              createError={createError}
+              setCreateError={setCreateError}
+            />
+          </div>
         </div>
-      </div>
-    </ChannelCreateContainer>
+      </ChannelCreateContainer>
+    </>
   );
 };
 

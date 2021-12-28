@@ -28,7 +28,7 @@ const option = {
   withCredentials: true,
 };
 
-const PingPong = (data: any) => {
+const PingPong = () => {
   const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: allUserList } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
@@ -52,9 +52,8 @@ const PingPong = (data: any) => {
   const history = useHistory();
 
   useEffect(() => {
-    socket.on('gameStart', (isGameStart: any) => {
-      console.log('gameStart', isGameStart);
-      if (isGameStart.gameStart === 1) {
+    socket.on('gameStart', (isGameStart: { gameStart: boolean }) => {
+      if (isGameStart.gameStart) {
         setIsGameStart(true);
         setPlay1Ready(1);
         setPlay2Ready(1);
@@ -67,7 +66,6 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     if (id) {
-      console.log('gameCheck');
       socket.emit('gameCheck', {
         gameId: id,
       });
@@ -80,10 +78,8 @@ const PingPong = (data: any) => {
         gameId: id,
         player: myData.userId,
       });
-      console.log('새로고침?', myData.userId);
     }
     return () => {
-      console.log('offGame');
       if (myData) {
         socket.emit('offGame', {
           gameId: id,
@@ -149,7 +145,7 @@ const PingPong = (data: any) => {
               player2Ready: res.data.playerTwoJoin,
             });
           }
-          console.log('res.data', res.data);
+
           setWatchUserId1(res.data.userId1);
           setWatchUserId2(res.data.userId2);
           socket.emit('changeGameSet', { gameId: id, check: 'check' });
@@ -197,7 +193,6 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     socket.on('ready', (ready: any) => {
-      console.log('ready', ready);
       setPlay1Ready(ready.player1);
       setPlay2Ready(ready.player2);
 
@@ -229,18 +224,17 @@ const PingPong = (data: any) => {
 
   const changeGameSet = useCallback(() => {
     if (player !== '')
-      axios
-        .get(`/api/game/start/${id}`, option).catch((error) => {
-          history.push('./home');
-          toast.error(error.message, {
-            autoClose: 4000,
-            position: toast.POSITION.TOP_RIGHT,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            theme: 'colored',
-          });
+      axios.get(`/api/game/start/${id}`, option).catch((error) => {
+        history.push('./home');
+        toast.error(error.message, {
+          autoClose: 4000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
         });
+      });
   }, [id, player, option]);
 
   return (
@@ -364,8 +358,8 @@ const PingPong = (data: any) => {
                 게임시작
               </Button>
             )}
-            {player === '' ? null : (
-              <div className="game-text"> (모두 레디 시 시작됨) [key : t] </div>
+            {player === '' ? null : isGameStart ? null : (
+              <div className="game-text"> (모두 레디 시 시작됨)</div>
             )}
             {player === '' ? <h2>관전중...</h2> : <div>(up: w / down: s)</div>}
           </GameInitBtnContainer>

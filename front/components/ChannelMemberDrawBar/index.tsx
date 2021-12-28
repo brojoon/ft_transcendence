@@ -142,9 +142,9 @@ const ChannelMemberDrawBar: VFC<Props> = ({
               })}
             <ListItem className="List-header">Users</ListItem>
             {memberList &&
-              memberList?.map((member, index) => {
+              memberList?.map((member) => {
                 if (member.auth === 0) {
-                  return alluser?.map((user) => {
+                  return alluser?.map((user, index) => {
                     if (user.userId == member.userId) {
                       isState = 0;
                       if (onGameList && onGameList[user.userId]) isState = 2;
