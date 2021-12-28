@@ -37,6 +37,12 @@ export const DMChatListContainer = styled.div`
     font-weight: 700;
 
   }
+
+  & .challenge-join-block-btn {
+    margin-right: 15px;
+    font-weight: 700;
+		background-color: #393939;
+  }
 `;
 
 export const StickyHeader = styled.div`

@@ -14,6 +14,8 @@ import getSocket from '@utils/useSocket';
 import config from '@utils/config';
 import { DirectMessageContainer } from './style';
 import { toast } from 'react-toastify';
+import { useMediaQuery } from 'react-responsive';
+import DMLeftDrawer from '@components/DMLeftDrawer';
 
 const DirectMessage = () => {
   const [chat, setChat] = useState('');
@@ -21,6 +23,9 @@ const DirectMessage = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: userId } = useSWR<string>(`/api/dms/findDmUser/${id}`, fetcher);
   const { data: myDMList } = useSWR<IDmList[]>(`/api/dms/dmlist`, fetcher);
+  const [messageRevalidate, setMessageRevalidate] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 700 });
+  const isMobileHeader = useMediaQuery({ maxWidth: 420 });
 
   // const { data: chatData, mutate: mutateChat } = useSWR<IChatList[]>(
   //   `/api/dms/getAllMessageUseDmId/${id}`,
@@ -67,14 +72,25 @@ const DirectMessage = () => {
           config,
         )
         .catch((error) => {
-          toast.error(error.message, {
-            autoClose: 4000,
-            position: toast.POSITION.TOP_RIGHT,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            theme: 'colored',
-          });
+          if (error.response.data.data.message === 'Block 상태') {
+            toast.error(' Cant send message because it is blocked', {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          } else {
+            toast.error(error.message, {
+              autoClose: 4000,
+              position: toast.POSITION.TOP_RIGHT,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              theme: 'colored',
+            });
+          }
           mutateChat();
         });
       setChat('');
@@ -84,29 +100,30 @@ const DirectMessage = () => {
     }
   }, [chat]);
 
-  const onMessage = useCallback((data) => {
-    console.log(data);
-    console.log('dm왔다!');
-    if (data.userId1 != myData?.userId) {
-      mutateChat((prevchatData) => {
-        prevchatData?.[0].unshift(data);
-        console.log('prevchatData', prevchatData);
+  const onMessage = useCallback(
+    (data) => {
+      if (data.userId1 != myData?.userId) {
+        mutateChat((prevchatData) => {
+          prevchatData?.[0].unshift(data);
 
-        return prevchatData;
-      }, false).then(() => {
-        if (scrollbarRef.current) {
-          if (
-            scrollbarRef.current.getScrollHeight() <
-            scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
-          ) {
-            setTimeout(() => {
-              scrollbarRef.current?.scrollToBottom();
-            }, 50);
+          return prevchatData;
+        }, false).then(() => {
+          setMessageRevalidate((prev) => !prev);
+          if (scrollbarRef.current) {
+            if (
+              scrollbarRef.current.getScrollHeight() <
+              scrollbarRef.current.getClientHeight() + scrollbarRef.current.getScrollTop() + 150
+            ) {
+              setTimeout(() => {
+                scrollbarRef.current?.scrollToBottom();
+              }, 50);
+            }
           }
-        }
-      });
-    }
-  }, []);
+        });
+      }
+    },
+    [myData, scrollbarRef],
+  );
 
   useEffect(() => {
     if (myDMList) {
@@ -137,16 +154,20 @@ const DirectMessage = () => {
   }, [chatData]);
 
   return (
-    <DirectMessageContainer>
-      <ChatHeader />
-      <DMChatList
-        chatData={chatData}
-        scrollbarRef={scrollbarRef}
-        isReachingEnd={isReachingEnd}
-        setSize={setSize}
-      />
-      <ChatBox chat={chat} setChat={setChat} onSubmitChat={onSubmitChat} />
-    </DirectMessageContainer>
+    <>
+      {isMobile ? null : <DMLeftDrawer />}
+      <DirectMessageContainer>
+        {isMobileHeader ? null : <ChatHeader />}
+
+        <DMChatList
+          chatData={chatData}
+          scrollbarRef={scrollbarRef}
+          isReachingEnd={isReachingEnd}
+          setSize={setSize}
+        />
+        <ChatBox chat={chat} setChat={setChat} onSubmitChat={onSubmitChat} />
+      </DirectMessageContainer>
+    </>
   );
 };
 

@@ -35,7 +35,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
     `/api/friend/checkblock/${id}`,
     fetcher,
   );
-  // const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
+  const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const history = useHistory();
   const [isAddFriendModal, setIsAddFriendModal] = useState(false);
   const [isRemoveFriendModal, setIsRemoveFriendModal] = useState(false);
@@ -97,7 +97,6 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         history.push(`/game/ping-pong/${res.data}`);
       })
       .catch((error) => {
-        console.log(error.response.data.data.message);
         if (error.response.data.data.message === 'Block 상태') {
           toast.error(`You were blocked by ${UserData.username}`, {
             autoClose: 4000,
@@ -304,10 +303,15 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
               BLOCKED&nbsp;
               <GamepadIcon />
             </Button>
-          ) : isState === 2 ? (
+          ) : isState === 2 && onGameList && myData && onGameList[myData?.userId] === undefined ? (
             <Button onClick={onClickWatchBtn} variant="contained" className="watch-btn">
               WATCH&nbsp;
               <VisibilityIcon />
+            </Button>
+          ) : onGameList && myData && onGameList[myData?.userId] ? (
+            <Button variant="contained" className="challenge-block-btn" disabled>
+              CHALLENGE&nbsp;
+              <GamepadIcon />
             </Button>
           ) : (
             <Button onClick={onClickChallengeBtn} variant="contained" className="challenge-btn">

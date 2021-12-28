@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 
 interface Props {
   user: IAllUser;
-  setSelectedIndex: (e: any) => void;
+  setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const AdminPageProfile: VFC<Props> = ({ user, setSelectedIndex }) => {

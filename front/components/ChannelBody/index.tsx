@@ -15,8 +15,9 @@ import LockIcon from '@mui/icons-material/Lock';
 import axios from 'axios';
 import ProtectedRoomModal from '@components/ProtectedRoomModal';
 import config from '@utils/config';
-import { ChannelBodyContainer, ScrollbarColor } from './style';
+import { ChannelBodyContainer, ScrollbarColor, ChannelCard, ChannelName } from './style';
 import { toast } from 'react-toastify';
+import { useMediaQuery } from 'react-responsive';
 
 const ChannelBody = () => {
   const { data: allChannelList, mutate: mutateAllChannelList } = useSWR<IChannelList[]>(
@@ -30,6 +31,7 @@ const ChannelBody = () => {
   const [channelPasswordModal, setChannelPasswordModal] = useState(false);
   const [channelPasswordRoomNumber, setChannelPasswordRoomNumber] = useState('');
   const history = useHistory();
+  const isMobile = useMediaQuery({ maxWidth: 420 });
   const onClickPublicRoom = useCallback((channelId, e) => {
     e.preventDefault();
     axios
@@ -94,7 +96,7 @@ const ChannelBody = () => {
               setChannelPasswordRoomNumber={setChannelPasswordRoomNumber}
             />
           ) : null}
-          {allChannelList?.map((Channel: any) => {
+          {allChannelList?.map((Channel: IChannelList) => {
             let flag = false;
             myChannelList?.forEach((myChannel) => {
               if (myChannel.id === Channel.id) {
@@ -108,7 +110,8 @@ const ChannelBody = () => {
             } else if (Channel.type === 0) {
               return (
                 <Grid item xs={12} sm={12} md={6} key={Channel.id}>
-                  <Card
+                  <ChannelCard
+                    ismobile={isMobile}
                     className="card"
                     onClick={(e) => {
                       onClickPublicRoom(Channel.id, e);
@@ -116,27 +119,22 @@ const ChannelBody = () => {
                   >
                     <CardActionArea>
                       <CardContent>
-                        <Typography
-                          className="channel-name"
-                          gutterBottom
-                          variant="h5"
-                          component="div"
-                        >
+                        <ChannelName>
                           <span>{Channel.name}</span>
-                          {Channel.type === 1 ? <span>{<LockIcon />}</span> : null}
-                        </Typography>
+                        </ChannelName>
                         <Typography variant="body2" color="hsla(0,0%,100%,.7)">
                           {Channel.authId}
                         </Typography>
                       </CardContent>
                     </CardActionArea>
-                  </Card>
+                  </ChannelCard>
                 </Grid>
               );
             } else if (Channel.type === 1) {
               return (
                 <Grid item xs={12} sm={12} md={6} key={Channel.id}>
-                  <Card
+                  <ChannelCard
+                    ismobile={isMobile}
                     className="card"
                     onClick={(e) => {
                       onClickProtectedRoom(Channel.id, e);
@@ -144,21 +142,16 @@ const ChannelBody = () => {
                   >
                     <CardActionArea>
                       <CardContent>
-                        <Typography
-                          className="channel-name"
-                          gutterBottom
-                          variant="h5"
-                          component="div"
-                        >
+                        <ChannelName>
                           <span>{Channel.name}</span>
-                          {Channel.type === 1 ? <span>{<LockIcon />}</span> : null}
-                        </Typography>
+                          <span>{<LockIcon />}</span>
+                        </ChannelName>
                         <Typography variant="body2" color="hsla(0,0%,100%,.7)">
                           {Channel.authId}
                         </Typography>
                       </CardContent>
                     </CardActionArea>
-                  </Card>
+                  </ChannelCard>
                 </Grid>
               );
             }
