@@ -66,7 +66,7 @@ const History = (data: any) => {
           setPlayer2Point(res.data.user2Point);
           setWinner(res.data.winner);
           // if (res.data.winner === null)
-          //   window.location.href = `http://localhost:3000/history/${gameId}`;
+          //   window.location.href = `http://34.82.79.134:3000/history/${gameId}`;
         })
         .catch((error) => {
           toast.error(error.message, {
