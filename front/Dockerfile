@@ -1,18 +1,15 @@
-FROM node:14.18-buster
-##위에 노드 버전도 중요함
-RUN wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-alpine-linux-amd64-v0.6.1.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-v0.6.1.tar.gz
+FROM  debian:buster
 
-WORKDIR /usr/src/app
+RUN     apt-get update && apt-get upgrade && apt-get install -y \
+        nginx \
+        vim
+	
+COPY    ./nginx.conf /etc/nginx/sites-available/ft_server
+COPY	./dist /var/www/html/dist
+COPY	./index.html /var/www/html
+COPY    ./favicon.ico /var/www/html
+COPY    ./init.sh ./
 
-COPY package*.json ./
+EXPOSE  80 8082
 
-RUN npm install
-
-COPY . .
-
-EXPOSE 8082
-
-
-RUN chmod 777 docker-entrypoint.sh
-ENTRYPOINT ./docker-entrypoint.sh
+CMD    	bash init.sh

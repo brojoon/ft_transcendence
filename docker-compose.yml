@@ -34,18 +34,19 @@ services:
     # volumes:
     #   - ./back:/usr/src/app
 
-  # front:
-  #   build:
-  #     context: ./front
-  #     dockerfile: Dockerfile
-  #   container_name: front
-  #   restart: always
-  #   ports:
-  #     - 3090:3090
-  #   depends_on:
-  #     - back
-  #   networks:
-  #     - frontApp
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: front
+    restart: always
+    ports:
+      - 80:80
+      - 8082:8082
+    depends_on:
+      - back
+    networks:
+      - frontApp
 
 
 volumes:

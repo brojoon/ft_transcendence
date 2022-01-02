@@ -3,18 +3,18 @@ export const jwtConstants = {
   PASSWORD: '42seoul',
   APP_NAME: 'HUCHOI-2',
 
-  CLIENT_ID: '37f1a6e531b74604cf47425476d8681b886f1dd638e9cb1a673131cffbc84256',
-  CLIENT_SECRET: '65039aaaff292c107f3941cdedbf474f30305b4e055728c59d821ccffc545930',
-  CALLBACK_URL: 'http://34.82.79.134:8081/api/auth/42/callback',
+  CLIENT_ID: '74ac7ac73c589278e5f541f9fe88f69e90e2170e7718a39edd58cd96d2a29139',
+  CLIENT_SECRET: '13807efc2f9179100ba2019302a6e076cf31d59eddee988839f3944bc17dc1ee',
+  CALLBACK_URL: 'http://42transcendence.ml:8082/api/auth/42/callback',
 
   KAKAO_CLIENT_ID: 'd95ea8012bf88a97af2828e546712f74',
   KAKAO_SECRET: '',
   KAKAO_CALLBACK_URL: 'http://34.82.79.134:8081/api/auth/kakao/redirect',
 
-  GOOGLE_CLIENT_ID: '620069586851-q6upth2mhck23ggjrk023monqih7dqph.apps.googleusercontent.com',
-  GOOGLE_SECRET: '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',
-  GOOGLE_CALLBACK_URL: 'http://api.42transcendence.ml:8081/api/auth/google/redirect',
+  GOOGLE_CLIENT_ID: '367329754008-lq17onqiesek17u47n5364sis084mm8b.apps.googleusercontent.com',
+  GOOGLE_SECRET: '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',
+  GOOGLE_CALLBACK_URL: 'http://42transcendence.ml:8082/api/auth/google/redirect',
 
-  HOME: 'http://34.82.79.134:8082/home',
-  TWO_FACTOR: 'http://34.82.79.134:8082/two-factor'
+  HOME: 'http://42transcendence.ml/home',
+  TWO_FACTOR: 'http://42transcendence.ml/two-factor'
 };
