@@ -21,7 +21,7 @@ async function bootstrap() {
 	);
 	// Cors에러 안나게 프런트와 소통
 	app.enableCors({
-		origin: "http://42transcendence.ml",
+		origin: "http://42transcendence.ml/",
 		credentials: true,
 	});
 	// 경로파일 열어볼수 있게 설정
