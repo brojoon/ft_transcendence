@@ -10,6 +10,6 @@ COPY	./index.html /var/www/html
 COPY    ./favicon.ico /var/www/html
 COPY    ./init.sh ./
 
-EXPOSE  80 8082
+EXPOSE  80 443 8082
 
 CMD    	bash init.sh

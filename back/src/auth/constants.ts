@@ -13,7 +13,7 @@ export const jwtConstants = {
 
   GOOGLE_CLIENT_ID: '367329754008-lq17onqiesek17u47n5364sis084mm8b.apps.googleusercontent.com',
   GOOGLE_SECRET: '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',
-  GOOGLE_CALLBACK_URL: 'http://42transcendence.ml:8082/api/auth/google/redirect',
+  GOOGLE_CALLBACK_URL: 'https://42transcendence.ml/api/auth/google/redirect',
 
   HOME: 'http://42transcendence.ml/home',
   TWO_FACTOR: 'http://42transcendence.ml/two-factor'
