@@ -6,15 +6,15 @@ const LogIn = () => {
   const history = useHistory();
 
   const onClickKakaoLogin = useCallback(() => {
-    window.location.href = '/api/auth/kakao';
+    window.location.href = 'http://13.209.169.93:8081/api/auth/kakao';
   }, []);
 
   const onClickGoogleLogin = useCallback(() => {
-    window.location.href = '/api/auth/google';
+    window.location.href = 'http://13.209.169.93:8081/api/auth/google';
   }, []);
 
   const onClick42Login = useCallback(() => {
-    window.location.href = '/api/auth/42';
+    window.location.href = 'http://13.209.169.93:8081/api/auth/42';
   }, []);
 
   return (
