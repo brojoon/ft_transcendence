@@ -25,7 +25,7 @@ services:
     container_name: back
     restart: always
     ports:
-      - 3095:3095
+      - "3095:3095"
     depends_on:
       - postgresql
     networks:
@@ -34,18 +34,19 @@ services:
     # volumes:
     #   - ./back:/usr/src/app
 
-  # front:
-  #   build:
-  #     context: ./front
-  #     dockerfile: Dockerfile
-  #   container_name: front
-  #   restart: always
-  #   ports:
-  #     - 3090:3090
-  #   depends_on:
-  #     - back
-  #   networks:
-  #     - frontApp
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: front
+    restart: always
+    ports:
+      - "3090:3090"
+      - "3096:3096"
+    depends_on:
+      - back
+    networks:
+      - frontApp
 
 volumes:
   postgresql:
