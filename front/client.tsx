@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import App from '@layouts/App';
 
-axios.defaults.baseURL = process.env.NODE_ENV !== 'production' ? '/' : 'https://42transcendence.ml';
+axios.defaults.baseURL = process.env.NODE_ENV !== 'production' ? '/' : 'http://13.209.169.93:8081';
 
 render(
   <BrowserRouter>
