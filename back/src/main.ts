@@ -16,18 +16,18 @@ async function bootstrap() {
 	//class-validator
 	app.useGlobalPipes(
 		new ValidationPipe({
-		  transform: true,
+			transform: true,
 		}),
 	);
 	// Cors에러 안나게 프런트와 소통
 	app.enableCors({
-		origin: true,
+		origin: "http://42transcendence.ml",
 		credentials: true,
 	});
 	// 경로파일 열어볼수 있게 설정
 	app.useStaticAssets(
 		path.join(__dirname, '..', 'uploads'),
-		{ prefix: '/uploads',},
+		{ prefix: '/uploads', },
 	);
 	// API문서 설정
 	const config = new DocumentBuilder()
@@ -35,17 +35,17 @@ async function bootstrap() {
 		.setDescription('ft_transcendence 개발을 위한 API 입니다')
 		.setVersion('1.0')
 		.addTag('transcendence')
-        .addBearerAuth(
+		.addBearerAuth(
 			{
-			  type: 'http',
-			  scheme: 'bearer',
-			  bearerFormat: 'JWT',
-			  name: 'JWT',
-			  description: 'Enter JWT token',
-			  in: 'header',
+				type: 'http',
+				scheme: 'bearer',
+				bearerFormat: 'JWT',
+				name: 'JWT',
+				description: 'Enter JWT token',
+				in: 'header',
 			},
 			'ts_token',
-		  )
+		)
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
 	SwaggerModule.setup('api', app, document);
