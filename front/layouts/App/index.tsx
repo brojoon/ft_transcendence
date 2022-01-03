@@ -11,17 +11,17 @@ import 'regenerator-runtime';
 // import LogIn from '@pages/LogIn';
 // import TwoFactor from '@pages/TwoFactor';
 // import FirstStep from '@pages/FirstStep';
-// import Content from '@layouts/Content';
+import Content from '@layouts/Content';
 // import Admin from '@pages/Admin';
-// import AdminChannel from '@pages/AdminChannel';
+import AdminChannel from '@pages/AdminChannel';
 // import RootPage from '@pages/RootPage';
 
 const LogIn = loadable(() => import('@pages/LogIn'));
 const TwoFactor = loadable(() => import('@pages/TwoFactor'));
 const FirstStep = loadable(() => import('@pages/FirstStep'));
-const Content = loadable(() => import('@layouts/Content'));
+// const Content = loadable(() => import('@layouts/Content'));
 const Admin = loadable(() => import('@pages/Admin'));
-const AdminChannel = loadable(() => import('@pages/AdminChannel'));
+// const AdminChannel = loadable(() => import('@pages/AdminChannel'));
 const RootPage = loadable(() => import('@pages/RootPage'));
 
 const App = () => {
