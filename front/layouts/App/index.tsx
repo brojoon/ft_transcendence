@@ -39,8 +39,7 @@ const App = () => {
           <Route exact path="/two-factor" component={TwoFactor} />
           <Route exact path="/admin/:id" component={AdminChannel} />
           <Route exact path="/admin" component={Admin} />
-          <Route render={() => <Content />} />
-          {/* <Route path="/:content" component={Content} /> */}
+          <Route path="/:content" component={Content} />
         </Switch>
       </Scrollbars>
     </SocketContext>
