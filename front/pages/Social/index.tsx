@@ -4,8 +4,10 @@ import { Container } from './style';
 import { Route, Switch } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 
-const SocialSlider = loadable(() => import('@pages/SocialSlider'));
-const DirectMessage = loadable(() => import('@pages/DirectMessage'));
+import SocialSlider from '@pages/SocialSlider';
+import DirectMessage from '@pages/DirectMessage';
+// const SocialSlider = loadable(() => import('@pages/SocialSlider'));
+// const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
 const Social = () => {
   const isMobile = useMediaQuery({ maxWidth: 700 });

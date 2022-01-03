@@ -10,9 +10,12 @@ import config from '@utils/config';
 import { toast } from 'react-toastify';
 import loadable from '@loadable/component';
 
-const ChannelDiscover = loadable(() => import('@pages/ChannelDiscover'));
-const ChannelRoom = loadable(() => import('@pages/ChannelRoom'));
-const ChannelCreate = loadable(() => import('@pages/ChannelCreate'));
+import ChannelDiscover from '@pages/ChannelDiscover';
+import ChannelRoom from '@pages/ChannelRoom';
+import ChannelCreate from '@pages/ChannelCreate';
+// const ChannelDiscover = loadable(() => import('@pages/ChannelDiscover'));
+// const ChannelRoom = loadable(() => import('@pages/ChannelRoom'));
+// const ChannelCreate = loadable(() => import('@pages/ChannelCreate'));
 
 const Channel = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
