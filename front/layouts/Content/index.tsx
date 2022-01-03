@@ -13,14 +13,14 @@ import { toast } from 'react-toastify';
 const Home = loadable(() => import('@pages/Home'));
 const Social = loadable(() => import('@pages/Social'));
 const Channels = loadable(() => import('@pages/Channels'));
-// const Profile = loadable(() => import('@pages/Profile'));
+const Profile = loadable(() => import('@pages/Profile'));
 const Users = loadable(() => import('@pages/Users'));
 const Achievements = loadable(() => import('@pages/Achievements'));
 const Game = loadable(() => import('@pages/Game'));
 const ProfileSetting = loadable(() => import('@pages/ProfileSetting'));
 
 // import Home from '@pages/Home';
-import Profile from '@pages/Profile';
+// import Profile from '@pages/Profile';
 // import Channels from '@pages/Channels';
 // import Social from '@pages/Social';
 // import Users from '@pages/Users';
