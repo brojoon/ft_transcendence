@@ -5,9 +5,13 @@ import { Switch, Route } from 'react-router-dom';
 // import History from '@pages/History';
 import loadable from '@loadable/component';
 
-const Match = loadable(() => import('@pages/Match'));
-const History = loadable(() => import('@pages/History'));
-const PingPong = loadable(() => import('@pages/PingPong'));
+import Match from '@pages/Match';
+import History from '@pages/History';
+import PingPong from '@pages/PingPong';
+
+// const Match = loadable(() => import('@pages/Match'));
+// const History = loadable(() => import('@pages/History'));
+// const PingPong = loadable(() => import('@pages/PingPong'));
 
 const Game = () => {
   return (
