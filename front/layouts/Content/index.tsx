@@ -11,9 +11,13 @@ import { SocketContext } from '@store/socket';
 import { toast } from 'react-toastify';
 
 const Home = loadable(() => import('@pages/Home'));
-const Social = loadable(() => import('@pages/Social'));
-const Channels = loadable(() => import('@pages/Channels'));
-const Profile = loadable(() => import('@pages/Profile'));
+// const Social = loadable(() => import('@pages/Social'));
+// const Channels = loadable(() => import('@pages/Channels'));
+// const Profile = loadable(() => import('@pages/Profile'));
+import Profile from '@pages/Profile';
+import Channels from '@pages/Channels';
+import Social from '@pages/Social';
+
 const Users = loadable(() => import('@pages/Users'));
 const Achievements = loadable(() => import('@pages/Achievements'));
 const Game = loadable(() => import('@pages/Game'));
