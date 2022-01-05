@@ -65,6 +65,7 @@ const ChannelRoom = () => {
   const [channelLeaveModal, setChannelLeaveModal] = useState(false);
   const [channelInviteModal, setChannelInviteModal] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [messageRevalidate, setMessageRevalidate] = useState(false);
 
   const onClickMember = useCallback(
     (e, index) => {
@@ -172,14 +173,12 @@ const ChannelRoom = () => {
   );
 
   const onMessage = useCallback((data) => {
-    console.log('ch왔다!');
-    console.log(data);
     if (data.userId != myData?.userId) {
       mutateChat((prevchatData) => {
         prevchatData?.[0].unshift(data);
-        console.log('prevchatData', prevchatData);
         return prevchatData;
       }, false).then(() => {
+        setMessageRevalidate((prev) => !prev);
         if (scrollbarRef.current) {
           if (
             scrollbarRef.current.getScrollHeight() <
@@ -192,7 +191,7 @@ const ChannelRoom = () => {
         }
       });
     }
-  }, []);
+  }, [myData, scrollbarRef]);
 
   useEffect(() => {
     if (myChannelList) {

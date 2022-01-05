@@ -21,6 +21,7 @@ const DirectMessage = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: userId } = useSWR<string>(`/api/dms/findDmUser/${id}`, fetcher);
   const { data: myDMList } = useSWR<IDmList[]>(`/api/dms/dmlist`, fetcher);
+  const [messageRevalidate, setMessageRevalidate] = useState(false);
 
   // const { data: chatData, mutate: mutateChat } = useSWR<IChatList[]>(
   //   `/api/dms/getAllMessageUseDmId/${id}`,
@@ -85,15 +86,13 @@ const DirectMessage = () => {
   }, [chat]);
 
   const onMessage = useCallback((data) => {
-    console.log(data);
-    console.log('dm왔다!');
     if (data.userId1 != myData?.userId) {
       mutateChat((prevchatData) => {
         prevchatData?.[0].unshift(data);
-        console.log('prevchatData', prevchatData);
 
         return prevchatData;
       }, false).then(() => {
+        setMessageRevalidate((prev) => !prev);
         if (scrollbarRef.current) {
           if (
             scrollbarRef.current.getScrollHeight() <
