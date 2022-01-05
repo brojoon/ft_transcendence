@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import getSocket from '@utils/useSocket';
 import { useHistory } from 'react-router-dom';
@@ -8,6 +8,7 @@ import fetcher from '@utils/fetcher';
 import useSWR from 'swr';
 import { MatchContainer } from './style';
 import { toast } from 'react-toastify';
+import { SocketContext } from '@store/socket';
 
 const option = {
   // headers: {
@@ -18,9 +19,26 @@ const option = {
 
 const Match = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
+  const { onGameList } = useContext(SocketContext);
 
   const history = useHistory();
   const socket = getSocket();
+
+  useEffect(() => {
+    if (onGameList && myData) {
+      if (onGameList[myData.userId]) {
+        history.push('/home');
+        toast.error('Already playing game', {
+          autoClose: 2000,
+          position: toast.POSITION.TOP_RIGHT,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          theme: 'colored',
+        });
+      }
+    }
+  }, [onGameList, myData]);
 
   useEffect(() => {
     if (myData) {

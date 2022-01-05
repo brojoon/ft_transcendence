@@ -24,13 +24,10 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef, setSize, isReachi
   const onScroll = useCallback(
     (values) => {
       if (values.scrollTop === 0 && !isReachingEnd) {
-        console.log('가장 위');
         setSize((prevSize) => {
-          console.log(prevSize);
           return prevSize + 1;
         }).then(() => {
           if (scrollbarRef?.current) {
-            console.log('가져오기!');
             scrollbarRef.current?.scrollTop(
               scrollbarRef.current?.getScrollHeight() - values.scrollHeight,
             );
@@ -51,9 +48,9 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef, setSize, isReachi
         onScrollFrame={onScroll}
         renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
       >
-        {Object.entries(chatSections).map(([date, chats]) => {
+        {Object.entries(chatSections).map(([date, chats], index) => {
           return (
-            <div key={date}>
+            <div key={index}>
               <StickyHeader>
                 <button>{date}</button>
               </StickyHeader>
@@ -64,7 +61,7 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef, setSize, isReachi
                 });
                 if (!isblock) {
                   return (
-                    <div className="chat-container" key={chat.message + index}>
+                    <div className="chat-container" key={index}>
                       <div className="profile-container ">
                         {alluser?.map((user) => {
                           if (user.userId === chat.userId) {

@@ -70,7 +70,7 @@ const NickNameChangeField = () => {
       <TextField
         value={changeNickname}
         onChange={onChangeNickname}
-        onKeyPress={onKeyDownNickname}
+        onKeyUp={onKeyDownNickname}
         fullWidth
         label="nickname"
         id="fullWidth"

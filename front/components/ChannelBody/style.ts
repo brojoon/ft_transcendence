@@ -1,5 +1,8 @@
 import styled from '@emotion/styled';
 import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import Typography from '@mui/material/Typography';
+
 
 export const ChannelBodyContainer = styled(Box)`
 	background-color: #121212;
@@ -9,16 +12,6 @@ export const ChannelBodyContainer = styled(Box)`
 
 	& .grid-container {
 		width: 100%;
-	}
-
-	& .card {
-		background-color: #1e1e1e;
-		color: white;
-	}
-
-	& .channel-name {
-		display:flex;
-		justify-content: space-between;
 	}
 `;
 
@@ -32,3 +25,15 @@ export const ScrollbarColor = styled.div`
 		background-color: white;
 	}
 `;
+
+export const ChannelCard = styled(Card) <{ ismobile: boolean }>`
+	background-color: #1e1e1e;
+	width: ${(props) => { return props.ismobile ? '95%' : '100%' }};
+	color: white;
+`;
+
+export const ChannelName = styled(Typography)`
+	display:flex;
+	justify-content: space-between;
+`;
+

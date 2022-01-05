@@ -1,14 +1,6 @@
 import React, { useEffect, useContext } from 'react';
 import LeftSideBar from '@components/LeftSideBar';
 import loadable from '@loadable/component';
-// import Achievements from '@pages/Achievements';
-// import Channels from '@pages/Channels';
-// import Social from '@pages/Social';
-// import Game from '@pages/Game';
-// import Home from '@pages/Home';
-// import Profile from '@pages/Profile';
-// import Users from '@pages/Users';
-// import ProfileSetting from '@pages/ProfileSetting';
 import { IUser, IAllUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import { Route, Switch, useHistory, Link } from 'react-router-dom';
@@ -26,6 +18,16 @@ const Users = loadable(() => import('@pages/Users'));
 const Achievements = loadable(() => import('@pages/Achievements'));
 const Game = loadable(() => import('@pages/Game'));
 const ProfileSetting = loadable(() => import('@pages/ProfileSetting'));
+
+// import Home from '@pages/Home';
+// import Profile from '@pages/Profile';
+// import Channels from '@pages/Channels';
+// import Social from '@pages/Social';
+// import Users from '@pages/Users';
+// import Achievements from '@pages/Achievements';
+// import Game from '@pages/Game';
+// import ProfileSetting from '@pages/ProfileSetting';
+
 
 const Content = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
@@ -46,8 +48,6 @@ const Content = () => {
   useEffect(() => {
     socket?.on('onGameList', (data: any) => {
       setOnGameList(data);
-      console.log(data);
-      console.log('onGameList !!!');
     });
     return () => {
       socket.off('onGameList');
@@ -57,8 +57,6 @@ const Content = () => {
   useEffect(() => {
     socket?.on('onlineList', (data: any) => {
       setOnlineList(data);
-      console.log(data);
-      console.log('onlineList !!!');
     });
 
     return () => {
@@ -79,7 +77,6 @@ const Content = () => {
 
   useEffect(() => {
     socket?.on('notice', (data: any) => {
-      console.log('notice', data);
       if (data.match === 3) {
         toast.info(`${data.username}가 게임을 신청 했습니다 DM을 확인해주세요..!`, {
           autoClose: 7000,

@@ -43,6 +43,7 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
     socket.to("all").emit('onlineList', Object.values(onlineMap));
     socket.join(`${data.userId}`);
     socket.emit('onGameList', onGameMap);
+    socket.to("all").emit('onGameList', onGameMap);
     data.Dms.forEach((dm) => {
       socket.join(`dm-${dm}`);
     });
