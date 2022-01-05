@@ -124,6 +124,7 @@ const DirectMessage = () => {
 
   useEffect(() => {
     socket?.on('dm', onMessage);
+    console.log('onMessage', onMessage);
     return () => {
       socket?.off('dm');
     };

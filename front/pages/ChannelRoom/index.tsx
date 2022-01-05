@@ -175,8 +175,11 @@ const ChannelRoom = () => {
   const onMessage = useCallback((data) => {
     if (data.userId != myData?.userId) {
       mutateChat((prevchatData) => {
-        prevchatData?.[0].unshift(data);
-        return prevchatData;
+        prevchatData?.[0].unshift({
+          userId: data.userId,
+          message: data.msg,
+          updatedAt: data.createdAt,
+        });
       }, false).then(() => {
         setMessageRevalidate((prev) => !prev);
         if (scrollbarRef.current) {
@@ -278,6 +281,7 @@ const ChannelRoom = () => {
 
   useEffect(() => {
     socket?.on('ch', onMessage);
+    console.log('onMessage', onMessage);
     return () => {
       socket?.off('ch', onMessage);
     };
