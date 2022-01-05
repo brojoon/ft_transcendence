@@ -180,6 +180,7 @@ const ChannelRoom = () => {
           message: data.msg,
           updatedAt: data.createdAt,
         });
+          return prevchatData;
       }, false).then(() => {
         setMessageRevalidate((prev) => !prev);
         if (scrollbarRef.current) {
