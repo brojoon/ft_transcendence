@@ -74,6 +74,7 @@ export class DmsService {
       newDmcontent.userId2 = userId2;
       newDmcontent.message = process.env.DB;
       await this.dmcontentRepository.save(newDmcontent);
+      this.eventsGateway.server.socketsJoin(`dm-${result.id}`);
       return (newDm.id);   
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
@@ -226,6 +227,7 @@ export class DmsService {
         send.message = "대국신청";
         send.historyId = await this.getHistoryId(userId1, userId2);
         let user = await this.usersRepository.findOne({userId:userId2});
+        
         this.eventsGateway.server.to(`${userId2}`).emit('notice', {match: match, gameId:send.historyId, username:user.username}); 
       } else {
         send.message = message;
@@ -301,6 +303,7 @@ export class DmsService {
         .take(20)
         .skip(20 * (page - 1))
         .getMany();
+      
       return (result);
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
@@ -326,6 +329,7 @@ export class DmsService {
         .take(20)
         .skip(20 * (page - 1))
         .getMany();
+      this.eventsGateway.server.socketsJoin(`dm-${dmId}`);
       return res; 
     } catch (error) {
       if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
