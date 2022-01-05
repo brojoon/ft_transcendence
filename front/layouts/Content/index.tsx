@@ -48,8 +48,6 @@ const Content = () => {
   useEffect(() => {
     socket?.on('onGameList', (data: any) => {
       setOnGameList(data);
-      console.log(data);
-      console.log('onGameList !!!');
     });
     return () => {
       socket.off('onGameList');

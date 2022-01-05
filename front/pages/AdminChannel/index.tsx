@@ -93,7 +93,6 @@ const AdminChannel = () => {
       if (selectedIndex === index) {
         setSelectedIndex(-1);
       } else {
-        console.log(index);
         setSelectedIndex(index);
       }
     },
