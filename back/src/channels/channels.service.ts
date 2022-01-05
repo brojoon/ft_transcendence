@@ -103,6 +103,7 @@ export class ChannelsService {
     newMember.userId = userId;
     newMember.channelId = channelId;
     await this.chatmemberRepository.save(newMember);
+    this.eventsGateway.server.socketsJoin(`channel-${channelId}`);
     this.eventsGateway.server.to(`channel-${channelId}`).emit('join', null);
     return channelId;
   }
@@ -132,6 +133,7 @@ export class ChannelsService {
       newMember.userId = visitorId;
       newMember.channelId = channelId;
       await this.chatmemberRepository.save(newMember);
+      //
       this.eventsGateway.server.to(`channel-${channelId}`).emit('join', null);
       return channelId;
   }
