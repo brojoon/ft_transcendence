@@ -1,9 +1,7 @@
-import React, { useCallback, useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import React, { useCallback } from 'react';
 import { Container, LoginButton } from './style';
 
 const LogIn = () => {
-  const history = useHistory();
 
   // const onClickKakaoLogin = useCallback(() => {
   //   window.location.href = '/api/auth/kakao';

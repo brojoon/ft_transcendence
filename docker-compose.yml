@@ -42,7 +42,6 @@ services:
     restart: always
     ports:
       - "3090:3090"
-      - "3096:3096"
     depends_on:
       - back
     networks:
