@@ -74,6 +74,7 @@ export class DmsService {
       newDmcontent.userId2 = userId2;
       newDmcontent.message = process.env.DB;
       await this.dmcontentRepository.save(newDmcontent);
+      this.eventsGateway.server.socketsJoin(`dm-${result.id}`);
       return (newDm.id);
     } catch (error) {
       if (error.errno !== undefined || error.response.statusCode !== 404)
@@ -326,6 +327,7 @@ export class DmsService {
         .take(20)
         .skip(20 * (page - 1))
         .getMany();
+      this.eventsGateway.server.socketsJoin(`dm-${dmId}`);
       return res;
     } catch (error) {
       if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
