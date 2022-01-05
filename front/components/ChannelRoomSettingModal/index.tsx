@@ -67,9 +67,67 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
             pauseOnHover: true,
             theme: 'colored',
           });
-          MutateAllChannelList();
-          channelListMutate();
-          setName('');
+          if (visibility !== '') {
+            axios
+              .get(`/api/channels/updateChannelType/${id}/${visibility}`, config)
+              .then(() => {
+                if (parseInt(visibility) === 1) {
+                  axios
+                    .post(
+                      `/api/channels/updateChannelPassword/${id}`,
+                      {
+                        password: PasswordValues.password,
+                      },
+                      config,
+                    )
+                    .then(() => {
+                      toast.success('Successfully changed channel password', {
+                        autoClose: 4000,
+                        position: toast.POSITION.TOP_RIGHT,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        theme: 'colored',
+                      });
+                      MutateAllChannelList();
+                      channelListMutate();
+                      setName('');
+                      setVisibility('0');
+                      setPasswordValues({
+                        password: '',
+                        showPassword: false,
+                      });
+                    })
+                    .catch(() => {
+                      MutateAllChannelList();
+                      channelListMutate();
+                      setName('');
+                      setVisibility('0');
+                      setPasswordValues({
+                        password: '',
+                        showPassword: false,
+                      });
+                      setCreateError(1);
+                    });
+                } else {
+                  MutateAllChannelList();
+                  channelListMutate();
+                  setName('');
+                  setVisibility('0');
+                  setPasswordValues({
+                    password: '',
+                    showPassword: false,
+                  });
+                }
+              })
+              .catch(() => {
+                MutateAllChannelList();
+                channelListMutate();
+                setName('');
+                setVisibility('0');
+                setCreateError(1);
+              });
+          }
         })
         .catch((error) => {
           setCreateError(1);
@@ -79,55 +137,6 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
             password: '',
             showPassword: false,
           });
-        });
-    }
-    if (visibility !== '') {
-      axios
-        .get(`/api/channels/updateChannelType/${id}/${visibility}`, config)
-        .then(() => {
-          if (parseInt(visibility) === 1) {
-            axios
-              .post(
-                `/api/channels/updateChannelPassword/${id}`,
-                {
-                  password: PasswordValues.password,
-                },
-                config,
-              )
-              .then(() => {
-                toast.success('Successfully changed channel password', {
-                  autoClose: 4000,
-                  position: toast.POSITION.TOP_RIGHT,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  theme: 'colored',
-                });
-                MutateAllChannelList();
-                channelListMutate();
-                setName('');
-                setVisibility('0');
-                setPasswordValues({
-                  password: '',
-                  showPassword: false,
-                });
-              })
-              .catch(() => {
-                setCreateError(1);
-              });
-          } else {
-            MutateAllChannelList();
-            channelListMutate();
-            setName('');
-            setVisibility('0');
-            setPasswordValues({
-              password: '',
-              showPassword: false,
-            });
-          }
-        })
-        .catch(() => {
-          setCreateError(1);
         });
     }
   }, [name, visibility, PasswordValues]);
