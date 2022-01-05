@@ -11,7 +11,7 @@ const LogIn = () => {
   // }
 
   const onClickGoogleLogin = useCallback(() => {
-    window.location.href = '/api/auth/google';
+    window.location.href = '/api/auth/kakao';
   }, []);
 
   const onClick42Login = useCallback(() => {
@@ -22,7 +22,7 @@ const LogIn = () => {
       <h1>ft_transcendence</h1>
       <div>
         <LoginButton onClick={onClickGoogleLogin} variant="contained" size="large">
-          GooGle
+          KaKaO
         </LoginButton>
         <LoginButton onClick={onClick42Login} variant="contained" size="large">
           42
