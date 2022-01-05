@@ -110,6 +110,7 @@ const ChannelRoom = () => {
   const onSubmitChat = useCallback(() => {
     if (chat?.trim() && chatData) {
       mutateChat((prevChatData) => {
+        console.log('new Date', new Date());
         prevChatData?.[0].unshift({
           userId: myData?.userId,
           message: chat,
