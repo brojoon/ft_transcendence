@@ -1,11 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
-import getSocket from '@utils/useSocket';
 import { useHistory } from 'react-router-dom';
 import CircularProgress from '@mui/material/CircularProgress';
-import { IUser } from '@typings/db';
-import fetcher from '@utils/fetcher';
-import useSWR from 'swr';
 import { MatchContainer } from './style';
 
 const RootPage = () => {

@@ -6,7 +6,7 @@ let socket: any = undefined;
 const getSocket = (() => {
 
 	if (!socket) {
-		socket = io.connect('http://34.82.79.134:8081');
+		socket = io.connect('http://13.209.169.93:8081');
 	}
 
 	return socket;

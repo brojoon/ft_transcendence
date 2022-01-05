@@ -19,6 +19,16 @@ const Achievements = loadable(() => import('@pages/Achievements'));
 const Game = loadable(() => import('@pages/Game'));
 const ProfileSetting = loadable(() => import('@pages/ProfileSetting'));
 
+// import Home from '@pages/Home';
+// import Profile from '@pages/Profile';
+// import Channels from '@pages/Channels';
+// import Social from '@pages/Social';
+// import Users from '@pages/Users';
+// import Achievements from '@pages/Achievements';
+// import Game from '@pages/Game';
+// import ProfileSetting from '@pages/ProfileSetting';
+
+
 const Content = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { data: DMList } = useSWR<number[]>('/api/dms/dmlistOnlyIdJustArray', fetcher);

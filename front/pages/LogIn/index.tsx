@@ -1,20 +1,18 @@
-import React, { useCallback, useState } from 'react';
-import { Redirect, useHistory } from 'react-router-dom';
+import React, { useCallback } from 'react';
 import { Container, LoginButton } from './style';
 
 const LogIn = () => {
-  const history = useHistory();
 
-  const onClickKakaoLogin = useCallback(() => {
-    window.location.href = '/api/auth/kakao';
-  }, []);
+  // const onClickKakaoLogin = useCallback(() => {
+  //   window.location.href = 'http://42transcendence.ml/api/auth/kakao';
+  // }, []);
 
   const onClickGoogleLogin = useCallback(() => {
-    window.location.href = '/api/auth/google';
+    window.location.href = 'http://42transcendence.ml/api/auth/google';
   }, []);
 
   const onClick42Login = useCallback(() => {
-    window.location.href = '/api/auth/42';
+    window.location.href = 'http://42transcendence.ml/api/auth/42';
   }, []);
 
   return (
@@ -24,9 +22,9 @@ const LogIn = () => {
         <LoginButton onClick={onClickGoogleLogin} variant="contained" size="large">
           GooGle
         </LoginButton>
-        <LoginButton onClick={onClickKakaoLogin} variant="contained" size="large">
+        {/* <LoginButton onClick={onClickKakaoLogin} variant="contained" size="large">
           Kakao
-        </LoginButton>
+        </LoginButton> */}
         <LoginButton onClick={onClick42Login} variant="contained" size="large">
           42
         </LoginButton>
