@@ -1,4 +1,2 @@
 #!/bin/sh
-chmod 400 key
-ssh -i key ydngjink1234@34.82.79.134
-
+ssh -i ~/remote_sh/mykey ubuntu@193.123.238.90
