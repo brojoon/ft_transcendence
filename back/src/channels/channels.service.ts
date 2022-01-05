@@ -81,6 +81,7 @@ export class ChannelsService {
     newMember.channelId = channel.id;
     newMember.auth = 2;
     await this.chatmemberRepository.save(newMember);
+    this.eventsGateway.server.socketsJoin(`channel-${newMember.channelId}`);
     return channel.id;
   }
 
