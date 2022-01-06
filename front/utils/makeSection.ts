@@ -7,7 +7,7 @@ export function makeSectionDM(chatList: IChatList[]) {
 	const sections: { [key: string]: IChatList[] } = {};
 	chatList.forEach((chat) => {
 		let monthData = dayjs(chat.createdAt).subtract(9, "hour").format('YYYY-MM-DD');
-		monthData += ' ' + days[dayjs(chat.createdAt).day()];
+		monthData += ' ' + days[dayjs(chat.createdAt).subtract(9, "hour").day()];
 		if (Array.isArray(sections[monthData]))
 			sections[monthData].push(chat);
 		else
@@ -19,10 +19,8 @@ export function makeSectionDM(chatList: IChatList[]) {
 export function makeSectionChannel(chatList: IChannelChatList[]) {
 	const sections: { [key: string]: IChannelChatList[] } = {};
 	chatList.forEach((chat) => {
-		console.log(chat);
 		let monthData = dayjs(chat.updatedAt).subtract(9, "hour").format('YYYY-MM-DD');
 		monthData += ' ' + days[dayjs(chat.updatedAt).subtract(9, "hour").day()];
-		console.log('monthData', monthData);
 		if (Array.isArray(sections[monthData]))
 			sections[monthData].push(chat);
 		else
