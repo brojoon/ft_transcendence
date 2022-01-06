@@ -4,13 +4,15 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from 'src/entities/Users';
 import { Connect } from 'src/entities/Connect';
+import { EventsModule } from 'src/events/events.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Users, Connect])
+    TypeOrmModule.forFeature([Users, Connect]),
+    EventsModule
   ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService]
 })
-export class UsersModule {}
+export class UsersModule { }
