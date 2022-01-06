@@ -17,6 +17,8 @@ import { Container } from './style';
 import getSocket from '@utils/useSocket';
 import { SocketContext } from '@store/socket';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import config from '@utils/config';
 
 const Home = loadable(() => import('@pages/Home'));
 const Social = loadable(() => import('@pages/Social'));
@@ -64,7 +66,14 @@ const Content = () => {
 
   useEffect(() => {
     socket?.on('isSiteBan', () => {
-      history.push('/login');
+      axios.get('/api/auth/logout', config)
+      .then(() => {
+        getSocket().disconnect();
+        history.push('/login');
+      }).catch((error) => {
+        getSocket().disconnect();
+        history.push('/login');
+      })
     });
 
     return () => {
@@ -85,7 +94,6 @@ const Content = () => {
 
   useEffect(() => {
     socket?.on('notice', (data: any) => {
-      console.log('notice', data);
       if (data.match === 3) {
         toast.info(`${data.username}가 게임을 신청 했습니다 DM을 확인해주세요..!`, {
           autoClose: 7000,
