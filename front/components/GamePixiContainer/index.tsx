@@ -121,7 +121,6 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player, setGameStartBtn }) =
   useEffect(() => {
     const keyDownHandler = (e: any) => {
       // 잠시 이걸 이용
-      console.log('player', player);
       if (e.keyCode === 87 && player !== '') {
         if (player === 'playerOne') socket.emit('player_one_up', { game: id });
         else if (player === 'playerTwo') socket.emit('player_two_up', { game: id });

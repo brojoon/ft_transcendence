@@ -46,8 +46,6 @@ const Content = () => {
   useEffect(() => {
     socket?.on('onGameList', (data: any) => {
       setOnGameList(data);
-      console.log(data);
-      console.log('onGameList !!!');
     });
     return () => {
       socket.off('onGameList');
@@ -57,12 +55,20 @@ const Content = () => {
   useEffect(() => {
     socket?.on('onlineList', (data: any) => {
       setOnlineList(data);
-      console.log(data);
-      console.log('onlineList !!!');
     });
 
     return () => {
       socket.off('onlineList');
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('isSiteBan', () => {
+      history.push('/login');
+    });
+
+    return () => {
+      socket.off('isSiteBan');
     };
   }, [socket]);
 

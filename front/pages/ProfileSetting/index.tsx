@@ -20,7 +20,6 @@ const ProfileSetting = () => {
   const [imgUrl, setImgUrl] = useState('');
 
   const onChangeFile = (event: any) => {
-    console.log('onChangeFile', event.target.files);
     setSelectedFile(event.target.files);
   };
 
@@ -32,12 +31,6 @@ const ProfileSetting = () => {
   const onClickUploadBtn = useCallback(() => {
     if (!selectedFile || !selectedFile[0]) return;
     const formData = new FormData();
-
-    console.log('selectedFile', selectedFile[0], selectedFile[0]?.name);
-    console.log(`${myData?.userId}` + '.jpg');
-    console.log(
-      `${myData?.userId}` + selectedFile[0].name.slice(selectedFile[0]?.name?.indexOf('.')),
-    );
 
     formData.append(
       'image',

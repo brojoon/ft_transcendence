@@ -97,7 +97,6 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         history.push(`/game/ping-pong/${res.data}`);
       })
       .catch((error) => {
-        console.log(error.response.data.data.message);
         if (error.response.data.data.message === 'Block 상태') {
           toast.error(`You were blocked by ${UserData.username}`, {
             autoClose: 4000,
