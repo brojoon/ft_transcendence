@@ -1,5 +1,5 @@
 import ChatBox from '@components/ChatBox';
-import { IChannelChatList, IChannelList, IMemberList, IUser } from '@typings/db';
+import { IChannelChatList, IChannelList, IMemberList, IUser, IAllUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState, VFC } from 'react';
@@ -24,6 +24,7 @@ import dayjs from 'dayjs';
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
+  const { data: allUser, mutate: mutateAllUser } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
   const { data: ChannelMembers, mutate: mutateChannelMembers } = useSWR<IMemberList[]>(
     `/api/channels/userList/${id}`,
     fetcher,
@@ -225,7 +226,10 @@ const ChannelRoom = () => {
   }, [myChannelList]);
 
   useEffect(() => {
-    socket?.on('join', mutateChannelMembers);
+    socket?.on('join', () => {
+      mutateChannelMembers();
+      mutateAllUser();
+    });
     return () => {
       socket?.off('join');
     };
