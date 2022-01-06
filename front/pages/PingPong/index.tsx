@@ -202,6 +202,16 @@ const PingPong = () => {
       socket.off('ready');
     };
   }, []);
+  
+  useEffect(() => {
+    socket.on('gameMapCheck', (data: any) => {
+      setMapSelect(data.game_map);
+    });
+    return () => {
+      socket.off('gameMapCheck');
+
+    }
+  }, [socket])
 
   const readyPlayer1 = useCallback(() => {
     if (player === 'playerOne' && player1Ready === 0) {
