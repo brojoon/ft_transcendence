@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Users } from 'src/entities/Users';
 import { Repository } from 'typeorm';
 import { Connect } from 'src/entities/Connect';
+import { EventsGateway } from 'src/events/events.gateway';
 
 @Injectable()
 export class UsersService {
   constructor(
       @InjectRepository(Users) private usersRepository: Repository<Users>,
       @InjectRepository(Connect) private connectRepository: Repository<Connect>,
+      private eventsGateway:EventsGateway
   ) { }
 
   //test용
@@ -356,8 +358,10 @@ export class UsersService {
         .update()
         .set({ ban: bool })
         .where('userId = :userId', {userId : banId})
-        .execute()    
-      return (true);       
+        .execute()  
+      if (bool === false)
+        this.eventsGateway.server.to(`${userId}`).emit('isSiteBan', null);
+      return (true);    
     } catch (error) {
       if (error.errno !== undefined || (error.response.statusCode !== 403 && error.response.statusCode !== 404))
         throw new BadRequestException("addAndRemoveBan 실패");
