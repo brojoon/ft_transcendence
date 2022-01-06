@@ -9,6 +9,9 @@ import { Container } from './style';
 import getSocket from '@utils/useSocket';
 import { SocketContext } from '@store/socket';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import config from '@utils/config';
+
 
 const Home = loadable(() => import('@pages/Home'));
 const Social = loadable(() => import('@pages/Social'));
@@ -62,6 +65,22 @@ const Content = () => {
     return () => {
       socket.off('onlineList');
     };
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.on('isSiteBan', () => {
+      axios.get('/api/auth/logout', config)
+      .then(() => {
+        getSocket().disconnect();
+        history.push('/login');
+      }).catch((error) => {
+        getSocket().disconnect();
+        history.push('/login');
+      })
+    });
+    return () => {
+      socket.off('isSiteBan');
+    }
   }, [socket]);
 
   useEffect(() => {

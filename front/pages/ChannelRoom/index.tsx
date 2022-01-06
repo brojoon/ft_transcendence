@@ -260,7 +260,12 @@ const ChannelRoom = () => {
   }, [socket]);
 
   useEffect(() => {
-    socket?.on('ban', mutateChannelMembers);
+    socket?.on('ban', (data: any) => {
+      if (data === myData?.userId) {
+        history.push('/channels');
+      }
+      mutateChannelMembers();
+    });
     return () => {
       socket?.off('ban');
     };
