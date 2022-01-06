@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import { TwoFactorContainer } from './style';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const TwoFactor = () => {
   const history = useHistory();
@@ -15,7 +16,7 @@ const TwoFactor = () => {
         })
         .then(() => {
           toast.success('Successfully authenticated', {
-            autoClose: 4000,
+            autoClose: 2000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -24,11 +25,11 @@ const TwoFactor = () => {
           });
           setTimeout(() => {
             history.push('/home');
-          }, 4000);
+          }, 2000);
         })
         .catch((error) => {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 2000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,

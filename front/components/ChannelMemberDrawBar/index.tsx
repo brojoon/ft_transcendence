@@ -189,7 +189,6 @@ const ChannelMemberDrawBar: VFC<Props> = ({
                   });
                 }
               })}
-            ;
           </div>
         </Scrollbars>
         {isOwner && (
