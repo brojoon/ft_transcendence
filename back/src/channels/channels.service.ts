@@ -286,14 +286,14 @@ export class ChannelsService {
     banRegister.channelId = channelId;
     banRegister.userId = banId;
     await this.blockmemberRepository.save(banRegister);
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', banId);
   }
 
-  async removeBan(channelId:number, adminId:string, banId:string){
+  async removeBan(channelId:number, adminId:string, banId:string){//어짜피 이 api를 프론트에서 쓰지 않고 있음
     if (await this.checkAdmin(channelId, adminId) == false)
       throw new ForbiddenException("소유주나 관리자만 밴을 풀수있음");
     await this.blockmemberRepository.delete({userId:banId});
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', banId);
   }
 
   async kickUser(channelId:number, adminId:string, kickId:string) {
@@ -307,7 +307,7 @@ export class ChannelsService {
     if (await this.checkAdmin(channelId, adminId) == false)
       throw new ForbiddenException("권한 없음");
     await this.chatmemberRepository.delete({channelId, userId:kickId});
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', kickId);
   }
 
   async updateChannel(channelId:number, userId:string, channelName:string, channelType:number, channelPassword:string){
@@ -486,7 +486,7 @@ export class ChannelsService {
     newBan.channelId = channelId;
     await this.blockmemberRepository.save(newBan);
     await this.chatmemberRepository.delete({userId:banId, channelId});
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', banId);
   }
 
   async siteOwnerChannelUserBanRemove(channelId:number, userId:string, banId:string){
@@ -506,7 +506,7 @@ export class ChannelsService {
       throw new ForbiddenException("소유자를 킥할수는 없음")
     }
     await this.chatmemberRepository.delete({userId:banId, channelId});
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', banId);
   }
 
 }
