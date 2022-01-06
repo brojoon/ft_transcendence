@@ -149,6 +149,12 @@ const DirectMessage = () => {
   }, [socket, onMessage]);
 
   useEffect(() => {
+    setTimeout(() => {
+      scrollbarRef.current?.scrollToBottom();
+    }, 50);
+  }, [socket]);
+
+  useEffect(() => {
     if (chatData?.length === 1) {
       scrollbarRef.current?.scrollToBottom();
     }
