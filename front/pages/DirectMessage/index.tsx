@@ -16,6 +16,7 @@ import { DirectMessageContainer } from './style';
 import { toast } from 'react-toastify';
 import { useMediaQuery } from 'react-responsive';
 import DMLeftDrawer from '@components/DMLeftDrawer';
+import dayjs from 'dayjs';
 
 const DirectMessage = () => {
   const [chat, setChat] = useState('');
@@ -57,8 +58,8 @@ const DirectMessage = () => {
           userId2: userId,
           message: chat,
           match: 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: dayjs(new Date()).add(9, "hour"),
+          updatedAt: dayjs(new Date()).add(9, "hour"),
           historyId: 0,
         });
         return prevChatData;

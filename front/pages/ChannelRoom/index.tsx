@@ -19,6 +19,7 @@ import { ChannelRoomContainer } from './style';
 import { toast } from 'react-toastify';
 import ChannelLeftDrawBar from '@components/ChannelLeftDrawBar';
 import { useMediaQuery } from 'react-responsive';
+import dayjs from 'dayjs';
 
 const ChannelRoom = () => {
   const { id } = useParams<{ id: string }>();
@@ -53,6 +54,8 @@ const ChannelRoom = () => {
     (index) => `/api/channels/20MessageList/${id}/${index * 19}`,
     fetcher,
   );
+
+  console.log('chatData: ',chatData);
 
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingEnd =
@@ -114,7 +117,7 @@ const ChannelRoom = () => {
         prevChatData?.[0].unshift({
           userId: myData?.userId,
           message: chat,
-          updatedAt: new Date(),
+          updatedAt: dayjs(new Date()).add(9, "hour"),
         });
         return prevChatData;
       }, false);
@@ -177,8 +180,10 @@ const ChannelRoom = () => {
 
   const onMessage = useCallback(
     (data) => {
+      console.log('data', data);
       if (data.userId != myData?.userId) {
         mutateChat((prevchatData) => {
+          console.log('prevChat: ', prevchatData);
           prevchatData?.[0].unshift({
             userId: data.userId,
             message: data.msg,

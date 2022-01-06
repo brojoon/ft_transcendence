@@ -25,15 +25,15 @@ export interface IChatList {
   userId2: string | undefined,
   message: string,
   match: number,
-  createdAt: Date,
-  updatedAt: Date,
+  createdAt: Date | any,
+  updatedAt: Date | any,
   historyId: number,
 }
 
 export interface IChannelChatList {
   userId: string | undefined,
   message: string,
-  updatedAt: Date,
+  updatedAt: Date | any,
 }
 
 export interface IChannelList {

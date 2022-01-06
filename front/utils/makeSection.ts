@@ -21,7 +21,7 @@ export function makeSectionChannel(chatList: IChannelChatList[]) {
 	chatList.forEach((chat) => {
 		console.log(chat);
 		let monthData = dayjs(chat.updatedAt).subtract(9, "hour").format('YYYY-MM-DD');
-		monthData += ' ' + days[dayjs(chat.updatedAt).day()];
+		monthData += ' ' + days[dayjs(chat.updatedAt).subtract(9, "hour").day()];
 		console.log('monthData', monthData);
 		if (Array.isArray(sections[monthData]))
 			sections[monthData].push(chat);
