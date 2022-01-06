@@ -101,12 +101,12 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           if (num === 0) {
             await this.historyRepository.update({ id: gameId }, { state: 2 })
             await this.dmcontentRepository.update({ historyId: gameId }, { match: 2 })
-            // let dm = await this.dmcontentRepository.findOne({historyId: gameId});
-            // this.server.to(`dm-${dm.dmId}`).emit('dm', null); 
+            socket.to(`game-${gameId}`).emit("end", null);
           }
         } else if (history.state === 1 && onGameMap_gameId[gameId] === undefined) {
           await this.historyRepository.update({ id: gameId }, { state: 2 })
           await this.dmcontentRepository.update({ historyId: gameId }, { match: 2 })
+          socket.to(`game-${gameId}`).emit("end", null);
         }
       }
       delete onlineMap[socket.id];
@@ -207,10 +207,12 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
         if (num === 0) {
           await this.historyRepository.update({ id: data.gameId }, { state: 2 })
           await this.dmcontentRepository.update({ historyId: data.gameId }, { match: 2 })
+          socket.to(`game-${data.gameId}`).emit("end", null);
         }
       } else if (history.state === 1 && onGameMap_gameId[data.gameId] === undefined) {
         await this.historyRepository.update({ id: data.gameId }, { state: 2 })
         await this.dmcontentRepository.update({ historyId: data.gameId }, { match: 2 })
+        socket.to(`game-${data.gameId}`).emit("end", null);
       }
     }
     // onGameMap //
