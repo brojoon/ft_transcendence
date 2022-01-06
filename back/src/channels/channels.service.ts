@@ -283,7 +283,7 @@ export class ChannelsService {
     banRegister.channelId = channelId;
     banRegister.userId = banId;
     await this.blockmemberRepository.save(banRegister);
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', banId);
   }
 
   async removeBan(channelId:number, adminId:string, banId:string){
@@ -304,7 +304,7 @@ export class ChannelsService {
     if (await this.checkAdmin(channelId, adminId) == false)
       throw new ForbiddenException("권한 없음");
     await this.chatmemberRepository.delete({channelId, userId:kickId});
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', kickId);
   }
 
   async updateChannel(channelId:number, userId:string, channelName:string, channelType:number, channelPassword:string){
@@ -483,7 +483,7 @@ export class ChannelsService {
     newBan.channelId = channelId;
     await this.blockmemberRepository.save(newBan);
     await this.chatmemberRepository.delete({userId:banId, channelId});
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', banId);
   }
 
   async siteOwnerChannelUserBanRemove(channelId:number, userId:string, banId:string){
@@ -503,7 +503,7 @@ export class ChannelsService {
       throw new ForbiddenException("소유자를 킥할수는 없음")
     }
     await this.chatmemberRepository.delete({userId:banId, channelId});
-    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', null);
+    this.eventsGateway.server.to(`channel-${channelId}`).emit('ban', banId);
   }
 
 }
