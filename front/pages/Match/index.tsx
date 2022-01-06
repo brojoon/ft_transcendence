@@ -24,6 +24,10 @@ const Match = () => {
   const history = useHistory();
   const socket = getSocket();
 
+  const isFindGame = setTimeout(() => {
+    history.push('/home');
+  }, 3000);
+
   useEffect(() => {
     if (onGameList && myData) {
       if (onGameList[myData.userId]) {
@@ -51,8 +55,9 @@ const Match = () => {
           userId: myData?.userId,
         });
       }
+      clearTimeout(isFindGame);
     };
-  }, [myData, socket]);
+  }, [myData, socket, isFindGame]);
 
   const Matching = useCallback(
     async (matched: any) => {
