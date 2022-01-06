@@ -5,10 +5,17 @@ import Scrollbars from 'react-custom-scrollbars';
 import SocketContext from '@store/socket';
 import { ScrollbarColor } from './style';
 import { ToastContainer } from 'react-toastify';
-import axios from 'axios';
+import 'react-toastify/dist/ReactToastify.css';
 import 'regenerator-runtime';
 
-const Home = loadable(() => import('@pages/Home'));
+// import LogIn from '@pages/LogIn';
+// import TwoFactor from '@pages/TwoFactor';
+// import FirstStep from '@pages/FirstStep';
+// import Content from '@layouts/Content';
+// import Admin from '@pages/Admin';
+// import AdminChannel from '@pages/AdminChannel';
+// import RootPage from '@pages/RootPage';
+
 const LogIn = loadable(() => import('@pages/LogIn'));
 const TwoFactor = loadable(() => import('@pages/TwoFactor'));
 const FirstStep = loadable(() => import('@pages/FirstStep'));
@@ -26,8 +33,7 @@ const App = () => {
         renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}
       >
         <Switch>
-          <Redirect exact path="/" to="/RootPage" />
-          <Route exact path="/RootPage" component={RootPage} />
+          <Route exact path="/" component={RootPage} />
           <Route exact path="/login" component={LogIn} />
           <Route exact path="/login/first-step" component={FirstStep} />
           <Route exact path="/two-factor" component={TwoFactor} />

@@ -10,7 +10,7 @@ import { MuiList, UserAvatar, ScrollbarColor } from './style';
 import { SocketContext } from '@store/socket';
 
 const BlockList = () => {
-  const { data: users } = useSWR<IAllUser[], any[]>('/api/users/alluser', fetcher);
+  const { data: users } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: blockList } = useSWR<IBlockList[]>(`/api/friend/blocklist`, fetcher);
   const { onlineList, onGameList } = useContext(SocketContext);
   let isState;
@@ -18,7 +18,7 @@ const BlockList = () => {
   return (
     <Scrollbars renderThumbVertical={({ style, ...props }) => <ScrollbarColor {...props} />}>
       <MuiList>
-        {blockList?.map((blockUser: any) => {
+        {blockList?.map((blockUser: IBlockList) => {
           return users?.map((user) => {
             if (user?.userId === blockUser?.userId2) {
               isState = 0;

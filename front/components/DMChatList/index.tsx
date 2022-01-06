@@ -1,4 +1,4 @@
-import React, { useCallback, RefObject, VFC, useEffect } from 'react';
+import React, { useCallback, RefObject, VFC, useEffect, useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import { IChatList, IAllUser, IUser } from '@typings/db';
 import fetcher from '@utils/fetcher';
@@ -8,6 +8,7 @@ import Button from '@mui/material/Button';
 import { DMChatListContainer, StickyHeader, ScrollbarColor } from './style';
 import { makeSectionDM } from '@utils/makeSection';
 import { Link } from 'react-router-dom';
+import { SocketContext } from '@store/socket';
 
 interface Props {
   chatData: IChatList[][] | undefined;
@@ -19,17 +20,14 @@ interface Props {
 const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize }) => {
   const { data: alluser } = useSWR<IAllUser[]>('/api/users/alluser', fetcher);
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
-
+  const { onGameList } = useContext(SocketContext);
   const onScroll = useCallback(
     (values) => {
       if (values.scrollTop === 0 && !isReachingEnd) {
-        console.log('가장 위');
         setSize((prevSize) => {
-          console.log(prevSize);
           return prevSize + 1;
         }).then(() => {
           if (scrollbarRef?.current) {
-            console.log('가져오기!');
             scrollbarRef.current?.scrollTop(
               scrollbarRef.current?.getScrollHeight() - values.scrollHeight,
             );
@@ -42,7 +40,6 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
 
   const chatSections = makeSectionDM(chatData ? chatData.flat().reverse() : []);
   let username;
-  console.log(chatSections);
 
   return (
     <DMChatListContainer>
@@ -88,11 +85,17 @@ const DMChatList: VFC<Props> = ({ chatData, scrollbarRef, isReachingEnd, setSize
                           <div>{username}</div>
                           <p className="chat">{chat.message}</p>
                         </div>
-                        <Link to={`/game/ping-pong/${chat.historyId}`}>
-                          <Button className="challenge-join-btn" variant="contained">
+                        {onGameList && myData && onGameList[myData?.userId] ? (
+                          <Button className="challenge-join-block-btn" variant="contained" disabled>
                             JOIN
                           </Button>
-                        </Link>
+                        ) : (
+                          <Link to={`/game/ping-pong/${chat.historyId}`}>
+                            <Button className="challenge-join-btn" variant="contained">
+                              JOIN
+                            </Button>
+                          </Link>
+                        )}
                       </div>
                     )}
                     {chat.match === 2 && (

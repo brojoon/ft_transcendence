@@ -70,20 +70,6 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player, setGameStartBtn }) =
   const [player_two_y, setPlayTwoY] = useState(200);
   const history = useHistory();
 
-  const fetchDataFunc = async () => {
-    await axios.get(`/api/game/start/${id}`, option).catch((error) => {
-      history.push('./home');
-      toast.error(error.message, {
-        autoClose: 4000,
-        position: toast.POSITION.TOP_RIGHT,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        theme: 'colored',
-      });
-    });
-  };
-
   useEffect(() => {
     setGameStartBtn(true);
   }, []);
@@ -121,7 +107,7 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player, setGameStartBtn }) =
   useEffect(() => {
     const keyDownHandler = (e: any) => {
       // 잠시 이걸 이용
-      console.log('player', player);
+
       if (e.keyCode === 87 && player !== '') {
         if (player === 'playerOne') socket.emit('player_one_up', { game: id });
         else if (player === 'playerTwo') socket.emit('player_two_up', { game: id });
@@ -129,25 +115,6 @@ const GamePixiContainer: VFC<Props> = ({ mapSelect, player, setGameStartBtn }) =
         if (player === 'playerOne') socket.emit('player_one_down', { game: id });
         else if (player === 'playerTwo') socket.emit('player_two_down', { game: id });
       }
-      // if (e.keyCode === 79 && player !== '') {
-
-      // } else if (e.keyCode === 76 && player !== '') {
-
-      // }
-      else if (e.keyCode === 84 && player !== '') {
-        fetchDataFunc();
-      }
-      // if (e.keyCode === 87 && player === "playerOne"){
-      //   socket.emit('player_one_up', {game: gameId});
-      // } else if (e.keyCode === 83 && player === "playerOne"){
-      //   socket.emit('player_one_down', {game: gameId});
-      // } else if (e.keyCode === 79 && player === "playerTwo") {
-      //   socket.emit('player_two_up', {game: gameId});
-      // } else if (e.keyCode === 76 && player === "playerTwo") {
-      //   socket.emit('player_two_down', {game: gameId});
-      // } else if (e.keyCode === 87 && player !== "") {
-      //   axios.get(`http://34.82.79.134:8081/api/game/start/${gameId}`, option);
-      // }
     };
     document.addEventListener('keydown', keyDownHandler, false);
   }, [player, id]);

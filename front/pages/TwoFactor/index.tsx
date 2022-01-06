@@ -14,7 +14,6 @@ const TwoFactor = () => {
           withCredentials: true,
         })
         .then(() => {
-          console.log('tow-factor성공');
           toast.success('Successfully authenticated', {
             autoClose: 4000,
             position: toast.POSITION.TOP_RIGHT,

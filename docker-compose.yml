@@ -41,11 +41,12 @@ services:
     container_name: front
     restart: always
     ports:
-      - 8082:8082
+      - 80:80
     depends_on:
       - back
     networks:
       - frontApp
+
 
 volumes:
   postgresql:
