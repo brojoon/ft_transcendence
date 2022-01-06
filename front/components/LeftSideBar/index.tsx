@@ -34,7 +34,6 @@ const LeftSideBar = () => {
     axios
       .get('/api/auth/logout', config)
       .then(() => {
-        console.log('disconnect');
         getSocket().disconnect();
         history.push('/login');
       })
@@ -52,7 +51,6 @@ const LeftSideBar = () => {
           });
         }
         console.dir(error);
-        console.log(error.code);
       });
   }, []);
   return (

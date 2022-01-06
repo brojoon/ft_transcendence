@@ -78,7 +78,6 @@ const ProtectedRoomModal: VFC<Props> = ({
   const onSubmitPassword = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(PasswordValues);
       axios
         .post(
           `/api/channels/join/${channelPasswordRoomNumber}`,

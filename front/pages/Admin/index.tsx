@@ -78,8 +78,6 @@ const Admin = () => {
   useEffect(() => {
     socket?.on('onGameList', (data: any) => {
       setOnGameList(data);
-      console.log(data);
-      console.log('onGameList !!!');
     });
     return () => {
       socket.off('onGameList');
@@ -89,8 +87,6 @@ const Admin = () => {
   useEffect(() => {
     socket?.on('onlineList', (data: any) => {
       setOnlineList(data);
-      console.log(data);
-      console.log('onlineList !!!');
     });
 
     return () => {

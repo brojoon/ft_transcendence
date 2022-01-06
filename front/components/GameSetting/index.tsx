@@ -113,7 +113,6 @@ const GameSetting: VFC<Props> = ({
 
   useEffect(() => {
     socket.on('gameSet', (set: any) => {
-      console.log('set', set);
       setGameSpeed(set.length);
       setGameCount(set.game_set);
       setMapSelect(set.game_map);

@@ -24,13 +24,10 @@ const ChannelChatList: VFC<Props> = ({ chatData, scrollbarRef, setSize, isReachi
   const onScroll = useCallback(
     (values) => {
       if (values.scrollTop === 0 && !isReachingEnd) {
-        console.log('가장 위');
         setSize((prevSize) => {
-          console.log(prevSize);
           return prevSize + 1;
         }).then(() => {
           if (scrollbarRef?.current) {
-            console.log('가져오기!');
             scrollbarRef.current?.scrollTop(
               scrollbarRef.current?.getScrollHeight() - values.scrollHeight,
             );

@@ -53,7 +53,6 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     socket.on('gameStart', (isGameStart: any) => {
-      console.log('gameStart', isGameStart);
       if (isGameStart.gameStart === 1) {
         setIsGameStart(true);
         setPlay1Ready(1);
@@ -67,7 +66,6 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     if (id) {
-      console.log('gameCheck');
       socket.emit('gameCheck', {
         gameId: id,
       });
@@ -80,10 +78,8 @@ const PingPong = (data: any) => {
         gameId: id,
         player: myData.userId,
       });
-      console.log('새로고침?', myData.userId);
     }
     return () => {
-      console.log('offGame');
       if (myData) {
         socket.emit('offGame', {
           gameId: id,
@@ -149,7 +145,6 @@ const PingPong = (data: any) => {
               player2Ready: res.data.playerTwoJoin,
             });
           }
-          console.log('res.data', res.data);
           setWatchUserId1(res.data.userId1);
           setWatchUserId2(res.data.userId2);
           socket.emit('changeGameSet', { gameId: id, check: 'check' });
@@ -197,7 +192,6 @@ const PingPong = (data: any) => {
 
   useEffect(() => {
     socket.on('ready', (ready: any) => {
-      console.log('ready', ready);
       setPlay1Ready(ready.player1);
       setPlay2Ready(ready.player2);
 
