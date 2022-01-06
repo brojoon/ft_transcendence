@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useContext } from 'react';
 import { MyFab, NavIcons, StyledBadge, Toolbar, LeftSideBarContainer } from './style';
 import ForumIcon from '@mui/icons-material/Forum';
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
@@ -19,9 +19,11 @@ import Scrollbars from 'react-custom-scrollbars';
 import DashboardSharpIcon from '@mui/icons-material/DashboardSharp';
 import getSocket from '@utils/useSocket';
 import config from '@utils/config';
-const LeftSideBar = () => {
-  const { data, mutate } = useSWR<IUser | null>('/api/users', fetcher);
+import { SocketContext } from '@store/socket';
 
+const LeftSideBar = () => {
+  const { data: myData, mutate } = useSWR<IUser | null>('/api/users', fetcher);
+  const { onGameList } = useContext(SocketContext);
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
   const history = useHistory();
@@ -68,7 +70,7 @@ const LeftSideBar = () => {
                   anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                   variant="dot"
                 >
-                  <Avatar src={data?.profile} alt="Avatar" />
+                  <Avatar src={myData?.profile} alt="Avatar" />
                 </StyledBadge>
               </Tooltip>
             </Link>
@@ -143,6 +145,7 @@ const LeftSideBar = () => {
                 </MyFab>
               </Tooltip>
             </Link>
+            { myData && onGameList && !onGameList[myData.userId] &&
             <Link to={`/game`}>
               <Tooltip title="Game" placement="right" arrow>
                 <MyFab
@@ -157,6 +160,7 @@ const LeftSideBar = () => {
                 </MyFab>
               </Tooltip>
             </Link>
+            }
 
             <Tooltip title="Logout" placement="right" arrow>
               <MyFab
