@@ -103,7 +103,8 @@ const DirectMessage = () => {
 
   const onMessage = useCallback(
     (data) => {
-      if (data.userId1 != myData?.userId) {
+      console.log(data);
+      if (data.userId1 != myData?.userId && data.dmId == id) {
         mutateChat((prevchatData) => {
           prevchatData?.[0].unshift(data);
 
@@ -123,7 +124,7 @@ const DirectMessage = () => {
         });
       }
     },
-    [myData, scrollbarRef],
+    [myData, scrollbarRef, id],
   );
 
   useEffect(() => {

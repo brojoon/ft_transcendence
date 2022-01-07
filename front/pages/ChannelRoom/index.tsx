@@ -182,7 +182,7 @@ const ChannelRoom = () => {
   const onMessage = useCallback(
     (data) => {
       console.log('data', data);
-      if (data.userId != myData?.userId) {
+      if (data.userId != myData?.userId && data.channelId == id) {
         mutateChat((prevchatData) => {
           console.log('prevChat: ', prevchatData);
           prevchatData?.[0].unshift({
@@ -207,7 +207,7 @@ const ChannelRoom = () => {
         });
       }
     },
-    [myData, scrollbarRef],
+    [myData, scrollbarRef, id],
   );
 
   useEffect(() => {
