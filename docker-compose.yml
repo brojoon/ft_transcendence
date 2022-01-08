@@ -1,0 +1,58 @@
+version: "3"
+services:
+  postgresql:
+    image: postgres:13.4-buster #<- 버전이 높으면 안됨. 맥 도커 버전이 낮아서..
+    container_name: postgresql
+    restart: always
+    ports:
+      - "5432:5432"
+    networks:
+      - database
+    env_file: .env
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      TZ: "Asia/Seoul"
+    volumes:
+      - postgresql:/var/lib/postgresql/data
+      # - ./postgresql:/var/lib/postgresql/data
+      # - ./db.sql:/docker-entrypoint-initdb.d/db.sql
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    container_name: back
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - postgresql
+    networks:
+      - database
+      - frontApp
+    # volumes:
+    #   - ./back:/usr/src/app
+
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    container_name: front
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - back
+    networks:
+      - frontApp
+
+
+volumes:
+  postgresql:
+
+networks:
+  database:
+    driver: bridge
+  frontApp:
+    driver: bridge

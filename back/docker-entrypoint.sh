@@ -1,0 +1,1 @@
+dockerize -wait tcp://postgresql:5432 -timeout 120s > /dev/null 2>&1 && npm run start:prod;

@@ -26,6 +26,7 @@
 *.a
 *.lib
 
+
 node_modules
 
 # Executables
@@ -33,6 +34,16 @@ node_modules
 *.out
 *.app
 
-#.vscode
 
 *.vscode
+
+#env
+# .env
+# ./back/.env
+
+/node_modules
+#./back/ormconfig.ts
+#ormconfig.ts
+
+/postgresql
+
