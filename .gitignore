@@ -26,12 +26,15 @@
 *.a
 *.lib
 
+
+node_modules
+
 # Executables
 *.exe
 *.out
 *.app
 
-#.vscode
+
 *.vscode
 
 #env
@@ -43,3 +46,4 @@
 #ormconfig.ts
 
 /postgresql
+
