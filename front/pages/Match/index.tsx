@@ -9,6 +9,8 @@ import useSWR from 'swr';
 import { MatchContainer } from './style';
 import { toast } from 'react-toastify';
 import { SocketContext } from '@store/socket';
+import { useMediaQuery } from 'react-responsive';
+
 
 const option = {
   // headers: {
@@ -20,6 +22,7 @@ const option = {
 const Match = () => {
   const { data: myData } = useSWR<IUser | null>('/api/users', fetcher);
   const { onGameList } = useContext(SocketContext);
+  const ismobile = useMediaQuery({ maxWidth: 500 });
 
   const history = useHistory();
   const socket = getSocket();
@@ -98,7 +101,7 @@ const Match = () => {
   }, [socket, myData, Matching]);
 
   return (
-    <MatchContainer>
+    <MatchContainer ismobile={ismobile}>
       <CircularProgress className="progress" />
       <h1>Waiting for opponent...</h1>
     </MatchContainer>

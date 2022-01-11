@@ -12,11 +12,11 @@ export const ModalBackground = styled.div`
 
 `;
 
-export const ModalContent = styled.div`
+export const ModalContent = styled.div<{ ismobile: boolean }>`
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	width: 400px;
+	width: ${(props) => props.ismobile ? '290px' : '400px'}; 
 	background-color: #1e1e1e;
 	color: #979797;
 	opacity: 1;

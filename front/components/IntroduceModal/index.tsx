@@ -10,7 +10,7 @@ interface Props {
   onClickIntroduceToggle: (e: any) => void;
 }
 const IntroduceModal: VFC<Props> = ({ content, onClickIntroduceToggle, headerContent }) => {
-  const isMobile = useMediaQuery({ maxWidth: 700 });
+  const isMobile = useMediaQuery({ maxWidth: 500 });
   return (
     <>
       <ModalBackground onClick={onClickIntroduceToggle}></ModalBackground>

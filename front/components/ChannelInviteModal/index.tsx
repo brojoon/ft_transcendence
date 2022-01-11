@@ -13,6 +13,7 @@ import fetcher from '@utils/fetcher';
 import config from '@utils/config';
 import { ChannelInviteModalBackground, ChannelInviteModalContainer } from './style';
 import { toast } from 'react-toastify';
+import { useMediaQuery } from 'react-responsive';
 interface Props {
   onClickModalClose: (e: any) => void;
   setChannelInviteModal: (e: any) => void;
@@ -27,6 +28,8 @@ const ChannelInviteModal: VFC<Props> = ({ setChannelInviteModal, onClickModalClo
   );
   const [inviteValue, setInviteValue] = useState('');
   const [inviteError, setInviteError] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 600 });
+
   const onClickInviteBtn = useCallback(
     (e) => {
       e.preventDefault();

@@ -4,6 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import ErrorIcon from '@mui/icons-material/Error';
 import { ModalBackground, ModalContent, ButtonContainer } from './style';
+import { useMediaQuery } from 'react-responsive';
 
 interface Props {
   content: string;
@@ -12,10 +13,11 @@ interface Props {
   YesBtn: (e: any) => void;
 }
 const BasicModal: VFC<Props> = ({ content, NoBtn, YesBtn, headerContent }) => {
+  const isMobile = useMediaQuery({ maxWidth: 480 });
   return (
     <>
       <ModalBackground onClick={NoBtn}></ModalBackground>
-      <ModalContent>
+      <ModalContent ismobile={isMobile}>
         <div className="container">
           <div className="header">
             <ErrorIcon className="emoji" />

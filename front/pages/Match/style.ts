@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const MatchContainer = styled.div`
+export const MatchContainer = styled.div<{ ismobile: boolean }>`
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -12,5 +12,9 @@ export const MatchContainer = styled.div`
 
 	& .progress {
 		color: white;
+	}
+
+	& > h1 {
+		font-size: ${(props) => props.ismobile ? '1.3em' : '2em'}; 
 	}
 `;

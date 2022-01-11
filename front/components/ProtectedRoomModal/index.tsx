@@ -16,6 +16,7 @@ import fetcher from '@utils/fetcher';
 import config from '@utils/config';
 import { ProtectedRoomModalBack, ProtectedRoomModalContainer } from './style';
 import { toast } from 'react-toastify';
+import { useMediaQuery } from 'react-responsive';
 
 interface Props {
   channelPasswordModal: boolean;
@@ -43,7 +44,7 @@ const ProtectedRoomModal: VFC<Props> = ({
     showPassword: false,
   });
   const [passwordError, setPasswordError] = useState(false);
-
+  const isMobile = useMediaQuery({ maxWidth: 500 });
   const history = useHistory();
 
   const handleClickShowPassword = useCallback(() => {
