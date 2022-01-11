@@ -103,7 +103,6 @@ const DirectMessage = () => {
 
   const onMessage = useCallback(
     (data) => {
-      console.log(data);
       if (data.userId1 != myData?.userId && data.dmId == id) {
         mutateChat((prevchatData) => {
           prevchatData?.[0].unshift(data);

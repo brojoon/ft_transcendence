@@ -56,8 +56,6 @@ const ChannelRoom = () => {
     fetcher,
   );
 
-  console.log('chatData: ',chatData);
-
   const isEmpty = chatData?.[0]?.length === 0;
   const isReachingEnd =
     isEmpty || (chatData && chatData[chatData.length - 1]?.length < 20) || false;
@@ -114,7 +112,6 @@ const ChannelRoom = () => {
   const onSubmitChat = useCallback(() => {
     if (chat?.trim() && chatData) {
       mutateChat((prevChatData) => {
-        console.log('new Date', new Date());
         prevChatData?.[0].unshift({
           userId: myData?.userId,
           message: chat,
@@ -181,10 +178,8 @@ const ChannelRoom = () => {
 
   const onMessage = useCallback(
     (data) => {
-      console.log('data', data);
       if (data.userId != myData?.userId && data.channelId == id) {
         mutateChat((prevchatData) => {
-          console.log('prevChat: ', prevchatData);
           prevchatData?.[0].unshift({
             userId: data.userId,
             message: data.msg,

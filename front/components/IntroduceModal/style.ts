@@ -12,11 +12,11 @@ export const ModalBackground = styled.div`
 
 `;
 
-export const ModalContent = styled.div`
+export const ModalContent = styled.div<{ isMobile: boolean }>`
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	width: 500px;
+	width: ${(props) => props.isMobile ? '200px' : '500px'}; 
 	background-color: #1e1e1e;
 	color: #979797;
 	opacity: 1;
@@ -36,14 +36,15 @@ export const ModalContent = styled.div`
 
 	& .header {
 		margin: 1px 10px 0 8px;
-		font-size: 20px;
+		font-size:  ${(props) => props.isMobile ? '14px' : '20px'};
 		color: white;
 		display: flex;
 	}
 
 	& .header-content {
 		margin: 0 0 0 4px;
-		line-height: 22px;
+		font-size:  ${(props) => props.isMobile ? '12px' : '18px'};
+		line-height: ${(props) => props.isMobile ? '16px' : '22px'};
 	}
 
 	& .header .emoji {
