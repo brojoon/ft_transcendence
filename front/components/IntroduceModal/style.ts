@@ -51,7 +51,7 @@ export const ModalContent = styled.div<{ isMobile: boolean }>`
 	}
 
 	& .content {
-		font-size:  ${(props) => props.isMobile ? '13px' : '18px'};
+		font-size:  ${(props) => props.isMobile ? '13px' : '16px'};
 		margin: 10px 0 20px 10px;
 	}
 `

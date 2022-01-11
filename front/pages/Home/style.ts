@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Container = styled.div`
+export const Container = styled.div<{ ismobile: boolean }>`
 	height: 100vh;
 	display: flex;
 	align-items: center;
@@ -17,12 +17,13 @@ export const Container = styled.div`
 	& .header {
 		margin: 0;
 		padding: 0;
-		font-size: 40px;
+		font-size: ${(props) => props.ismobile ? '32px' : '40px'}; 
 	}
 
 	& .header-sub {
 		margin: 0 0 40px 0;
 		padding: 0;
+		font-size: ${(props) => props.ismobile ? '15px' : '18px'}; 
 	}
 
 	& .btn-wrapper {

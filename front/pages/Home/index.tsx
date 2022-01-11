@@ -10,7 +10,7 @@ import TextSnippetIcon from '@mui/icons-material/TextSnippet';
 import PlayCircleFilledWhiteIcon from '@mui/icons-material/PlayCircleFilledWhite';
 import { useMediaQuery } from 'react-responsive';
 const introduce =
-  '이사이트는 42SEOUL에서 진행한 웹소켓을 이용해 REAL-TIME, Multiplayer Online Pong game을 즐길수 있는 웹사이트를 구현하는 프로젝트 입니다.  \
+  '이사이트는 42SEOUL에서 진행한 웹소켓을 이용해 REAL-TIME, Multiplayer Online Pong game을 즐길수 있는 웹사이트를 구현한 프로젝트 입니다.  \
    DM과 채널을 이용하여 실시간 채팅을 나눌수 있으며 접속중인 유저가 2명 이상 이라면 서로 Pong게임을 즐길수 있습니다.';
 
 const Home = () => {
@@ -29,7 +29,7 @@ const Home = () => {
   }, []);
 
   return (
-    <Container>
+    <Container ismobile={isMobile}>
       {isIntroduceModal && (
         <IntroduceModal
           headerContent="INTRODUCE"
