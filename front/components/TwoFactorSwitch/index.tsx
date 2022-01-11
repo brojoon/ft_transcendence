@@ -35,7 +35,7 @@ const TwoFactorSwitch = () => {
                 .get('/api/users/turn-on', config)
                 .then(() => {
                   toast.success('Successfully authenticated', {
-                    autoClose: 4000,
+                    autoClose: 3000,
                     position: toast.POSITION.TOP_RIGHT,
                     hideProgressBar: false,
                     closeOnClick: true,
@@ -47,7 +47,7 @@ const TwoFactorSwitch = () => {
                 })
                 .catch((error) => {
                   toast.error(error.message, {
-                    autoClose: 4000,
+                    autoClose: 3000,
                     position: toast.POSITION.TOP_RIGHT,
                     hideProgressBar: false,
                     closeOnClick: true,
@@ -57,7 +57,7 @@ const TwoFactorSwitch = () => {
                 });
             } else {
               toast.error('Authenticate failed', {
-                autoClose: 4000,
+                autoClose: 3000,
                 position: toast.POSITION.TOP_RIGHT,
                 hideProgressBar: false,
                 closeOnClick: true,
@@ -68,7 +68,7 @@ const TwoFactorSwitch = () => {
           })
           .catch((error) => {
             toast.error(error.message, {
-              autoClose: 4000,
+              autoClose: 3000,
               position: toast.POSITION.TOP_RIGHT,
               hideProgressBar: false,
               closeOnClick: true,
@@ -94,7 +94,7 @@ const TwoFactorSwitch = () => {
         .get('/api/users/turn-off', config)
         .then(() => {
           toast.success('Successfully turned off authentication', {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -105,7 +105,7 @@ const TwoFactorSwitch = () => {
         })
         .catch((error) => {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -132,7 +132,7 @@ const TwoFactorSwitch = () => {
         })
         .catch((error) => {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,

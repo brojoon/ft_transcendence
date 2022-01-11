@@ -75,7 +75,7 @@ const DirectMessage = () => {
         .catch((error) => {
           if (error.response.data.data.message === 'Block 상태') {
             toast.error(' Cant send message because it is blocked', {
-              autoClose: 4000,
+              autoClose: 3000,
               position: toast.POSITION.TOP_RIGHT,
               hideProgressBar: false,
               closeOnClick: true,
@@ -84,7 +84,7 @@ const DirectMessage = () => {
             });
           } else {
             toast.error(error.message, {
-              autoClose: 4000,
+              autoClose: 3000,
               position: toast.POSITION.TOP_RIGHT,
               hideProgressBar: false,
               closeOnClick: true,

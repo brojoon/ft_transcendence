@@ -99,7 +99,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       .catch((error) => {
         if (error.response.data.data.message === 'Block 상태') {
           toast.error(`You were blocked by ${UserData.username}`, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -108,7 +108,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
           });
         } else {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -138,7 +138,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       .catch((error) => {
         if (error.response.data.data.message === 'Block 상태') {
           toast.error(`You were blocked by ${UserData.username}`, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -147,7 +147,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
           });
         } else {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -168,7 +168,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       })
       .catch((error) => {
         toast.error(error.message, {
-          autoClose: 4000,
+          autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
           hideProgressBar: false,
           closeOnClick: true,
@@ -189,7 +189,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       })
       .catch((error) => {
         toast.error(error.message, {
-          autoClose: 4000,
+          autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
           hideProgressBar: false,
           closeOnClick: true,
@@ -210,7 +210,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
       })
       .catch((error) => {
         toast.error(error.message, {
-          autoClose: 4000,
+          autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
           hideProgressBar: false,
           closeOnClick: true,
@@ -232,7 +232,7 @@ const UserProfileCard: VFC<Props> = ({ UserData }) => {
         })
         .catch((error) => {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,

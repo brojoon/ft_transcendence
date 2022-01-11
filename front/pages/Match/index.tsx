@@ -26,7 +26,7 @@ const Match = () => {
 
   const isFindGame = setTimeout(() => {
     history.push('/home');
-  }, 3000);
+  }, 50000);
 
   useEffect(() => {
     if (onGameList && myData) {
@@ -69,7 +69,7 @@ const Match = () => {
         })
         .catch((error) => {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -78,7 +78,7 @@ const Match = () => {
           });
           setTimeout(() => {
             history.push('/home');
-          }, 4000);
+          }, 3000);
         });
     },
     [myData, socket],

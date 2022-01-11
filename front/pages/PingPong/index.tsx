@@ -157,7 +157,7 @@ const PingPong = () => {
         })
         .catch((error) => {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -166,7 +166,7 @@ const PingPong = () => {
           });
           setTimeout(() => {
             history.push('/home');
-          }, 4000);
+          }, 3000);
         });
     }
     if (myData?.userId) getGameInfo();
@@ -237,7 +237,7 @@ const PingPong = () => {
       axios.get(`/api/game/start/${id}`, option).catch((error) => {
         history.push('./home');
         toast.error(error.message, {
-          autoClose: 4000,
+          autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
           hideProgressBar: false,
           closeOnClick: true,

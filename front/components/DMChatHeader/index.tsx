@@ -39,7 +39,7 @@ const DMChatHeader = () => {
         .catch((error) => {
           if (error.response.data.data.message === 'Block 상태') {
             toast.error('Cant challenge because you are blocked', {
-              autoClose: 4000,
+              autoClose: 3000,
               position: toast.POSITION.TOP_RIGHT,
               hideProgressBar: false,
               closeOnClick: true,
@@ -48,7 +48,7 @@ const DMChatHeader = () => {
             });
           } else {
             toast.error(error.message, {
-              autoClose: 4000,
+              autoClose: 3000,
               position: toast.POSITION.TOP_RIGHT,
               hideProgressBar: false,
               closeOnClick: true,

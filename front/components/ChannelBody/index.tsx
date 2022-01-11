@@ -51,7 +51,7 @@ const ChannelBody = () => {
       .catch((error) => {
         if (error.response.data.code === 403) {
           toast.error('This room is not accessible', {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -60,7 +60,7 @@ const ChannelBody = () => {
           });
         } else {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,

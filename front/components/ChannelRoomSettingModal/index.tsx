@@ -60,7 +60,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
         .get(`/api/channels/updateChannelName/${id}/${name}`, config)
         .then(() => {
           toast.success('Successfully renamed a channel', {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -82,7 +82,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
                     )
                     .then(() => {
                       toast.success('Successfully changed channel password', {
-                        autoClose: 4000,
+                        autoClose: 3000,
                         position: toast.POSITION.TOP_RIGHT,
                         hideProgressBar: false,
                         closeOnClick: true,
@@ -151,7 +151,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
           channelListMutate();
           MutateAllChannelList();
           toast.success('Successfully deleted the channel', {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
@@ -161,7 +161,7 @@ const ChannelRoomSettingMoDal: VFC<Props> = ({ settingToggle, onClickSettingBtn 
         })
         .catch((error) => {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,

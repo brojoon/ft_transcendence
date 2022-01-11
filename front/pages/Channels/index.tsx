@@ -50,7 +50,7 @@ const Channel = () => {
           showPassword: false,
         });
         toast.success('Successfully created a channel', {
-          autoClose: 4000,
+          autoClose: 3000,
           position: toast.POSITION.TOP_RIGHT,
           hideProgressBar: false,
           closeOnClick: true,

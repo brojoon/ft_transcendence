@@ -47,7 +47,7 @@ const ChannelInviteModal: VFC<Props> = ({ setChannelInviteModal, onClickModalClo
         })
         .catch((error) => {
           toast.error(error.message, {
-            autoClose: 4000,
+            autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
             hideProgressBar: false,
             closeOnClick: true,
