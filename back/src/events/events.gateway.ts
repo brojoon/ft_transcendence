@@ -103,12 +103,14 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
             await this.historyRepository.update({ id: gameId }, { state: 2 })
             await this.dmcontentRepository.update({ historyId: gameId }, { match: 2 })
             socket.to(`game-${gameId}`).emit("end", null);
+            delete gameMap[gameId];
           }
         } else if (history.state === 1 && onGameMap_gameId[gameId] === undefined) {
           clearInterval(gameMap[gameId].interval);
           await this.historyRepository.update({ id: gameId }, { state: 2 })
           await this.dmcontentRepository.update({ historyId: gameId }, { match: 2 })
           socket.to(`game-${gameId}`).emit("end", null);
+          delete gameMap[gameId];
         }
       }
       delete onlineMap[socket.id];
@@ -211,12 +213,14 @@ export class EventsGateway implements OnGatewayInit, OnGatewayConnection, OnGate
           await this.historyRepository.update({ id: data.gameId }, { state: 2 })
           await this.dmcontentRepository.update({ historyId: data.gameId }, { match: 2 })
           socket.to(`game-${data.gameId}`).emit("end", null);
+          delete gameMap[data.gameId];
         }
       } else if (history.state === 1 && onGameMap_gameId[data.gameId] === undefined) {
         clearInterval(gameMap[data.gameId].interval);
         await this.historyRepository.update({ id: data.gameId }, { state: 2 })
         await this.dmcontentRepository.update({ historyId: data.gameId }, { match: 2 })
         socket.to(`game-${data.gameId}`).emit("end", null);
+        delete gameMap[data.gameId];
       }
     }
     // onGameMap //
