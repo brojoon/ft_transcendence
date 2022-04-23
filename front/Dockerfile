@@ -1,8 +1,8 @@
 FROM  debian:buster
 
-RUN     apt-get update && apt-get upgrade && apt-get install -y \
+RUN     apt-get -y update && apt-get -y upgrade && apt-get install -y \
         nginx \
-        vim; exit 0
+        vim
 	
 COPY    ./nginx.conf /etc/nginx/sites-available/ft_server
 COPY	./dist /var/www/html/dist
