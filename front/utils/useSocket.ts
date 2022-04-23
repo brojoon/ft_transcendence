@@ -3,13 +3,12 @@ import { useCallback } from 'react';
 
 let socket: any = undefined;
 
-const getSocket = (() => {
+const getSocket = () => {
+  if (!socket) {
+    socket = io.connect('http://54.165.225.139:8081');
+  }
 
-	if (!socket) {
-		socket = io.connect('http://54.85.55.170/:8081');
-	}
-
-	return socket;
-})
+  return socket;
+};
 
 export default getSocket;
