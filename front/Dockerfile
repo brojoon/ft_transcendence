@@ -11,6 +11,6 @@ COPY    ./favicon.ico /var/www/html
 COPY    ./img /var/www/html/img
 COPY    ./init.sh ./
 
-EXPOSE  80 443 8082
+EXPOSE  80 443
 
 CMD    	bash init.sh
