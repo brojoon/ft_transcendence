@@ -30,25 +30,25 @@ async function bootstrap() {
 		{ prefix: '/uploads', },
 	);
 	// API문서 설정
-	const config = new DocumentBuilder()
-		.setTitle('ft_transcendence API')
-		.setDescription('ft_transcendence 개발을 위한 API 입니다')
-		.setVersion('1.0')
-		.addTag('transcendence')
-		.addBearerAuth(
-			{
-				type: 'http',
-				scheme: 'bearer',
-				bearerFormat: 'JWT',
-				name: 'JWT',
-				description: 'Enter JWT token',
-				in: 'header',
-			},
-			'ts_token',
-		)
-		.build();
-	const document = SwaggerModule.createDocument(app, config);
-	SwaggerModule.setup('api', app, document);
+// 	const config = new DocumentBuilder()
+// 		.setTitle('ft_transcendence API')
+// 		.setDescription('ft_transcendence 개발을 위한 API 입니다')
+// 		.setVersion('1.0')
+// 		.addTag('transcendence')
+// 		.addBearerAuth(
+// 			{
+// 				type: 'http',
+// 				scheme: 'bearer',
+// 				bearerFormat: 'JWT',
+// 				name: 'JWT',
+// 				description: 'Enter JWT token',
+// 				in: 'header',
+// 			},
+// 			'ts_token',
+// 		)
+// 		.build();
+// 	const document = SwaggerModule.createDocument(app, config);
+// 	SwaggerModule.setup('api', app, document);
 	// passport초기화
 	app.use(passport.initialize());
 	// 서버 리슨 포트
