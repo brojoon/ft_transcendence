@@ -1,8 +1,23 @@
 <h2 align=center > mighty Pong contest! - ft_transcendence 🏓 </h2>
 </br>
+<div align=center>
+   <img src="https://img.shields.io/badge/4.4.3-Typescript-3178C6?style=for=flat&logo=TypeScript&logoColor=3178C6">
+   <img src="https://img.shields.io/badge/17.0.2-React-61DAFB?style=for=flat&logo=react&logoColor=61DAFB">
+   <img src="https://img.shields.io/badge/8.0.0-NestJS-E0234E?style=for=flat&logo=nestjs&logoColor=E0234E">
+   <img src="https://img.shields.io/badge/13.4-PostgreSQL-4169E1?style=for=flat&logo=PostgreSQL&logoColor=4169E1">
+   <img src="https://img.shields.io/badge/20.1.12-Docker-2496ED?style=for=flat&logo=Docker&logoColor=2496ED">
+   <img src="https://img.shields.io/badge/5.0.3-Material UI-757575?style=flat&logo=Material Design&logoColor=FFF"/>
+   <img src="https://img.shields.io/badge/7.32.0-Eslint-4B32C3?style=flat&logo=eslint&logoColor=4B32C3"/>
+   <img src="https://img.shields.io/badge/2.4.1-Prettier-F7B93E?style=flat&logo=Prettier&logoColor=F7B93E"/>
+   <img src="https://img.shields.io/badge/5.3.0-React router dom-CA4245?style=flat&logo=react router&logoColor=CA4245"/>
+   <img src="https://img.shields.io/badge/5.28.0-Webpack-8DD6F9?style=flat&logo=webpack&logoColor=8DD6F9"/>
+   <img src="https://img.shields.io/badge/5.1.1-Swagger-85EA2D?style=for=flat&logo=Swagger&logoColor=85EA2D">
+   <img src="https://img.shields.io/badge/8.1.2-Socket.io-333333?style=for=flat&logo=Socket.io&logoColor=333333">
+</div>
 
-<p align=center><img src=https://user-images.githubusercontent.com/52714837/164992060-9a72307d-24e7-483d-b461-06b57c21500c.png /></p>
 
+<!-- 
+<img src="https://img.shields.io/badge/표시할이름-색상?style=for-the-badge&logo=기술스택아이콘&logoColor=white"> -->
 
 
 <p align=center> 📆 2021.10.2 ~ 2022.01.7</p>
