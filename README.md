@@ -37,50 +37,36 @@
 ```
 📦ft_transcendence
  ┣ 📂back
- ┃ ┣ 📂common
- ┃ ┃ ┣ 📂decorators
- ┃ ┃ ┣ 📂dto
- ┃ ┃ ┗ 📂interceptors
+ ┃ ┣ 📂common // 공통 dto, 데코레이터, 인터셉터 모음
  ┃ ┣ 📂src
- ┃ ┃ ┣ 📂auth
- ┃ ┃ ┃ ┣ 📂guards
- ┃ ┃ ┃ ┣ 📂strategies
- ┃ ┃ ┃ ┣ 📜auth.controller.ts
- ┃ ┃ ┃ ┣ 📜auth.module.ts
- ┃ ┃ ┃ ┣ 📜auth.service.spec.ts
- ┃ ┃ ┃ ┣ 📜auth.service.ts
- ┃ ┃ ┃ ┗ 📜constants.ts
- ┃ ┃ ┣ 📂channels
- ┃ ┃ ┣ 📂database
- ┃ ┃ ┃ ┗ 📂seeds
- ┃ ┃ ┣ 📂dms
- ┃ ┃ ┣ 📂entities
- ┃ ┃ ┣ 📂events
- ┃ ┃ ┣ 📂friends
- ┃ ┃ ┣ 📂game
- ┃ ┃ ┣ 📂middlewares
- ┃ ┃ ┃ ┗ 📜logger.middleware.ts
+ ┃ ┃ ┣ 📂auth // guards, oauth, jwt strategy auth 관련 모음
+ ┃ ┃ ┣ 📂channels // 채널 dto, 모듈, 컨트롤러, 서비스 
+ ┃ ┃ ┣ 📂database // 초기 더미데이터 seed
+ ┃ ┃ ┣ 📂dms // DM dto, 모듈, 컨트롤러, 서비스
+ ┃ ┃ ┣ 📂entities // 테이블 구조 엔티티
+ ┃ ┃ ┣ 📂events // 이벤트 게이트웨이 소켓관련 파일
+ ┃ ┃ ┣ 📂friends // 친구 dto, 모듈, 컨트롤러, 서비스
+ ┃ ┃ ┣ 📂game // 게임 dto, 모듈, 컨트롤러, 서비스
+ ┃ ┃ ┣ 📂middlewares // 서버 로그용 미들웨어
  ┃ ┃ ┣ 📂migration
- ┃ ┃ ┃ ┗ 📜1634759402349-careToType.ts
- ┃ ┃ ┣ 📂users
- ┃ ┃ ┣ 📜app.controller.spec.ts
+ ┃ ┃ ┣ 📂users // 유저 dto, 모듈, 컨트롤러, 서비스
+ ┃ ┃ ┣ 📜app.controller.spec.ts 
  ┃ ┃ ┣ 📜app.controller.ts
  ┃ ┃ ┣ 📜app.module.ts
  ┃ ┃ ┣ 📜app.service.ts
  ┃ ┃ ┣ 📜http-exception.filter.ts
- ┃ ┃ ┗ 📜main.ts
+ ┃ ┃ ┗ 📜main.ts 
  ┃ ┣ 📂test
  ┃ ┣ 📜.dockerignore
- ┃ ┣ 📜.env
  ┃ ┣ 📜.eslintrc.js
  ┃ ┣ 📜.gitignore
  ┃ ┣ 📜.prettierrc
- ┃ ┣ 📜docker-entrypoint.sh
- ┃ ┣ 📜Dockerfile
+ ┃ ┣ 📜docker-entrypoint.sh // 도커파일 실행후 실행되는 스크립트
+ ┃ ┣ 📜Dockerfile // 배포 자동화 도커파일
  ┃ ┣ 📜index.html
  ┃ ┣ 📜index.js
  ┃ ┣ 📜nest-cli.json
- ┃ ┣ 📜ormconfig.ts
+ ┃ ┣ 📜ormconfig.ts 
  ┃ ┣ 📜package-lock.json
  ┃ ┣ 📜package.json
  ┃ ┣ 📜README.md
@@ -88,24 +74,23 @@
  ┃ ┣ 📜tsconfig.json
  ┃ ┗ 📜webpack-hmr.config.js
  ┣ 📂front
- ┃ ┣ 📂components
- ┃ ┣ 📂hooks
- ┃ ┣ 📂img
- ┃ ┣ 📂layouts
- ┃ ┣ 📂pages
- ┃ ┣ 📂store
- ┃ ┣ 📂typings
- ┃ ┣ 📂utils
- ┃ ┣ 📜.env
+ ┃ ┣ 📂components //재사용 가능한 컴포넌트 모음
+ ┃ ┣ 📂hooks // 공통 hooks 모음
+ ┃ ┣ 📂img // 메인 bg
+ ┃ ┣ 📂layouts // 페이지 공통 레이아웃 모음
+ ┃ ┣ 📂pages // 페이지 컴포넌트
+ ┃ ┣ 📂store // context API 스토어 (유저 상태 체크 소켓 관리용으로 사용됨)
+ ┃ ┣ 📂typings // db 데이터 type 모음
+ ┃ ┣ 📂utils // 유틸로 쓰이는 함수들 모음
  ┃ ┣ 📜.eslintrc
  ┃ ┣ 📜.gitignore
  ┃ ┣ 📜.prettierrc
  ┃ ┣ 📜client.tsx
- ┃ ┣ 📜Dockerfile
+ ┃ ┣ 📜Dockerfile // 배포 자동화 도커파일
  ┃ ┣ 📜favicon.ico
  ┃ ┣ 📜index.html
- ┃ ┣ 📜init.sh
- ┃ ┣ 📜nginx.conf
+ ┃ ┣ 📜init.sh // 도커파일 실행후 실행되는 스크립트, nginx 설정 관련
+ ┃ ┣ 📜nginx.conf // nginx 환경파일
  ┃ ┣ 📜package-lock.json
  ┃ ┣ 📜package.json
  ┃ ┣ 📜tsconfig-for-webpack-config.json
@@ -113,8 +98,8 @@
  ┃ ┗ 📜webpack.config.ts
  ┣ 📜.gitignore
  ┣ 📜connect.sh
- ┣ 📜db.sql
- ┣ 📜docker-compose.yml
+ ┣ 📜db.sql // postgres dubmp
+ ┣ 📜docker-compose.yml // 배포 자동화 도커 컴포우즈 파일
  ┣ 📜package-lock.json
  ┗ 📜README.md
  ```
