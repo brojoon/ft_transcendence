@@ -1,6 +1,10 @@
 <h2 align=center > mighty Pong contest! - ft_transcendence 🏓 </h2>
 </br>
 
+<p align=center><img src=https://user-images.githubusercontent.com/52714837/164992060-9a72307d-24e7-483d-b461-06b57c21500c.png /></p>
+
+
+
 <p align=center> 📆 2021.10.2 ~ 2022.01.7</p>
 
 <h2 align=center>preview</h2>
