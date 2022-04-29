@@ -5,7 +5,7 @@ let socket: any = undefined;
 
 const getSocket = () => {
   if (!socket) {
-    socket = io.connect('http://42transcendence.ml/api');
+    socket = io.connect('http://44.192.96.197:8081');
   }
 
   return socket;
