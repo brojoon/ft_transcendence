@@ -10,7 +10,7 @@ import { jwtConstants } from './constants';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { Intra42Strategy } from './strategies/intra42.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { KakaoStrategy } from './strategies/kakao.strategy';
+// import { KakaoStrategy } from './strategies/kakao.strategy';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { KakaoStrategy } from './strategies/kakao.strategy';
     TypeOrmModule.forFeature([Users, Connect]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, Intra42Strategy, GoogleStrategy, KakaoStrategy],
+  providers: [AuthService, JwtStrategy, Intra42Strategy, GoogleStrategy],
   exports: [AuthService],
 })
 export class AuthModule {}

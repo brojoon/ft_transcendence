@@ -185,23 +185,23 @@ export class AuthController {
       res.status(302).redirect(jwtConstants.HOME)
     }
   }
-  @UseGuards(AuthGuard('kakao'))
-  @Get('kakao')
-  async kakaoAuthor(){}
+  // @UseGuards(AuthGuard('kakao'))
+  // @Get('kakao')
+  // async kakaoAuthor(){}
 
-  @UseGuards(AuthGuard('kakao'))
-  @Get('kakao/redirect')
-  async kakaoRedirect(@User() user:UserDto, @Req() req, @Res() res){
-    const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
-    res.clearCookie('userCookie');
-    if (result){
-      res.cookie('userCookie', req.user, { httpOnly: true });
-      res.status(302).redirect(jwtConstants.TWO_FACTOR)
-    }else{
-      const token = await this.authService.login(req.user);
-      res.cookie('ts_token', token.access_token, { httpOnly: true });
-      res.status(302).redirect(jwtConstants.HOME)
-    }
-  }
+  // @UseGuards(AuthGuard('kakao'))
+  // @Get('kakao/redirect')
+  // async kakaoRedirect(@User() user:UserDto, @Req() req, @Res() res){
+  //   const result: boolean = await this.authService.checktwofactorEnable(req.user.userId);
+  //   res.clearCookie('userCookie');
+  //   if (result){
+  //     res.cookie('userCookie', req.user, { httpOnly: true });
+  //     res.status(302).redirect(jwtConstants.TWO_FACTOR)
+  //   }else{
+  //     const token = await this.authService.login(req.user);
+  //     res.cookie('ts_token', token.access_token, { httpOnly: true });
+  //     res.status(302).redirect(jwtConstants.HOME)
+  //   }
+  // }
 }
 
