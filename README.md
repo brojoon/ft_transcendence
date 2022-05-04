@@ -1,5 +1,6 @@
 <h2 align=center > mighty Pong contest! - ft_transcendence 🏓 </h2>
 </br>
+<p align=center> 📆 2021.10.2 ~ 2022.01.7</p>
 <div align=center>
    <img src="https://img.shields.io/badge/4.4.3-Typescript-3178C6?style=for=flat&logo=TypeScript&logoColor=3178C6">
    <img src="https://img.shields.io/badge/17.0.2-React-61DAFB?style=for=flat&logo=react&logoColor=61DAFB">
@@ -20,9 +21,10 @@
 <img src="https://img.shields.io/badge/표시할이름-색상?style=for-the-badge&logo=기술스택아이콘&logoColor=white"> -->
 
 
-<p align=center> 📆 2021.10.2 ~ 2022.01.7</p>
 
 <h2 align=center>preview</h2>
+  
+
 
 ## 프로젝트 살펴보기 🔎
 ### 🙎‍♂️ 팀 구성 
