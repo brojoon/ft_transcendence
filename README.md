@@ -24,6 +24,7 @@
 
 <h2 align=center>preview</h2>
   
+![bandicam 2022-05-05 08-33-06-296](https://user-images.githubusercontent.com/52714837/166841859-21d90150-6787-4769-a778-d505296f59de.jpg)
 
 
 ## 프로젝트 살펴보기 🔎
