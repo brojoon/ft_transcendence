@@ -128,23 +128,12 @@
  ┃ ┃ ┣ 📜app.service.ts
  ┃ ┃ ┣ 📜http-exception.filter.ts
  ┃ ┃ ┗ 📜main.ts 
- ┃ ┣ 📂test
- ┃ ┣ 📜.dockerignore
- ┃ ┣ 📜.eslintrc.js
- ┃ ┣ 📜.gitignore
- ┃ ┣ 📜.prettierrc
  ┃ ┣ 📜docker-entrypoint.sh // 도커파일 실행후 실행되는 스크립트
  ┃ ┣ 📜Dockerfile           // 배포 자동화 도커파일
  ┃ ┣ 📜index.html
  ┃ ┣ 📜index.js
  ┃ ┣ 📜nest-cli.json
  ┃ ┣ 📜ormconfig.ts 
- ┃ ┣ 📜package-lock.json
- ┃ ┣ 📜package.json
- ┃ ┣ 📜README.md
- ┃ ┣ 📜tsconfig.build.json
- ┃ ┣ 📜tsconfig.json
- ┃ ┗ 📜webpack-hmr.config.js
  ┣ 📂front
  ┃ ┣ 📂components           //재사용 가능한 컴포넌트 모음
  ┃ ┣ 📂hooks                // 공통 hooks 모음
@@ -154,24 +143,12 @@
  ┃ ┣ 📂store                // context API 스토어 (유저 상태 체크 소켓 관리용으로 사용됨)
  ┃ ┣ 📂typings              // db 데이터 type 모음
  ┃ ┣ 📂utils                // 유틸로 쓰이는 함수들 모음
- ┃ ┣ 📜.eslintrc
- ┃ ┣ 📜.gitignore
- ┃ ┣ 📜.prettierrc
  ┃ ┣ 📜client.tsx
  ┃ ┣ 📜Dockerfile           // 배포 자동화 도커파일
- ┃ ┣ 📜favicon.ico
  ┃ ┣ 📜index.html
  ┃ ┣ 📜init.sh              // 도커파일 실행후 실행되는 스크립트, nginx 설정 관련
  ┃ ┣ 📜nginx.conf           // nginx 환경파일
- ┃ ┣ 📜package-lock.json
- ┃ ┣ 📜package.json
- ┃ ┣ 📜tsconfig-for-webpack-config.json
- ┃ ┣ 📜tsconfig.json
- ┃ ┗ 📜webpack.config.ts
- ┣ 📜.gitignore
  ┣ 📜connect.sh
  ┣ 📜db.sql // postgres dubmp
  ┣ 📜docker-compose.yml     // 배포 자동화 도커 컴포우즈 파일
- ┣ 📜package-lock.json
- ┗ 📜README.md
  ```
