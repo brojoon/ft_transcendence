@@ -29,7 +29,7 @@
    <a href="http://42transcendence.ml">
    <img src="https://user-images.githubusercontent.com/52714837/166841859-21d90150-6787-4769-a778-d505296f59de.jpg" />
    </a>
-   <a href="https://42transcendence.ml">
+   <a href="http://42transcendence.ml">
       이미지 클릭시 배포된 사이트로 이동
    </a>
 </div>
