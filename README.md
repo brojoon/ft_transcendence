@@ -23,8 +23,16 @@
 
 
 <h2 align=center>preview</h2>
-  
-![bandicam 2022-05-05 08-33-06-296](https://user-images.githubusercontent.com/52714837/166841859-21d90150-6787-4769-a778-d505296f59de.jpg)
+
+</div>
+  <div align=center>
+   <a href="http://42transcendence.ml">
+   <img src="https://user-images.githubusercontent.com/52714837/166841859-21d90150-6787-4769-a778-d505296f59de.jpg" />
+   </a>
+   <a href="https://42transcendence.ml">
+      이미지 클릭시 배포된 사이트로 이동
+   </a>
+</div>
 
 
 ## 프로젝트 살펴보기 🔎
@@ -120,9 +128,7 @@
  ┃ ┃ ┣ 📂friends            // 친구 dto, 모듈, 컨트롤러, 서비스
  ┃ ┃ ┣ 📂game               // 게임 dto, 모듈, 컨트롤러, 서비스
  ┃ ┃ ┣ 📂middlewares        // 서버 로그용 미들웨어
- ┃ ┃ ┣ 📂migration
  ┃ ┃ ┣ 📂users              // 유저 dto, 모듈, 컨트롤러, 서비스
- ┃ ┃ ┣ 📜app.controller.spec.ts 
  ┃ ┃ ┣ 📜app.controller.ts
  ┃ ┃ ┣ 📜app.module.ts
  ┃ ┃ ┣ 📜app.service.ts
@@ -132,12 +138,10 @@
  ┃ ┣ 📜Dockerfile           // 배포 자동화 도커파일
  ┃ ┣ 📜index.html
  ┃ ┣ 📜index.js
- ┃ ┣ 📜nest-cli.json
  ┃ ┣ 📜ormconfig.ts 
  ┣ 📂front
- ┃ ┣ 📂components           //재사용 가능한 컴포넌트 모음
+ ┃ ┣ 📂components           // 재사용 가능한 컴포넌트 모음
  ┃ ┣ 📂hooks                // 공통 hooks 모음
- ┃ ┣ 📂img                  // 메인 bg
  ┃ ┣ 📂layouts              // 페이지 공통 레이아웃 모음
  ┃ ┣ 📂pages                // 페이지 컴포넌트
  ┃ ┣ 📂store                // context API 스토어 (유저 상태 체크 소켓 관리용으로 사용됨)
@@ -146,9 +150,8 @@
  ┃ ┣ 📜client.tsx
  ┃ ┣ 📜Dockerfile           // 배포 자동화 도커파일
  ┃ ┣ 📜index.html
- ┃ ┣ 📜init.sh              // 도커파일 실행후 실행되는 스크립트, nginx 설정 관련
- ┃ ┣ 📜nginx.conf           // nginx 환경파일
- ┣ 📜connect.sh
- ┣ 📜db.sql // postgres dubmp
+ ┃ ┣ 📜init.sh              // 도커파일 빌드후 실행되는 스크립트, nginx 설정 관련
+ ┃ ┣ 📜nginx.conf           // nginx 설정 파일
+ ┣ 📜db.sql                 // postgres dump 파일
  ┣ 📜docker-compose.yml     // 배포 자동화 도커 컴포우즈 파일
  ```
